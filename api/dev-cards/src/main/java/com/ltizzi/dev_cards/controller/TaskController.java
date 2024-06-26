@@ -1,6 +1,7 @@
 package com.ltizzi.dev_cards.controller;
 
 import com.ltizzi.dev_cards.exception.InvalidTaskException;
+import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.task.TaskEntity;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.utils.NotFoundException;
@@ -24,26 +25,26 @@ public class TaskController {
 
     @GetMapping("/all")
     @ResponseBody
-    public ResponseEntity<List<TaskEntity>> getTasks(@RequestParam(defaultValue = "0")int page,
-                                                     @RequestParam(defaultValue = ""+Integer.MAX_VALUE)int limit){
+    public ResponseEntity<List<TaskDTO>> getTasks(@RequestParam(defaultValue = "0")int page,
+                                                  @RequestParam(defaultValue = ""+Integer.MAX_VALUE)int limit){
         return new ResponseEntity<>(taskServ.getTasks(page, limit), HttpStatus.OK);
     }
 
     @GetMapping("/byId")
     @ResponseBody
-    public ResponseEntity<TaskEntity> getTaskById(@RequestParam Long id) throws NotFoundException {
+    public ResponseEntity<TaskDTO> getTaskById(@RequestParam Long id) throws NotFoundException {
         return new ResponseEntity<>(taskServ.getTaskById(id), HttpStatus.OK);
     }
 
     @PostMapping("/new")
     @ResponseBody
-    public ResponseEntity<TaskEntity> saveTask(@RequestBody TaskEntity task) throws InvalidTaskException {
+    public ResponseEntity<TaskDTO> saveTask(@RequestBody TaskDTO task) throws InvalidTaskException {
         return  new ResponseEntity<>(taskServ.saveTask(task), HttpStatus.OK);
     }
 
     @PatchMapping("/update")
     @ResponseBody
-    public ResponseEntity<TaskEntity> updateTask(@RequestParam Long id, @RequestBody TaskEntity task) throws InvalidTaskException, NotFoundException {
+    public ResponseEntity<TaskDTO> updateTask(@RequestParam Long id, @RequestBody TaskDTO task) throws InvalidTaskException, NotFoundException {
         return new ResponseEntity<>(taskServ.updateTask(id, task), HttpStatus.OK);
     }
 

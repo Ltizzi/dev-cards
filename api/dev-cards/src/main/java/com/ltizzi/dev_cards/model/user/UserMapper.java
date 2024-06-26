@@ -5,6 +5,7 @@ import com.ltizzi.dev_cards.model.workspace.WorkspaceMapper;
 import com.ltizzi.dev_cards.repository.UserRepository;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -17,12 +18,14 @@ import java.util.List;
 public class UserMapper {
 
     @Autowired
+    @Lazy
     private TaskMapper taskMapper;
 
     @Autowired
     private UserRepository userRepo;
 
     @Autowired
+    @Lazy
     private WorkspaceMapper wsMapper;
 
     public UserDTO toUserDTO(UserEntity user){

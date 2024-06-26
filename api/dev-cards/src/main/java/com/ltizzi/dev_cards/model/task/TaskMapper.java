@@ -4,6 +4,7 @@ import com.ltizzi.dev_cards.model.user.UserMapper;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceMapper;
 import com.ltizzi.dev_cards.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class TaskMapper {
     private TaskRepository taskRepo;
 
     @Autowired
+    @Lazy
     private UserMapper userMapper;
 
     @Autowired

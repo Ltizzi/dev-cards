@@ -1,0 +1,55 @@
+package com.ltizzi.dev_cards.controller;
+
+import com.ltizzi.dev_cards.exception.InvalidUserException;
+import com.ltizzi.dev_cards.exception.NotFoundException;
+import com.ltizzi.dev_cards.model.user.UserDTO;
+import com.ltizzi.dev_cards.model.utils.APIResponse;
+import com.ltizzi.dev_cards.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * @author Leonardo Terlizzi
+ */
+@RestController
+@RequestMapping("/user")
+public class UserController {
+
+    @Autowired
+    private UserService userServ;
+
+    @GetMapping("/all")
+    @ResponseBody
+    public ResponseEntity<List<UserDTO>> getUsers(@RequestParam(defaultValue = "0")int page,
+                                                  @RequestParam(defaultValue = ""+Integer.MAX_VALUE)int limit){
+        return new ResponseEntity<>(userServ.getUsers(page,limit), HttpStatus.OK);
+    }
+
+    @GetMapping("/byId")
+    @ResponseBody
+    public ResponseEntity<UserDTO> getUserById(@RequestParam Long user_id) throws NotFoundException{
+        return new ResponseEntity<>(userServ.getUserById(user_id), HttpStatus.OK);
+    }
+
+    @PostMapping("/new")
+    @ResponseBody
+    public ResponseEntity<UserDTO> saveUser(@RequestBody UserDTO user) throws InvalidUserException {
+        return new ResponseEntity<>(userServ.saveUser(user), HttpStatus.OK);
+    }
+
+    @PatchMapping("/update")
+    @ResponseBody
+    public ResponseEntity<UserDTO> updateUser(@RequestParam Long user_id, @RequestBody UserDTO user) throws NotFoundException, InvalidUserException {
+        return new ResponseEntity<>(userServ.updateUser(user_id, user), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete")
+    @ResponseBody
+    public ResponseEntity<APIResponse> deleteUser(@RequestParam Long user_id) throws NotFoundException {
+        return new ResponseEntity<>(userServ.deleteUser(user_id), HttpStatus.OK);
+    }
+}

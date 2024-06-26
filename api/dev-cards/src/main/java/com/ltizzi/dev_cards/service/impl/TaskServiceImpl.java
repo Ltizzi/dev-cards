@@ -1,7 +1,9 @@
 package com.ltizzi.dev_cards.service.impl;
 
 import com.ltizzi.dev_cards.exception.InvalidTaskException;
+import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.task.TaskEntity;
+import com.ltizzi.dev_cards.model.task.TaskMapper;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.utils.NotFoundException;
 import com.ltizzi.dev_cards.repository.TaskRepository;
@@ -22,29 +24,32 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskRepository taskRepo;
 
+    @Autowired
+    private TaskMapper taskMapper;
+
     @Override
-    public List<TaskEntity> getTasks(int page, int limit) {
+    public List<TaskDTO> getTasks(int page, int limit) {
         PageRequest pageReq =PageRequest.of(page, limit);
         Page<TaskEntity> taskPage = taskRepo.findAll(pageReq);
-        return taskPage.getContent();
+        return taskMapper.toArrayTaskDTO(taskPage.getContent());
     }
 
     @Override
-    public TaskEntity getTaskById(Long id) throws NotFoundException {
-        return taskRepo.findById(id).orElseThrow();
+    public TaskDTO getTaskById(Long id) throws NotFoundException {
+        return taskMapper.toTaskDTO(taskRepo.findById(id).orElseThrow());
     }
 
     @Override
-    public TaskEntity saveTask(TaskEntity task) throws InvalidTaskException {
-        return taskRepo.save(task);
+    public TaskDTO saveTask(TaskDTO task) throws InvalidTaskException {
+        return taskMapper.toTaskDTO(taskRepo.save(taskMapper.toTaskEntity(task)));
     }
 
     @Override
-    public TaskEntity updateTask(Long task_id, TaskEntity task) throws InvalidTaskException, NotFoundException {
+    public TaskDTO updateTask(Long task_id, TaskDTO task) throws InvalidTaskException, NotFoundException {
 
-            TaskEntity old_task = getTaskById(task_id);
+            TaskDTO old_task = getTaskById(task_id);
             if(old_task != null && old_task.getTask_id().equals(task.getTask_id())){
-                return taskRepo.save(task);
+                return taskMapper.toTaskDTO(taskRepo.save(taskMapper.toTaskEntity(task)));
             }
             else throw  new InvalidTaskException("Something went wrong");
 
@@ -53,17 +58,18 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public APIResponse deleteTask(Long task_id) throws NotFoundException {
         APIResponse apiRes = new APIResponse();
-        TaskEntity task = getTaskById(task_id);
+        TaskDTO task = getTaskById(task_id);
         if (task != null){
             taskRepo.deleteById(task_id);
             apiRes.setHttp_method("DELETE");
             apiRes.setMessage("Task deleted");
-            return apiRes;
+
         }
         else {
             apiRes.setHttp_method("DELETE");
             apiRes.setMessage("Task not Found!");
-            return apiRes;
+
         }
+        return apiRes;
     }
 }
