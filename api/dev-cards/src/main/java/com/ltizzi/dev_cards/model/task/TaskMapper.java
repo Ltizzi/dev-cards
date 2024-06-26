@@ -1,5 +1,7 @@
 package com.ltizzi.dev_cards.model.task;
 
+import com.ltizzi.dev_cards.model.user.UserMapper;
+import com.ltizzi.dev_cards.model.workspace.WorkspaceMapper;
 import com.ltizzi.dev_cards.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,7 +18,13 @@ public class TaskMapper {
     @Autowired
     private TaskRepository taskRepo;
 
-    private TaskDTO toTaskDTO(TaskEntity task) {
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private WorkspaceMapper wsMapper;
+
+    public TaskDTO toTaskDTO(TaskEntity task) {
         TaskDTO dto = new TaskDTO();
         dto.setTask_id(task.getTask_id());
         dto.setTitle(task.getTitle());
@@ -29,21 +37,22 @@ public class TaskMapper {
         dto.setProgress(task.getProgress());
         dto.setTask_type(task.getTask_type());
 
-        dto.setProject(task.getProject());
+        dto.setProject(wsMapper.toWorkspaceLiteDTO(task.getProject()));
 
-        dto.setDependencies(toArrayTaskDTO(task.getDependencies()));
+        dto.setDependencies(toArrayTaskLiteDTO(task.getDependencies()));
         dto.setTask_tags(task.getTask_tags());
+        dto.setUpdates(task.getUpdates());
 
-        dto.setBlocked_by(task.getBlocked_by());
-        dto.setOwner(task.getOwner());
-        dto.setDesignated_to(task.getDesignated_to());
+        dto.setBlocked_by(userMapper.toUserLiteDTO(task.getBlocked_by()));
+        dto.setOwner(userMapper.toUserLiteDTO(task.getOwner()));
+        dto.setDesignated_to(userMapper.toArrayUserLiteDTO(task.getDesignated_to()));
         dto.setCreated_at(task.getCreated_at());
         dto.setUpdated_at(task.getUpdated_at());
 
         return dto;
     }
 
-    List<TaskDTO> toArrayTaskDTO(List<TaskEntity> tasks) {
+    public List<TaskDTO> toArrayTaskDTO(List<TaskEntity> tasks) {
         List<TaskDTO> dtos = new ArrayList<>();
         for(TaskEntity task: tasks){
             dtos.add(toTaskDTO(task));
@@ -51,7 +60,7 @@ public class TaskMapper {
         return dtos;
     }
 
-    TaskEntity toTaskEntity(TaskDTO dto) {
+    public TaskEntity toTaskEntity(TaskDTO dto) {
         TaskEntity task = new TaskEntity();
 
         if(dto.getTask_id() != null) {
@@ -70,15 +79,16 @@ public class TaskMapper {
         task.setProgress(dto.getProgress());
         task.setTask_type(dto.getTask_type());
 
-        task.setProject(dto.getProject());
+        task.setProject(wsMapper.toWorkSpaceEntity(dto.getProject()));
 
-        task.setDependencies(toArrayTaskEntity(dto.getDependencies()));
+        task.setDependencies(toArrayTaskEntityFromLiteDTO(dto.getDependencies()));
 
         task.setTask_tags(dto.getTask_tags());
+        task.setUpdates(dto.getUpdates());
 
-        task.setBlocked_by(dto.getBlocked_by());
-        task.setOwner(dto.getOwner());
-        task.setDesignated_to(dto.getDesignated_to());
+        task.setBlocked_by(userMapper.toUserEntity(dto.getBlocked_by()));
+        task.setOwner(userMapper.toUserEntity(dto.getOwner()));
+        task.setDesignated_to(userMapper.toArrayUserEntityFromLite(dto.getDesignated_to()));
         task.setCreated_at(dto.getCreated_at());
         task.setUpdated_at(dto.getUpdated_at());
 
@@ -86,11 +96,62 @@ public class TaskMapper {
 
     }
 
-    List<TaskEntity> toArrayTaskEntity(List<TaskDTO> dtos) {
+    public TaskEntity toTaskEntity(TaskLiteDTO dto){
+        TaskEntity task = new TaskEntity();
+        if(dto.getTask_id()!= null){
+            task = taskRepo.findById(dto.getTask_id()).orElse(null);
+        }
+        task.setTitle(dto.getTitle());
+        task.setSubtitle(dto.getSubtitle());
+        task.setColor(dto.getColor());
+        task.setPriority(dto.getPriority());
+        task.setStatus(dto.getStatus());
+        task.setProgress(dto.getProgress());
+        task.setTask_type(dto.getTask_type());
+        task.setProject(wsMapper.toWorkSpaceEntity(dto.getProject()));
+        task.setTask_tags(dto.getTask_tags());
+        task.setOwner(userMapper.toUserEntity(dto.getOwner()));
+        return task;
+    }
+
+    public List<TaskEntity> toArrayTaskEntity(List<TaskDTO> dtos) {
         List<TaskEntity> tasks = new ArrayList<>();
         for(TaskDTO dto: dtos){
             tasks.add(toTaskEntity(dto));
         }
         return tasks;
+    }
+
+    public List<TaskEntity> toArrayTaskEntityFromLiteDTO(List<TaskLiteDTO> dtos){
+        List<TaskEntity> tasks = new ArrayList<>();
+        for(TaskLiteDTO dto: dtos) {
+            tasks.add(toTaskEntity(dto));
+        }
+        return tasks;
+    }
+
+    public TaskLiteDTO toTaskLiteDTO(TaskEntity task){
+        TaskLiteDTO liteDTO = new TaskLiteDTO();
+        liteDTO.setTask_id(task.getTask_id());
+        liteDTO.setTitle(task.getTitle());
+        liteDTO.setSubtitle(task.getSubtitle());
+        liteDTO.setColor(task.getColor());
+        liteDTO.setPriority(task.getPriority());
+        liteDTO.setStatus(task.getStatus());
+        liteDTO.setProgress(task.getProgress());
+        liteDTO.setTask_type(task.getTask_type());
+        liteDTO.setProject(wsMapper.toWorkspaceLiteDTO(task.getProject()));
+        liteDTO.setTask_tags(task.getTask_tags());
+        liteDTO.setOwner(userMapper.toUserLiteDTO(task.getOwner()));
+
+        return liteDTO;
+    }
+
+    public List<TaskLiteDTO> toArrayTaskLiteDTO(List<TaskEntity> tasks) {
+        List<TaskLiteDTO> dtos = new ArrayList<>();
+        for(TaskEntity task:tasks){
+            dtos.add(toTaskLiteDTO(task));
+        }
+        return dtos;
     }
 }
