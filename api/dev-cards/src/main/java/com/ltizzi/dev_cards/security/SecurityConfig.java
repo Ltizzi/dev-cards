@@ -19,6 +19,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.authorizeHttpRequests(req->req
+                //USER
+                .requestMatchers(HttpMethod.POST, "/user/new").permitAll()
+
+                //TASK
                 .requestMatchers(HttpMethod.GET, "/task/all", "/task/byId").permitAll()
                 .requestMatchers(HttpMethod.POST, "/task/new").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/task/delete").permitAll()

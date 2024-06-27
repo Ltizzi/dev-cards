@@ -3,6 +3,7 @@ package com.ltizzi.dev_cards.model.task;
 import com.ltizzi.dev_cards.model.task.utils.*;
 import com.ltizzi.dev_cards.model.user.UserEntity;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -78,7 +79,7 @@ public class TaskEntity {
     @ElementCollection
     private List<TaskUpdate> updates = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "user_id")
     private UserEntity blocked_by;
 

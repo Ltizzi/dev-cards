@@ -1,8 +1,6 @@
 package com.ltizzi.dev_cards.model.user;
 
-import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.task.TaskLiteDTO;
-import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceLiteDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
