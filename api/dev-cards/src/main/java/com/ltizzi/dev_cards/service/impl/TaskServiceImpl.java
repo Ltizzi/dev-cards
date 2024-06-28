@@ -6,6 +6,7 @@ import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.task.TaskEntity;
 import com.ltizzi.dev_cards.model.task.TaskMapper;
+import com.ltizzi.dev_cards.model.task.utils.TaskUpdate;
 import com.ltizzi.dev_cards.model.task.utils.TwoTask;
 import com.ltizzi.dev_cards.model.user.UserEntity;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
@@ -42,9 +43,14 @@ public class TaskServiceImpl implements TaskService {
         return taskMapper.toArrayTaskDTO(taskPage.getContent());
     }
 
+    private TaskEntity findTaskById(Long id) throws NotFoundException{
+        return taskRepo.findById(id).orElseThrow(()->new NotFoundException("Task not found!"));
+    }
+
     @Override
     public TaskDTO getTaskById(Long id) throws NotFoundException {
-        return taskMapper.toTaskDTO(taskRepo.findById(id).orElseThrow(()-> new NotFoundException("Task not Found")));
+//        return taskMapper.toTaskDTO(taskRepo.findById(id).orElseThrow(()-> new NotFoundException("Task not Found")));
+        return taskMapper.toTaskDTO(findTaskById(id));
     }
 
     @Override
@@ -120,7 +126,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDTO assignUser(Long task_id, Long user_id) throws NotFoundException, InvalidUserException, InvalidTaskException {
-        TaskEntity task = taskRepo.findById(task_id).orElseThrow(()->new NotFoundException("Task not found"));
+        //TaskEntity task = taskRepo.findById(task_id).orElseThrow(()->new NotFoundException("Task not found"));
+        TaskEntity task = findTaskById(task_id);
         UserEntity user = userRepo.findById(user_id).orElseThrow(()->new NotFoundException("User not found"));
         if(!sameProjectChecker(task, user)){
             throw new InvalidUserException("User must be a member of the task's project");
@@ -135,7 +142,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDTO unassignUser(Long task_id, Long user_id) throws NotFoundException, InvalidUserException, InvalidTaskException {
-        TaskEntity task = taskRepo.findById(task_id).orElseThrow(()->new NotFoundException("Task not found"));
+        //TaskEntity task = taskRepo.findById(task_id).orElseThrow(()->new NotFoundException("Task not found"));
+        TaskEntity task = findTaskById(task_id);
         UserEntity user = userRepo.findById(user_id).orElseThrow(()->new NotFoundException("User not found"));
         if(!sameProjectChecker(task, user)){
             throw  new InvalidUserException("User must be a member of the task's project");
@@ -145,6 +153,49 @@ public class TaskServiceImpl implements TaskService {
         }
         task.unassingUser(user);
         return taskMapper.toTaskDTO(taskRepo.save(task));
+    }
+
+    @Override
+    public APIResponse addTagToTask(Long task_id, String tag) throws NotFoundException {
+        //TaskEntity task = taskRepo.findById(task_id).orElseThrow(()-> new NotFoundException("Task not found!"));
+        TaskEntity task = findTaskById(task_id);
+        APIResponse res = task.addTag(tag);
+        taskRepo.save(task);
+        return res;
+    }
+
+    @Override
+    public APIResponse removeTagFromTask(Long task_id, String tag) throws NotFoundException {
+       //TaskEntity task = taskRepo.findById(task_id).orElseThrow(()->new NotFoundException("Task not found!"));
+        TaskEntity task = findTaskById(task_id);
+        APIResponse res  = task.removeTag(tag);
+        taskRepo.save(task);
+        return res;
+
+    }
+
+    @Override
+    public List<TaskUpdate> addTaskUpdate(Long task_id, TaskUpdate update) throws NotFoundException {
+        //TaskEntity task = taskRepo.findById(task_id).orElseThrow(()-> new NotFoundException("Task not found!"));
+        TaskEntity task = findTaskById(task_id);
+        task.addUpdate(update);
+        return taskRepo.save(task).getUpdates();
+    }
+
+    @Override
+    public List<TaskUpdate> removeUpdateFromTask(Long task_id, Long update_id) throws NotFoundException {
+        //TaskEntity task = taskRepo.findById(task_id).orElseThrow(()-> new NotFoundException("Task not found!"));
+        TaskEntity task = findTaskById(task_id);
+        task.removeUpdate(update_id);
+        return taskRepo.save(task).getUpdates();
+    }
+
+    @Override
+    public List<TaskUpdate> updateTaskUpdate(Long task_id, Long update_id, Long editor_id, String editor_username, String new_description) throws NotFoundException {
+//        TaskEntity task = taskRepo.findById(task_id).orElseThrow(()-> new NotFoundException("Task not found!"));
+        TaskEntity task = findTaskById(task_id);
+        task.updateUpdate(update_id,editor_id,editor_username,new_description);
+        return taskRepo.save(task).getUpdates();
     }
 
 

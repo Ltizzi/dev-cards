@@ -4,6 +4,7 @@ import com.ltizzi.dev_cards.exception.InvalidTaskException;
 import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
+import com.ltizzi.dev_cards.model.task.utils.TaskUpdate;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,4 +78,39 @@ public class TaskController {
     public ResponseEntity<TaskDTO> unassignUserFromTask(@RequestParam Long task_id, @RequestParam Long user_id) throws NotFoundException, InvalidUserException, InvalidTaskException {
         return new ResponseEntity<>(taskServ.unassignUser(task_id,user_id), HttpStatus.OK);
     }
+
+    @PatchMapping("/add_tag")
+    @ResponseBody
+    public ResponseEntity<APIResponse> addTagToTask(@RequestParam Long task_id, @RequestParam String tag) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.addTagToTask(task_id,tag), HttpStatus.OK);
+    }
+
+    @PatchMapping("/remove_tag")
+    @ResponseBody
+    public ResponseEntity<APIResponse> removeTagFromTask(@RequestParam Long task_id, String tag) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.removeTagFromTask(task_id, tag), HttpStatus.OK);
+    }
+
+    @PostMapping("/add_update")
+    @ResponseBody
+    public ResponseEntity<List<TaskUpdate>> addTaskUpdate(@RequestParam Long task_id, TaskUpdate update) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.addTaskUpdate(task_id, update), HttpStatus.OK);
+    }
+
+    @PatchMapping("/remove_update")
+    @ResponseBody
+    public ResponseEntity<List<TaskUpdate>> removeUpdateFromTask(@RequestParam Long task_id, @RequestParam  Long update_i ) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.removeUpdateFromTask(task_id,update_i), HttpStatus.OK);
+    }
+
+    @PatchMapping("/update_tu")
+    @ResponseBody
+    public ResponseEntity<List<TaskUpdate>> updateTaskUpdate(@RequestParam Long task_id,
+                                                             @RequestParam Long update_id,
+                                                             @RequestParam Long editor_id,
+                                                             @RequestParam String editor_username,
+                                                             @RequestParam String new_description) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.updateTaskUpdate(task_id,update_id,editor_id,editor_username,new_description), HttpStatus.OK);
+    }
+
 }

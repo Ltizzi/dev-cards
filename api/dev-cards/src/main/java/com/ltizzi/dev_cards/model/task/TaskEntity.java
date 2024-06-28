@@ -4,6 +4,7 @@ import com.ltizzi.dev_cards.exception.InvalidTaskException;
 import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.model.task.utils.*;
 import com.ltizzi.dev_cards.model.user.UserEntity;
+import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 
 import jakarta.persistence.*;
@@ -21,6 +22,7 @@ import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Leonardo Terlizzi
@@ -137,6 +139,47 @@ public class TaskEntity {
             user.deassignTask(this);
         }
         else throw new InvalidUserException("User isn't a task's designated user");
+    }
+
+    public APIResponse addTag(String tag){
+        APIResponse res = new APIResponse();
+        res.setHttp_method("PATCH");
+        tag = tag.toLowerCase();
+        if (!task_tags.contains(tag)) {
+            task_tags.add(tag);
+            res.setMessage("added");
+        }
+        else res.setMessage("tag already added");
+        return res;
+    }
+
+    public APIResponse removeTag(String tag){
+        APIResponse res = new APIResponse();
+        tag = tag.toLowerCase();
+        res.setHttp_method("PATCH");
+        if(task_tags.contains(tag)){
+            task_tags.remove(tag);
+            res.setMessage("removed");
+        }
+        else res.setMessage("Can remove tag because doesn't exist");
+        return res;
+    }
+
+    public void addUpdate(TaskUpdate update){
+        updates.add(update);
+    }
+
+    public  void updateUpdate(Long update_id, Long editor_id, String editor_username, String new_description){
+        TaskUpdate oldUpdate = new TaskUpdate();
+        for(TaskUpdate ud: updates){
+            if(ud.getUpdate_id().equals(update_id)){
+                ud.update(editor_id, editor_username, new_description);
+            }
+        }
+    }
+
+    public void removeUpdate(Long update_id) {
+        updates = updates.stream().filter(update->!update.getUpdate_id().equals(update_id)).collect(Collectors.toList());
     }
 
 }
