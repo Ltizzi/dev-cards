@@ -1,6 +1,7 @@
 package com.ltizzi.dev_cards.model.task;
 
 import com.ltizzi.dev_cards.exception.InvalidTaskException;
+import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.model.task.utils.*;
 import com.ltizzi.dev_cards.model.user.UserEntity;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
@@ -120,6 +121,22 @@ public class TaskEntity {
             dependencies.remove(dependency);
         }
         else throw new InvalidTaskException("Failed: task isn't on dependencies list");
+    }
+
+    public void assignUser(UserEntity user) throws InvalidUserException, InvalidTaskException {
+        if(!designated_to.contains(user)){
+            designated_to.add(user);
+            user.assignTask(this);
+        }
+        else throw new InvalidUserException("User has already designated to task");
+    }
+
+    public void unassingUser(UserEntity user) throws InvalidUserException, InvalidTaskException {
+        if(designated_to.contains(user)){
+            designated_to.remove(user);
+            user.deassignTask(this);
+        }
+        else throw new InvalidUserException("User isn't a task's designated user");
     }
 
 }

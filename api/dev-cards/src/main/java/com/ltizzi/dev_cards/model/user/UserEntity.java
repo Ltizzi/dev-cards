@@ -1,5 +1,6 @@
 package com.ltizzi.dev_cards.model.user;
 
+import com.ltizzi.dev_cards.exception.InvalidTaskException;
 import com.ltizzi.dev_cards.model.task.TaskEntity;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 import jakarta.persistence.*;
@@ -92,5 +93,19 @@ public class UserEntity {
     public void removeWorkspace(WorkspaceEntity ws) {
         workspaces.remove(ws);
         ws.getUsers().remove(this);
+    }
+
+    public void assignTask(TaskEntity task) throws InvalidTaskException {
+        if(!designated_tasks.contains(task)){
+            designated_tasks.add(task);
+        }
+        else throw  new InvalidTaskException("User already assigned to task");
+    }
+
+    public void deassignTask(TaskEntity task) throws InvalidTaskException {
+        if(designated_tasks.contains(task)){
+            designated_tasks.remove(task);
+        }
+        else throw  new InvalidTaskException("can't deassign task because user  is not assigned to it");
     }
 }

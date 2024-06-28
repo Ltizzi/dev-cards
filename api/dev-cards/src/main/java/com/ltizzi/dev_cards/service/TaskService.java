@@ -1,6 +1,7 @@
 package com.ltizzi.dev_cards.service;
 
 import com.ltizzi.dev_cards.exception.InvalidTaskException;
+import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
@@ -26,10 +27,15 @@ public interface TaskService {
 
     public TaskDTO updateTask(Long task_id, TaskDTO task) throws  InvalidTaskException, NotFoundException;
 
+    public APIResponse deleteTask(Long task_id) throws NotFoundException;
+
     public TaskDTO addDependency(Long task_id, Long dependency_id)  throws NotFoundException, InvalidTaskException;
 
     public TaskDTO removeDependency(Long task_id, Long dependency_id) throws NotFoundException, InvalidTaskException;
 
-    public APIResponse deleteTask(Long task_id) throws NotFoundException;
+    public TaskDTO assignUser(Long task_id, Long user_id) throws NotFoundException, InvalidUserException, InvalidTaskException;
+
+    public TaskDTO unassignUser(Long task_id, Long user_id) throws NotFoundException, InvalidUserException, InvalidTaskException;
+
 
 }

@@ -1,13 +1,16 @@
 package com.ltizzi.dev_cards.service.impl;
 
 import com.ltizzi.dev_cards.exception.InvalidTaskException;
+import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.task.TaskEntity;
 import com.ltizzi.dev_cards.model.task.TaskMapper;
 import com.ltizzi.dev_cards.model.task.utils.TwoTask;
+import com.ltizzi.dev_cards.model.user.UserEntity;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.repository.TaskRepository;
+import com.ltizzi.dev_cards.repository.UserRepository;
 import com.ltizzi.dev_cards.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,6 +28,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private TaskRepository taskRepo;
+
+    @Autowired
+    private UserRepository userRepo;
 
     @Autowired
     private TaskMapper taskMapper;
@@ -58,6 +64,24 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public APIResponse deleteTask(Long task_id) throws NotFoundException {
+        APIResponse apiRes = new APIResponse();
+        TaskDTO task = getTaskById(task_id);
+        if (task != null){
+            taskRepo.deleteById(task_id);
+            apiRes.setHttp_method("DELETE");
+            apiRes.setMessage("Task deleted");
+
+        }
+        else {
+            apiRes.setHttp_method("DELETE");
+            apiRes.setMessage("Task not Found!");
+
+        }
+        return apiRes;
+    }
+
+    @Override
     public TaskDTO addDependency(Long task_id, Long dependency_id) throws NotFoundException, InvalidTaskException {
         TwoTask tasks = new TwoTask().addTasks(task_id, dependency_id, taskRepo);
         if(!tasks.sameProjectChecker()){
@@ -85,21 +109,43 @@ public class TaskServiceImpl implements TaskService {
         return taskMapper.toTaskDTO(taskRepo.save(child_task));
     }
 
-    @Override
-    public APIResponse deleteTask(Long task_id) throws NotFoundException {
-        APIResponse apiRes = new APIResponse();
-        TaskDTO task = getTaskById(task_id);
-        if (task != null){
-            taskRepo.deleteById(task_id);
-            apiRes.setHttp_method("DELETE");
-            apiRes.setMessage("Task deleted");
-
-        }
-        else {
-            apiRes.setHttp_method("DELETE");
-            apiRes.setMessage("Task not Found!");
-
-        }
-        return apiRes;
+    private boolean sameProjectChecker(TaskEntity task, UserEntity user){
+        return task.getProject().getUsers().contains(user);
     }
+
+    private boolean assignChecker(TaskEntity task, UserEntity user){
+        return task.getDesignated_to().contains(user);
+    }
+
+
+    @Override
+    public TaskDTO assignUser(Long task_id, Long user_id) throws NotFoundException, InvalidUserException, InvalidTaskException {
+        TaskEntity task = taskRepo.findById(task_id).orElseThrow(()->new NotFoundException("Task not found"));
+        UserEntity user = userRepo.findById(user_id).orElseThrow(()->new NotFoundException("User not found"));
+        if(!sameProjectChecker(task, user)){
+            throw new InvalidUserException("User must be a member of the task's project");
+        }
+        if(assignChecker(task, user)){
+            throw new InvalidUserException("User is already assigned to the task");
+        }
+        task.assignUser(user);
+        return taskMapper.toTaskDTO(taskRepo.save(task));
+
+    }
+
+    @Override
+    public TaskDTO unassignUser(Long task_id, Long user_id) throws NotFoundException, InvalidUserException, InvalidTaskException {
+        TaskEntity task = taskRepo.findById(task_id).orElseThrow(()->new NotFoundException("Task not found"));
+        UserEntity user = userRepo.findById(user_id).orElseThrow(()->new NotFoundException("User not found"));
+        if(!sameProjectChecker(task, user)){
+            throw  new InvalidUserException("User must be a member of the task's project");
+        }
+        if(!assignChecker(task, user)){
+            throw new InvalidUserException("User is not assigned to task");
+        }
+        task.unassingUser(user);
+        return taskMapper.toTaskDTO(taskRepo.save(task));
+    }
+
+
 }

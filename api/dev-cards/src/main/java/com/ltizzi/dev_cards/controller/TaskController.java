@@ -1,6 +1,7 @@
 package com.ltizzi.dev_cards.controller;
 
 import com.ltizzi.dev_cards.exception.InvalidTaskException;
+import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
@@ -63,5 +64,17 @@ public class TaskController {
     @ResponseBody
     public ResponseEntity<TaskDTO> removeDependencyFromTask(@RequestParam Long task_id, @RequestParam Long parent_id) throws InvalidTaskException, NotFoundException {
         return new ResponseEntity<>(taskServ.removeDependency(task_id, parent_id), HttpStatus.OK);
+    }
+
+    @PostMapping("/assign")
+    @ResponseBody
+    public ResponseEntity<TaskDTO> assignUserToTask(@RequestParam Long task_id, @RequestParam Long user_id) throws InvalidTaskException, NotFoundException, InvalidUserException {
+        return new ResponseEntity<>(taskServ.assignUser(task_id,user_id), HttpStatus.OK);
+    }
+
+    @PostMapping("/unassign")
+    @ResponseBody
+    public ResponseEntity<TaskDTO> unassignUserFromTask(@RequestParam Long task_id, @RequestParam Long user_id) throws NotFoundException, InvalidUserException, InvalidTaskException {
+        return new ResponseEntity<>(taskServ.unassignUser(task_id,user_id), HttpStatus.OK);
     }
 }
