@@ -52,4 +52,16 @@ public class TaskController {
     public ResponseEntity<APIResponse> deleteTask(@RequestParam Long id) throws NotFoundException {
         return new ResponseEntity<>(taskServ.deleteTask(id), HttpStatus.OK);
     }
+
+    @PostMapping("/add_dependency")
+    @ResponseBody
+    public ResponseEntity<TaskDTO> addDependencyToTask(@RequestParam Long task_id, @RequestParam Long parent_id) throws InvalidTaskException, NotFoundException {
+        return new ResponseEntity<>(taskServ.addDependency(task_id, parent_id), HttpStatus.OK);
+    }
+
+    @PostMapping("/remove_dependency")
+    @ResponseBody
+    public ResponseEntity<TaskDTO> removeDependencyFromTask(@RequestParam Long task_id, @RequestParam Long parent_id) throws InvalidTaskException, NotFoundException {
+        return new ResponseEntity<>(taskServ.removeDependency(task_id, parent_id), HttpStatus.OK);
+    }
 }

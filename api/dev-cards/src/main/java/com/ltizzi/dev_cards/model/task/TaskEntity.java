@@ -1,5 +1,6 @@
 package com.ltizzi.dev_cards.model.task;
 
+import com.ltizzi.dev_cards.exception.InvalidTaskException;
 import com.ltizzi.dev_cards.model.task.utils.*;
 import com.ltizzi.dev_cards.model.user.UserEntity;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
@@ -107,19 +108,18 @@ public class TaskEntity {
 
     private boolean soft_delete =Boolean.FALSE;
 
-//    public void update(TaskEntity newTask){
-//        try {
-//            Field[] fields = TaskEntity.class.getDeclaredFields();
-//            for(Field field: fields){
-//                field.setAccessible(true);
-//                if(field.getType().equals(String.class)){
-//                    field.set(ask)
-//                }
-//            }
-//
-//        }catch (IllegalAccessError e){
-//            e.printStackTrace();
-//        }
-//    }
+    public void addDependency(TaskEntity dependency) throws InvalidTaskException {
+        if(!dependencies.contains(dependency)){
+            dependencies.add(dependency);
+        }
+        else throw new InvalidTaskException("Dependency has already established");
+    }
+
+    public void removeDependency(TaskEntity dependency) throws InvalidTaskException {
+        if(dependencies.contains(dependency)){
+            dependencies.remove(dependency);
+        }
+        else throw new InvalidTaskException("Failed: task isn't on dependencies list");
+    }
 
 }

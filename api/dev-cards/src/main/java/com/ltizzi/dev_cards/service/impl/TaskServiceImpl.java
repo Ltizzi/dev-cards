@@ -5,6 +5,7 @@ import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.task.TaskEntity;
 import com.ltizzi.dev_cards.model.task.TaskMapper;
+import com.ltizzi.dev_cards.model.task.utils.TwoTask;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.repository.TaskRepository;
 import com.ltizzi.dev_cards.service.TaskService;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Leonardo Terlizzi
@@ -53,6 +55,34 @@ public class TaskServiceImpl implements TaskService {
             }
             else throw  new InvalidTaskException("Something went wrong");
 
+    }
+
+    @Override
+    public TaskDTO addDependency(Long task_id, Long dependency_id) throws NotFoundException, InvalidTaskException {
+        TwoTask tasks = new TwoTask().addTasks(task_id, dependency_id, taskRepo);
+        if(!tasks.sameProjectChecker()){
+            throw new InvalidTaskException("Tasks must belong to the same project");
+        }
+        if(tasks.dependencyChecker()){
+            throw new InvalidTaskException("parent is already a dependency");
+        }
+        TaskEntity child_task = tasks.getChild();
+        child_task.addDependency(tasks.getParent());
+        return taskMapper.toTaskDTO(taskRepo.save(child_task));
+    }
+
+    @Override
+    public TaskDTO removeDependency(Long task_id, Long dependency_id) throws NotFoundException, InvalidTaskException {
+        TwoTask tasks = new TwoTask().addTasks(task_id, dependency_id, taskRepo);
+        if(!tasks.sameProjectChecker())  {
+            throw new InvalidTaskException("Tasks must belong to the same project");
+        }
+        if(!tasks.dependencyChecker()){
+            throw new InvalidTaskException("Parent task is not a child's dependency");
+        }
+        TaskEntity child_task = tasks.getChild();
+        child_task.removeDependency(tasks.getParent());
+        return taskMapper.toTaskDTO(taskRepo.save(child_task));
     }
 
     @Override

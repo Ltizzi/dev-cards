@@ -26,6 +26,10 @@ public interface TaskService {
 
     public TaskDTO updateTask(Long task_id, TaskDTO task) throws  InvalidTaskException, NotFoundException;
 
+    public TaskDTO addDependency(Long task_id, Long dependency_id)  throws NotFoundException, InvalidTaskException;
+
+    public TaskDTO removeDependency(Long task_id, Long dependency_id) throws NotFoundException, InvalidTaskException;
+
     public APIResponse deleteTask(Long task_id) throws NotFoundException;
 
 }
