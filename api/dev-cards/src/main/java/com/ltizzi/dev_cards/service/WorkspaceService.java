@@ -2,6 +2,7 @@ package com.ltizzi.dev_cards.service;
 
 import com.ltizzi.dev_cards.exception.InvalidWorkspaceException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
+import com.ltizzi.dev_cards.model.user.UserLiteDTO;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 
@@ -21,6 +22,10 @@ public interface WorkspaceService {
     public WorkspaceDTO saveWorkspace(WorkspaceDTO workspace) throws InvalidWorkspaceException;
 
     public WorkspaceDTO updateWorkspace(Long workspace_id, WorkspaceDTO workspace) throws NotFoundException, InvalidWorkspaceException;
+
+    public List<UserLiteDTO> addUserToWorkspace(Long workspace_id, Long user_id) throws  NotFoundException;
+
+    public List<UserLiteDTO> removeUserFromWorkspace(Long workspace_id, Long user_id) throws  NotFoundException;
 
     public APIResponse deleteWorkspace(Long workspace_id) throws  NotFoundException;
 }

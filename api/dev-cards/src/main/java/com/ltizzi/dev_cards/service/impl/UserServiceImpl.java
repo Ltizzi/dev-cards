@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUserById(Long id) throws NotFoundException {
-        return userMapper.toUserDTO(userRepo.findById(id).orElseThrow());
+        return userMapper.toUserDTO(userRepo.findById(id).orElseThrow(()-> new NotFoundException("User not found!")));
     }
 
     @Override

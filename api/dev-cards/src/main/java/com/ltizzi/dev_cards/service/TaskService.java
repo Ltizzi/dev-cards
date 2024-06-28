@@ -1,9 +1,10 @@
 package com.ltizzi.dev_cards.service;
 
 import com.ltizzi.dev_cards.exception.InvalidTaskException;
+import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
-import com.ltizzi.dev_cards.model.utils.NotFoundException;
+
 
 
 

@@ -83,4 +83,14 @@ public class UserEntity {
     private Timestamp updated_at;
 
     private boolean soft_delete = Boolean.FALSE;
+
+    public void addWorkspace(WorkspaceEntity ws){
+        workspaces.add(ws);
+        ws.getUsers().add(this);
+    }
+
+    public void removeWorkspace(WorkspaceEntity ws) {
+        workspaces.remove(ws);
+        ws.getUsers().remove(this);
+    }
 }

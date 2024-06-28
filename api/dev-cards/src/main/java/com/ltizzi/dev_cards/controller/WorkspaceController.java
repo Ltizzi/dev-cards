@@ -2,6 +2,7 @@ package com.ltizzi.dev_cards.controller;
 
 import com.ltizzi.dev_cards.exception.InvalidWorkspaceException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
+import com.ltizzi.dev_cards.model.user.UserLiteDTO;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 import com.ltizzi.dev_cards.service.WorkspaceService;
@@ -45,6 +46,18 @@ public class WorkspaceController {
     @ResponseBody
     public ResponseEntity<WorkspaceDTO> updateWorkspace(@RequestParam Long id, @RequestBody WorkspaceDTO workspace) throws InvalidWorkspaceException, NotFoundException {
         return new ResponseEntity<>(wsServ.updateWorkspace(id, workspace), HttpStatus.OK);
+    }
+
+    @PatchMapping("/add_user")
+    @ResponseBody
+    public ResponseEntity<List<UserLiteDTO>> addUserToWorkspace(@RequestParam Long ws_id, @RequestParam Long user_id) throws NotFoundException {
+        return new ResponseEntity<>(wsServ.addUserToWorkspace(ws_id,user_id), HttpStatus.OK);
+    }
+
+    @PatchMapping("/remove_user")
+    @ResponseBody
+    public ResponseEntity<List<UserLiteDTO>> removeUserFromWorkspace(@RequestParam Long ws_id, @RequestParam Long user_id) throws NotFoundException {
+        return new ResponseEntity<>(wsServ.removeUserFromWorkspace(ws_id, user_id), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")

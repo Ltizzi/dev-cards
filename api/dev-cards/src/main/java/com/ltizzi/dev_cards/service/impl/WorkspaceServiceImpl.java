@@ -1,12 +1,15 @@
 package com.ltizzi.dev_cards.service.impl;
 
-import com.ltizzi.dev_cards.exception.InvalidTaskException;
+
 import com.ltizzi.dev_cards.exception.InvalidWorkspaceException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
+import com.ltizzi.dev_cards.model.user.UserEntity;
+import com.ltizzi.dev_cards.model.user.UserLiteDTO;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceMapper;
+import com.ltizzi.dev_cards.repository.UserRepository;
 import com.ltizzi.dev_cards.repository.WorkspaceRepository;
 import com.ltizzi.dev_cards.service.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private WorkspaceRepository wsRepo;
 
     @Autowired
+    private UserRepository userRepo;
+
+    @Autowired
     private WorkspaceMapper wsMapper;
 
     @Override
@@ -37,7 +43,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public WorkspaceDTO getWorkspaceDTOById(Long id) throws NotFoundException {
-        return wsMapper.toWorkspaceDTO(wsRepo.findById(id).orElseThrow());
+        return wsMapper.toWorkspaceDTO(wsRepo.findById(id).orElseThrow(()-> new NotFoundException("Workspace not Found")));
     }
 
     @Override
@@ -52,6 +58,25 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             return wsMapper.toWorkspaceDTO(wsRepo.save(wsMapper.toWorkspaceEntity(workspace)));
         }
         else throw  new InvalidWorkspaceException("Something went wrong");
+    }
+
+    @Override
+    public List<UserLiteDTO> addUserToWorkspace(Long workspace_id, Long user_id) throws NotFoundException {
+        WorkspaceEntity ws = wsRepo.findById(workspace_id).orElseThrow(()->new NotFoundException("Workspace not found!"));
+        UserEntity user = userRepo.findById(user_id).orElseThrow(()->new NotFoundException("User not found!"));
+        ws.addUser(user);
+        ws = wsRepo.save(ws);
+        return wsMapper.toWorkspaceDTO(ws).getUsers();
+
+    }
+
+    @Override
+    public List<UserLiteDTO> removeUserFromWorkspace(Long workspace_id, Long user_id) throws NotFoundException {
+        WorkspaceEntity ws = wsRepo.findById(workspace_id).orElseThrow(()-> new NotFoundException("Workspace not found!"));
+        UserEntity user = userRepo.findById(user_id).orElseThrow(()->new NotFoundException("User not found!"));
+        ws.removeUser(user);;
+        ws = wsRepo.save(ws);
+        return wsMapper.toWorkspaceDTO(ws).getUsers();
     }
 
     @Override

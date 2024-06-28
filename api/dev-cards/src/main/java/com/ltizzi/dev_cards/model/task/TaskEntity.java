@@ -15,6 +15,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
 
+import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,5 +106,20 @@ public class TaskEntity {
     private Timestamp updated_at;
 
     private boolean soft_delete =Boolean.FALSE;
+
+//    public void update(TaskEntity newTask){
+//        try {
+//            Field[] fields = TaskEntity.class.getDeclaredFields();
+//            for(Field field: fields){
+//                field.setAccessible(true);
+//                if(field.getType().equals(String.class)){
+//                    field.set(ask)
+//                }
+//            }
+//
+//        }catch (IllegalAccessError e){
+//            e.printStackTrace();
+//        }
+//    }
 
 }

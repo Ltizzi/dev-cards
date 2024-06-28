@@ -1,9 +1,9 @@
 package com.ltizzi.dev_cards.controller;
 
 import com.ltizzi.dev_cards.exception.InvalidTaskException;
+import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
-import com.ltizzi.dev_cards.model.utils.NotFoundException;
 import com.ltizzi.dev_cards.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

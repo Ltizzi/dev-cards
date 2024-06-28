@@ -15,6 +15,7 @@ import org.hibernate.annotations.Where;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -45,7 +46,7 @@ public class WorkspaceEntity {
     private UserEntity owner;
 
 
-    @OneToMany(mappedBy = "task_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "task_id", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private List<TaskEntity> tasks = new ArrayList<>();
 
     @ManyToMany
@@ -72,4 +73,15 @@ public class WorkspaceEntity {
     private Timestamp updated_at;
 
     private boolean soft_delete = Boolean.FALSE;
+
+
+    public void addUser(UserEntity user){
+        users.add(user);
+        user.getWorkspaces().remove(this);
+    }
+
+    public void removeUser(UserEntity user){
+        users.remove(user);
+        user.getWorkspaces().remove(this);
+    }
 }

@@ -44,8 +44,10 @@ public class TaskMapper {
         dto.setDependencies(toArrayTaskLiteDTO(task.getDependencies()));
         dto.setTask_tags(task.getTask_tags());
         dto.setUpdates(task.getUpdates());
+        if(task.getBlocked_by() != null){
+            dto.setBlocked_by(userMapper.toUserLiteDTO(task.getBlocked_by()));
 
-        dto.setBlocked_by(userMapper.toUserLiteDTO(task.getBlocked_by()));
+        }
         dto.setOwner(userMapper.toUserLiteDTO(task.getOwner()));
         dto.setDesignated_to(userMapper.toArrayUserLiteDTO(task.getDesignated_to()));
         dto.setCreated_at(task.getCreated_at());
@@ -87,8 +89,9 @@ public class TaskMapper {
 
         task.setTask_tags(dto.getTask_tags());
         task.setUpdates(dto.getUpdates());
-
-        task.setBlocked_by(userMapper.toUserEntity(dto.getBlocked_by()));
+        if(dto.getBlocked_by()!= null) {
+            task.setBlocked_by(userMapper.toUserEntity(dto.getBlocked_by()));
+        }
         task.setOwner(userMapper.toUserEntity(dto.getOwner()));
         task.setDesignated_to(userMapper.toArrayUserEntityFromLite(dto.getDesignated_to()));
         task.setCreated_at(dto.getCreated_at());

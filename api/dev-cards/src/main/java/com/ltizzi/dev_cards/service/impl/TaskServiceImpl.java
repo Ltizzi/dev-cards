@@ -1,11 +1,11 @@
 package com.ltizzi.dev_cards.service.impl;
 
 import com.ltizzi.dev_cards.exception.InvalidTaskException;
+import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.task.TaskEntity;
 import com.ltizzi.dev_cards.model.task.TaskMapper;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
-import com.ltizzi.dev_cards.model.utils.NotFoundException;
 import com.ltizzi.dev_cards.repository.TaskRepository;
 import com.ltizzi.dev_cards.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDTO getTaskById(Long id) throws NotFoundException {
-        return taskMapper.toTaskDTO(taskRepo.findById(id).orElseThrow());
+        return taskMapper.toTaskDTO(taskRepo.findById(id).orElseThrow(()-> new NotFoundException("Task not Found")));
     }
 
     @Override
