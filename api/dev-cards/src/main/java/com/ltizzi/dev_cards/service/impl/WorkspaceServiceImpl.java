@@ -1,6 +1,7 @@
 package com.ltizzi.dev_cards.service.impl;
 
 
+import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.InvalidWorkspaceException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.user.UserEntity;
@@ -70,6 +71,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     }
 
+
+
     @Override
     public List<UserLiteDTO> removeUserFromWorkspace(Long workspace_id, Long user_id) throws NotFoundException {
         WorkspaceEntity ws = wsRepo.findById(workspace_id).orElseThrow(()-> new NotFoundException("Workspace not found!"));
@@ -77,6 +80,33 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         ws.removeUser(user);;
         ws = wsRepo.save(ws);
         return wsMapper.toWorkspaceDTO(ws).getUsers();
+    }
+
+
+
+
+    @Override
+    public List<UserLiteDTO> addUserAsMod(Long workspace_id, Long user_id) throws NotFoundException, InvalidUserException {
+        WorkspaceEntity ws = wsRepo.findById(workspace_id).orElseThrow(()->new NotFoundException("Workspace not found!"));
+        UserEntity user = userRepo.findById(user_id).orElseThrow(()-> new NotFoundException("User not found!"));
+        if (ws.getUsers().contains(user)){
+            ws.addUserAsMod(user);
+            ws = wsRepo.save(ws);
+            return wsMapper.toWorkspaceDTO(ws).getModerators();
+        }
+        else throw new InvalidUserException("User can't be moderator because is not in current workspace");
+    }
+
+    @Override
+    public List<UserLiteDTO> removeUserAsMod(Long workspace_id, Long user_id) throws NotFoundException, InvalidUserException {
+        WorkspaceEntity ws = wsRepo.findById(workspace_id).orElseThrow(()->new NotFoundException("Workspace not found!"));
+        UserEntity user = userRepo.findById(user_id).orElseThrow(()-> new NotFoundException("User not found!"));
+        if(ws.getModerators().contains(user)){
+            ws.removeUserAsMod(user);
+            ws = wsRepo.save(ws);
+            return wsMapper.toWorkspaceDTO(ws).getModerators();
+        }
+        else throw  new InvalidUserException("User can't be moderator because is not in current workspace");
     }
 
     @Override

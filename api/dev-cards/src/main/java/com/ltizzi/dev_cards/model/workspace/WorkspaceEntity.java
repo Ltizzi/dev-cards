@@ -77,11 +77,19 @@ public class WorkspaceEntity {
 
     public void addUser(UserEntity user){
         users.add(user);
-        user.getWorkspaces().remove(this);
+        user.getWorkspaces().add(this);
     }
 
     public void removeUser(UserEntity user){
         users.remove(user);
         user.getWorkspaces().remove(this);
+    }
+
+    public void addUserAsMod(UserEntity user){
+        moderators.add(user);
+    }
+
+    public void removeUserAsMod(UserEntity user){
+        moderators.remove(user);
     }
 }
