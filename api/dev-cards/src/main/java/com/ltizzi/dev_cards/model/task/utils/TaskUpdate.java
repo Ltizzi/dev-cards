@@ -14,7 +14,8 @@ import java.util.List;
  * @author Leonardo Terlizzi
  */
 
-@Entity //@Embedded
+//@Entity //@Embedded
+@Embeddable
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,8 +23,7 @@ import java.util.List;
 public class TaskUpdate {
 
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+
     private Long update_id;
 
     private Long creator_user_id;
@@ -33,7 +33,7 @@ public class TaskUpdate {
 
     private String description;
 
-    private List<String> old_descriptions;
+    private List<String> old_descriptions = new ArrayList<>();
 
     @Builder.Default
     private Instant created_at = Instant.now();

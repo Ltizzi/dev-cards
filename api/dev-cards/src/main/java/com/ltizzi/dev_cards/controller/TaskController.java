@@ -87,30 +87,28 @@ public class TaskController {
 
     @PatchMapping("/remove_tag")
     @ResponseBody
-    public ResponseEntity<APIResponse> removeTagFromTask(@RequestParam Long task_id, String tag) throws NotFoundException {
+    public ResponseEntity<APIResponse> removeTagFromTask(@RequestParam Long task_id, @RequestParam String tag) throws NotFoundException {
         return new ResponseEntity<>(taskServ.removeTagFromTask(task_id, tag), HttpStatus.OK);
     }
 
     @PostMapping("/add_update")
     @ResponseBody
-    public ResponseEntity<List<TaskUpdate>> addTaskUpdate(@RequestParam Long task_id, TaskUpdate update) throws NotFoundException {
+    public ResponseEntity<List<TaskUpdate>> addTaskUpdate(@RequestParam Long task_id, @RequestBody TaskUpdate update) throws NotFoundException {
         return new ResponseEntity<>(taskServ.addTaskUpdate(task_id, update), HttpStatus.OK);
     }
 
     @PatchMapping("/remove_update")
     @ResponseBody
-    public ResponseEntity<List<TaskUpdate>> removeUpdateFromTask(@RequestParam Long task_id, @RequestParam  Long update_i ) throws NotFoundException {
-        return new ResponseEntity<>(taskServ.removeUpdateFromTask(task_id,update_i), HttpStatus.OK);
+    public ResponseEntity<List<TaskUpdate>> removeUpdateFromTask(@RequestParam Long task_id, @RequestParam  Long update_id ) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.removeUpdateFromTask(task_id,update_id), HttpStatus.OK);
     }
 
     @PatchMapping("/update_tu")
     @ResponseBody
     public ResponseEntity<List<TaskUpdate>> updateTaskUpdate(@RequestParam Long task_id,
-                                                             @RequestParam Long update_id,
-                                                             @RequestParam Long editor_id,
-                                                             @RequestParam String editor_username,
-                                                             @RequestParam String new_description) throws NotFoundException {
-        return new ResponseEntity<>(taskServ.updateTaskUpdate(task_id,update_id,editor_id,editor_username,new_description), HttpStatus.OK);
+                                                             @RequestBody TaskUpdate task_update) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.updateTaskUpdate(task_id, task_update), HttpStatus.OK);
     }
+
 
 }

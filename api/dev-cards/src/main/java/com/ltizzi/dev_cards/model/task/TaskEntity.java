@@ -82,6 +82,7 @@ public class TaskEntity {
     private List<String> task_tags = new ArrayList<>();
 
     @ElementCollection
+    @CollectionTable(name = "task_updates", joinColumns = @JoinColumn(name = "task_id"))
     private List<TaskUpdate> updates = new ArrayList<>();
 
     @ManyToOne(optional = true)

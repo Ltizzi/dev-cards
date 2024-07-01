@@ -45,6 +45,6 @@ public interface TaskService {
 
     public List<TaskUpdate> removeUpdateFromTask(Long task_id, Long update_id) throws NotFoundException;
 
-    public List<TaskUpdate> updateTaskUpdate(Long task_id, Long update_id, Long editor_id, String editor_username, String new_description) throws NotFoundException;
+    public List<TaskUpdate> updateTaskUpdate(Long task_id, TaskUpdate task_update) throws NotFoundException;
 
 }

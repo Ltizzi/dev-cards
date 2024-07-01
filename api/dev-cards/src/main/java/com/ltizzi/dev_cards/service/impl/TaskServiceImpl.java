@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author Leonardo Terlizzi
@@ -178,6 +179,7 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskUpdate> addTaskUpdate(Long task_id, TaskUpdate update) throws NotFoundException {
         //TaskEntity task = taskRepo.findById(task_id).orElseThrow(()-> new NotFoundException("Task not found!"));
         TaskEntity task = findTaskById(task_id);
+        update.setUpdate_id(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE);
         task.addUpdate(update);
         return taskRepo.save(task).getUpdates();
     }
@@ -191,10 +193,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskUpdate> updateTaskUpdate(Long task_id, Long update_id, Long editor_id, String editor_username, String new_description) throws NotFoundException {
+    public List<TaskUpdate> updateTaskUpdate(Long task_id, TaskUpdate taskUpdate) throws NotFoundException {
 //        TaskEntity task = taskRepo.findById(task_id).orElseThrow(()-> new NotFoundException("Task not found!"));
         TaskEntity task = findTaskById(task_id);
-        task.updateUpdate(update_id,editor_id,editor_username,new_description);
+        task.updateUpdate(taskUpdate.getUpdate_id(), taskUpdate.getCreator_user_id(), taskUpdate.getCreator_username(), taskUpdate.getDescription());
         return taskRepo.save(task).getUpdates();
     }
 
