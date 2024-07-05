@@ -3,6 +3,8 @@ package com.ltizzi.dev_cards.service;
 import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.InvalidWorkspaceException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
+import com.ltizzi.dev_cards.model.task.TaskDTO;
+import com.ltizzi.dev_cards.model.user.UserDTO;
 import com.ltizzi.dev_cards.model.user.UserEntity;
 import com.ltizzi.dev_cards.model.user.UserLiteDTO;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
@@ -38,4 +40,8 @@ public interface WorkspaceService {
     public List<UserLiteDTO> removeUserAsMod(Long workspace_id, Long user_id) throws NotFoundException, InvalidUserException;
 
     public APIResponse deleteWorkspace(Long workspace_id) throws  NotFoundException;
+
+//    public List<TaskDTO> getTasksByWorkspace(Long workspace_id) throws NotFoundException;
+//
+//    public List<UserDTO> getUsersByWorkspace(Long workspace_id) throws  NotFoundException;
 }

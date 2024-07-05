@@ -2,8 +2,10 @@ package com.ltizzi.dev_cards.controller;
 
 import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
+import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.user.UserDTO;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
+import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 import com.ltizzi.dev_cards.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,5 +53,23 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<APIResponse> deleteUser(@RequestParam Long user_id) throws NotFoundException {
         return new ResponseEntity<>(userServ.deleteUser(user_id), HttpStatus.OK);
+    }
+
+    @GetMapping("/workspaces")
+    @ResponseBody
+    public ResponseEntity<List<WorkspaceDTO>> getWorkspacesFromUser(@RequestParam Long user_id) throws NotFoundException {
+        return new ResponseEntity<>(userServ.getWorkspacesByUserId(user_id), HttpStatus.OK);
+    }
+
+    @GetMapping("/createdTasks")
+    @ResponseBody
+    public ResponseEntity<List<TaskDTO>> getCreatedTasksFromUser(@RequestParam Long user_id) throws NotFoundException {
+        return new ResponseEntity<>(userServ.getCreatedTasksByUserId(user_id), HttpStatus.OK);
+    }
+
+    @GetMapping("/designatedTasks")
+    @ResponseBody
+    public ResponseEntity<List<TaskDTO>> getDesignatedTasksFromUser(@RequestParam Long user_id) throws NotFoundException {
+        return new ResponseEntity<>(userServ.getDesignatedTasksByUserId(user_id), HttpStatus.OK);
     }
 }

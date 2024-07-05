@@ -4,8 +4,13 @@ package com.ltizzi.dev_cards.service.impl;
 import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.InvalidWorkspaceException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
+import com.ltizzi.dev_cards.model.task.TaskDTO;
+import com.ltizzi.dev_cards.model.task.TaskEntity;
+import com.ltizzi.dev_cards.model.task.TaskMapper;
+import com.ltizzi.dev_cards.model.user.UserDTO;
 import com.ltizzi.dev_cards.model.user.UserEntity;
 import com.ltizzi.dev_cards.model.user.UserLiteDTO;
+import com.ltizzi.dev_cards.model.user.UserMapper;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
@@ -34,6 +39,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Autowired
     private WorkspaceMapper wsMapper;
+
+//    @Autowired
+//    private TaskMapper taskMapper;
+//
+//    @Autowired
+//    private UserMapper userMapper;
 
     @Override
     public List<WorkspaceDTO> getWorkspaces(int page, int limit) {
@@ -123,4 +134,16 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
         return apiRes;
     }
+
+//    @Override
+//    public List<TaskDTO> getTasksByWorkspace(Long workspace_id) throws NotFoundException {
+//        List<TaskEntity> tasks = wsRepo.findTasksByWorkspaceId(workspace_id).orElseThrow(()-> new NotFoundException("Workspace not found"));
+//        return taskMapper.toArrayTaskDTO(tasks);
+//    }
+//
+//    @Override
+//    public List<UserDTO> getUsersByWorkspace(Long workspace_id) throws NotFoundException {
+//        List<UserEntity> users = wsRepo.findUsersByWorkspaceId(workspace_id).orElseThrow(()-> new NotFoundException("Workspace not found"));
+//        return userMapper.toArrayUserDTO(users);
+//    }
 }
