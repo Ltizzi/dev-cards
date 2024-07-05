@@ -3,11 +3,8 @@
     <div class="w-10/12 bg-slate-50 rounded-xl" v-if="card">
       <div class="flex flex-col text-center gap-2">
         <h1
-          :class="[
-            'text-3xl py-2 font-bold rounded-t-lg',
-            `bg-${titleColor}`,
-            titleColor == 'gray' ? 'text-slate-800' : 'text-white',
-          ]"
+          :class="['text-3xl py-2 font-bold rounded-t-lg', `${title_color}`]"
+          ref="card_title"
         >
           {{ card.title }}
         </h1>
@@ -23,14 +20,7 @@
         </div>
         <h2 class="text-2xl">{{ card.subtitle }}</h2>
         <div class="flex flex-row justify-center gap-2">
-          <p
-            v-for="tag in card.task_tags"
-            :class="[
-              'px-2 py-0.5 rounded-lg',
-              `bg-${titleColor}`,
-              titleColor == 'gray' ? 'text-slate-800' : 'text-white',
-            ]"
-          >
+          <p v-for="tag in card.task_tags" :class="['px-2 py-0.5 rounded-lg']">
             {{ tag }}
           </p>
         </div>
@@ -44,7 +34,6 @@
           >
         </p>
       </div>
-
       <div class="flex my-5 mx-5">
         <p>{{ card.description }}</p>
       </div>
@@ -67,28 +56,38 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { ref, onBeforeMount } from "vue";
+  import { ref, onBeforeMount, onMounted } from "vue";
   import { Task } from "../../utils/types";
   import { userTaskStore } from "../../store/task.store";
   import { useApiCall } from "../../composables/useAPICall";
   import { EndpointType } from "../../utils/endpoints";
-  import { useColor } from "../../composables/userColor";
 
   const card = ref<Task>();
   const taskStore = userTaskStore();
 
-  const titleColor = ref<string>();
+  const title_color = ref<string>();
+
   const apiCall = useApiCall();
 
   onBeforeMount(async () => {
-    // const data = await taskStore.fetchTaskById(2);
     const data = (await apiCall.get(EndpointType.TASK_GET_BY_ID, {
       params: { id: 2 },
     })) as Task;
     console.log(data);
     console.log(data.color);
-    titleColor.value = useColor(data.color);
-    card.value = data;
-    taskStore.setTask(data);
+    if (data) {
+      card.value = data;
+      taskStore.setTask(data);
+      title_color.value = data.color.toLowerCase();
+    }
   });
+
+  onMounted(() => {});
 </script>
+
+<style>
+  .purple {
+    background-color: #a855f7;
+    color: white;
+  }
+</style>
