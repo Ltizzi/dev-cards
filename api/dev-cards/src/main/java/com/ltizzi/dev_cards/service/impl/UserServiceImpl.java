@@ -9,6 +9,9 @@ import com.ltizzi.dev_cards.model.task.TaskMapper;
 import com.ltizzi.dev_cards.model.user.UserDTO;
 import com.ltizzi.dev_cards.model.user.UserEntity;
 import com.ltizzi.dev_cards.model.user.UserMapper;
+import com.ltizzi.dev_cards.model.user.utils.Role;
+import com.ltizzi.dev_cards.model.user.utils.UserLoginCredentials;
+import com.ltizzi.dev_cards.model.user.utils.UserRegistration;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
@@ -18,8 +21,14 @@ import com.ltizzi.dev_cards.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +50,14 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private TaskMapper taskMapper;
 
+
+    @Autowired
+    private AuthenticationManager authManager;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
     @Override
     public List<UserDTO> getUsers(int page, int limit) {
         PageRequest pageReq = PageRequest.of(page, limit);
@@ -56,6 +73,41 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO saveUser(UserDTO user) throws InvalidUserException {
         return userMapper.toUserDTO(userRepo.save(userMapper.toUserEntity(user)));
+    }
+
+    @Override
+    public UserDTO registerUser(UserRegistration credentials) throws InvalidUserException {
+        if(!userRepo.findByEmail(credentials.getEmail()).isEmpty()){
+            throw new InvalidUserException("Email already in use");
+        }
+        if(!userRepo.findByUsername(credentials.getUsername()).isEmpty()){
+            throw  new InvalidUserException("Username already in use");
+        }
+        UserEntity newUser = new UserEntity();
+        String password = credentials.getPassword();
+        password = passwordEncoder.encode(password);
+        newUser.setPassword(password);
+        newUser.setUsername(credentials.getUsername());
+        newUser.setEmail(credentials.getEmail());
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.USER);
+        newUser.setRoles(roles);
+        return userMapper.toUserDTO(userRepo.save(newUser));
+
+    }
+
+    @Override
+    public UserDTO loginUser(UserLoginCredentials credentials) throws InvalidUserException {
+        UserEntity user = userRepo.findByUsername(credentials.getUsername()).get(0);
+        if(user != null){
+            Authentication auth = authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword()));
+            if(auth.isAuthenticated()){
+                return userMapper.toUserDTO(user);
+            }
+            else throw  new InvalidUserException("Invalid credentials.");
+        }
+        else throw new InvalidUserException("Invalid credentials, user is null");
     }
 
     @Override

@@ -4,6 +4,8 @@ import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.user.UserDTO;
+import com.ltizzi.dev_cards.model.user.utils.UserRegistration;
+import com.ltizzi.dev_cards.model.user.utils.UserLoginCredentials;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 
@@ -22,6 +24,10 @@ public interface UserService {
     public UserDTO getUserById(Long id) throws NotFoundException;
 
     public UserDTO saveUser(UserDTO user) throws InvalidUserException;
+
+    public UserDTO registerUser(UserRegistration credentials) throws  InvalidUserException;
+
+    public UserDTO loginUser(UserLoginCredentials credentials) throws  InvalidUserException;
 
     public UserDTO updateUser(Long user_id, UserDTO user) throws InvalidUserException, NotFoundException;
 

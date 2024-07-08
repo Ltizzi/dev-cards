@@ -4,6 +4,8 @@ import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.user.UserDTO;
+import com.ltizzi.dev_cards.model.user.utils.UserLoginCredentials;
+import com.ltizzi.dev_cards.model.user.utils.UserRegistration;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 import com.ltizzi.dev_cards.service.UserService;
@@ -71,5 +73,17 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<List<TaskDTO>> getDesignatedTasksFromUser(@RequestParam Long user_id) throws NotFoundException {
         return new ResponseEntity<>(userServ.getDesignatedTasksByUserId(user_id), HttpStatus.OK);
+    }
+
+    @PostMapping("/register")
+    @ResponseBody
+    public ResponseEntity<UserDTO> registerUser(@RequestBody UserRegistration registrationReq) throws InvalidUserException {
+        return new ResponseEntity<>(userServ.registerUser(registrationReq), HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    @ResponseBody
+    public ResponseEntity<UserDTO> loginUser(@RequestBody UserLoginCredentials credentials) throws InvalidUserException {
+        return new ResponseEntity<>(userServ.loginUser(credentials), HttpStatus.OK);
     }
 }
