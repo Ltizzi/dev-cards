@@ -1,5 +1,6 @@
 package com.ltizzi.dev_cards.model.user;
 
+import com.ltizzi.dev_cards.model.user.utils.Role;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceLiteDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,5 +21,6 @@ public class UserLiteDTO {
     private String email;
     private String avatar;
 
+    private List<Role> roles;
 
 }

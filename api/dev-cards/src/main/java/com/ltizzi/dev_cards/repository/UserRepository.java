@@ -21,6 +21,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>, PagingA
 
     Long countBy();
 
+
+    List<UserEntity> findByEmail(String email);
+
+    List<UserEntity> findByUsername(String username);
+
 //    @Query("SELECT user.workspaces FROM users user WHERE user.user_id = :user_id")
 //    Optional<List<WorkspaceEntity>> findWorkspacesByUserId(@Param("user_id") Long user_id);
 //

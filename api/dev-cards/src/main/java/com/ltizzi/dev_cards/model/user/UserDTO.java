@@ -1,6 +1,7 @@
 package com.ltizzi.dev_cards.model.user;
 
 import com.ltizzi.dev_cards.model.task.TaskLiteDTO;
+import com.ltizzi.dev_cards.model.user.utils.Role;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceLiteDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class UserDTO {
     private List<WorkspaceLiteDTO> workspaces = new ArrayList<>();
     private List<TaskLiteDTO> created_tasks = new ArrayList<>();
     private List<TaskLiteDTO> designated_tasks = new ArrayList<>();
+    private List<Role> roles = new ArrayList<>();
     private Timestamp created_at;
     private Timestamp updated_at;
 }

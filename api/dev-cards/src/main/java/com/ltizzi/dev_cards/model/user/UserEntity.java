@@ -2,6 +2,7 @@ package com.ltizzi.dev_cards.model.user;
 
 import com.ltizzi.dev_cards.exception.InvalidTaskException;
 import com.ltizzi.dev_cards.model.task.TaskEntity;
+import com.ltizzi.dev_cards.model.user.utils.Role;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -72,6 +73,8 @@ public class UserEntity {
     private List<TaskEntity> created_tasks = new ArrayList<>();
 
 
+    @ElementCollection
+    private List<Role> roles = new ArrayList<>();
 
     @ElementCollection
     private List<TaskEntity> designated_tasks = new ArrayList<>();

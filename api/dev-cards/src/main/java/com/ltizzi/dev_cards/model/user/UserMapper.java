@@ -40,6 +40,7 @@ public class UserMapper {
         dto.setDesignated_tasks(taskMapper.toArrayTaskLiteDTO(user.getDesignated_tasks()));
         dto.setCreated_at(user.getCreated_at());
         dto.setUpdated_at(user.getUpdated_at());
+        dto.setRoles(user.getRoles());
         return dto;
     }
 
@@ -69,6 +70,7 @@ public class UserMapper {
         user.setDesignated_tasks(taskMapper.toArrayTaskEntityFromLiteDTO(dto.getDesignated_tasks()));
         user.setCreated_at(dto.getCreated_at());
         user.setUpdated_at(dto.getUpdated_at());
+        user.setRoles(dto.getRoles());
         return user;
 
     }
@@ -84,6 +86,7 @@ public class UserMapper {
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
         user.setAvatar(dto.getAvatar());
+        user.setRoles(dto.getRoles());
         return user;
     }
 
@@ -111,6 +114,7 @@ public class UserMapper {
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
         dto.setAvatar(user.getAvatar());
+        dto.setRoles(user.getRoles());
         return dto;
     }
 
