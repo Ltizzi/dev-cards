@@ -2,7 +2,15 @@ package com.ltizzi.dev_cards.security;
 
 import com.ltizzi.dev_cards.security.filter.JwtGenerationFilter;
 import com.ltizzi.dev_cards.security.filter.JwtValidatorFilter;
+import com.ltizzi.dev_cards.security.utils.RsaKeyProperties;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,10 +19,17 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
+import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -29,6 +44,16 @@ import java.util.Collections;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private CustomUserDetails customUserDetails;
+
+    private final RsaKeyProperties rsaKeys;
+
+    @Autowired
+    public SecurityConfig(RsaKeyProperties rsaKeys){
+        this.rsaKeys = rsaKeys;
+    }
 
 
     @Bean
@@ -58,9 +83,9 @@ public class SecurityConfig {
                         return config;
                     }
                 }))
-                .addFilterAfter(new JwtGenerationFilter(), BasicAuthenticationFilter.class)
-                .addFilterBefore(new JwtValidatorFilter(), BasicAuthenticationFilter.class)
-
+//                .addFilterAfter(new JwtGenerationFilter(), BasicAuthenticationFilter.class)
+//                .addFilterBefore(new JwtValidatorFilter(), BasicAuthenticationFilter.class)
+                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .authorizeHttpRequests(req->req
                 //USER
                 .requestMatchers(HttpMethod.POST, "/user/new").permitAll()
@@ -72,8 +97,26 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PATCH, "/task/update").permitAll()
                 .anyRequest().permitAll()
 
-        ).csrf().disable().httpBasic(Customizer.withDefaults());
+        ).csrf().disable()
+                .exceptionHandling((ex)-> ex
+                        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
+                        .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
+                )
+                .httpBasic(Customizer.withDefaults());
         return http.build();
+    }
+
+    @Bean
+    JwtEncoder jwtEncoder(){
+        JWK jwk = new RSAKey.Builder(rsaKeys.publicKey()).privateKey(rsaKeys.privateKey()).build();
+        JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
+        return new NimbusJwtEncoder(jwks);
+    }
+
+    @Bean
+    JwtDecoder jwtDecoder(){
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withPublicKey(rsaKeys.publicKey()).build();
+        return jwtDecoder;
     }
 
     @Bean

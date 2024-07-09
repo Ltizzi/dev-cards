@@ -9,6 +9,7 @@ import com.ltizzi.dev_cards.model.task.TaskMapper;
 import com.ltizzi.dev_cards.model.user.UserDTO;
 import com.ltizzi.dev_cards.model.user.UserEntity;
 import com.ltizzi.dev_cards.model.user.UserMapper;
+import com.ltizzi.dev_cards.model.user.utils.LoginResponse;
 import com.ltizzi.dev_cards.model.user.utils.Role;
 import com.ltizzi.dev_cards.model.user.utils.UserLoginCredentials;
 import com.ltizzi.dev_cards.model.user.utils.UserRegistration;
@@ -17,7 +18,9 @@ import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceMapper;
 import com.ltizzi.dev_cards.repository.UserRepository;
+import com.ltizzi.dev_cards.security.filter.JwtUtils;
 import com.ltizzi.dev_cards.service.UserService;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -57,6 +60,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtUtils jwtUtils;
+
 
     @Override
     public List<UserDTO> getUsers(int page, int limit) {
@@ -92,22 +98,39 @@ public class UserServiceImpl implements UserService {
         List<Role> roles = new ArrayList<>();
         roles.add(Role.USER);
         newUser.setRoles(roles);
+
         return userMapper.toUserDTO(userRepo.save(newUser));
+
 
     }
 
     @Override
-    public UserDTO loginUser(UserLoginCredentials credentials) throws InvalidUserException {
-        UserEntity user = userRepo.findByUsername(credentials.getUsername()).get(0);
-        if(user != null){
-            Authentication auth = authManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword()));
-            if(auth.isAuthenticated()){
-                return userMapper.toUserDTO(user);
+    public LoginResponse loginUser(UserLoginCredentials credentials) throws InvalidUserException {
+
+
+            UserEntity user = userRepo.findByUsername(credentials.getUsername()).get(0);
+            if(user == null){
+                throw new InvalidUserException("Invalid username");
             }
-            else throw  new InvalidUserException("Invalid credentials.");
-        }
-        else throw new InvalidUserException("Invalid credentials, user is null");
+            String token = jwtUtils.generateToken(authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword())),
+                    credentials.getUsername());
+            return LoginResponse.builder()
+                    .user(userMapper.toUserDTO(user))
+                    .token(token)
+                    .build();
+
+
+//        UserEntity user = userRepo.findByUsername(credentials.getUsername()).get(0);
+//        if(user != null){
+//            Authentication auth = authManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword()));
+//            if(auth.isAuthenticated()){
+//                return userMapper.toUserDTO(user);
+//            }
+//            else throw  new InvalidUserException("Invalid credentials.");
+//        }
+//        else throw new InvalidUserException("Invalid credentials, user is null");
     }
 
     @Override
