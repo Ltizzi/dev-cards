@@ -71,7 +71,7 @@
 
   onBeforeMount(async () => {
     const data = (await apiCall.get(EndpointType.TASK_GET_BY_ID, {
-      params: { id: 2 },
+      params: { id: 4 },
     })) as Task;
     console.log(data);
     console.log(data.color);

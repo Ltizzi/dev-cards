@@ -85,6 +85,10 @@ public class TaskEntity {
     @CollectionTable(name = "task_updates", joinColumns = @JoinColumn(name = "task_id"))
     private List<TaskUpdate> updates = new ArrayList<>();
 
+    @ElementCollection
+    @CollectionTable(name = "tasks_progress_items", joinColumns = @JoinColumn(name="task_id"))
+    private List<ProgressItem> progressItems = new ArrayList<>();
+
     @ManyToOne(optional = true)
     @JoinColumn(name = "user_id")
     private UserEntity blocked_by;
