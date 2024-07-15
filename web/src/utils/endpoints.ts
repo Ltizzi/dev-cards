@@ -19,6 +19,8 @@ export enum EndpointType {
   USER_NEW = "/user/new",
   USER_UPDATE = "/user/update",
   USER_DELETE = "/user/delete",
+  USER_LOGIN = "/user/login",
+  USER_REGISTER = "/user/register",
 
   WORKSPACE_GET_ALL = "/workspace/all",
   WORKSPACE_GET_BY_ID = "/workspace/byId",

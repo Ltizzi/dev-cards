@@ -1,6 +1,6 @@
 <template lang="">
   <div class="flex justify-center mx-auto align-middle mt-20">
-    <div class="w-10/12 bg-slate-50 rounded-xl" v-if="card">
+    <div class="w-10/12 rounded-xl" v-if="card">
       <div class="flex flex-col text-center gap-2">
         <h1
           :class="['text-3xl py-2 font-bold rounded-t-lg', `${title_color}`]"

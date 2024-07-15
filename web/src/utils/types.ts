@@ -145,3 +145,8 @@ export interface UserLite {
   email: string;
   avatar: string;
 }
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+}
