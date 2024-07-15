@@ -1,4 +1,3 @@
-import { ref } from 'vue';
 <template lang="">
   <div class="mx-auto flex flex-col justify-center my-10">
     <div class="flex flex-col justify-center mx-auto gap-5">
@@ -29,6 +28,7 @@ import { ref } from 'vue';
   import { EndpointType } from "../../utils/endpoints";
   import { useUserStore } from "../../store/user.store";
   import { AuthResponse } from "../../utils/types";
+  import { useRouter } from "vue-router";
 
   const username = ref<String>();
   const password = ref<String>();
@@ -38,6 +38,8 @@ import { ref } from 'vue';
   const apiCall = useApiCall();
 
   const store = useUserStore();
+
+  const router = useRouter();
 
   async function logIn() {
     isWaiting.value = true;
@@ -51,8 +53,10 @@ import { ref } from 'vue';
     )) as AuthResponse;
     if (response) {
       store.setSelf(response.user);
+      localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", response.token);
       isWaiting.value = false;
+      router.push({ path: "/" });
     }
   }
 </script>
