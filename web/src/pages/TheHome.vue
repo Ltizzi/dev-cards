@@ -1,7 +1,11 @@
 <template lang="">
-  <div>Logged in!</div>
+  <div class="flex flex-row justify-between">
+    <LateralMenu class="w-1/12" />
+    <div class="w-11/12">Logged in!</div>
+  </div>
 </template>
 <script setup lang="ts">
+  import LateralMenu from "../layouts/LateralMenu.vue";
   import { useRouter } from "vue-router";
   import { onMounted } from "vue";
 
