@@ -112,10 +112,12 @@ export interface Workspace {
   workspace_id: number;
   project_name: string;
   description: string;
+  avatar: string;
   owner: UserLite;
   tasks: Array<TaskLite>;
   moderators: Array<UserLite>;
   users: Array<UserLite>;
+
   created_at: Date;
   updated_at: Date;
 }
@@ -126,16 +128,24 @@ export interface WorkspaceLite {
   owner: UserLite;
 }
 
+export enum Role {
+  ADMIN,
+  OWNER,
+  MODERATOR,
+  USER,
+}
+
 export interface User {
   user_id: number;
   username: string;
   email: string;
-  avatar: string;
-  about: string;
-  githubProfile: string;
+  avatar: string | undefined;
+  about: string | undefined;
+  githubProfile: string | undefined;
   workspaces: Array<WorkspaceLite>;
   created_tasks: Array<TaskLite>;
   designated_tasks: Array<TaskLite>;
+  roles: Array<Role>;
   created_at: Date;
   updated_at: Date;
 }

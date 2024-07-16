@@ -4,6 +4,7 @@ import Login from "./components/auth/Login.vue";
 import SignUp from "./layouts/SignUp.vue";
 import Register from "./components/auth/Register.vue";
 import ProfileSignUp from "./components/auth/ProfileSignUp.vue";
+import NewProject from "./components/project/newProject.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -25,7 +26,7 @@ const router = createRouter({
           name: "CompleteProfile",
           component: ProfileSignUp,
         },
-        { path: "project", component: Register },
+        { path: "project", component: NewProject },
       ],
     },
   ],

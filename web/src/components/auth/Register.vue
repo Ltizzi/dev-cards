@@ -1,5 +1,9 @@
 <template lang="">
   <div class="mx-auto flex flex-col justify-center my-10">
+    <h1 class="my-5 text-xl font-bold">Create a new user</h1>
+    <h2 class="text-lg mb-7">
+      Please, complete this form to register you as a new user:
+    </h2>
     <div class="flex flex-col justify-center gap-5">
       <label for="">Username:</label>
       <input
@@ -22,7 +26,7 @@
         v-model="password"
         placeholder="Enter your password"
       />
-      <button class="btn btn-outline btn-accent" @click="logIn">
+      <button class="btn btn-outline btn-accent" @click="signUp">
         Sign up
         <span class="loading loading-dots loading-sm" v-if="isWaiting"></span>
       </button>

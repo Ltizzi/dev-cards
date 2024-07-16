@@ -10,11 +10,12 @@ const apiCaller = axios.create({
   },
 });
 
-apiCaller.interceptors.request.use(
+axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = token;
+      config.headers["Content-Type"] = "application/json";
     }
     return config;
   },
@@ -29,7 +30,7 @@ export function useApiCall<T>() {
     config?: AxiosRequestConfig
   ): Promise<T> => {
     try {
-      const response: AxiosResponse<T> = await apiCaller.get(
+      const response: AxiosResponse<T> = await axios.get(
         getUrl(endpoint),
         config
       );
@@ -44,7 +45,7 @@ export function useApiCall<T>() {
     config?: AxiosRequestConfig
   ): Promise<T> => {
     try {
-      const response: AxiosResponse<T> = await apiCaller.post(
+      const response: AxiosResponse<T> = await axios.post(
         getUrl(endpoint),
         config
       );
@@ -56,11 +57,13 @@ export function useApiCall<T>() {
 
   const patch = async (
     endpoint: EndpointType,
+    data: any,
     config?: AxiosRequestConfig
   ): Promise<T> => {
     try {
-      const response: AxiosResponse<T> = await apiCaller.patch(
+      const response: AxiosResponse<T> = await axios.patch(
         getUrl(endpoint),
+        data,
         config
       );
       return response.data;
@@ -74,7 +77,7 @@ export function useApiCall<T>() {
     config?: AxiosRequestConfig
   ): Promise<T> => {
     try {
-      const response: AxiosResponse<T> = await apiCaller.delete(
+      const response: AxiosResponse<T> = await axios.delete(
         getUrl(endpoint),
         config
       );

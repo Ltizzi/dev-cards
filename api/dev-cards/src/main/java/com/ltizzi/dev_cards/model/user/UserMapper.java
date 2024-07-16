@@ -65,9 +65,16 @@ public class UserMapper {
         user.setAvatar(dto.getAvatar());
         user.setAbout(dto.getAbout());
         user.setGithubProfile(dto.getGithubProfile());
-        user.setWorkspaces(wsMapper.toArrayWorkSpaceFromLite(dto.getWorkspaces()));
-        user.setCreated_tasks(taskMapper.toArrayTaskEntityFromLiteDTO(dto.getCreated_tasks()));
-        user.setDesignated_tasks(taskMapper.toArrayTaskEntityFromLiteDTO(dto.getDesignated_tasks()));
+        if(dto.getWorkspaces()!= null){
+            user.setWorkspaces(wsMapper.toArrayWorkSpaceFromLite(dto.getWorkspaces()));
+        }
+        if(dto.getCreated_tasks() != null){
+            user.setCreated_tasks(taskMapper.toArrayTaskEntityFromLiteDTO(dto.getCreated_tasks()));
+
+        }
+        if(dto.getDesignated_tasks() != null) {
+            user.setDesignated_tasks(taskMapper.toArrayTaskEntityFromLiteDTO(dto.getDesignated_tasks()));
+        }
         user.setCreated_at(dto.getCreated_at());
         user.setUpdated_at(dto.getUpdated_at());
         user.setRoles(dto.getRoles());

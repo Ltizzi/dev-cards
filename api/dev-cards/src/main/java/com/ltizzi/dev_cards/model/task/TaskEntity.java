@@ -93,7 +93,7 @@ public class TaskEntity {
     @JoinColumn(name = "user_id")
     private UserEntity blocked_by;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private UserEntity owner;
 

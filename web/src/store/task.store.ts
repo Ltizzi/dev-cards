@@ -3,7 +3,7 @@ import { useApiCall } from "../composables/useAPICall";
 import { EndpointType } from "../utils/endpoints";
 import { Task } from "../utils/types";
 
-export const userTaskStore = defineStore("tasks", {
+export const useTaskStore = defineStore("tasks", {
   state: () => ({
     tasks: [] as Array<Task>,
     taskById: {} as Task,

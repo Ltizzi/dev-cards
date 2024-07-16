@@ -28,7 +28,7 @@ public class UserDTO {
     private List<WorkspaceLiteDTO> workspaces = new ArrayList<>();
     private List<TaskLiteDTO> created_tasks = new ArrayList<>();
     private List<TaskLiteDTO> designated_tasks = new ArrayList<>();
-    private List<Role> roles = new ArrayList<>();
+    private List<Role> roles;
     private Timestamp created_at;
     private Timestamp updated_at;
 }

@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
         newUser.setUsername(credentials.getUsername());
         newUser.setEmail(credentials.getEmail());
         List<Role> roles = new ArrayList<>();
-        roles.add(Role.USER);
+        roles.add(Role.ROLE_USER);
         newUser.setRoles(roles);
         UserDTO registerUser =userMapper.toUserDTO(userRepo.save(newUser));
         String token = jwtUtils.generateToken(authManager.authenticate(
