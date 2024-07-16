@@ -1,7 +1,7 @@
 <template lang="">
   <div class="flex flex-col justify-center mx-auto py-5 px-2" v-if="isLoaded">
     <div class="avatar">
-      <div class="w-14 h-14 rounded-full mx-auto">
+      <div class="w-14 h-14 rounded-full mx-auto" @click="goHome">
         <img :src="user.avatar" />
       </div>
     </div>
@@ -41,9 +41,13 @@
 
   const isLoaded = ref(false);
 
+  function goHome() {
+    router.push("/");
+  }
+
   function goTo(project: Workspace) {
     projectStore.setCurrent(project);
-    router.push(`/project?id=${project.workspace_id}`);
+    router.push(`/project/info?id=${project.workspace_id}`);
   }
 
   onBeforeMount(async () => {

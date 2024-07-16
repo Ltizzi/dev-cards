@@ -1,9 +1,10 @@
 <template lang="">
   <div class="flex flex-row justify-between w-full">
-    <LateralMenu class="w-24" />
+    asdasd
+    <!-- <LateralMenu class="w-24" />
     <div class="w-full">
       <router-view></router-view>
-    </div>
+    </div> -->
   </div>
 </template>
 <script setup lang="ts">
