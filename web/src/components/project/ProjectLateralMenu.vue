@@ -1,13 +1,16 @@
 <template lang="">
-  <ul class="menu bg-base-200 rounded-box w-56 mt-10" v-if="isLoaded">
-    <li><a @click="goTo('info')">Info</a></li>
+  <ul
+    class="menu bg-base-200 rounded-box w-56 mt-10 before:ring-offset-purple-400"
+    v-if="isLoaded"
+  >
+    <li class="active"><a @click="goTo('info')">Info</a></li>
     <li>
       <details open>
         <summary>
           <span>Tasks</span>
         </summary>
 
-        <ul>
+        <ul class="before:ring-offset-purple-400">
           <li v-for="task in project.tasks">
             <a>{{ task.name }}</a>
           </li>
@@ -27,7 +30,7 @@
     <li>
       <details open>
         <summary>Users</summary>
-        <ul>
+        <ul class="before:ring-offset-purple-400">
           <li
             v-for="user in project.users"
             class="text-white flex flex-row justify-start align-middle w-full"

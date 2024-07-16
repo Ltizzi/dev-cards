@@ -44,18 +44,21 @@
     </div>
     <div class="my-5">
         <h1 class="mb-2 text-xl font-bold">Users:</h1>
-        <p class="mx-10 text-lg flex flex-row flex-wrap gap-5" v-for="user in project.users">
-          <div class="flex flex-row gap-0 ml-20 mt-5">
-              <div class="avatar">
-                <div class="w-8 rounded-full">
-                  <img :src="user.avatar" />
+        <div class="flex flex-row flex-wrap gap-5">
+          <p class="mx-0 text-lg " v-for="user in project.users">
+            <div class="flex flex-row gap-4 ml-5 mt-5">
+                <div class="avatar">
+                  <div class="w-8 rounded-full">
+                    <img :src="user.avatar" />
+                  </div>
                 </div>
+                <p class="text-lg">
+                  {{ user.username }}
+                </p>
               </div>
-              <p class="mx-10 text-lg">
-                {{ user.username }}
-              </p>
-            </div>
-        </p>
+          </p>
+        </div>
+  
       </div>
       <h1 class="text-3xl my-5">Tasks:</h1>
       <TaskList/>
