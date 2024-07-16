@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,8 +60,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public WorkspaceDTO saveWorkspace(WorkspaceDTO workspace) throws InvalidWorkspaceException {
-        return wsMapper.toWorkspaceDTO(wsRepo.save(wsMapper.toWorkspaceEntity(workspace)));
+    public WorkspaceDTO saveWorkspace(WorkspaceDTO workspace) throws InvalidWorkspaceException, NotFoundException {
+        WorkspaceEntity ws = wsMapper.toWorkspaceEntity(workspace);
+        UserEntity user = userRepo.findById(ws.getOwner().getUser_id()).orElseThrow(()->new NotFoundException("Owner not found!"));
+        List<UserEntity> users = new ArrayList<>();
+        users.add(user);
+        ws.setUsers(users);
+        return wsMapper.toWorkspaceDTO(wsRepo.save(ws));
     }
 
     @Override

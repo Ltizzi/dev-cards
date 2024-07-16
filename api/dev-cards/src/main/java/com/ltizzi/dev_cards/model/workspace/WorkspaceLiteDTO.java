@@ -13,6 +13,7 @@ public class WorkspaceLiteDTO {
 
     private Long workspace_id;
     private String project_name;
+    private String project_avatar;
     private UserLiteDTO owner;
 
 

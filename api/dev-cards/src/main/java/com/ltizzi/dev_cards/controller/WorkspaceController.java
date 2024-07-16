@@ -39,7 +39,7 @@ public class WorkspaceController {
 
     @PostMapping("/new")
     @ResponseBody
-    public ResponseEntity<WorkspaceDTO> saveWorkspace(@RequestBody WorkspaceDTO workspace) throws InvalidWorkspaceException {
+    public ResponseEntity<WorkspaceDTO> saveWorkspace(@RequestBody WorkspaceDTO workspace) throws InvalidWorkspaceException, NotFoundException {
         return new ResponseEntity<>(wsServ.saveWorkspace(workspace), HttpStatus.OK);
     }
 

@@ -73,7 +73,10 @@ public class UserEntity {
     private List<TaskEntity> created_tasks = new ArrayList<>();
 
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "roles")
+    @Enumerated(EnumType.STRING)
     private List<Role> roles = new ArrayList<>();
 
     @ElementCollection

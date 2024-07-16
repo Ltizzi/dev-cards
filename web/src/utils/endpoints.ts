@@ -21,6 +21,7 @@ export enum EndpointType {
   USER_DELETE = "/user/delete",
   USER_LOGIN = "/user/login",
   USER_REGISTER = "/user/register",
+  USER_MEMBER = "/user/workspaces",
 
   WORKSPACE_GET_ALL = "/workspace/all",
   WORKSPACE_GET_BY_ID = "/workspace/byId",

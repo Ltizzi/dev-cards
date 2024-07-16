@@ -5,6 +5,8 @@ import SignUp from "./layouts/SignUp.vue";
 import Register from "./components/auth/Register.vue";
 import ProfileSignUp from "./components/auth/ProfileSignUp.vue";
 import NewProject from "./components/project/newProject.vue";
+import TaskCard from "./components/task/TaskCard.vue";
+import ProjectView from "./pages/TheProject.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -13,6 +15,7 @@ const router = createRouter({
       path: "/",
       name: "Home",
       component: TheHome,
+      children: [{ path: "/project", component: ProjectView }],
     },
     { path: "/login", name: "Login", component: Login },
     {
@@ -29,6 +32,7 @@ const router = createRouter({
         { path: "project", component: NewProject },
       ],
     },
+    { path: "/task", component: TaskCard },
   ],
 });
 

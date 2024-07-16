@@ -24,7 +24,7 @@ public interface WorkspaceService {
 
     public WorkspaceDTO getWorkspaceDTOById(Long id) throws NotFoundException;
 
-    public WorkspaceDTO saveWorkspace(WorkspaceDTO workspace) throws InvalidWorkspaceException;
+    public WorkspaceDTO saveWorkspace(WorkspaceDTO workspace) throws InvalidWorkspaceException, NotFoundException;
 
     public WorkspaceDTO updateWorkspace(Long workspace_id, WorkspaceDTO workspace) throws NotFoundException, InvalidWorkspaceException;
 

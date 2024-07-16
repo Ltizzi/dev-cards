@@ -1,7 +1,9 @@
 <template lang="">
-  <div class="flex flex-row justify-between w-2/3">
-    <LateralMenu class="w-1/4" />
-    <div class="w-3/4">Logged in!</div>
+  <div class="flex flex-row justify-between w-full">
+    <LateralMenu class="w-24" />
+    <div class="w-full">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 <script setup lang="ts">

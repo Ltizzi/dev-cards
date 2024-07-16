@@ -109,7 +109,7 @@
 
       const newProject = {
         project_name: name.value,
-        avatar: avatar.value,
+        project_avatar: avatar.value,
         description: description.value,
         owner: userLite,
       };

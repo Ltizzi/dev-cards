@@ -58,12 +58,12 @@
 <script setup lang="ts">
   import { ref, onBeforeMount, onMounted } from "vue";
   import { Task } from "../../utils/types";
-  import { userTaskStore } from "../../store/task.store";
+  import { useTaskStore } from "../../store/task.store";
   import { useApiCall } from "../../composables/useAPICall";
   import { EndpointType } from "../../utils/endpoints";
 
   const card = ref<Task>();
-  const taskStore = userTaskStore();
+  const taskStore = useTaskStore();
 
   const title_color = ref<string>();
 

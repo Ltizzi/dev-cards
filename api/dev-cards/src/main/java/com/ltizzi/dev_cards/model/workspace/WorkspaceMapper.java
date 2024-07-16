@@ -38,7 +38,7 @@ public class WorkspaceMapper {
         dto.setUsers(userMapper.toArrayUserLiteDTO(workspace.getUsers()));
         dto.setCreated_at(workspace.getCreated_at());
         dto.setUpdated_at(workspace.getUpdated_at());
-
+        dto.setProject_avatar(workspace.getProject_avatar());
         return dto;
     }
 
@@ -66,7 +66,7 @@ public class WorkspaceMapper {
         workspace.setUsers(userMapper.toArrayUserEntityFromLite(dto.getUsers()));
         workspace.setCreated_at(dto.getCreated_at());
         workspace.setUpdated_at(dto.getUpdated_at());
-
+        workspace.setProject_avatar(dto.getProject_avatar());
         return workspace;
     }
 
@@ -83,6 +83,7 @@ public class WorkspaceMapper {
         dto.setWorkspace_id(workspace.getWorkspace_id());
         dto.setOwner(userMapper.toUserLiteDTO(workspace.getOwner()));
         dto.setProject_name(workspace.getProject_name());
+        dto.setProject_avatar(workspace.getProject_avatar());
         return dto;
 
     }

@@ -87,6 +87,7 @@
       isWaiting.value = false;
       router.push("/signup/complete");
     } else {
+      isWaiting.value = false;
       console.error(response);
       hasError.value = true;
       setTimeout(() => {

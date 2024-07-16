@@ -30,10 +30,8 @@ export function useApiCall<T>() {
     config?: AxiosRequestConfig
   ): Promise<T> => {
     try {
-      const response: AxiosResponse<T> = await axios.get(
-        getUrl(endpoint),
-        config
-      );
+      const url = getUrl(endpoint);
+      const response: AxiosResponse<T> = await axios.get(url, config);
       return response.data;
     } catch (err: any) {
       return err.message;

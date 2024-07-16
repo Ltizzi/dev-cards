@@ -20,6 +20,7 @@ public class WorkspaceDTO {
 
     private Long workspace_id;
     private String project_name;
+    private String project_avatar;
     private String description;
     private UserLiteDTO owner;
     private List<TaskLiteDTO> tasks = new ArrayList<>();
