@@ -78,7 +78,7 @@ public class UserController {
 
     @PostMapping("/register")
     @ResponseBody
-    public ResponseEntity<UserDTO> registerUser(@RequestBody UserRegistration registrationReq) throws InvalidUserException {
+    public ResponseEntity<LoginResponse> registerUser(@RequestBody UserRegistration registrationReq) throws InvalidUserException {
         return new ResponseEntity<>(userServ.registerUser(registrationReq), HttpStatus.OK);
     }
 

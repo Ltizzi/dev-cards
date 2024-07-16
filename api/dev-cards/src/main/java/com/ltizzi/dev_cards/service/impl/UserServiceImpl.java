@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO registerUser(UserRegistration credentials) throws InvalidUserException {
+    public LoginResponse registerUser(UserRegistration credentials) throws InvalidUserException {
         if(!userRepo.findByEmail(credentials.getEmail()).isEmpty()){
             throw new InvalidUserException("Email already in use");
         }
@@ -98,8 +98,15 @@ public class UserServiceImpl implements UserService {
         List<Role> roles = new ArrayList<>();
         roles.add(Role.USER);
         newUser.setRoles(roles);
-
-        return userMapper.toUserDTO(userRepo.save(newUser));
+        UserDTO registerUser =userMapper.toUserDTO(userRepo.save(newUser));
+        String token = jwtUtils.generateToken(authManager.authenticate(
+                new UsernamePasswordAuthenticationToken(newUser.getUsername(), credentials.getPassword())),
+                credentials.getUsername());
+        return LoginResponse.builder()
+                .user(registerUser)
+                .token(token)
+                .build();
+        //return userMapper.toUserDTO(userRepo.save(newUser));
 
 
     }

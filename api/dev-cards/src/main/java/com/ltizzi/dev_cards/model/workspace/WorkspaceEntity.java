@@ -38,6 +38,9 @@ public class WorkspaceEntity {
     @NotBlank(message = "Project name can't be blank")
     private String project_name;
 
+    @Column(columnDefinition = "TEXT", length = 500)
+    private String project_avatar;
+
     @Column(columnDefinition = "TEXT", length = 5000)
     private String description;
 

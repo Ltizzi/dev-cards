@@ -31,7 +31,7 @@ public interface UserService {
 //    public UserDTO loginUser(UserLoginCredentials credentials) throws  InvalidUserException;
 
 
-    public UserDTO registerUser(UserRegistration credentials) throws  InvalidUserException;
+    public LoginResponse registerUser(UserRegistration credentials) throws  InvalidUserException;
     public LoginResponse loginUser(UserLoginCredentials credentials) throws  InvalidUserException;
 
     public UserDTO updateUser(Long user_id, UserDTO user) throws InvalidUserException, NotFoundException;
