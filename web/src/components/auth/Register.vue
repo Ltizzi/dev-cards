@@ -57,6 +57,7 @@
   import { useUserStore } from "../../store/user.store";
   import { useRouter } from "vue-router";
   import { AuthResponse } from "../../utils/types";
+  import { saveToken } from "../../utils/auth.utils";
 
   const username = ref<String>();
   const password = ref<String>();
@@ -83,7 +84,8 @@
     if (response && response.token) {
       store.setSelf(response.user);
       localStorage.setItem("user", JSON.stringify(response.user));
-      localStorage.setItem("token", response.token);
+      //localStorage.setItem("token", response.token);
+      saveToken(response.token);
       isWaiting.value = false;
       router.push("/signup/complete");
     } else {

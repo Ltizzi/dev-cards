@@ -1,7 +1,7 @@
 <template lang="">
   <div>
     <div class="flex flex-col justify-center mx-auto py-5 px-2" v-if="isLoaded">
-      <div class="avatar">
+      <div class="avatar" v-if="isLogged">
         <div class="w-14 h-14 rounded-full mx-auto" @click="goHome">
           <img :src="user.avatar" />
         </div>
@@ -27,9 +27,10 @@
   import { useProjectStore } from "../store/project.store";
   import { useRouter } from "vue-router";
   import { Workspace, User } from "../utils/types";
-  import { onBeforeMount, ref } from "vue";
+  import { onBeforeMount, ref, watch } from "vue";
   import { useApiCall } from "../composables/useAPICall";
   import { EndpointType } from "../utils/endpoints";
+  import { isTokenExpired } from "../utils/auth.utils";
 
   const userStore = useUserStore();
   const projectStore = useProjectStore();
@@ -42,6 +43,21 @@
   const user = ref<User>();
 
   const isLoaded = ref(false);
+  const isLogged = ref(false);
+
+  watch(
+    () => userStore.logged,
+    async (newValue, oldValue) => {
+      if (!newValue) {
+        isLogged.value = false;
+        projects.value = [] as Array<Workspace>;
+      } else {
+        isLogged.value = true;
+        user.value = userStore.self;
+        projects.value = await fetchProjects(user.value.user_id);
+      }
+    }
+  );
 
   function goHome() {
     router.push("/");
@@ -52,23 +68,34 @@
     router.push(`/project/info?id=${project.workspace_id}`);
   }
 
-  onBeforeMount(async () => {
-    if (!userStore.self.user_id) {
-      const savedUser = JSON.parse(localStorage.getItem("user") as string);
-      if (savedUser) {
-        userStore.setSelf(savedUser);
-        user.value = savedUser;
-      } else {
-        router.push("/login");
-      }
-    } else {
-      user.value = userStore.self;
-    }
-
-    const response = (await apiCall.get(EndpointType.USER_MEMBER, {
-      params: { user_id: user.value.user_id },
+  async function fetchProjects(userId: number) {
+    return (await apiCall.get(EndpointType.USER_MEMBER, {
+      params: { user_id: userId },
     })) as Array<Workspace>;
-    projects.value = response;
-    isLoaded.value = true;
+  }
+
+  onBeforeMount(async () => {
+    if (isTokenExpired()) {
+      router.push("/login");
+    } else {
+      if (!userStore.logged) {
+        const savedUser = JSON.parse(localStorage.getItem("user") as string);
+        if (savedUser) {
+          userStore.setSelf(savedUser);
+          user.value = savedUser;
+        } else {
+          router.push("/login");
+        }
+      } else {
+        user.value = userStore.self;
+      }
+
+      // const response = (await apiCall.get(EndpointType.USER_MEMBER, {
+      //   params: { user_id: user.value.user_id },
+      // })) as Array<Workspace>;
+      projects.value = await fetchProjects(user.value?.user_id as number);
+      isLogged.value = true;
+      isLoaded.value = true;
+    }
   });
 </script>

@@ -8,6 +8,7 @@ export const useTaskStore = defineStore("tasks", {
     tasks: [] as Array<Task>,
     taskById: {} as Task,
     currentTask: {} as Task,
+    currentProjectTask: [] as Array<Task>,
   }),
   actions: {
     async fetchAllTasks() {

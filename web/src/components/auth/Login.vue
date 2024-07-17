@@ -35,6 +35,7 @@
   import { useUserStore } from "../../store/user.store";
   import { AuthResponse } from "../../utils/types";
   import { useRouter } from "vue-router";
+  import { saveToken } from "../../utils/auth.utils";
 
   const username = ref<String>();
   const password = ref<String>();
@@ -60,7 +61,8 @@
     if (response && response.token) {
       store.setSelf(response.user);
       localStorage.setItem("user", JSON.stringify(response.user));
-      localStorage.setItem("token", response.token);
+      // localStorage.setItem("token", response.token);
+      saveToken(response.token);
       isWaiting.value = false;
       router.push({ path: "/" });
     } else console.error(response);
