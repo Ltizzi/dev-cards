@@ -23,6 +23,20 @@ export enum Color {
   CYAN = "CYAN",
 }
 
+export const ColorEnumArray = [
+  Color.RED,
+  Color.BLUE,
+  Color.GREEN,
+  Color.ORANGE,
+  Color.YELLOW,
+  Color.PURPLE,
+  Color.BROWN,
+  Color.GRAY,
+  Color.BLACK,
+  Color.PINK,
+  Color.CYAN,
+];
+
 export enum Priority {
   VERY_LOW = "VERY_LOW",
   LOW = "LOW",
@@ -30,12 +44,21 @@ export enum Priority {
   HIGH = "HIGH",
   VERY_HIGH = "VERY_HIGH",
 }
+export const PriorityEnumArray = [
+  Priority.VERY_LOW,
+  Priority.LOW,
+  Priority.MEDIUM,
+  Priority.HIGH,
+  Priority.VERY_HIGH,
+];
 
 export enum Effort {
   LOW = "LOW",
   MEDIUM = "MEDIUM",
   HIGH = "HIGH",
 }
+
+export const EffortEnumArray = [Effort.LOW, Effort.MEDIUM, Effort.HIGH];
 
 export enum Status {
   PENDING = "PENDING",
@@ -44,6 +67,13 @@ export enum Status {
   BLOCKED = "BLOCKED",
 }
 
+export const StatusEnumArray = [
+  Status.PENDING,
+  Status.PROGRESS,
+  Status.COMPLETED,
+  Status.BLOCKED,
+];
+
 export enum Progress {
   NULL = "NULL",
   NOT_FUNCTIONAL = "NOT_FUNCTIONAL",
@@ -51,6 +81,14 @@ export enum Progress {
   INTERMEDIATE = "INTERMEDIATE",
   ADVANCE = "ADVANCE",
 }
+
+export const ProgressEnumArray = [
+  Progress.NULL,
+  Progress.NOT_FUNCTIONAL,
+  Progress.BASIC,
+  Progress.INTERMEDIATE,
+  Progress.ADVANCE,
+];
 
 export enum TaskType {
   CODE = "CODE",
@@ -61,8 +99,17 @@ export enum TaskType {
   MARKETING = "MARKETING",
 }
 
+export const TaskTypeEnumArray = [
+  TaskType.CODE,
+  TaskType.ART,
+  TaskType.DOCUMENTATION,
+  TaskType.BUG,
+  TaskType.TESTING,
+  TaskType.MARKETING,
+];
+
 export interface Task {
-  task_id: number;
+  task_id?: number;
   title: string;
   subtitle: string;
   description: string;
@@ -71,15 +118,22 @@ export interface Task {
   effort: Effort;
   status: Status;
   progress: Progress;
-  project: Workspace;
-  dependencies: Array<TaskLite>;
-  task_tags: Array<string>;
-  updates: Array<TaskUpdate>;
-  blocked_by: UserLite;
+  project: WorkspaceLite;
+  task_type: TaskType;
+  progressItems: Array<ProgressItem>;
+  dependencies?: Array<TaskLite>;
+  task_tags?: Array<string>;
+  updates?: Array<TaskUpdate>;
+  blocked_by?: UserLite;
   owner: UserLite;
-  designated_to: Array<UserLite>;
-  created_at: Date;
-  updated_at: Date;
+  designated_to?: Array<UserLite>;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface ProgressItem {
+  sentence: string;
+  isCompleted: boolean;
 }
 
 export interface TaskUpdate {
@@ -124,7 +178,7 @@ export interface Workspace {
 
 export interface WorkspaceLite {
   workspace_id: number;
-  project_Name: string;
+  project_name: string;
   owner: UserLite;
 }
 
@@ -153,7 +207,7 @@ export interface UserLite {
   user_id: number;
   username: string;
   email: string;
-  avatar: string;
+  avatar?: string;
 }
 
 export interface AuthResponse {

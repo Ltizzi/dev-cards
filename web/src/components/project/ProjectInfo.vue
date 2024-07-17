@@ -61,7 +61,9 @@
   
       </div>
       <h1 class="text-3xl my-5">Tasks:</h1>
-      <TaskList/>
+      <NewTaskBtn/>
+    
+      <!-- <TaskList :tasks="project.tasks"/> -->
   </div>
 </template>
 
@@ -72,6 +74,7 @@
   import { useRoute } from "vue-router";
   import { useApiCall } from "../../composables/useAPICall";
   import { EndpointType } from "../../utils/endpoints";
+  import NewTaskBtn from "../task/NewTaskBtn.vue";
   import TaskList from "../task/TaskList.vue";
 
   const projectStore = useProjectStore();
@@ -83,6 +86,7 @@
   const project = ref<Workspace>();
 
   const isLoaded = ref(false);
+
 
   onBeforeMount(async () => {
     if (projectStore.current.workspace_id) {

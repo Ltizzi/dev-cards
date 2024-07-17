@@ -37,6 +37,8 @@ public class TaskDTO {
 
     private List<TaskUpdate> updates = new ArrayList<>();
 
+    private List<ProgressItem> progressItems = new ArrayList<>();
+
     private UserLiteDTO blocked_by;
     private UserLiteDTO owner;
     private List<UserLiteDTO> designated_to = new ArrayList<>();

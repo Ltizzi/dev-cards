@@ -5,9 +5,10 @@ import SignUp from "./layouts/SignUp.vue";
 import Register from "./components/auth/Register.vue";
 import ProfileSignUp from "./components/auth/ProfileSignUp.vue";
 import NewProject from "./components/project/newProject.vue";
-import TaskCard from "./components/task/TaskCard.vue";
+
 import TheProject from "./pages/TheProject.vue";
 import ProjectInfo from "./components/project/ProjectInfo.vue";
+import TheTask from "./pages/TheTask.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -38,7 +39,7 @@ const router = createRouter({
         { path: "project", component: NewProject },
       ],
     },
-    { path: "/task", component: TaskCard },
+    { path: "/task", component: TheTask },
   ],
 });
 

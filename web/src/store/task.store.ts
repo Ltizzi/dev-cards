@@ -8,7 +8,7 @@ export const useTaskStore = defineStore("tasks", {
     tasks: [] as Array<Task>,
     taskById: {} as Task,
     currentTask: {} as Task,
-    currentProjectTask: [] as Array<Task>,
+    currentProjectTasks: [] as Array<Task>,
   }),
   actions: {
     async fetchAllTasks() {
@@ -27,8 +27,16 @@ export const useTaskStore = defineStore("tasks", {
       return response;
     },
 
-    setTask(task: Task) {
+    setCurrentTask(task: Task) {
       this.currentTask = task;
+    },
+
+    setCurrentProjectTasks(list: Array<Task>) {
+      this.currentProjectTasks = list;
+    },
+
+    addTaskToCurrentProject(task: Task) {
+      this.currentProjectTasks.push(task);
     },
   },
 });

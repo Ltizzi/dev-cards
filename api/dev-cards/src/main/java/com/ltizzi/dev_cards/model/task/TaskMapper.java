@@ -40,7 +40,7 @@ public class TaskMapper {
         dto.setTask_type(task.getTask_type());
 
         dto.setProject(wsMapper.toWorkspaceLiteDTO(task.getProject()));
-
+        dto.setProgressItems(task.getProgressItems());
         dto.setDependencies(toArrayTaskLiteDTO(task.getDependencies()));
         dto.setTask_tags(task.getTask_tags());
         dto.setUpdates(task.getUpdates());
@@ -85,6 +85,7 @@ public class TaskMapper {
 
         task.setProject(wsMapper.toWorkSpaceEntity(dto.getProject()));
 
+        task.setProgressItems(dto.getProgressItems());
         task.setDependencies(toArrayTaskEntityFromLiteDTO(dto.getDependencies()));
 
         task.setTask_tags(dto.getTask_tags());
