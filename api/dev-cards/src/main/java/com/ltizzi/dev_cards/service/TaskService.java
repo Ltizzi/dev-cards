@@ -23,7 +23,7 @@ public interface TaskService {
 
     public TaskDTO getTaskById(Long id) throws NotFoundException;
 
-    public TaskDTO saveTask(TaskDTO task) throws InvalidTaskException;
+    public TaskDTO saveTask(TaskDTO task) throws InvalidTaskException, NotFoundException;
 
     public TaskDTO updateTask(Long task_id, TaskDTO task) throws  InvalidTaskException, NotFoundException;
 
@@ -47,4 +47,6 @@ public interface TaskService {
 
     public List<TaskUpdate> updateTaskUpdate(Long task_id, TaskUpdate task_update) throws NotFoundException;
 
+    public List<TaskDTO> getTaskFromWorkspaceById(Long workspace_id) throws  NotFoundException;
 }
+

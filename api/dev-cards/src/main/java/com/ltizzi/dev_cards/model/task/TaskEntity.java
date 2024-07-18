@@ -71,9 +71,10 @@ public class TaskEntity {
     @Enumerated(EnumType.STRING)
     private TaskType task_type;
 
+
     @ManyToOne
     @JoinColumn(name = "workspace_id")
-    private WorkspaceEntity project;
+    private WorkspaceEntity workspace;
 
     @ElementCollection
     private List<TaskEntity> dependencies = new ArrayList<>();
@@ -115,6 +116,12 @@ public class TaskEntity {
     private Timestamp updated_at;
 
     private boolean soft_delete =Boolean.FALSE;
+
+
+    public void addWorkspace(WorkspaceEntity ws){
+        this.setWorkspace(ws);
+        ws.addTask(this);
+    }
 
     public void addDependency(TaskEntity dependency) throws InvalidTaskException {
         if(!dependencies.contains(dependency)){

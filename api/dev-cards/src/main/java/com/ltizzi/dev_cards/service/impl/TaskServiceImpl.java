@@ -10,8 +10,10 @@ import com.ltizzi.dev_cards.model.task.utils.TaskUpdate;
 import com.ltizzi.dev_cards.model.task.utils.TwoTask;
 import com.ltizzi.dev_cards.model.user.UserEntity;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
+import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 import com.ltizzi.dev_cards.repository.TaskRepository;
 import com.ltizzi.dev_cards.repository.UserRepository;
+import com.ltizzi.dev_cards.repository.WorkspaceRepository;
 import com.ltizzi.dev_cards.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,8 +36,12 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private UserRepository userRepo;
 
+
     @Autowired
     private TaskMapper taskMapper;
+
+    @Autowired
+    private WorkspaceRepository wsRepo;
 
     @Override
     public List<TaskDTO> getTasks(int page, int limit) {
@@ -55,8 +61,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO saveTask(TaskDTO task) throws InvalidTaskException {
-        return taskMapper.toTaskDTO(taskRepo.save(taskMapper.toTaskEntity(task)));
+    public TaskDTO saveTask(TaskDTO task) throws InvalidTaskException, NotFoundException {
+        WorkspaceEntity ws = wsRepo.findById(task.getWorkspace().getWorkspace_id()).orElseThrow(
+                ()->new NotFoundException("Workspace not found!"));
+        TaskEntity new_task = taskMapper.toTaskEntity(task);
+        new_task.addWorkspace(ws);
+
+        new_task = taskRepo.save(new_task);
+        wsRepo.save(ws);
+        return taskMapper.toTaskDTO(new_task);
     }
 
     @Override
@@ -117,7 +130,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private boolean sameProjectChecker(TaskEntity task, UserEntity user){
-        return task.getProject().getUsers().contains(user);
+        return task.getWorkspace().getUsers().contains(user);
     }
 
     private boolean assignChecker(TaskEntity task, UserEntity user){
@@ -198,6 +211,12 @@ public class TaskServiceImpl implements TaskService {
         TaskEntity task = findTaskById(task_id);
         task.updateUpdate(taskUpdate.getUpdate_id(), taskUpdate.getCreator_user_id(), taskUpdate.getCreator_username(), taskUpdate.getDescription());
         return taskRepo.save(task).getUpdates();
+    }
+
+    @Override
+    public List<TaskDTO> getTaskFromWorkspaceById(Long workspace_id) throws NotFoundException {
+        List<TaskEntity> tasks = taskRepo.findTasksByWorkspaceId(workspace_id);
+        return taskMapper.toArrayTaskDTO(tasks);
     }
 
 

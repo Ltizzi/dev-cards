@@ -41,8 +41,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Autowired
     private WorkspaceMapper wsMapper;
 
-//    @Autowired
-//    private TaskMapper taskMapper;
+    @Autowired
+    private TaskMapper taskMapper;
 //
 //    @Autowired
 //    private UserMapper userMapper;
@@ -64,8 +64,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         WorkspaceEntity ws = wsMapper.toWorkspaceEntity(workspace);
         UserEntity user = userRepo.findById(ws.getOwner().getUser_id()).orElseThrow(()->new NotFoundException("Owner not found!"));
         List<UserEntity> users = new ArrayList<>();
+        List<WorkspaceEntity>  user_ws = user.getWorkspaces();
         users.add(user);
         ws.setUsers(users);
+        WorkspaceEntity new_ws = wsRepo.save(ws);
+        user_ws.add(new_ws);
+        user.setWorkspaces(user_ws);
+        userRepo.save(user);
         return wsMapper.toWorkspaceDTO(wsRepo.save(ws));
     }
 
@@ -141,6 +146,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return apiRes;
     }
 
+
+//
 //    @Override
 //    public List<TaskDTO> getTasksByWorkspace(Long workspace_id) throws NotFoundException {
 //        List<TaskEntity> tasks = wsRepo.findTasksByWorkspaceId(workspace_id).orElseThrow(()-> new NotFoundException("Workspace not found"));

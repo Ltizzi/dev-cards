@@ -39,7 +39,7 @@ public class TaskController {
 
     @PostMapping("/new")
     @ResponseBody
-    public ResponseEntity<TaskDTO> saveTask(@RequestBody TaskDTO task) throws InvalidTaskException {
+    public ResponseEntity<TaskDTO> saveTask(@RequestBody TaskDTO task) throws InvalidTaskException, NotFoundException {
         return  new ResponseEntity<>(taskServ.saveTask(task), HttpStatus.OK);
     }
 
@@ -110,5 +110,10 @@ public class TaskController {
         return new ResponseEntity<>(taskServ.updateTaskUpdate(task_id, task_update), HttpStatus.OK);
     }
 
+    @GetMapping("/byWorkspace")
+    @ResponseBody
+    public  ResponseEntity<List<TaskDTO>> getTasksByWorkspace(@RequestParam Long id) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.getTaskFromWorkspaceById(id), HttpStatus.OK);
+    }
 
 }

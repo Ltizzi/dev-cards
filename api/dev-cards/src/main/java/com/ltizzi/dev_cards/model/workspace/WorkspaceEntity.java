@@ -49,7 +49,7 @@ public class WorkspaceEntity {
     private UserEntity owner;
 
 
-    @OneToMany(mappedBy = "task_id", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "workspace", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<TaskEntity> tasks = new ArrayList<>();
 
     @ManyToMany
@@ -62,7 +62,7 @@ public class WorkspaceEntity {
 
     @ManyToMany
     @JoinTable(
-            name = "worksace_users",
+            name = "workspace_users",
             joinColumns = @JoinColumn(name = "workspace_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
@@ -77,6 +77,10 @@ public class WorkspaceEntity {
 
     private boolean soft_delete = Boolean.FALSE;
 
+    public void addTask(TaskEntity task){
+        tasks.add(task);
+        //task.setProject(this);
+    }
 
     public void addUser(UserEntity user){
         users.add(user);

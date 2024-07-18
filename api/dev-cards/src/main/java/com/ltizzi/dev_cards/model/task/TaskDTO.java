@@ -30,7 +30,7 @@ public class TaskDTO {
     private ProgressEnum progress;
     private TaskType task_type;
 
-    private WorkspaceLiteDTO project;
+    private WorkspaceLiteDTO workspace;
 
     private List<TaskLiteDTO> dependencies = new ArrayList<>();
     private List<String> task_tags = new ArrayList<>();

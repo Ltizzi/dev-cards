@@ -39,7 +39,7 @@ public class TaskMapper {
         dto.setProgress(task.getProgress());
         dto.setTask_type(task.getTask_type());
 
-        dto.setProject(wsMapper.toWorkspaceLiteDTO(task.getProject()));
+        dto.setWorkspace(wsMapper.toWorkspaceLiteDTO(task.getWorkspace()));
         dto.setProgressItems(task.getProgressItems());
         dto.setDependencies(toArrayTaskLiteDTO(task.getDependencies()));
         dto.setTask_tags(task.getTask_tags());
@@ -83,7 +83,7 @@ public class TaskMapper {
         task.setProgress(dto.getProgress());
         task.setTask_type(dto.getTask_type());
 
-        task.setProject(wsMapper.toWorkSpaceEntity(dto.getProject()));
+        task.setWorkspace(wsMapper.toWorkSpaceEntity(dto.getWorkspace()));
 
         task.setProgressItems(dto.getProgressItems());
         task.setDependencies(toArrayTaskEntityFromLiteDTO(dto.getDependencies()));
@@ -114,7 +114,7 @@ public class TaskMapper {
         task.setStatus(dto.getStatus());
         task.setProgress(dto.getProgress());
         task.setTask_type(dto.getTask_type());
-        task.setProject(wsMapper.toWorkSpaceEntity(dto.getProject()));
+        task.setWorkspace(wsMapper.toWorkSpaceEntity(dto.getWorkspace()));
         task.setTask_tags(dto.getTask_tags());
         task.setOwner(userMapper.toUserEntity(dto.getOwner()));
         return task;
@@ -146,7 +146,7 @@ public class TaskMapper {
         liteDTO.setStatus(task.getStatus());
         liteDTO.setProgress(task.getProgress());
         liteDTO.setTask_type(task.getTask_type());
-        liteDTO.setProject(wsMapper.toWorkspaceLiteDTO(task.getProject()));
+        liteDTO.setWorkspace(wsMapper.toWorkspaceLiteDTO(task.getWorkspace()));
         liteDTO.setTask_tags(task.getTask_tags());
         liteDTO.setOwner(userMapper.toUserLiteDTO(task.getOwner()));
 

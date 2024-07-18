@@ -216,7 +216,7 @@
         description: description.value,
         progressItems: progressItems.value,
         owner: owner,
-        project: project,
+        workspace: project,
       };
       const response = (await apiCall.post(
         EndpointType.TASK_NEW,

@@ -25,7 +25,7 @@ public class TaskLiteDTO {
     private Status status;
     private ProgressEnum progress;
     private TaskType task_type;
-    private WorkspaceLiteDTO project;
+    private WorkspaceLiteDTO workspace;
     private List<String> task_tags = new ArrayList<>();
     private UserLiteDTO owner;
 }

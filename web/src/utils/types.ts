@@ -118,7 +118,7 @@ export interface Task {
   effort: Effort;
   status: Status;
   progress: Progress;
-  project: WorkspaceLite;
+  workspace: WorkspaceLite;
   task_type: TaskType;
   progressItems: Array<ProgressItem>;
   dependencies?: Array<TaskLite>;
@@ -157,7 +157,7 @@ export interface TaskLite {
   effort: Effort;
   status: Status;
   progress: Progress;
-  project: WorkspaceLite;
+  workspace: WorkspaceLite;
   task_tags: Array<string>;
   owner: UserLite;
 }

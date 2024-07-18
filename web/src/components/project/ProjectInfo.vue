@@ -61,9 +61,9 @@
   
       </div>
       <h1 class="text-3xl my-5">Tasks:</h1>
-      <NewTaskBtn/>
+      <NewTaskBtn />
     
-      <!-- <TaskList :tasks="project.tasks"/> -->
+      <TaskList :tasks="project.tasks"/>
   </div>
 </template>
 

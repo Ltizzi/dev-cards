@@ -3,6 +3,7 @@ package com.ltizzi.dev_cards.controller;
 import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.InvalidWorkspaceException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
+import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.user.UserLiteDTO;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
@@ -79,6 +80,11 @@ public class WorkspaceController {
         return new ResponseEntity<>(wsServ.deleteWorkspace(id), HttpStatus.OK);
     }
 
+//    @GetMapping("/tasks")
+//    @ResponseBody
+//    public ResponseEntity<List<TaskDTO>> getTasksByWorkspaceId(@RequestParam Long id) throws NotFoundException {
+//        return new ResponseEntity<>(wsServ.getTasksByWorkspace(id), HttpStatus.OK);
+//    }
 
 
 }

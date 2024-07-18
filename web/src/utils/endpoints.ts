@@ -13,6 +13,7 @@ export enum EndpointType {
   TASK_ADD_UPDATE = "/task/add_update",
   TASK_REMOVE_UPDATE = "/task/remove_update",
   TASK_UPDATE_TASK_UPDATE = "/task/update_tu",
+  TASKS_BY_WORKSPACE = "/task/byWorkspace",
 
   USER_GET_ALL = "/user/all",
   USER_GET_BY_ID = "/user/byId",

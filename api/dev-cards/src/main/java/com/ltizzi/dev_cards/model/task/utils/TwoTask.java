@@ -25,7 +25,7 @@ public class TwoTask {
     }
 
     public boolean sameProjectChecker(){
-        return child.getProject().equals(parent.getProject());
+        return child.getWorkspace().equals(parent.getWorkspace());
     }
 
     public boolean dependencyChecker(){
