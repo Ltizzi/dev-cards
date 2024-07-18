@@ -4,7 +4,9 @@
     v-if="props.showModal"
     @closeModal="closeModal"
   >
-    <div class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2">
+    <div
+      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2 opacity-100"
+    >
       <h1 class="2xltext-3xl text-center text-xl font-bold">New Task</h1>
       <div class="flex flex-row justify-evenly gap-5 py-3">
         <label
@@ -28,7 +30,9 @@
       <div class="flex flex-row flex-wrap justify-evenly gap-5 py-3">
         <select class="select select-primary w-80 max-w-xs" v-model="color">
           <option disabled selected>Pick a color</option>
-          <option v-for="color in ColorEnumArray">{{ color }}</option>
+          <option v-for="color in ColorEnumArray">
+            <span :class="['h-5 w-5', colo]"></span>{{ color }}
+          </option>
         </select>
         <select class="select select-primary w-80 max-w-xs" v-model="priority">
           <option disabled selected>Choose Priority</option>
@@ -110,7 +114,7 @@
         <span>Error! Task failed successfully.</span>
       </div>
 
-      <button class="btn btn-outline btn-accent" @click="createTask">
+      <button class="btn btn-accent" @click="createTask">
         Create
         <span class="loading loading-dots loading-sm" v-if="requestSent"></span>
       </button>
@@ -136,11 +140,13 @@
     TaskType,
     UserLite,
     WorkspaceLite,
+    Status,
+    Progress,
+    Task,
   } from "../../utils/types";
   import { useUserStore } from "../../store/user.store";
   import { useProjectStore } from "../../store/project.store";
   import { EndpointType } from "../../utils/endpoints";
-  import { Status, Progress, Task } from "../../utils/types";
 
   const apiCall = useApiCall();
   const taskStore = useTaskStore();
@@ -149,10 +155,10 @@
 
   const title = ref<string>();
   const subtitle = ref<string>();
-  const color = ref<Color>();
-  const priority = ref<Priority>();
-  const effort = ref<Effort>();
-  const task_type = ref<TaskType>();
+  const color = ref<Color | string>("Pick a color");
+  const priority = ref<Priority | string>("Choose Priority");
+  const effort = ref<Effort | string>("Choose Effort");
+  const task_type = ref<TaskType | string>("Choose Task type");
   const description = ref<string>();
 
   const progressItems = ref<Array<ProgressItem>>([]);
@@ -207,12 +213,12 @@
       const newTask: Task = {
         title: title.value,
         subtitle: subtitle.value,
-        color: color.value,
-        priority: priority.value,
-        effort: effort.value,
+        color: color.value as Color,
+        priority: priority.value as Priority,
+        effort: effort.value as Effort,
         status: Status.PENDING,
         progress: Progress.NULL,
-        task_type: task_type.value,
+        task_type: task_type.value as TaskType,
         description: description.value,
         progressItems: progressItems.value,
         owner: owner,

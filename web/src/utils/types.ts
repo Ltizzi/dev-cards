@@ -21,6 +21,16 @@ export enum Color {
   BLACK = "BLACK",
   PINK = "PINK",
   CYAN = "CYAN",
+  VIOLET = "VIOLET",
+  INDIGO = "INDIGO",
+  FUCHSIA = "FUCHSIA",
+  ROSE = "ROSE",
+  SKY = "SKY",
+  TEAL = "TEAL",
+  EMERALD = "EMERALD",
+  LIME = "LIME",
+  AMBER = "AMBER",
+  SLATE = "SLATE",
 }
 
 export const ColorEnumArray = [
@@ -35,6 +45,16 @@ export const ColorEnumArray = [
   Color.BLACK,
   Color.PINK,
   Color.CYAN,
+  Color.VIOLET,
+  Color.INDIGO,
+  Color.FUCHSIA,
+  Color.ROSE,
+  Color.SKY,
+  Color.TEAL,
+  Color.EMERALD,
+  Color.LIME,
+  Color.AMBER,
+  Color.SLATE,
 ];
 
 export enum Priority {

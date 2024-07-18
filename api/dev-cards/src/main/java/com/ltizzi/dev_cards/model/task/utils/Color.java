@@ -17,4 +17,14 @@ public enum Color {
     BLACK,
     PINK,
     CYAN,
+    VIOLET,
+    INDIGO,
+    FUCHSIA,
+    ROSE,
+    SKY,
+    TEAL,
+    EMERALD,
+    LIME,
+    AMBER,
+    SLATE
 }
