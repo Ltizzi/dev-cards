@@ -8,7 +8,7 @@
       class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2 opacity-100"
     >
       <h1 class="2xltext-3xl text-center text-xl font-bold">New Task</h1>
-      <div class="flex flex-row justify-evenly gap-5 py-3">
+      <div class="flex flex-row justify-evenly gap-3 py-3">
         <label
           class="input input-bordered input-primary w-1/2 flex items-center gap-2"
         >
@@ -30,10 +30,11 @@
       <div class="flex flex-row flex-wrap justify-evenly gap-5 py-3">
         <select class="select select-primary w-80 max-w-xs" v-model="color">
           <option disabled selected>Pick a color</option>
-          <option v-for="color in ColorEnumArray">
-            <span :class="['h-5 w-5', colo]"></span>{{ color }}
+          <option v-for="color in ColorEnumArray" class="flex items-center">
+            {{ color }}
           </option>
         </select>
+
         <select class="select select-primary w-80 max-w-xs" v-model="priority">
           <option disabled selected>Choose Priority</option>
           <option v-for="priority in PriorityEnumArray">{{ priority }}</option>
@@ -48,7 +49,14 @@
           <option v-for="taskType in TaskTypeEnumArray">{{ taskType }}</option>
         </select>
       </div>
-      <div class="flex flex-col justify-evenly gap-5 py-3">
+      <!--       v-if="color != 'Pick a color'" -->
+      <div
+        :class="[
+          'w-full h-2 rounded-xl pt-2',
+          color != 'Pick a color' ? getColor(color) : '',
+        ]"
+      ></div>
+      <div class="flex flex-col justify-evenly gap-5 pb-3">
         <ol class="flex flex-col justify-center text-white">
           <li
             v-for="item in progressItems"
@@ -111,7 +119,7 @@
             d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <span>Error! Task failed successfully.</span>
+        <span>Error! {{ error_message }}</span>
       </div>
 
       <button class="btn btn-accent" @click="createTask">
@@ -147,6 +155,7 @@
   import { useUserStore } from "../../store/user.store";
   import { useProjectStore } from "../../store/project.store";
   import { EndpointType } from "../../utils/endpoints";
+  import { taskUtils } from "../../utils/task.utils";
 
   const apiCall = useApiCall();
   const taskStore = useTaskStore();
@@ -156,6 +165,7 @@
   const title = ref<string>();
   const subtitle = ref<string>();
   const color = ref<Color | string>("Pick a color");
+  const getColor = (color: Color) => taskUtils.getColor(color);
   const priority = ref<Priority | string>("Choose Priority");
   const effort = ref<Effort | string>("Choose Effort");
   const task_type = ref<TaskType | string>("Choose Task type");
@@ -180,6 +190,7 @@
   const requestSent = ref(false);
   const success = ref(false);
   const failed = ref(false);
+  const error_message = ref("");
 
   async function createTask() {
     requestSent.value = true;
@@ -234,15 +245,30 @@
         success.value = true;
         setTimeout(() => {
           success.value = false;
+          clearFields();
+          closeModal();
         }, 3000);
       } else {
         failed.value = true;
+        error_message.value = response as unknown as string;
         setTimeout(() => {
           requestSent.value = false;
-          closeModal();
+          //closeModal();
         }, 3000);
       }
     }
+  }
+
+  function clearFields() {
+    progressItems.value = [];
+    title.value = "";
+    subtitle.value = "";
+    color.value = "Pick a color";
+    priority.value = "Choose Priority";
+    effort.value = "Choose Effort";
+    task_type.value = "Choose Task type";
+    description.value = "";
+    progressItems.value = [];
   }
 
   // MODAL
@@ -250,8 +276,6 @@
   const emit = defineEmits(["close"]);
 
   function closeModal() {
-    progressItems.value = [];
-
     emit("close", false);
   }
 

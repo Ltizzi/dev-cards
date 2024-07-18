@@ -45,42 +45,6 @@
 
   const progress = ref<number>(0);
 
-  // function calcProgress(progress: Progress) {
-  //   switch (progress) {
-  //     case Progress.NULL:
-  //       return 0;
-
-  //     case Progress.NOT_FUNCTIONAL:
-  //       return 30;
-
-  //     case Progress.BASIC:
-  //       return 45;
-
-  //     case Progress.INTERMEDIATE:
-  //       return 60;
-
-  //     case Progress.ADVANCE:
-  //       return 80;
-  //     default:
-  //       return 0;
-  //   }
-  // }
-
-  // function calcPriorityColor(priority: Priority) {
-  //   switch (priority) {
-  //     case Priority.VERY_LOW:
-  //       return "font_emerald";
-  //     case Priority.LOW:
-  //       return "font_green";
-  //     case Priority.MEDIUM:
-  //       return "font_lime";
-  //     case Priority.HIGH:
-  //       return "font_amber";
-  //     case Priority.VERY_HIGH:
-  //       return "font_red";
-  //   }
-  // }
-
   onBeforeMount(() => {
     color.value = taskUtils.getColor(props.task.color);
     if (props.task.status != Status.COMPLETED) {

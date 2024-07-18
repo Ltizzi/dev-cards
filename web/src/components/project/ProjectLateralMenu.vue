@@ -52,6 +52,8 @@
   import { onBeforeMount, ref } from "vue";
   import { Workspace } from "../../utils/types";
   import { useProjectStore } from "../../store/project.store";
+  import { useApiCall } from "../../composables/useAPICall";
+  import { EndpointType } from "../../utils/endpoints";
 
   const route = useRoute();
   const router = useRouter();
@@ -59,6 +61,8 @@
   const id = ref<number>();
 
   const projectStore = useProjectStore();
+
+  const apiCall = useApiCall();
 
   const project = ref<Workspace>();
 
@@ -71,11 +75,20 @@
     }
   }
 
-  onBeforeMount(() => {
+  onBeforeMount(async () => {
     if (route.query.id) id.value = +route.query.id;
     project.value = projectStore.current;
     if (project.value.workspace_id) {
       isLoaded.value = true;
+    } else {
+      const response = (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {
+        params: { id: id.value },
+      })) as Workspace;
+      if (response.workspace_id) {
+        projectStore.setCurrent(response);
+        project.value = response;
+        isLoaded.value = true;
+      }
     }
   });
 </script>
