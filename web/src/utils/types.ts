@@ -151,7 +151,7 @@ export interface TaskUpdate {
 export interface TaskLite {
   task_id: number;
   title: string;
-  subtitle: string;
+  //subtitle: string;
   color: Color;
   priority: Priority;
   effort: Effort;
@@ -159,7 +159,7 @@ export interface TaskLite {
   progress: Progress;
   workspace: WorkspaceLite;
   task_tags: Array<string>;
-  owner: UserLite;
+  // owner: UserLite;
 }
 
 export interface Workspace {

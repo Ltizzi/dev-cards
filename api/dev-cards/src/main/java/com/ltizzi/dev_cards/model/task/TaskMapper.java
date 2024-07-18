@@ -108,7 +108,7 @@ public class TaskMapper {
             task = taskRepo.findById(dto.getTask_id()).orElse(null);
         }
         task.setTitle(dto.getTitle());
-        task.setSubtitle(dto.getSubtitle());
+       // task.setSubtitle(dto.getSubtitle());
         task.setColor(dto.getColor());
         task.setPriority(dto.getPriority());
         task.setStatus(dto.getStatus());
@@ -116,7 +116,7 @@ public class TaskMapper {
         task.setTask_type(dto.getTask_type());
         task.setWorkspace(wsMapper.toWorkSpaceEntity(dto.getWorkspace()));
         task.setTask_tags(dto.getTask_tags());
-        task.setOwner(userMapper.toUserEntity(dto.getOwner()));
+       // task.setOwner(userMapper.toUserEntity(dto.getOwner()));
         return task;
     }
 
@@ -140,7 +140,7 @@ public class TaskMapper {
         TaskLiteDTO liteDTO = new TaskLiteDTO();
         liteDTO.setTask_id(task.getTask_id());
         liteDTO.setTitle(task.getTitle());
-        liteDTO.setSubtitle(task.getSubtitle());
+       // liteDTO.setSubtitle(task.getSubtitle());
         liteDTO.setColor(task.getColor());
         liteDTO.setPriority(task.getPriority());
         liteDTO.setStatus(task.getStatus());
@@ -148,7 +148,7 @@ public class TaskMapper {
         liteDTO.setTask_type(task.getTask_type());
         liteDTO.setWorkspace(wsMapper.toWorkspaceLiteDTO(task.getWorkspace()));
         liteDTO.setTask_tags(task.getTask_tags());
-        liteDTO.setOwner(userMapper.toUserLiteDTO(task.getOwner()));
+       // liteDTO.setOwner(userMapper.toUserLiteDTO(task.getOwner()));
 
         return liteDTO;
     }

@@ -19,7 +19,7 @@ public class TaskLiteDTO {
 
     private Long task_id;
     private String title;
-    private String subtitle;
+    //private String subtitle;
     private Color color;
     private PriorityEnum priority;
     private Status status;
@@ -27,5 +27,5 @@ public class TaskLiteDTO {
     private TaskType task_type;
     private WorkspaceLiteDTO workspace;
     private List<String> task_tags = new ArrayList<>();
-    private UserLiteDTO owner;
+    //private UserLiteDTO owner;
 }
