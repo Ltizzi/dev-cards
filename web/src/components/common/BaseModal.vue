@@ -9,7 +9,7 @@
         @click="$emit('closeModal')"
       ></div>
       <div
-        class="container fixed z-50 w-auto rounded-md border-2 border-secondary px-5 shadow-xl"
+        class="container fixed z-50 w-auto rounded-md border-2 border-secondary shadow-xl"
       >
         <slot></slot>
       </div>

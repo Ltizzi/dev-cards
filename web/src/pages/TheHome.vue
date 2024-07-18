@@ -1,10 +1,12 @@
 <template lang="">
-  <div class="flex flex-row justify-between w-full" v-if="isLoaded">
-    asdasd
-    <!-- <LateralMenu class="w-24" />
+  <div
+    class="flex flex-row gap-96 mx-96 justify-between w-full"
+    v-if="isLoaded"
+  >
     <div class="w-full">
-      <router-view></router-view>
-    </div> -->
+      <h1>asdasd</h1>
+    </div>
+
     <button
       class="btn btn-outline btn-success"
       @click="login"
@@ -22,7 +24,6 @@
   </div>
 </template>
 <script setup lang="ts">
-  import LateralMenu from "../layouts/LateralMenu.vue";
   import { useRouter } from "vue-router";
   import { onBeforeMount, ref } from "vue";
   import { useUserStore } from "../store/user.store";

@@ -1,6 +1,6 @@
 <template lang="">
   <ul
-    class="menu bg-base-200 rounded-box w-56 mt-10 before:ring-offset-purple-400"
+    class="menu bg-base-200 rounded-box w-52 mt-10 before:ring-offset-purple-400"
     v-if="isLoaded"
   >
     <li class="active"><a @click="goTo('info')">Info</a></li>
@@ -9,12 +9,44 @@
         <summary>
           <span>Tasks</span>
         </summary>
-
         <ul class="before:ring-offset-purple-400">
-          <li v-for="task in project.tasks">
-            <a>{{ task.name }}</a>
-          </li>
-          <!-- <li><a>Submenu 2</a></li>
+          <details open>
+            <summary>
+              <span>All</span>
+            </summary>
+            <ul class="before:ring-offset-purple-400">
+              <li
+                v-for="task in project.tasks"
+                class="rounded-xl w-full"
+              >
+            
+
+                <p class="text-white">    <div>
+                  <div
+                    :class="[
+                      'h-2 w-3 rounded-full',
+                      taskUtils.getColor(task.color),
+                    ]"
+                  ></div>
+                </div>{{ task.title }}</p>
+              </li>
+            </ul>
+          </details>
+          <details open>
+            <summary>
+              <span>Designated</span>
+            </summary>
+            <ul class="before:ring-offset-purple-400"></ul>
+          </details>
+          <details open>
+            <summary>
+              <span>Moderator</span>
+            </summary>
+            <ul class="before:ring-offset-purple-400"></ul>
+          </details>
+        </ul>
+
+        <!-- <li><a>Submenu 2</a></li>
           <li>
             <details open>
               <summary>Parent</summary>
@@ -24,7 +56,6 @@
               </ul>
             </details>
           </li> -->
-        </ul>
       </details>
     </li>
     <li>
@@ -54,6 +85,7 @@
   import { useProjectStore } from "../../store/project.store";
   import { useApiCall } from "../../composables/useAPICall";
   import { EndpointType } from "../../utils/endpoints";
+  import { taskUtils } from "../../utils/task.utils";
 
   const route = useRoute();
   const router = useRouter();

@@ -5,7 +5,7 @@
     @closeModal="closeModal"
   >
     <div
-      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2 opacity-100"
+      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2 bg-default w-full"
     >
       <h1 class="2xltext-3xl text-center text-xl font-bold">New Task</h1>
       <div class="flex flex-row justify-evenly gap-3 py-3">
@@ -86,6 +86,7 @@
       <textarea
         class="textarea textarea-primary"
         placeholder="Description"
+        rows="5"
         v-model="description"
       ></textarea>
 
@@ -122,7 +123,10 @@
         <span>Error! {{ error_message }}</span>
       </div>
 
-      <button class="btn btn-accent" @click="createTask">
+      <button
+        class="btn btn-accent btn-outline w-20 mx-auto"
+        @click="createTask"
+      >
         Create
         <span class="loading loading-dots loading-sm" v-if="requestSent"></span>
       </button>

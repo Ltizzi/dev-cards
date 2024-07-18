@@ -1,5 +1,5 @@
 <template lang="">
-  <div>
+  <div class="w-20">
     <div class="flex flex-col justify-center mx-auto py-5 px-2" v-if="isLoaded">
       <div class="avatar" v-if="isLogged">
         <div class="w-14 h-14 rounded-full mx-auto" @click="goHome">

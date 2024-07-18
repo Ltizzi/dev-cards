@@ -1,8 +1,10 @@
 <template lang="">
-  <div class="flex flex-row justify-between w-full">
-    <LateralMenu class="w-24" />
-    <div class="w-full">
-      <router-view></router-view>
+  <div class="flex flex-row justify-between w-screen relative">
+    <LateralMenu class="h-screen fixed" />
+    <div class="w-fit absolute left-20">
+      <div class="w-full">
+        <router-view></router-view>
+      </div>
     </div>
   </div>
 </template>

@@ -85,9 +85,4 @@
   onMounted(() => {});
 </script>
 
-<style>
-  .purple {
-    background-color: #a855f7;
-    color: white;
-  }
-</style>
+<style></style>

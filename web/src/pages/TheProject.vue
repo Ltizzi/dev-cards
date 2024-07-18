@@ -1,7 +1,9 @@
 <template lang="">
-  <div class="flex flex-row justify-center w-full" v-if="isLoaded">
-    <ProjectLateralMenu class="w-2/12" />
-    <router-view></router-view>
+  <div class="flex flex-row justify-center w-full relative" v-if="isLoaded">
+    <ProjectLateralMenu class="h-screen left-20 fixed" />
+    <div class="ml-56 w-full">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
