@@ -26,7 +26,9 @@
         <p>{{ props.task.description }}</p>
 
         <div class="card-actions justify-end">
-          <button class="btn btn-primary text-white">Enter</button>
+          <button class="btn btn-primary text-white" @click="goToTask()">
+            Enter
+          </button>
         </div>
       </div>
     </div>
@@ -34,8 +36,11 @@
 </template>
 <script setup lang="ts">
   import { defineProps, onBeforeMount, ref } from "vue";
-  import { Task, Progress, Status, Priority } from "../../utils/types";
+  import { Task, Status } from "../../utils/types";
   import { taskUtils } from "../../utils/task.utils";
+  import { useRouter } from "vue-router";
+
+  const router = useRouter();
 
   const props = defineProps<{ task: Task }>();
 
@@ -44,6 +49,10 @@
   const priority_color = ref<string>();
 
   const progress = ref<number>(0);
+
+  function goToTask() {
+    router.push(`/project/task?id=${props.task.task_id}`);
+  }
 
   onBeforeMount(() => {
     color.value = taskUtils.getColor(props.task.color);

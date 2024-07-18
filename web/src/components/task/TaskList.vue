@@ -20,9 +20,9 @@
   const tasks = ref<Array<Task>>();
 
   onBeforeMount(async () => {
-    const list = taskStore.currentProjectTasks;
-    if (list.length > 0) {
-      tasks.value = list;
-    }
+    // const list = taskStore.currentProjectTasks;
+    // if (list.length > 0) {
+    //   tasks.value = list;
+    // }
   });
 </script>

@@ -18,6 +18,7 @@
               <li
                 v-for="task in project.tasks"
                 class="rounded-xl w-full"
+                @click="goTask(task.task_id)"
               >
             
 
@@ -105,6 +106,10 @@
       case "info":
         router.push(`/project/info?id=${id.value}`);
     }
+  }
+
+  function goTask(id: number){
+    router.push(`/project/task?id=${id}`)
   }
 
   onBeforeMount(async () => {

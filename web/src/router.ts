@@ -21,7 +21,10 @@ const router = createRouter({
     {
       path: "/project",
       component: TheProject,
-      children: [{ path: "info", component: ProjectInfo }],
+      children: [
+        { path: "info", component: ProjectInfo },
+        { path: "task", component: TheTask },
+      ],
     },
 
     { path: "/login", name: "Login", component: Login },
@@ -39,7 +42,6 @@ const router = createRouter({
         { path: "project", component: NewProject },
       ],
     },
-    { path: "/task", component: TheTask },
   ],
 });
 

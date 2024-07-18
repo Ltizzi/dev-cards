@@ -8,6 +8,7 @@ export const useTaskStore = defineStore("tasks", {
     tasks: [] as Array<Task>,
     taskById: {} as Task,
     currentTask: {} as Task,
+    previousTask: {} as Task,
     currentProjectTasks: [] as Array<Task>,
   }),
   actions: {
