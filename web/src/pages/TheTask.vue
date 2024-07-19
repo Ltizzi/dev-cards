@@ -26,7 +26,7 @@
             <p>by {{ card.owner.username }}</p>
           </div>
           <div
-            class="flex flex-col justify-end gap-3 py-3 px-5 border-l-2 border-secondary min-w-96"
+            class="flex flex-col justify-start gap-3 py-3 pl-5 pr-20 border-l-2 border-secondary min-w-96"
           >
             <div class="flex flex-row justify-evenly gap-3">
               <h3 :class="['font-bold', priority_color]">

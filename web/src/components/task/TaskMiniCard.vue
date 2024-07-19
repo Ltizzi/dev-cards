@@ -1,37 +1,44 @@
 <template lang="">
   <div class="card bg-base-100 w-72 shadow-xl">
     <div
-      class="bg-white text-slate-700 rounded-xl transition-all hover:scale-105"
+      class="bg-white text-slate-700 rounded-xl transition-all hover:scale-105 max-h-48 min-h-48"
     >
       <div :class="['h-7 w-full -mb-5 rounded-t-xl z-10', color]"></div>
-      <div class="px-7 py-7">
-        <div class="flex flex-row justify-between">
-          <h2 class="card-title">{{ props.task.title }}</h2>
-          <h3 :class="['font-bold', priority_color]">
-            {{ props.task.priority }}
+      <div class="px-5 py-7">
+        <div class="flex flex-row justify-between my-auto align-middle">
+          <h2 class="card-title">{{ generateTitle(props.task.title) }}</h2>
+          <h3 :class="['font-bold mt-1 text-end', priority_color]">
+            {{ generatePriority(props.task.priority) }}
           </h3>
         </div>
-        <div class="flex flex-col justify-start gap-2 pt-2">
+        <div class="flex flex-col justify-start gap-2 pt-3">
           <h3>{{ props.task.status }}</h3>
-          <progress
+          <!-- <progress
             class="progress progress-success w-56 py-2"
             :value="progress"
             max="100"
             v-if="progress > 0"
-          ></progress>
+          ></progress> -->
 
-          <div class="flex flex-row justify-evenly">
-            <h4 v-for="tag in task_tags">{{ tag }}</h4>
+          <div class="h-16">
+            <div
+              v-if="task_tags"
+              class="flex flex-row flex-nowrap justify-between"
+            >
+              <h4 v-for="tag in task_tags">{{ tag }}</h4>
+            </div>
           </div>
         </div>
-
-        <p>{{ props.task.description }}</p>
-
-        <div class="card-actions justify-end">
-          <button class="btn btn-primary text-white" @click="goToTask()">
+        <div class="card-actions justify-end relative">
+          <button
+            class="btn btn-primary text-white absolute -top-10"
+            @click="goToTask()"
+          >
             Enter
           </button>
         </div>
+
+        <!-- <p>{{ props.task.description }}</p> -->
       </div>
     </div>
   </div>
@@ -54,6 +61,22 @@
 
   function goToTask() {
     router.push(`/project/task?id=${props.task.task_id}`);
+  }
+
+  function generatePriority(priority: string) {
+    let divided = priority.split("_");
+
+    if (divided.length > 1) {
+      return divided[0] + " " + divided[1];
+    } else return priority;
+  }
+
+  function generateTitle(title: string) {
+    if (title.length > 15) {
+      let splited_title = title.slice(0, 15);
+      console.log(splited_title);
+      return splited_title + "...";
+    } else return title;
   }
 
   onBeforeMount(() => {

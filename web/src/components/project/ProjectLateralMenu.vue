@@ -106,6 +106,15 @@
     }
   );
 
+  watch(
+    () => projectStore.current,
+    (newValue, oldValue) => {
+      if (newValue.workspace_id == oldValue.workspace_id) {
+        project.value = projectStore.current;
+      }
+    }
+  );
+
   function goHome() {
     state.selected = 0;
     router.push(`/project/info?id=${id.value}`);

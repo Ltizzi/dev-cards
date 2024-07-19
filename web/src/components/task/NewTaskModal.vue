@@ -160,6 +160,7 @@
   import { useProjectStore } from "../../store/project.store";
   import { EndpointType } from "../../utils/endpoints";
   import { taskUtils } from "../../utils/task.utils";
+  import { Workspace } from "../../utils/types";
 
   const apiCall = useApiCall();
   const taskStore = useTaskStore();
@@ -245,6 +246,7 @@
       )) as Task;
       if (response.task_id) {
         taskStore.addTaskToCurrentProject(response);
+        projectStore.updateCurrent();
         requestSent.value = false;
         success.value = true;
         setTimeout(() => {

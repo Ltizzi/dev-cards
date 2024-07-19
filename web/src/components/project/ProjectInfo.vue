@@ -68,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-  import { onBeforeMount, ref } from "vue";
+  import { onBeforeMount, ref, watch } from "vue";
   import { Workspace } from "../../utils/types";
   import { useProjectStore } from "../../store/project.store";
   import { useRoute } from "vue-router";
@@ -86,6 +86,13 @@
   const project = ref<Workspace>();
 
   const isLoaded = ref(false);
+
+  watch(()=> projectStore.current, (newValue, oldValue)=>{
+    if(newValue != oldValue){
+      project.value = projectStore.current;
+    }
+    
+  })
 
 
   onBeforeMount(async () => {
