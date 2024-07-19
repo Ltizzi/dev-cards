@@ -100,6 +100,7 @@
         </div>
       </div>
     </div>
+    <TaskControlSideMenu></TaskControlSideMenu>
   </div>
 </template>
 <script setup lang="ts">
@@ -110,6 +111,7 @@
   import { EndpointType } from "../utils/endpoints";
   import { useRoute } from "vue-router";
   import { taskUtils } from "../utils/task.utils";
+  import TaskControlSideMenu from "../components/task/TaskControlSideMenu.vue";
 
   const card = ref<Task>();
   const taskStore = useTaskStore();
