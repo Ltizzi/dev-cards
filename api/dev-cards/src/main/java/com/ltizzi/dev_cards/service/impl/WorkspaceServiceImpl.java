@@ -93,6 +93,19 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     }
 
+    @Override
+    public List<UserLiteDTO> addUserByEmail(Long workspace_id, String email) throws NotFoundException {
+        WorkspaceEntity ws = wsRepo.findById(workspace_id).orElseThrow(()-> new NotFoundException("Workspace not found!"));
+        UserEntity user = userRepo.findByEmail(email).get(0);
+        if(user == null){
+            throw  new NotFoundException("User not found!");
+        }
+        List<UserEntity> users = ws.getUsers();
+        users.add(user);
+        ws.setUsers(users);
+        ws = wsRepo.save(ws);
+        return wsMapper.toWorkspaceDTO(ws).getUsers();
+    }
 
 
     @Override
@@ -147,16 +160,5 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
 
-//
-//    @Override
-//    public List<TaskDTO> getTasksByWorkspace(Long workspace_id) throws NotFoundException {
-//        List<TaskEntity> tasks = wsRepo.findTasksByWorkspaceId(workspace_id).orElseThrow(()-> new NotFoundException("Workspace not found"));
-//        return taskMapper.toArrayTaskDTO(tasks);
-//    }
-//
-//    @Override
-//    public List<UserDTO> getUsersByWorkspace(Long workspace_id) throws NotFoundException {
-//        List<UserEntity> users = wsRepo.findUsersByWorkspaceId(workspace_id).orElseThrow(()-> new NotFoundException("Workspace not found"));
-//        return userMapper.toArrayUserDTO(users);
-//    }
+
 }

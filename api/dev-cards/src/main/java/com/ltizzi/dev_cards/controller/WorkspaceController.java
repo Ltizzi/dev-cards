@@ -80,6 +80,12 @@ public class WorkspaceController {
         return new ResponseEntity<>(wsServ.deleteWorkspace(id), HttpStatus.OK);
     }
 
+    @PostMapping("/inviteByEmail")
+    @ResponseBody
+    public ResponseEntity<List<UserLiteDTO>> inviteUserByEmail(@RequestParam Long id, @RequestParam String email) throws NotFoundException {
+        return new ResponseEntity<>(wsServ.addUserByEmail(id, email), HttpStatus.OK);
+    }
+
 //    @GetMapping("/tasks")
 //    @ResponseBody
 //    public ResponseEntity<List<TaskDTO>> getTasksByWorkspaceId(@RequestParam Long id) throws NotFoundException {
