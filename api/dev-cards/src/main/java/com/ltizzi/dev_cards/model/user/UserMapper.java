@@ -77,7 +77,7 @@ public class UserMapper {
         }
         user.setCreated_at(dto.getCreated_at());
         user.setUpdated_at(dto.getUpdated_at());
-        user.setRoles(dto.getRoles());
+        //user.setRoles(dto.getRoles());
         return user;
 
     }

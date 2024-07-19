@@ -1,6 +1,8 @@
 <template lang="">
   <div class="card bg-base-100 w-72 shadow-xl">
-    <div class="bg-white text-slate-700 rounded-xl">
+    <div
+      class="bg-white text-slate-700 rounded-xl transition-all hover:scale-105"
+    >
       <div :class="['h-7 w-full -mb-5 rounded-t-xl z-10', color]"></div>
       <div class="px-7 py-7">
         <div class="flex flex-row justify-between">

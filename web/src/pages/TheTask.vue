@@ -1,23 +1,37 @@
 <template lang="">
   <div class="flex justify-center mt-20 w-full ml-5 rounded-2xl">
-    <div class="w-full rounded-xl border-2 border-primary p-2" v-if="card">
+    <div
+      class="w-full rounded-xl border-b-2 border-x-2 border-primary pb-2"
+      v-if="card"
+    >
       <div class="flex flex-col text-center gap-0">
-        <h1
-          :class="['text-3xl py-2 font-bold rounded-t-lg', `${title_color}`]"
-          ref="card_title"
-        >
-          {{ card.title }}
-        </h1>
+        <div :class="['w-full h-5 rounded-t-lg', title_color]"></div>
 
         <div
           class="flex flex-row justify-between mb-2 border-b-2 border-secondary"
         >
-          <h2 class="text-2xl ml-2">{{ card.workspace.project_name }}</h2>
+          <h2
+            class="text-2xl ml-2 border-r-2 border-secondary px-2 py-3 my-auto min-w-44"
+          >
+            {{ card.workspace.project_name }}
+          </h2>
+
+          <h1
+            class="text-3xl py-2 font-bold rounded-t-lg my-auto w-2/3"
+            ref="card_title"
+          >
+            {{ card.title }}
+          </h1>
+          <div class="my-auto min-w-36 border-l-2 border-secondary py-5 px-1">
+            <p>by {{ card.owner.username }}</p>
+          </div>
           <div
             class="flex flex-col justify-end gap-3 py-3 px-5 border-l-2 border-secondary min-w-96"
           >
             <div class="flex flex-row justify-evenly gap-3">
-              <h3 :class="priority_color">{{ card.priority }}</h3>
+              <h3 :class="['font-bold', priority_color]">
+                {{ card.priority }}
+              </h3>
               <!-- <h3>{{ card.progress }}</h3> -->
               <h3>{{ card.status }}</h3>
               <h3>{{ card.effort }}</h3>
@@ -42,7 +56,6 @@
           </div>
 
           <div class="">
-            <p>Owner: {{ card.owner.username }}</p>
             <p>
               Designated to:
               <span class="gap-2" v-for="user of card.designated_to">
