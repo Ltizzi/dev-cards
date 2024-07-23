@@ -58,15 +58,16 @@
             ></progress>
           </div>
         </div>
-        <div class="px-3 py-5 flex flex-col gap-0 justify-start">
+        <div class="px-3 py-5 flex flex-col gap-2 justify-start">
           <h2 class="text-2xl text-start">{{ card.subtitle }}</h2>
           <div class="flex flex-row justify-start gap-2">
-            <p
-              v-for="tag in card.task_tags"
-              :class="['px-2 py-0.5 rounded-lg']"
-            >
-              {{ tag }}
-            </p>
+            <div v-for="tag in card.task_tags" class="flex flex-row gap-1">
+              <p
+                class="rounded-lg bg-secondary text-white capitalize px-3 transition-all ease-in-out duration-300 hover:scale-110"
+              >
+                {{ tag }}
+              </p>
+            </div>
           </div>
 
           <div class="text-start">

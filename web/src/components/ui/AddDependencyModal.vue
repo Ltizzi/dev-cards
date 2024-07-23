@@ -149,7 +149,16 @@
 
   function filterTask(tasks: Array<TaskLite>) {
     return tasks.filter(
-      (task: TaskLite) => task.task_id != taskStore.currentTask.task_id
+      (task: TaskLite) =>
+        task.task_id != taskStore.currentTask.task_id && !checkDependency(task)
+    );
+  }
+
+  function checkDependency(task: TaskLite) {
+    return (
+      taskStore.currentTask.dependencies?.filter(
+        (d: TaskLite) => d.task_id == task.task_id
+      ).length > 0
     );
   }
 
