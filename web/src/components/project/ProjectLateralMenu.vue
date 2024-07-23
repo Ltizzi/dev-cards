@@ -37,7 +37,7 @@
                       taskUtils.getColor(task.color),
                     ]"
                   ></span>
-                  {{ task.title }}
+                  {{ shortName(task.title) }}
                 </p>
               </li>
             </ul>
@@ -123,6 +123,12 @@
   function goTask(id: number) {
     state.selected = id;
     router.push(`/project/task?id=${id}`);
+  }
+
+  function shortName(name: string) {
+    if (name.length > 15) {
+      return name.slice(0, 15) + "(...)";
+    } else return name;
   }
 
   onBeforeMount(async () => {
