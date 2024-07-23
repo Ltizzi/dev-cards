@@ -6,8 +6,13 @@
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Assign User"
+        @click="modalSwitch('addUser')"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'user-plus']" />
+        <AddUserModal
+          :showModal="modalState.addUser"
+          @close="modalSwitch('addUser')"
+        ></AddUserModal>
       </li>
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
@@ -36,4 +41,22 @@
     </ul>
   </div>
 </template>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import { reactive } from "vue";
+  import AddUserModal from "../ui/AddUserModal.vue";
+
+  const modalState = reactive({
+    addUser: false,
+    removeUser: false,
+    addTag: false,
+    addDependecy: false,
+    addUpdate: false,
+  });
+
+  function modalSwitch(modal: string) {
+    switch (modal) {
+      case "addUser":
+        modalState.addUser = !modalState.addUser;
+    }
+  }
+</script>

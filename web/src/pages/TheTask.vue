@@ -58,7 +58,7 @@
             ></progress>
           </div>
         </div>
-        <div class="px-3 py-5 flex flex-col gap-5 justify-start">
+        <div class="px-3 py-5 flex flex-col gap-0 justify-start">
           <h2 class="text-2xl text-start">{{ card.subtitle }}</h2>
           <div class="flex flex-row justify-start gap-2">
             <p
@@ -70,16 +70,26 @@
           </div>
 
           <div class="text-start">
-            <p>
-              Designated to:
-              <span class="gap-2" v-for="user of card.designated_to">
-                {{ user.username }}</span
-              >
-            </p>
+            <p class="text-xl py-5 underline">Designated to:</p>
+            <div class="flex flex-row justify-start gap-5 ml-5">
+              <div class="w-auto" v-for="user of card.designated_to">
+                <div
+                  class="flex flex-row gap-2 align-middle justify-start text-lg font-semibold"
+                >
+                  <div class="avatar">
+                    <div class="w-8 rounded-full">
+                      <img :src="user.avatar" />
+                    </div>
+                  </div>
+                  <span> {{ user.username }}, </span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="flex my-5 mx-5">
-            <p>{{ card.description }}</p>
+          <div class="flex my-5 mx-2 flex-col text-start">
+            <p class="text-xl underline font-semibold pb-2">Description:</p>
+            <p class="indent-5 text-lg">{{ card.description }}</p>
           </div>
 
           <div class="flex flex-row gap-2" v-if="card.dependencies">
@@ -148,6 +158,16 @@
           taskStore.setCurrentTask(task);
           prepareTaskData(task);
         }
+      }
+    }
+  );
+
+  watch(
+    () => taskStore.currentTask,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        card.value = newValue;
+        prepareTaskData(newValue);
       }
     }
   );

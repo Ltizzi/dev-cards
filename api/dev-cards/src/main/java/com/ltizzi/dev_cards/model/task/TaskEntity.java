@@ -98,13 +98,14 @@ public class TaskEntity {
     @JoinColumn(name = "owner_id")
     private UserEntity owner;
 
-    @ManyToMany
-    @JoinTable(
-            name = "task_user",
-            joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<UserEntity> designated_to;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "task_user",
+//            joinColumns = @JoinColumn(name = "task_id"),
+//            inverseJoinColumns = @JoinColumn(name = "user_id")
+//    )
+    @ManyToMany(mappedBy = "designated_tasks")
+    private List<UserEntity> designated_to = new ArrayList<>();
 
 
 

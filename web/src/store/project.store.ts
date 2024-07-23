@@ -8,7 +8,10 @@ const apiCall = useApiCall();
 
 export const useProjectStore = defineStore("projects", {
   state: () => ({
+    isLocal: false,
     owned: [] as Array<Workspace>,
+    localList: [] as Array<Workspace>,
+    local: {} as Workspace,
     member: [] as Array<Workspace>,
     byId: {} as Workspace,
     current: {} as Workspace,
@@ -38,6 +41,14 @@ export const useProjectStore = defineStore("projects", {
       })) as Workspace;
       if (response.workspace_id == this.current.workspace_id)
         this.current = response;
+    },
+    checkIsLocal() {
+      return this.isLocal;
+    },
+    loadLocal(ws: Workspace) {
+      this.local = ws;
+      this.localList.push(ws);
+      this.isLocal = true;
     },
   },
 });

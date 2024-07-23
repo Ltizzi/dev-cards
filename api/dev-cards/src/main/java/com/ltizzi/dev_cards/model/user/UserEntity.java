@@ -79,7 +79,13 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private List<Role> roles = new ArrayList<>();
 
-    @ElementCollection
+    //@ElementCollection
+    @ManyToMany
+    @JoinTable(
+            name = "task_user",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "task_id")
+    )
     private List<TaskEntity> designated_tasks = new ArrayList<>();
 
     @CreationTimestamp

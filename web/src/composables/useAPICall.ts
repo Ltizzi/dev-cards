@@ -40,11 +40,13 @@ export function useApiCall<T>() {
 
   const post = async (
     endpoint: EndpointType,
+    data?: any,
     config?: AxiosRequestConfig
   ): Promise<T> => {
     try {
       const response: AxiosResponse<T> = await axios.post(
         getUrl(endpoint),
+        data,
         config
       );
       return response.data;
