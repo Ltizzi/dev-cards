@@ -17,8 +17,13 @@
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Remove User"
+        @click="modalSwitch('removeUser')"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'user-minus']" />
+        <RemoveUserModal
+          :showModal="modalState.removeUser"
+          @close="modalSwitch('removeUser')"
+        ></RemoveUserModal>
       </li>
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
@@ -44,6 +49,7 @@
 <script setup lang="ts">
   import { reactive } from "vue";
   import AddUserModal from "../ui/AddUserModal.vue";
+  import RemoveUserModal from "../ui/RemoveUserModal.vue";
 
   const modalState = reactive({
     addUser: false,
@@ -57,6 +63,18 @@
     switch (modal) {
       case "addUser":
         modalState.addUser = !modalState.addUser;
+        modalState.removeUser = false;
+        modalState.addTag = false;
+        modalState.addDependecy = false;
+        modalState.addUpdate = false;
+        break;
+      case "removeUser":
+        modalState.removeUser = !modalState.removeUser;
+        modalState.addUser = false;
+        modalState.addTag = false;
+        modalState.addDependecy = false;
+        modalState.addUpdate = false;
+        break;
     }
   }
 </script>

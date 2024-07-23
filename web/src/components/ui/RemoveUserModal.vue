@@ -19,11 +19,13 @@
                 </div>
                 <span class="label-text">{{ user.username }}</span>
               </div>
+              <!-- :checked="getChecked(user.user_id)
+                 :disabled="getChecked(user.user_id)"
+                class="checkbox checkbox-success""
+                -->
               <input
                 type="checkbox"
-                :checked="getChecked(user.user_id)"
-                :disabled="getChecked(user.user_id)"
-                class="checkbox checkbox-success"
+                class="checkbox checkbox-error"
                 @change="checkUser(user)"
               />
             </label>
@@ -62,13 +64,13 @@
             d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <span>Error! Can't add user.</span>
+        <span>Error! Can't remove user.</span>
       </div>
       <button
         class="btn btn-outline btn-primary flex flex-row"
-        @click="addUsers()"
+        @click="removeUsers()"
       >
-        Assign Users
+        Remove Users
         <span
           class="loading loading-dots loading-sm"
           v-if="awaitingResponse"
@@ -78,60 +80,40 @@
   </BaseModal>
 </template>
 <script setup lang="ts">
-  import { onBeforeMount, ref } from "vue";
+  import { onBeforeMount, ref, watch } from "vue";
+  import BaseModal from "../common/BaseModal.vue";
   import { useApiCall } from "../../composables/useAPICall";
   import { useTaskStore } from "../../store/task.store";
   import { Task, UserLite } from "../../utils/types";
-  import BaseModal from "../common/BaseModal.vue";
-  import { useProjectStore } from "../../store/project.store";
   import { EndpointType } from "../../utils/endpoints";
+
+  const apiCall = useApiCall();
 
   const props = defineProps<{ showModal: boolean }>();
   const emit = defineEmits(["close"]);
-  const apiCall = useApiCall();
   const taskStore = useTaskStore();
-  const projectStore = useProjectStore();
 
   const users = ref<Array<UserLite>>();
-  const checkedUsers = ref<Array<UserLite>>([]);
+  const usersToDelete = ref<Array<UserLite>>([]);
 
   const awaitingResponse = ref<boolean>();
   const success = ref<boolean>(false);
   const failed = ref<boolean>(false);
   const errorMessage = ref<string>();
 
+  function checkUser(user: UserLite) {
+    usersToDelete.value.push(user);
+  }
+
   function closeModal() {
     emit("close", false);
   }
 
-  function getChecked(id: number) {
-    let arr = [];
-    const list = taskStore.currentTask.designated_to;
-    if (list) {
-      list.forEach((user: UserLite) => {
-        if (user.user_id == id) arr.push(user);
-      });
-
-      return arr.length > 0;
-    } else {
-      return false;
-    }
-  }
-
-  function checkUser(user: UserLite) {
-    if (checkedUsers.value.includes(user)) {
-      const index = checkedUsers.value.indexOf(user);
-      checkedUsers.value.splice(index, 1);
-    } else {
-      checkedUsers.value.push(user);
-    }
-  }
-
-  async function addUsers() {
+  async function removeUsers() {
     awaitingResponse.value = true;
-    checkedUsers.value.forEach(async (user: UserLite) => {
+    usersToDelete.value.forEach(async (user: UserLite) => {
       const response = (await apiCall.post(
-        EndpointType.TASK_ASSIGN_USER,
+        EndpointType.TASK_UNASSIGN_USER,
         null,
         {
           params: {
@@ -143,7 +125,6 @@
       awaitingResponse.value = false;
       if (response.task_id) {
         taskStore.setCurrentTask(response);
-
         success.value = true;
         setTimeout(() => {
           success.value = false;
@@ -160,8 +141,16 @@
     });
   }
 
+  watch(
+    () => taskStore.currentTask.designated_to,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        users.value = taskStore.currentTask.designated_to;
+      }
+    }
+  );
+
   onBeforeMount(() => {
-    users.value = projectStore.current.users;
+    users.value = taskStore.currentTask.designated_to;
   });
 </script>
-<style lang=""></style>
