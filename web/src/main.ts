@@ -12,9 +12,19 @@ import {
   faCirclePlus,
   faFolderTree,
   faPenToSquare,
+  faPlus,
+  faMinus,
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faUserPlus, faUserMinus, faCirclePlus, faFolderTree, faPenToSquare);
+library.add(
+  faUserPlus,
+  faUserMinus,
+  faCirclePlus,
+  faFolderTree,
+  faPenToSquare,
+  faPlus,
+  faMinus
+);
 
 const app = createApp(App);
 const pinia = createPinia();

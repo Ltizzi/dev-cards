@@ -170,21 +170,20 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public APIResponse addTagToTask(Long task_id, String tag) throws NotFoundException {
+    public TaskDTO addTagToTask(Long task_id, String tag) throws NotFoundException {
         //TaskEntity task = taskRepo.findById(task_id).orElseThrow(()-> new NotFoundException("Task not found!"));
         TaskEntity task = findTaskById(task_id);
         APIResponse res = task.addTag(tag);
-        taskRepo.save(task);
-        return res;
+        return taskMapper.toTaskDTO(taskRepo.save(task));
+
     }
 
     @Override
-    public APIResponse removeTagFromTask(Long task_id, String tag) throws NotFoundException {
+    public TaskDTO removeTagFromTask(Long task_id, String tag) throws NotFoundException {
        //TaskEntity task = taskRepo.findById(task_id).orElseThrow(()->new NotFoundException("Task not found!"));
         TaskEntity task = findTaskById(task_id);
         APIResponse res  = task.removeTag(tag);
-        taskRepo.save(task);
-        return res;
+        return taskMapper.toTaskDTO(taskRepo.save(task));
 
     }
 

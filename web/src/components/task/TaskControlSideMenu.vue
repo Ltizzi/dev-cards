@@ -28,8 +28,13 @@
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Add tag"
+        @click="modalSwitch('addTag')"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'circle-plus']" />
+        <AddTagModal
+          :showModal="modalState.addTag"
+          @close="modalSwitch('addTag')"
+        ></AddTagModal>
       </li>
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
@@ -50,6 +55,7 @@
   import { reactive } from "vue";
   import AddUserModal from "../ui/AddUserModal.vue";
   import RemoveUserModal from "../ui/RemoveUserModal.vue";
+  import AddTagModal from "../ui/AddTagModal.vue";
 
   const modalState = reactive({
     addUser: false,
@@ -72,6 +78,13 @@
         modalState.removeUser = !modalState.removeUser;
         modalState.addUser = false;
         modalState.addTag = false;
+        modalState.addDependecy = false;
+        modalState.addUpdate = false;
+        break;
+      case "addTag":
+        modalState.addTag = !modalState.addTag;
+        modalState.removeUser = false;
+        modalState.addUser = false;
         modalState.addDependecy = false;
         modalState.addUpdate = false;
         break;

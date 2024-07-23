@@ -81,13 +81,13 @@ public class TaskController {
 
     @PatchMapping("/add_tag")
     @ResponseBody
-    public ResponseEntity<APIResponse> addTagToTask(@RequestParam Long task_id, @RequestParam String tag) throws NotFoundException {
+    public ResponseEntity<TaskDTO> addTagToTask(@RequestParam Long task_id, @RequestParam String tag) throws NotFoundException {
         return new ResponseEntity<>(taskServ.addTagToTask(task_id,tag), HttpStatus.OK);
     }
 
     @PatchMapping("/remove_tag")
     @ResponseBody
-    public ResponseEntity<APIResponse> removeTagFromTask(@RequestParam Long task_id, @RequestParam String tag) throws NotFoundException {
+    public ResponseEntity<TaskDTO> removeTagFromTask(@RequestParam Long task_id, @RequestParam String tag) throws NotFoundException {
         return new ResponseEntity<>(taskServ.removeTagFromTask(task_id, tag), HttpStatus.OK);
     }
 

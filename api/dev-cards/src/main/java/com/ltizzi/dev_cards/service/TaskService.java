@@ -37,9 +37,9 @@ public interface TaskService {
 
     public TaskDTO unassignUser(Long task_id, Long user_id) throws NotFoundException, InvalidUserException, InvalidTaskException;
 
-    public APIResponse addTagToTask(Long task_id, String tag) throws NotFoundException;
+    public TaskDTO addTagToTask(Long task_id, String tag) throws NotFoundException;
 
-    public APIResponse removeTagFromTask(Long task_id, String tag) throws NotFoundException;
+    public TaskDTO removeTagFromTask(Long task_id, String tag) throws NotFoundException;
 
     public List<TaskUpdate> addTaskUpdate(Long task_id, TaskUpdate update) throws NotFoundException;
 
