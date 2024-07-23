@@ -1,17 +1,19 @@
 package com.ltizzi.dev_cards.service.impl;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.InvalidWorkspaceException;
+import com.ltizzi.dev_cards.exception.NotAllowedException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
-import com.ltizzi.dev_cards.model.task.TaskEntity;
 import com.ltizzi.dev_cards.model.task.TaskMapper;
-import com.ltizzi.dev_cards.model.user.UserDTO;
 import com.ltizzi.dev_cards.model.user.UserEntity;
 import com.ltizzi.dev_cards.model.user.UserLiteDTO;
 import com.ltizzi.dev_cards.model.user.UserMapper;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
+import com.ltizzi.dev_cards.model.utils.JSONWorkspace;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceMapper;
@@ -23,8 +25,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 
 /**
  * @author Leonardo Terlizzi
@@ -43,9 +49,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Autowired
     private TaskMapper taskMapper;
-//
-//    @Autowired
-//    private UserMapper userMapper;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
 
     @Override
     public List<WorkspaceDTO> getWorkspaces(int page, int limit) {
@@ -160,5 +169,27 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
 
+    @Override
+    public InputStream donwloadJSON(Long ws_id, Long user_id) throws NotFoundException, NotAllowedException, JsonProcessingException {
+        WorkspaceEntity ws = wsRepo.findById(ws_id).orElseThrow(()-> new NotFoundException("Workspace not found"));
+        UserEntity user = userRepo.findById(user_id).orElseThrow(()-> new NotFoundException("User not found!"));
+        Optional<UserEntity> filtrado= ws.getUsers().stream().filter(u-> u.getUser_id().equals(user_id)).findFirst();
+        if(!filtrado.isPresent()){
+            throw  new NotAllowedException("Usuario no permitido");
+        }
+        WorkspaceDTO wsDTO = wsMapper.toWorkspaceDTO(ws);
+        List<TaskDTO> tasks = taskMapper.toArrayTaskDTO(ws.getTasks());
+        UserLiteDTO userLite = userMapper.toUserLiteDTO(user);
+        JSONWorkspace json = JSONWorkspace.builder()
+                .workspace(wsDTO)
+                .tasks(tasks)
+                .user(userLite)
+                .build();
+        String jsonString = objectMapper.writeValueAsString(json);
+        return new ByteArrayInputStream(jsonString.getBytes());
+    }
 
+    public String getWorkspaceName(Long ws_id) throws NotFoundException {
+        return wsRepo.findById(ws_id).orElseThrow(()->new NotFoundException("Not found!")).getProject_name();
+    }
 }

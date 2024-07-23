@@ -1,16 +1,20 @@
 package com.ltizzi.dev_cards.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.InvalidWorkspaceException;
+import com.ltizzi.dev_cards.exception.NotAllowedException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.user.UserDTO;
 import com.ltizzi.dev_cards.model.user.UserEntity;
 import com.ltizzi.dev_cards.model.user.UserLiteDTO;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
+import com.ltizzi.dev_cards.model.utils.JSONWorkspace;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -45,4 +49,10 @@ public interface WorkspaceService {
 //    public List<TaskDTO> getTasksByWorkspace(Long workspace_id) throws NotFoundException;
 
 //    public List<UserDTO> getUsersByWorkspace(Long workspace_id) throws  NotFoundException;
+
+    public InputStream donwloadJSON(Long ws_id, Long user_id) throws NotFoundException, NotAllowedException, JsonProcessingException;
+
+    public String getWorkspaceName(Long ws_id) throws NotFoundException;
 }
+
+

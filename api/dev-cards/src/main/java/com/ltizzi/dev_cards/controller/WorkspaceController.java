@@ -1,7 +1,9 @@
 package com.ltizzi.dev_cards.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.InvalidWorkspaceException;
+import com.ltizzi.dev_cards.exception.NotAllowedException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.user.UserLiteDTO;
@@ -9,7 +11,10 @@ import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 import com.ltizzi.dev_cards.service.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,5 +97,17 @@ public class WorkspaceController {
 //        return new ResponseEntity<>(wsServ.getTasksByWorkspace(id), HttpStatus.OK);
 //    }
 
+    @GetMapping("/json")
+    @ResponseBody
+    public ResponseEntity<InputStreamResource> donwloadJson(@RequestParam Long ws_id, @RequestParam Long user_id) throws NotFoundException, NotAllowedException, JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        String project_name = wsServ.getWorkspaceName(ws_id);
+        String headerString = "attachment; filename=" + project_name +".json";
+        headers.add("Content-Disposition", headerString );
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new InputStreamResource(wsServ.donwloadJSON(ws_id, user_id)));
+    }
 
 }
