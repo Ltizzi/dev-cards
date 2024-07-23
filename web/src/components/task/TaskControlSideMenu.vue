@@ -39,8 +39,13 @@
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Add dependency"
+        @click="modalSwitch('addDependency')"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'folder-tree']" />
+        <AddDependencyModal
+          :showModal="modalState.addDependency"
+          @close="modalSwitch('addDependency')"
+        ></AddDependencyModal>
       </li>
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
@@ -56,12 +61,13 @@
   import AddUserModal from "../ui/AddUserModal.vue";
   import RemoveUserModal from "../ui/RemoveUserModal.vue";
   import AddTagModal from "../ui/AddTagModal.vue";
+  import AddDependencyModal from "../ui/AddDependencyModal.vue";
 
   const modalState = reactive({
     addUser: false,
     removeUser: false,
     addTag: false,
-    addDependecy: false,
+    addDependency: false,
     addUpdate: false,
   });
 
@@ -71,21 +77,28 @@
         modalState.addUser = !modalState.addUser;
         modalState.removeUser = false;
         modalState.addTag = false;
-        modalState.addDependecy = false;
+        modalState.addDependency = false;
         modalState.addUpdate = false;
         break;
       case "removeUser":
         modalState.removeUser = !modalState.removeUser;
         modalState.addUser = false;
         modalState.addTag = false;
-        modalState.addDependecy = false;
+        modalState.addDependency = false;
         modalState.addUpdate = false;
         break;
       case "addTag":
         modalState.addTag = !modalState.addTag;
         modalState.removeUser = false;
         modalState.addUser = false;
-        modalState.addDependecy = false;
+        modalState.addDependency = false;
+        modalState.addUpdate = false;
+        break;
+      case "addDependency":
+        modalState.addDependency = !modalState.addDependency;
+        modalState.addTag = false;
+        modalState.removeUser = false;
+        modalState.addUser = false;
         modalState.addUpdate = false;
         break;
     }

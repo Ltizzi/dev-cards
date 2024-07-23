@@ -40,8 +40,16 @@ function getColor(color: Color) {
   return color.toLocaleLowerCase();
 }
 
+function stringShortener(value: string) {
+  if (value.length > 15) {
+    return value.slice(0, 15) + "...";
+  }
+  return value;
+}
+
 export const taskUtils = {
   calcPriorityColor,
   calcProgress,
+  stringShortener,
   getColor,
 };

@@ -6,7 +6,7 @@
     >
       <div
         class="fixed left-0 top-0 z-20 h-full w-full backdrop-blur-lg"
-        @click="$emit('closeModal')"
+        @click="close()"
       ></div>
       <div
         class="container fixed z-50 w-auto rounded-md border-2 border-secondary shadow-xl"
@@ -23,8 +23,11 @@
 
   const isActive = ref(props.isActive);
 
+  const emit = defineEmits(["closeModal"]);
+
   function close() {
     isActive.value = false;
+    emit("closeModal");
   }
 </script>
 <style lang=""></style>

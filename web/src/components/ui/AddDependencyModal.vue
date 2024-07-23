@@ -1,0 +1,171 @@
+<template lang="">
+  <BaseModal
+    :is-active="props.showModal"
+    v-if="props.showModal"
+    @closeModal="closeModal"
+  >
+    <div
+      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2 bg-default w-full divide-y-2 divide-secondary"
+    >
+      <div class="flex flex-col">
+        <h1 class="text-xl text-center">Select dependency:</h1>
+      </div>
+
+      <ul class="flex flex-row pt-5 flex-wrap w-96 gap-5 mx-auto">
+        <li
+          v-for="task in tasks"
+          class="flex flex-row gap-2 min-w-44 max-w-44 hover:cursor-pointer transition-all hover:bg-slate-600 py-1 px-2 rounded-xl ease-in-out duration-300"
+          @click="selectTask(task)"
+        >
+          <span :class="['rounded-full p-2', taskUtils.getColor(task.color)]">
+          </span>
+          {{ taskUtils.stringShortener(task.title) }}
+        </li>
+      </ul>
+      <div class="w-full flex flex-col py-2">
+        <p class="flex flex-row gap-2 pt-2 mx-auto" v-if="selectedTask">
+          Selected:
+          <span
+            :class="[
+              'rounded-full p-2',
+              taskUtils.getColor(selectedTask.color),
+            ]"
+          ></span>
+          {{ selectedTask.title }}
+        </p>
+        <div role="alert" class="alert alert-success" v-if="success">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 shrink-0 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>Success!</span>
+        </div>
+
+        <div role="alert" class="alert alert-error" v-if="failed">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 shrink-0 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>Error! Can't remove user.</span>
+        </div>
+        <button
+          class="btn btn-outline btn-primary w-20 mx-auto mt-5"
+          @click="addDependency()"
+        >
+          Add
+          <span
+            class="loading loading-dots loading-sm"
+            v-if="awaitingResponse"
+          ></span>
+        </button>
+      </div>
+    </div>
+  </BaseModal>
+</template>
+<script setup lang="ts">
+  import BaseModal from "../common/BaseModal.vue";
+  import { taskUtils } from "../../utils/task.utils";
+  import { onBeforeMount, ref, watch } from "vue";
+  import { Task, TaskLite } from "../../utils/types";
+  import { useProjectStore } from "../../store/project.store";
+  import { useApiCall } from "../../composables/useAPICall";
+  import { EndpointType } from "../../utils/endpoints";
+  import { useTaskStore } from "../../store/task.store";
+
+  const tasks = ref<Array<TaskLite>>();
+
+  const projectStore = useProjectStore();
+  const taskStore = useTaskStore();
+  const apiCall = useApiCall();
+
+  const props = defineProps<{ showModal: boolean }>();
+  const emit = defineEmits(["close"]);
+
+  const selectedTask = ref<TaskLite | null>();
+
+  const awaitingResponse = ref<boolean>();
+  const success = ref<boolean>(false);
+  const failed = ref<boolean>(false);
+  const errorMessage = ref<string>();
+
+  function closeModal() {
+    //selectedTask.value = {} as TaskLite;
+    emit("close", false);
+  }
+
+  function selectTask(task: TaskLite) {
+    selectedTask.value = task;
+  }
+
+  async function addDependency() {
+    awaitingResponse.value = true;
+    if (selectedTask.value?.task_id) {
+      const response = (await apiCall.post(
+        EndpointType.TASK_ADD_DEPENDENCY,
+        null,
+        {
+          params: {
+            task_id: taskStore.currentTask.task_id,
+            parent_id: selectedTask.value.task_id,
+          },
+        }
+      )) as Task;
+      awaitingResponse.value = false;
+      if (response.task_id) {
+        success.value = true;
+        taskStore.setCurrentTask(response);
+        setTimeout(() => {
+          success.value = false;
+          closeModal();
+        }, 2000);
+      }
+    } else {
+      failed.value = true;
+      errorMessage.value = "Pick a dependency";
+      setTimeout(() => {
+        failed.value = false;
+        errorMessage.value = "";
+      }, 3000);
+    }
+  }
+
+  function filterTask(tasks: Array<TaskLite>) {
+    return tasks.filter(
+      (task: TaskLite) => task.task_id != taskStore.currentTask.task_id
+    );
+  }
+
+  watch(
+    () => props.showModal,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        selectedTask.value = null;
+        tasks.value = filterTask(projectStore.current.tasks);
+      }
+    }
+  );
+
+  onBeforeMount(() => {
+    tasks.value = filterTask(projectStore.current.tasks);
+    console.log(tasks.value);
+  });
+</script>
+<style lang=""></style>
