@@ -39,5 +39,9 @@ export const useTaskStore = defineStore("tasks", {
     addTaskToCurrentProject(task: Task) {
       this.currentProjectTasks.push(task);
     },
+
+    removeCurrent() {
+      this.currentTask = {} as Task;
+    },
   },
 });

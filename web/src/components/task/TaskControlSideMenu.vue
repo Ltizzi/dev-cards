@@ -58,6 +58,17 @@
           @close="modalSwitch('addUpdate')"
         ></AddTaskUpdateModal>
       </li>
+      <li
+        class="tooltip tooltip-left hover:bg-error hover:rounded-lg transition-all"
+        data-tip="Delete Task"
+        @click="modalSwitch('deleteTask')"
+      >
+        <font-awesome-icon class="size-8" :icon="['fas', 'trash']" />
+        <DeleteTaskModal
+          :showModal="modalState.deleteTask"
+          @close="modalSwitch('deleteTask')"
+        ></DeleteTaskModal>
+      </li>
     </ul>
   </div>
 </template>
@@ -68,6 +79,7 @@
   import AddTagModal from "../ui/AddTagModal.vue";
   import AddDependencyModal from "../ui/AddDependencyModal.vue";
   import AddTaskUpdateModal from "../ui/AddTaskUpdateModal.vue";
+  import DeleteTaskModal from "../ui/DeleteTaskModal.vue";
 
   const modalState = reactive({
     addUser: false,
@@ -75,6 +87,7 @@
     addTag: false,
     addDependency: false,
     addUpdate: false,
+    deleteTask: false,
   });
 
   const emit = defineEmits(["update"]);
@@ -87,6 +100,7 @@
         modalState.addTag = false;
         modalState.addDependency = false;
         modalState.addUpdate = false;
+        modalState.deleteTask = false;
         break;
       case "removeUser":
         modalState.removeUser = !modalState.removeUser;
@@ -94,6 +108,7 @@
         modalState.addTag = false;
         modalState.addDependency = false;
         modalState.addUpdate = false;
+        modalState.deleteTask = false;
         break;
       case "addTag":
         modalState.addTag = !modalState.addTag;
@@ -101,6 +116,7 @@
         modalState.addUser = false;
         modalState.addDependency = false;
         modalState.addUpdate = false;
+        modalState.deleteTask = false;
         break;
       case "addDependency":
         modalState.addDependency = !modalState.addDependency;
@@ -108,6 +124,7 @@
         modalState.removeUser = false;
         modalState.addUser = false;
         modalState.addUpdate = false;
+        modalState.deleteTask = false;
         break;
       case "addUpdate":
         modalState.addUpdate = !modalState.addUpdate;
@@ -115,7 +132,17 @@
         modalState.addTag = false;
         modalState.removeUser = false;
         modalState.addUser = false;
-        emit("updateTask");
+        modalState.deleteTask = false;
+        emit("update");
+        break;
+      case "deleteTask":
+        modalState.deleteTask = !modalState.deleteTask;
+        modalState.addUpdate = false;
+        modalState.addDependency = false;
+        modalState.addTag = false;
+        modalState.removeUser = false;
+        modalState.addUser = false;
+        break;
     }
   }
 </script>
