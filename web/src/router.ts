@@ -9,6 +9,7 @@ import NewProject from "./components/project/newProject.vue";
 import TheProject from "./pages/TheProject.vue";
 import ProjectInfo from "./components/project/ProjectInfo.vue";
 import TheTask from "./pages/TheTask.vue";
+import App from "./App.vue";
 
 const router = createRouter({
   history: createWebHistory(),

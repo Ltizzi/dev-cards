@@ -155,11 +155,12 @@
   }
 
   function checkDependency(task: TaskLite) {
-    return (
-      taskStore.currentTask.dependencies?.filter(
-        (d: TaskLite) => d.task_id == task.task_id
-      ).length > 0
-    );
+    if (taskStore.currentTask.dependencies)
+      return (
+        taskStore.currentTask.dependencies?.filter(
+          (d: TaskLite) => d.task_id == task.task_id
+        ).length > 0
+      );
   }
 
   watch(

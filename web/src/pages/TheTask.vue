@@ -111,7 +111,7 @@
         </div>
       </div>
     </div>
-    <TaskControlSideMenu></TaskControlSideMenu>
+    <TaskControlSideMenu @updateTask="updateTask"></TaskControlSideMenu>
   </div>
 </template>
 <script setup lang="ts">
@@ -140,6 +140,14 @@
       params: { id: task_id },
     })) as Task;
     return data;
+  }
+
+  async function updateTask() {
+    if (route.query.id) {
+      const id = +route.query.id;
+      card.value = await fetchTask(id);
+      taskStore.setCurrentTask(card.value);
+    }
   }
 
   function prepareTaskData(data: Task) {

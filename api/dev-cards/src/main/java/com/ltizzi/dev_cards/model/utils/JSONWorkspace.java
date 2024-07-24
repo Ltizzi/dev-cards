@@ -29,11 +29,11 @@ public class JSONWorkspace {
     private WorkspaceDTO workspace;
     private List<TaskDTO> tasks;
 
-//    @Builder.Default
-//    private Instant created_at = Instant.now();
-//    @Builder.Default
-//    private Instant downloaded_at = Instant.now();
-//    @Builder.Default
-//    private Instant updated_at = Instant.now();
+    @Builder.Default
+    private String created_at = Instant.now().toString();
+    @Builder.Default
+    private String downloaded_at = Instant.now().toString();
+    @Builder.Default
+    private String updated_at = Instant.now().toString();
 
 }

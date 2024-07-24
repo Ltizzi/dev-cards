@@ -50,8 +50,13 @@
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Add update"
+        @click="modalSwitch('addUpdate')"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'pen-to-square']" />
+        <AddTaskUpdateModal
+          :showModal="modalState.addUpdate"
+          @close="modalSwitch('addUpdate')"
+        ></AddTaskUpdateModal>
       </li>
     </ul>
   </div>
@@ -62,6 +67,7 @@
   import RemoveUserModal from "../ui/RemoveUserModal.vue";
   import AddTagModal from "../ui/AddTagModal.vue";
   import AddDependencyModal from "../ui/AddDependencyModal.vue";
+  import AddTaskUpdateModal from "../ui/AddTaskUpdateModal.vue";
 
   const modalState = reactive({
     addUser: false,
@@ -70,6 +76,8 @@
     addDependency: false,
     addUpdate: false,
   });
+
+  const emit = defineEmits(["update"]);
 
   function modalSwitch(modal: string) {
     switch (modal) {
@@ -101,6 +109,13 @@
         modalState.addUser = false;
         modalState.addUpdate = false;
         break;
+      case "addUpdate":
+        modalState.addUpdate = !modalState.addUpdate;
+        modalState.addDependency = false;
+        modalState.addTag = false;
+        modalState.removeUser = false;
+        modalState.addUser = false;
+        emit("updateTask");
     }
   }
 </script>

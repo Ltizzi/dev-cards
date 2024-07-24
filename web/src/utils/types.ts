@@ -157,15 +157,15 @@ export interface ProgressItem {
 }
 
 export interface TaskUpdate {
-  update_id: number;
-  creater_user_id: number;
+  update_id?: number;
+  creator_user_id: number;
   creator_username: string;
-  editors_id: Array<number>;
-  editors_usernames: Array<string>;
+  editors_id?: Array<number>;
+  editors_usernames?: Array<string>;
   description: String;
-  old_descriptions: Array<string>;
-  created_at: Date;
-  updated_at: Date;
+  old_descriptions?: Array<string>;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 export interface TaskLite {
