@@ -5,11 +5,13 @@
     @closeModal="closeModal"
   >
     <div
-      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2 bg-default w-full divide-y-2 divide-secondary"
+      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-5 py-3 bg-default w-full divide-y-2 divide-secondary min-w-max"
     >
       <h1 class="text-center text-xl py-5">Post a task update</h1>
       <textarea
         class="textarea textarea-secondary textarea-lg"
+        cols="70"
+        rows="5"
         placeholder="Write update info"
         v-model="description"
       ></textarea>

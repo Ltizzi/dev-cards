@@ -1,13 +1,20 @@
 <template lang="">
   <div class="card bg-base-100 w-72 shadow-xl">
     <div
-      class="bg-white text-slate-700 rounded-xl transition-all hover:scale-105 max-h-48 min-h-48"
+      class="bg-white text-slate-700 rounded-xl transition-all ease-in-out duration-300 hover:scale-105 max-h-48 min-h-48"
     >
       <div :class="['h-7 w-full -mb-5 rounded-t-xl z-10', color]"></div>
-      <div class="px-5 py-7">
+      <div class="px-3 py-7">
         <div class="flex flex-row justify-between my-auto align-middle">
-          <h2 class="card-title">{{ generateTitle(props.task.title) }}</h2>
-          <h3 :class="['font-bold mt-1 text-end', priority_color]">
+          <h2 class="card-title w-4/6">
+            {{ generateTitle(props.task.title) }}
+          </h2>
+          <h3
+            :class="[
+              'font-bold mt-1 text-base text-end  w-2/5',
+              priority_color,
+            ]"
+          >
             {{ generatePriority(props.task.priority) }}
           </h3>
         </div>
@@ -19,19 +26,15 @@
             max="100"
             v-if="progress > 0"
           ></progress> -->
-
-          <div class="h-16">
-            <div
-              v-if="task_tags"
-              class="flex flex-row flex-nowrap justify-between"
-            >
-              <h4 v-for="tag in task_tags">{{ tag }}</h4>
-            </div>
-          </div>
         </div>
-        <div class="card-actions justify-end relative">
+        <div class="card-actions justify-end relative mr-2.5">
+          <!-- <div class="h-16">
+            <div class="flex flex-row flex-nowrap justify-between">
+              <h4 v-for="tag in task_tags">a{{ tag }}</h4>
+            </div>
+          </div> -->
           <button
-            class="btn btn-primary text-white absolute -top-10"
+            class="btn btn-primary text-white absolute top-5 -right-2.5"
             @click="goToTask()"
           >
             Enter
@@ -72,8 +75,8 @@
   }
 
   function generateTitle(title: string) {
-    if (title.length > 15) {
-      let splited_title = title.slice(0, 15);
+    if (title.length > 12) {
+      let splited_title = title.slice(0, 12);
       console.log(splited_title);
       return splited_title + "...";
     } else return title;

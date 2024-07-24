@@ -111,7 +111,7 @@
         </div>
       </div>
     </div>
-    <TaskControlSideMenu @updateTask="updateTask"></TaskControlSideMenu>
+    <TaskControlSideMenu @update="updateTask"></TaskControlSideMenu>
   </div>
 </template>
 <script setup lang="ts">
