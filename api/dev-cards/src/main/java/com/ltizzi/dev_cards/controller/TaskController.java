@@ -129,4 +129,21 @@ public class TaskController {
         return new ResponseEntity<>(taskServ.updateTaskPriority(task_id, priority), HttpStatus.OK);
     }
 
+    @PatchMapping("/updateStatus")
+    @ResponseBody
+    public ResponseEntity<TaskDTO> updateTaskStatus(@RequestParam Long task_id, @RequestParam String status) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.updateTaskStatus(task_id, status), HttpStatus.OK);
+    }
+
+    @PatchMapping("/updateEffort")
+    @ResponseBody
+    public ResponseEntity<TaskDTO> updateTaskEffort(@RequestParam Long task_id, @RequestParam String effort) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.updateTaskEffort(task_id,effort), HttpStatus.OK);
+    }
+
+    @PatchMapping("/updateType")
+    @ResponseBody
+    public ResponseEntity<TaskDTO> updateTaskType(@RequestParam Long task_id, @RequestParam String type) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.updateTaskType(task_id, type), HttpStatus.OK);
+    }
 }

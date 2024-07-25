@@ -8,6 +8,7 @@ import com.ltizzi.dev_cards.model.task.utils.ProgressEnum;
 import com.ltizzi.dev_cards.model.task.utils.TaskUpdate;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import org.aspectj.weaver.ast.Not;
+import org.springframework.scheduling.config.Task;
 
 
 import java.util.List;
@@ -53,5 +54,11 @@ public interface TaskService {
     public TaskDTO updateTaskProgress(Long task_id, String progress) throws NotFoundException;
 
     public TaskDTO updateTaskPriority(Long task_id, String priority) throws  NotFoundException;
+
+    public TaskDTO updateTaskStatus(Long task_id, String status) throws  NotFoundException;
+
+    public TaskDTO updateTaskEffort(Long task_id, String effort) throws  NotFoundException;
+
+    public TaskDTO updateTaskType(Long task_id, String type) throws  NotFoundException;
 }
 

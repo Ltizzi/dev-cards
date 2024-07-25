@@ -44,15 +44,29 @@
                 :priority="card.priority"
                 @update-priority="updatePriority"
               ></TaskPrioritySelectable>
-              <h3 class="border-r-2 border-secondary pr-2">
-                {{ card.status }}
-              </h3>
-              <h3 class="border-r-2 pr-2 border-secondary">
-                {{ card.effort }}
-              </h3>
-              <h3 class="min-w-36">
-                {{ card.task_type }}
-              </h3>
+              <!-- <h3 class="border-r-2 border-secondary pr-2"> -->
+              <TaskCommonSelectable
+                :type="'Status'"
+                :selected="card.status"
+                @update-status="updateTaskOptions"
+              ></TaskCommonSelectable>
+              <!-- {{ card.status }} -->
+              <!-- </h3> -->
+              <!-- <h3 class="border-r-2 pr-2 border-secondary"> -->
+              <TaskCommonSelectable
+                :type="'Effort'"
+                :selected="card.effort"
+                @update-effort="updateTaskOptions"
+              ></TaskCommonSelectable>
+              <!-- {{ card.effort }} -->
+              <!-- </h3> -->
+
+              <TaskCommonSelectable
+                :type="'TaskType'"
+                :selected="card.task_type"
+                @update-task-type="updateTaskOptions"
+              ></TaskCommonSelectable>
+              <!-- {{ card.task_type }} -->
             </div>
 
             <TaskProgress
@@ -143,7 +157,14 @@
 </template>
 <script setup lang="ts">
   import { ref, onBeforeMount, watch } from "vue";
-  import { Priority, Progress, Task } from "../utils/types";
+  import {
+    Effort,
+    Priority,
+    Progress,
+    Status,
+    Task,
+    TaskType,
+  } from "../utils/types";
   import { useTaskStore } from "../store/task.store";
   import { useApiCall } from "../composables/useAPICall";
   import { EndpointType } from "../utils/endpoints";
@@ -152,6 +173,7 @@
   import TaskControlSideMenu from "../components/task/TaskControlSideMenu.vue";
   import TaskProgress from "../components/task/TaskProgress.vue";
   import TaskPrioritySelectable from "../components/task/TaskPrioritySelectable.vue";
+  import TaskCommonSelectable from "../components/task/TaskCommonSelectable.vue";
 
   const card = ref<Task>();
   const taskStore = useTaskStore();
@@ -216,6 +238,72 @@
     if (response.task_id == card.value?.task_id) {
       updateTask(response);
     } else console.error("CAN'T UPDATE TASK PRIORITY");
+  }
+
+  async function updateTaskOptions(
+    type: string,
+    option: Status | Effort | TaskType
+  ) {
+    console.log("FROM TASK: ", type, " ", option);
+    switch (type) {
+      case "Status":
+        await updateTaskStatus(option as Status);
+        break;
+      case "Effort":
+        await updateTaskEffort(option as Effort);
+        break;
+      case "TaskType":
+        await updateTaskType(option as TaskType);
+        break;
+    }
+  }
+
+  async function updateTaskStatus(option: Status) {
+    const response = (await apiCall.patch(
+      EndpointType.TASK_UPDATE_STATUS,
+      {},
+      {
+        params: {
+          task_id: card.value?.task_id,
+          status: option,
+        },
+      }
+    )) as Task;
+    if (response.task_id == card.value?.task_id) {
+      updateTask(response);
+    } else console.error("CAN'T UPDATE TASK STATUS");
+  }
+
+  async function updateTaskEffort(option: Effort) {
+    const response = (await apiCall.patch(
+      EndpointType.TASK_UPDATE_EFFORT,
+      {},
+      {
+        params: {
+          task_id: card.value?.task_id,
+          effort: option,
+        },
+      }
+    )) as Task;
+    if (response.task_id == card.value?.task_id) {
+      updateTask(response);
+    } else console.error("CAN'T UPDATE TASK EFFORT");
+  }
+
+  async function updateTaskType(option: TaskType) {
+    const response = (await apiCall.patch(
+      EndpointType.TASK_UPDATE_TYPE,
+      {},
+      {
+        params: {
+          task_id: card.value?.task_id,
+          type: option,
+        },
+      }
+    )) as Task;
+    if (response.task_id == card.value?.task_id) {
+      updateTask(response);
+    } else console.error("CAN'T UPDATE TASK TYPE");
   }
 
   function prepareTaskData(data: Task) {

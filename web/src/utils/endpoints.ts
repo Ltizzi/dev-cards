@@ -16,6 +16,9 @@ export enum EndpointType {
   TASKS_BY_WORKSPACE = "/task/byWorkspace",
   TASK_UPDATE_PROGRESS = "/task/updateProgress",
   TASK_UPDATE_PRIORITY = "/task/updatePriority",
+  TASK_UPDATE_STATUS = "/task/updateStatus",
+  TASK_UPDATE_EFFORT = "/task/updateEffort",
+  TASK_UPDATE_TYPE = "/task/updateType",
 
   USER_GET_ALL = "/user/all",
   USER_GET_BY_ID = "/user/byId",

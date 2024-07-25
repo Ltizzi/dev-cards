@@ -1,7 +1,10 @@
 <template>
   <div class="hover:cursor-pointer border-r-2 min-w-32 border-secondary">
     <h3
-      :class="['font-bold  px-2', taskUtils.calcPriorityColor(props.priority)]"
+      :class="[
+        'font-bold  px-2 hover:animate-pulse transition-all ease-in-out duration-200',
+        taskUtils.calcPriorityColor(props.priority),
+      ]"
       @click="changeElement"
       v-if="state.default"
     >

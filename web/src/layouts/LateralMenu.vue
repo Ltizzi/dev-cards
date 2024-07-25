@@ -27,7 +27,7 @@
         >
           <div class="avatar ml-2">
             <div
-              class="w-14 h-14 rounded-full mx-auto hover:cursor-pointer hover:scale-110 transition-all hover:border-2 hover:border-cyan-200 p-1 hover:border-opacity-60"
+              class="w-14 h-14 rounded-full mx-auto hover:cursor-pointer hover:scale-110 transition-all hover:border-2 hover:border-cyan-200 p-1 hover:border-opacity-80 duration-300 ease-in-out"
             >
               <img :src="project.project_avatar" />
             </div>

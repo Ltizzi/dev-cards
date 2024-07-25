@@ -6,10 +6,7 @@ import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.task.TaskEntity;
 import com.ltizzi.dev_cards.model.task.TaskMapper;
-import com.ltizzi.dev_cards.model.task.utils.PriorityEnum;
-import com.ltizzi.dev_cards.model.task.utils.ProgressEnum;
-import com.ltizzi.dev_cards.model.task.utils.TaskUpdate;
-import com.ltizzi.dev_cards.model.task.utils.TwoTask;
+import com.ltizzi.dev_cards.model.task.utils.*;
 import com.ltizzi.dev_cards.model.user.UserEntity;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
@@ -234,6 +231,30 @@ public class TaskServiceImpl implements TaskService {
         TaskEntity task = taskRepo.findById(task_id).orElseThrow(()-> new NotFoundException("Task not found!"));
         PriorityEnum priorEnum = PriorityEnum.valueOf(priority);
         task.setPriority(priorEnum);
+        return taskMapper.toTaskDTO(taskRepo.save(task));
+    }
+
+    @Override
+    public TaskDTO updateTaskStatus(Long task_id, String status) throws NotFoundException {
+        TaskEntity task = taskRepo.findById(task_id).orElseThrow(()-> new NotFoundException("Task not found!"));
+        Status statusEnum = Status.valueOf(status);
+        task.setStatus(statusEnum);
+        return taskMapper.toTaskDTO(taskRepo.save(task));
+    }
+
+    @Override
+    public TaskDTO updateTaskEffort(Long task_id, String effort) throws NotFoundException {
+        TaskEntity task = taskRepo.findById(task_id).orElseThrow(()-> new NotFoundException("Task not found!"));
+        EffortEnum effortEnum = EffortEnum.valueOf(effort);
+        task.setEffort(effortEnum);
+        return taskMapper.toTaskDTO(taskRepo.save(task));
+    }
+
+    @Override
+    public TaskDTO updateTaskType(Long task_id, String type) throws NotFoundException {
+        TaskEntity task = taskRepo.findById(task_id).orElseThrow(()-> new NotFoundException("Task not found!"));
+        TaskType typeEnum = TaskType.valueOf(type);
+        task.setTask_type(typeEnum);
         return taskMapper.toTaskDTO(taskRepo.save(task));
     }
 }
