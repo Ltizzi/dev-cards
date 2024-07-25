@@ -10,6 +10,7 @@ import TheProject from "./pages/TheProject.vue";
 import ProjectInfo from "./components/project/ProjectInfo.vue";
 import TheTask from "./pages/TheTask.vue";
 import App from "./App.vue";
+import HomeLayout from "./layouts/HomeLayout.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -18,13 +19,16 @@ const router = createRouter({
       path: "/",
       name: "Home",
       component: TheHome,
-    },
-    {
-      path: "/project",
-      component: TheProject,
       children: [
-        { path: "info", component: ProjectInfo },
-        { path: "task", component: TheTask },
+        { path: "", component: HomeLayout },
+        {
+          path: "/project",
+          component: TheProject,
+          children: [
+            { path: "info", component: ProjectInfo },
+            { path: "task", component: TheTask },
+          ],
+        },
       ],
     },
 

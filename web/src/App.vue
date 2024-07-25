@@ -1,4 +1,11 @@
 <template lang="">
+  <TheHome></TheHome>
+</template>
+<script setup lang="ts">
+  import TheHome from "./pages/TheHome.vue";
+</script>
+
+<!-- <template lang="">
   <div class="w-screen relative">
     <LateralMenu class="h-screen fixed" />
     <div class="w-full">
@@ -19,4 +26,4 @@
       router.push("/login");
     }
   });
-</script>
+</script> -->

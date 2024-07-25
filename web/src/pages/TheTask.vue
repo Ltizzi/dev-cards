@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="flex justify-center mt-20 w-full ml-7 rounded-2xl">
+  <div class="flex flex-col justify-center mt-1 w-full ml-7 rounded-2xl">
     <div
       class="w-full rounded-xl border-b-4 border-x-4 border-secondary bg-white text-black pb-2"
       v-if="card"
@@ -70,6 +70,10 @@
             </div>
           </div>
 
+          <div class="flex flex-row gap-2" v-if="card.dependencies">
+            <p v-for="task in card.dependencies">{{ task.title }}</p>
+          </div>
+
           <div class="text-start">
             <p class="text-xl py-5 underline">Designated to:</p>
             <div class="flex flex-row justify-start gap-5 ml-5">
@@ -87,17 +91,37 @@
               </div>
             </div>
           </div>
+          <div class="flex flex-col divide-y-2 divide-secondary">
+            <div class="flex my-5 mx-2 flex-col text-start">
+              <p class="text-xl underline font-semibold pb-2">Description:</p>
+              <p class="indent-5 text-lg">{{ card.description }}</p>
+            </div>
 
-          <div class="flex my-5 mx-2 flex-col text-start">
-            <p class="text-xl underline font-semibold pb-2">Description:</p>
-            <p class="indent-5 text-lg">{{ card.description }}</p>
+            <div class="flex my-5 mx-2 flex-col text-start">
+              <p class="text-xl underline font-semibold pb-2">Issues:</p>
+              <div
+                class="flex flex-col gap-2 indent-4"
+                v-for="issue in card.progressItems"
+              >
+                <div class="form-control w-3/5">
+                  <label
+                    class="cursor-pointer label flex flex-row justify-between gap-5"
+                  >
+                    <span class="label-text text-black text-lg"
+                      >{{ issue.sentence }}
+                    </span>
+                    <input
+                      type="checkbox"
+                      :checked="issue.isCompleted"
+                      class="checkbox checkbox-secondary"
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="flex flex-row gap-2" v-if="card.dependencies">
-            <p v-for="task in card.dependencies">{{ task.title }}</p>
-          </div>
-
-          <div class="flex flex-col">
+          <div class="flex flex-col border-t-2 border-secondary pt-5">
             <div v-for="update in card.updates">
               <div class="flex flex-col justify-center">
                 <p>{{ update.description }}</p>
