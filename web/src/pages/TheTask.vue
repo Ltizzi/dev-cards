@@ -26,20 +26,24 @@
             <p>by {{ card.owner.username }}</p>
           </div>
           <div
-            class="flex flex-col justify-start gap-3 w-4/12 border-l-2 border-secondary"
+            class="flex flex-col justify-center gap-3 w-4/12 border-l-2 border-secondary"
           >
             <div
               class="flex flex-row justify-start gap-1 h-7 border-b-2 border-secondary"
             >
-              <h3
+              <!-- <h3
                 :class="[
                   'font-bold border-r-2 min-w-32 border-secondary px-2',
                   priority_color,
                 ]"
               >
                 {{ card.priority }}
-              </h3>
+              </h3> -->
               <!-- <h3>{{ card.progress }}</h3> -->
+              <TaskPrioritySelectable
+                :priority="card.priority"
+                @update-priority="updatePriority"
+              ></TaskPrioritySelectable>
               <h3 class="border-r-2 border-secondary pr-2">
                 {{ card.status }}
               </h3>
@@ -51,11 +55,10 @@
               </h3>
             </div>
 
-            <progress
-              class="progress progress-success w-11/12 mx-auto bg-gray-300 border-secondary"
-              :value="progress_value"
-              max="100"
-            ></progress>
+            <TaskProgress
+              :progress_value="progress_value"
+              @update="updateProgress"
+            ></TaskProgress>
           </div>
         </div>
         <div class="px-3 py-5 flex flex-col gap-2 justify-start">
@@ -135,18 +138,20 @@
         </div>
       </div>
     </div>
-    <TaskControlSideMenu @update="updateTask"></TaskControlSideMenu>
+    <TaskControlSideMenu @update="updateTaskById"></TaskControlSideMenu>
   </div>
 </template>
 <script setup lang="ts">
   import { ref, onBeforeMount, watch } from "vue";
-  import { Task } from "../utils/types";
+  import { Priority, Progress, Task } from "../utils/types";
   import { useTaskStore } from "../store/task.store";
   import { useApiCall } from "../composables/useAPICall";
   import { EndpointType } from "../utils/endpoints";
   import { useRoute } from "vue-router";
   import { taskUtils } from "../utils/task.utils";
   import TaskControlSideMenu from "../components/task/TaskControlSideMenu.vue";
+  import TaskProgress from "../components/task/TaskProgress.vue";
+  import TaskPrioritySelectable from "../components/task/TaskPrioritySelectable.vue";
 
   const card = ref<Task>();
   const taskStore = useTaskStore();
@@ -166,12 +171,51 @@
     return data;
   }
 
-  async function updateTask() {
+  async function updateTaskById() {
     if (route.query.id) {
       const id = +route.query.id;
       card.value = await fetchTask(id);
       taskStore.setCurrentTask(card.value);
     }
+  }
+
+  async function updateTask(task: Task) {
+    taskStore.setCurrentTask(task);
+    prepareTaskData(task);
+  }
+
+  async function updateProgress(progress: Progress) {
+    const response = (await apiCall.patch(
+      EndpointType.TASK_UPDATE_PROGRESS,
+      {},
+      {
+        params: {
+          task_id: card.value?.task_id,
+          progress: progress,
+        },
+      }
+    )) as Task;
+    if (response.task_id == card.value?.task_id) {
+      // taskStore.setCurrentTask(response);
+      // prepareTaskData(taskStore.currentTask);
+      updateTask(response);
+    } else console.error("CAN'T UPDATE TASK PROGRESS");
+  }
+
+  async function updatePriority(priority: Priority) {
+    const response = (await apiCall.patch(
+      EndpointType.TASK_UPDATE_PRIORITY,
+      {},
+      {
+        params: {
+          task_id: card.value?.task_id,
+          priority: priority,
+        },
+      }
+    )) as Task;
+    if (response.task_id == card.value?.task_id) {
+      updateTask(response);
+    } else console.error("CAN'T UPDATE TASK PRIORITY");
   }
 
   function prepareTaskData(data: Task) {

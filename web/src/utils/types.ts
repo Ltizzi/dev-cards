@@ -97,7 +97,7 @@ export const StatusEnumArray = [
 export enum Progress {
   NULL = "NULL",
   NOT_FUNCTIONAL = "NOT_FUNCTIONAL",
-  BASIC = "TESTING",
+  BASIC = "BASIC",
   INTERMEDIATE = "INTERMEDIATE",
   ADVANCE = "ADVANCE",
 }

@@ -4,20 +4,17 @@ function calcProgress(progress: Progress) {
   switch (progress) {
     case Progress.NULL:
       return 0;
-
     case Progress.NOT_FUNCTIONAL:
-      return 30;
+      return 1;
 
     case Progress.BASIC:
-      return 45;
+      return 2;
 
     case Progress.INTERMEDIATE:
-      return 60;
+      return 3;
 
     case Progress.ADVANCE:
-      return 80;
-    default:
-      return 0;
+      return 4;
   }
 }
 

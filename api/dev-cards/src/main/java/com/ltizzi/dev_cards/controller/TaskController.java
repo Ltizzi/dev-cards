@@ -4,6 +4,7 @@ import com.ltizzi.dev_cards.exception.InvalidTaskException;
 import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
+import com.ltizzi.dev_cards.model.task.utils.ProgressEnum;
 import com.ltizzi.dev_cards.model.task.utils.TaskUpdate;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.service.TaskService;
@@ -114,6 +115,18 @@ public class TaskController {
     @ResponseBody
     public  ResponseEntity<List<TaskDTO>> getTasksByWorkspace(@RequestParam Long id) throws NotFoundException {
         return new ResponseEntity<>(taskServ.getTaskFromWorkspaceById(id), HttpStatus.OK);
+    }
+
+    @PatchMapping("/updateProgress")
+    @ResponseBody
+    public ResponseEntity<TaskDTO> updateTaskProgress(@RequestParam Long task_id, @RequestParam String progress) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.updateTaskProgress(task_id, progress), HttpStatus.OK);
+    }
+
+    @PatchMapping("/updatePriority")
+    @ResponseBody
+    public ResponseEntity<TaskDTO> updateTaskPriority(@RequestParam Long task_id, @RequestParam String priority) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.updateTaskPriority(task_id, priority), HttpStatus.OK);
     }
 
 }

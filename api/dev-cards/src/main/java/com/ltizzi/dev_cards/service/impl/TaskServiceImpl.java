@@ -6,6 +6,8 @@ import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.task.TaskEntity;
 import com.ltizzi.dev_cards.model.task.TaskMapper;
+import com.ltizzi.dev_cards.model.task.utils.PriorityEnum;
+import com.ltizzi.dev_cards.model.task.utils.ProgressEnum;
 import com.ltizzi.dev_cards.model.task.utils.TaskUpdate;
 import com.ltizzi.dev_cards.model.task.utils.TwoTask;
 import com.ltizzi.dev_cards.model.user.UserEntity;
@@ -219,4 +221,19 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
+    @Override
+    public TaskDTO updateTaskProgress(Long task_id, String progress) throws NotFoundException {
+        TaskEntity task = taskRepo.findById(task_id).orElseThrow(()-> new NotFoundException("Task not found"));
+        ProgressEnum progEnum = ProgressEnum.valueOf(progress);
+        task.setProgress(progEnum);
+        return taskMapper.toTaskDTO(taskRepo.save(task));
+    }
+
+    @Override
+    public TaskDTO updateTaskPriority(Long task_id, String priority) throws NotFoundException {
+        TaskEntity task = taskRepo.findById(task_id).orElseThrow(()-> new NotFoundException("Task not found!"));
+        PriorityEnum priorEnum = PriorityEnum.valueOf(priority);
+        task.setPriority(priorEnum);
+        return taskMapper.toTaskDTO(taskRepo.save(task));
+    }
 }
