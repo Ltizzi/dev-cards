@@ -19,6 +19,10 @@ export enum EndpointType {
   TASK_UPDATE_STATUS = "/task/updateStatus",
   TASK_UPDATE_EFFORT = "/task/updateEffort",
   TASK_UPDATE_TYPE = "/task/updateType",
+  TASK_UPDATE_TITLE = "/task/updateTitle",
+  TASK_UPDATE_SUBTITLE = "/task/updateSubtitle",
+  TASK_UPDATE_DESCRIPTION = "/task/updateDescription",
+  TASK_UPDATE_ISSUE = "/task/updateIssue",
 
   USER_GET_ALL = "/user/all",
   USER_GET_BY_ID = "/user/byId",

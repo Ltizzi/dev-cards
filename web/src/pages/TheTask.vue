@@ -18,12 +18,17 @@
             {{ card.workspace.project_name }}
           </h2>
 
-          <h1
-            class="text-3xl py-2 font-bold rounded-t-lg my-auto w-6/12"
-            ref="card_title"
-          >
-            {{ card.title }}
-          </h1>
+          <div class="rounded-t-lg my-auto w-6/12 text-center">
+            <!-- <h1 class="text-3xl py-2 font-bold" ref="card_title">
+              {{ card.title }}
+            </h1> -->
+            <TaskTitle
+              :title="card.title"
+              :task_id="card.task_id"
+              @update="updateTask"
+            ></TaskTitle>
+          </div>
+
           <div class="my-auto w-1/12 border-l-2 border-secondary py-5 px-0.5">
             <p>by {{ card.owner.username }}</p>
           </div>
@@ -35,42 +40,28 @@
             <div
               class="flex flex-row justify-start gap-1 h-7 border-b-2 border-secondary"
             >
-              <!-- <h3
-                :class="[
-                  'font-bold border-r-2 min-w-32 border-secondary px-2',
-                  priority_color,
-                ]"
-              >
-                {{ card.priority }}
-              </h3> -->
-              <!-- <h3>{{ card.progress }}</h3> -->
               <TaskPrioritySelectable
                 :priority="card.priority"
                 @update-priority="updatePriority"
               ></TaskPrioritySelectable>
-              <!-- <h3 class="border-r-2 border-secondary pr-2"> -->
+
               <TaskCommonSelectable
                 :type="'Status'"
                 :selected="card.status"
                 @update-status="updateTaskOptions"
               ></TaskCommonSelectable>
-              <!-- {{ card.status }} -->
-              <!-- </h3> -->
-              <!-- <h3 class="border-r-2 pr-2 border-secondary"> -->
+
               <TaskCommonSelectable
                 :type="'Effort'"
                 :selected="card.effort"
                 @update-effort="updateTaskOptions"
               ></TaskCommonSelectable>
-              <!-- {{ card.effort }} -->
-              <!-- </h3> -->
 
               <TaskCommonSelectable
                 :type="'TaskType'"
                 :selected="card.task_type"
                 @update-task-type="updateTaskOptions"
               ></TaskCommonSelectable>
-              <!-- {{ card.task_type }} -->
             </div>
 
             <TaskProgress
@@ -187,6 +178,7 @@
   import TaskProgress from "../components/task/TaskProgress.vue";
   import TaskPrioritySelectable from "../components/task/TaskPrioritySelectable.vue";
   import TaskCommonSelectable from "../components/task/TaskCommonSelectable.vue";
+  import TaskTitle from "../components/task/TaskTitle.vue";
 
   // #region: variables
   const card = ref<Task>();
