@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="mx-auto flex flex-col justify-center my-10">
+  <div class="mx-auto flex flex-col justify-center my-56">
     <div class="flex flex-col justify-center mx-auto gap-5">
       <label for="">Username:</label>
       <input

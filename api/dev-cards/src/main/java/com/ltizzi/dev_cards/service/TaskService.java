@@ -5,6 +5,7 @@ import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.task.utils.ProgressEnum;
+import com.ltizzi.dev_cards.model.task.utils.ProgressItem;
 import com.ltizzi.dev_cards.model.task.utils.TaskUpdate;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import org.aspectj.weaver.ast.Not;
@@ -60,5 +61,13 @@ public interface TaskService {
     public TaskDTO updateTaskEffort(Long task_id, String effort) throws  NotFoundException;
 
     public TaskDTO updateTaskType(Long task_id, String type) throws  NotFoundException;
+
+    public TaskDTO updateTaskTitle(Long task_id, String title) throws  NotFoundException;
+
+    public TaskDTO updateTaskSubtitle(Long task_id, String subtitle) throws  NotFoundException;
+
+    public TaskDTO updateDescription(Long task_id, String description) throws  NotFoundException;
+
+    public TaskDTO updateTaskIssue(Long task_id, ProgressItem issue) throws  NotFoundException;
 }
 

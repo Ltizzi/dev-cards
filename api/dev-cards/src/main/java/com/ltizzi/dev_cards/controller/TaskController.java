@@ -5,7 +5,9 @@ import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.task.utils.ProgressEnum;
+import com.ltizzi.dev_cards.model.task.utils.ProgressItem;
 import com.ltizzi.dev_cards.model.task.utils.TaskUpdate;
+import com.ltizzi.dev_cards.model.task.utils.UpdateDescriptionRequest;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,5 +147,29 @@ public class TaskController {
     @ResponseBody
     public ResponseEntity<TaskDTO> updateTaskType(@RequestParam Long task_id, @RequestParam String type) throws NotFoundException {
         return new ResponseEntity<>(taskServ.updateTaskType(task_id, type), HttpStatus.OK);
+    }
+
+    @PatchMapping("/updateTitle")
+    @ResponseBody
+    public ResponseEntity<TaskDTO> updateTaskTitle(@RequestParam Long task_id, @RequestParam String title) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.updateTaskTitle(task_id, title), HttpStatus.OK);
+    }
+
+    @PatchMapping("/updateSubtitle")
+    @ResponseBody
+    public ResponseEntity<TaskDTO> updateTaskSubtitle(@RequestParam Long task_id, @RequestParam String subtitle) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.updateTaskSubtitle(task_id, subtitle), HttpStatus.OK);
+    }
+
+    @PatchMapping("/updateDescription")
+    @ResponseBody
+    public ResponseEntity<TaskDTO> updateDescription(@RequestParam Long task_id, @RequestBody UpdateDescriptionRequest data) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.updateDescription(task_id, data.getDescription()), HttpStatus.OK);
+    }
+
+    @PatchMapping("/updateIssue")
+    @ResponseBody
+    public ResponseEntity<TaskDTO> updateTaskIssue(@RequestParam Long task_id, @RequestBody ProgressItem issue) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.updateTaskIssue(task_id, issue), HttpStatus.OK);
     }
 }

@@ -4,6 +4,8 @@
       class="w-full rounded-xl border-b-4 border-x-4 border-secondary bg-white text-black pb-2"
       v-if="card"
     >
+      <!-- #MARK: TITLE      
+       -->
       <div class="flex flex-col text-center gap-0">
         <div :class="['w-full h-5 rounded-t-lg', title_color]"></div>
 
@@ -28,6 +30,8 @@
           <div
             class="flex flex-col justify-center gap-3 w-4/12 border-l-2 border-secondary"
           >
+            <!-- MARK: TASK STATE
+           -->
             <div
               class="flex flex-row justify-start gap-1 h-7 border-b-2 border-secondary"
             >
@@ -75,6 +79,9 @@
             ></TaskProgress>
           </div>
         </div>
+        <!-- 
+        #MARK: TASK BODY
+        -->
         <div class="px-3 py-5 flex flex-col gap-2 justify-start">
           <h2 class="text-2xl text-start">{{ card.subtitle }}</h2>
           <div class="flex flex-row justify-start gap-2">
@@ -138,6 +145,9 @@
             </div>
           </div>
 
+          <!-- 
+          #MARK: task updates
+          -->
           <div class="flex flex-col border-t-2 border-secondary pt-5">
             <div v-for="update in card.updates">
               <div class="flex flex-col justify-center">
@@ -155,6 +165,9 @@
     <TaskControlSideMenu @update="updateTaskById"></TaskControlSideMenu>
   </div>
 </template>
+<!-- 
+#MARK: SCRIPT SETUP
+-->
 <script setup lang="ts">
   import { ref, onBeforeMount, watch } from "vue";
   import {
@@ -175,6 +188,7 @@
   import TaskPrioritySelectable from "../components/task/TaskPrioritySelectable.vue";
   import TaskCommonSelectable from "../components/task/TaskCommonSelectable.vue";
 
+  // #region: variables
   const card = ref<Task>();
   const taskStore = useTaskStore();
 
@@ -185,6 +199,8 @@
   const route = useRoute();
 
   const apiCall = useApiCall();
+
+  // #MARK:asdas
 
   async function fetchTask(task_id: number) {
     const data = (await apiCall.get(EndpointType.TASK_GET_BY_ID, {

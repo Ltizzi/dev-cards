@@ -152,6 +152,7 @@ export interface Task {
 }
 
 export interface ProgressItem {
+  issue_id?: number;
   sentence: string;
   isCompleted: boolean;
 }
