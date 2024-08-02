@@ -4,12 +4,9 @@ import com.ltizzi.dev_cards.exception.InvalidTaskException;
 import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
-import com.ltizzi.dev_cards.model.task.utils.ProgressEnum;
 import com.ltizzi.dev_cards.model.task.utils.ProgressItem;
 import com.ltizzi.dev_cards.model.task.utils.TaskUpdate;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
-import org.aspectj.weaver.ast.Not;
-import org.springframework.scheduling.config.Task;
 
 
 import java.util.List;

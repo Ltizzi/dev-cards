@@ -5,7 +5,6 @@ import com.ltizzi.dev_cards.model.task.TaskEntity;
 import com.ltizzi.dev_cards.repository.TaskRepository;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Leonardo Terlizzi

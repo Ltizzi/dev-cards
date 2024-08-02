@@ -1,7 +1,6 @@
 package com.ltizzi.dev_cards.security;
 
 
-import com.ltizzi.dev_cards.model.user.utils.Role;
 import com.ltizzi.dev_cards.security.utils.RsaKeyProperties;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
