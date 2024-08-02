@@ -73,7 +73,7 @@ public class TaskServiceImpl implements TaskService {
     public List<ProgressItem> addIdToIssues(List<ProgressItem> issues){
         List<ProgressItem> serializedIssues = new ArrayList<>();
         for(ProgressItem issue: issues){
-            issue.setIssue_id(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE);
+            issue.setIssue_id(UUID.randomUUID().getLeastSignificantBits() & Long.MAX_VALUE);
             serializedIssues.add(issue);
         }
         return serializedIssues;
@@ -284,14 +284,17 @@ public class TaskServiceImpl implements TaskService {
     public TaskDTO updateTaskIssue(Long task_id, ProgressItem issue) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         List<ProgressItem> issues = task.getProgressItems();
+
         Optional<ProgressItem> old_issue = issues.stream().filter(i->i.getIssue_id().equals(issue.getIssue_id())).findAny();
+        //List<ProgressItem> old_issues = issues.stream().filter(i->i.getIssue_id() ==issue.getIssue_id()).collect(Collectors.toList());
         if(old_issue.isEmpty()){
+        //if(old_issues.get(0) == null){
             throw  new NotFoundException("Issue not found!");
         }
         task.setProgressItems(issues.stream().map(i->{
             if(i.getIssue_id().equals(issue.getIssue_id())){
                 i.setSentence(issue.getSentence());
-                i.setCompleted(issue.isCompleted());
+                i.setCompleted(issue.getIsCompleted());
             }
             return i;
         }).collect(Collectors.toList()));

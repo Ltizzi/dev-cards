@@ -124,7 +124,7 @@
                 class="flex flex-col gap-2 indent-4"
                 v-for="issue in card.progressItems"
               >
-                <div class="form-control w-3/5">
+                <!-- <div class="form-control w-3/5">
                   <label
                     class="cursor-pointer label flex flex-row justify-between gap-5"
                   >
@@ -137,7 +137,12 @@
                       class="checkbox checkbox-secondary"
                     />
                   </label>
-                </div>
+                        </div> -->
+                <TaskIssue
+                  :task_id="card.task_id"
+                  :issue="issue"
+                  @update="updateTask"
+                />
               </div>
             </div>
           </div>
@@ -187,6 +192,7 @@
   import TaskTitle from "../components/task/TaskTitle.vue";
   import TaskSubtitle from "../components/task/TaskSubtitle.vue";
   import TaskDescription from "../components/task/TaskDescription.vue";
+  import TaskIssue from "../components/task/TaskIssue.vue";
 
   // #region: variables
   const card = ref<Task>();

@@ -17,5 +17,9 @@ public class ProgressItem {
 
     private Long issue_id;
     private String sentence;
-    private boolean isCompleted = Boolean.FALSE;
+    private boolean isCompleted;
+
+    public boolean getIsCompleted(){
+        return this.isCompleted;
+    }
 }

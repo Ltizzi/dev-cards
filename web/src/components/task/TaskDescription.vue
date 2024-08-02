@@ -25,7 +25,7 @@
     >
       <p class="indent-5 text-lg">{{ props.description }}</p>
     </div>
-    <div v-else class="flex flex-col mx-10">
+    <div v-else class="flex flex-col mx-10" ref="descriptionComponent">
       <textarea
         class="textarea textarea-secondary textarea-lg bg-gray-50 my-5"
         :placeholder="description"

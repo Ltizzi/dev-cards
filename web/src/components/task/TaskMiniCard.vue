@@ -77,7 +77,7 @@
   function generateTitle(title: string) {
     if (title.length > 12) {
       let splited_title = title.slice(0, 12);
-      console.log(splited_title);
+      //console.log(splited_title);
       return splited_title + "...";
     } else return title;
   }

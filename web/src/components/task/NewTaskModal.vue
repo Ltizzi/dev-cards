@@ -287,10 +287,10 @@
 
   const props = defineProps<{ showModal: boolean }>();
 
-  console.log(
-    ColorEnumArray,
-    PriorityEnumArray,
-    EffortEnumArray,
-    TaskTypeEnumArray
-  );
+  // console.log(
+  //   ColorEnumArray,
+  //   PriorityEnumArray,
+  //   EffortEnumArray,
+  //   TaskTypeEnumArray
+  // );
 </script>

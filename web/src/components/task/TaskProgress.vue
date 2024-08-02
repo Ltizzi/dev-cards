@@ -37,7 +37,7 @@
   import { reactive, ref } from "vue";
   import { Progress, ProgressEnumArray } from "../../utils/types";
 
-  const props = defineProps<{ progress_value: Progress }>();
+  const props = defineProps<{ progress_value: number }>();
   const emit = defineEmits(["update"]);
 
   const progress_selected = ref();

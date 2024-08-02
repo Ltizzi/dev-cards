@@ -15,6 +15,7 @@ import {
   faPlus,
   faMinus,
   faTrash,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -25,7 +26,8 @@ library.add(
   faPenToSquare,
   faPlus,
   faMinus,
-  faTrash
+  faTrash,
+  faCheck
 );
 
 const app = createApp(App);

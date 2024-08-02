@@ -175,7 +175,7 @@
 
   onBeforeMount(() => {
     tasks.value = filterTask(projectStore.current.tasks);
-    console.log(tasks.value);
+    //console.log(tasks.value);
   });
 </script>
 <style lang=""></style>
