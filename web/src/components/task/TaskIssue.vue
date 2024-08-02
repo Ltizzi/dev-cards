@@ -1,21 +1,16 @@
 <template lang="">
-  <div class="w-full">
+  <div class="w-full flex flex-row">
     <div
-      class="form-control w-3/5 flex flex-row gap-5"
+      class="form-control w-4/5 flex flex-row gap-5"
       @mouseover="hovered = true"
       @mouseleave="hovered = false"
       v-if="!state.showEditable"
     >
-      <label class="cursor-pointer label flex flex-row justify-between gap-5">
+      <h1 class="cursor-pointer label flex flex-row justify-between gap-5">
         <span class="label-text text-black text-lg"
           >{{ props.issue.sentence }}
         </span>
-        <input
-          type="checkbox"
-          :checked="props.issue.isCompleted"
-          class="checkbox checkbox-secondary"
-        />
-      </label>
+      </h1>
       <font-awesome-icon
         :class="[
           'my-auto size-7 hover:cursor-pointer',
@@ -27,24 +22,33 @@
         ref="editIcon"
       />
     </div>
-    <div v-else class="flex flex-row gap-3 w-full" ref="issueElement">
+    <div v-else class="flex flex-row gap-3 w-4/5" ref="issueElement">
       <input
         type="text"
         :placeholder="props.issue.sentence"
-        class="input input-bordered input-secondary w-full max-w-xs bg-gray-100 text-black"
+        class="input input-bordered input-secondary w-full bg-gray-100 text-black"
         v-model="sentence"
+        @keydown.enter="updateIssue"
       />
-      <label class="cursor-pointer label flex flex-row justify-between gap-5">
+      <!-- <label class="cursor-pointer label flex flex-row justify-between gap-5">
         <input
           type="checkbox"
           :checked="checked"
           class="checkbox checkbox-secondary"
           v-model="checked"
         />
-      </label>
-      <button class="btn btn-success" @click="updateIssue">
+      </label> -->
+      <!-- <button class="btn btn-success" @click="updateIssue">
         <font-awesome-icon :icon="['fas', 'check']" />
-      </button>
+      </button> -->
+    </div>
+    <div>
+      <input
+        type="checkbox"
+        :checked="props.issue.isCompleted"
+        class="checkbox checkbox-secondary"
+        v-model="checked"
+      />
     </div>
   </div>
 </template>
@@ -133,6 +137,14 @@
       if (newValue != oldValue) {
         sentence.value = props.issue.sentence;
         checked.value = props.issue.isCompleted;
+      }
+    }
+  );
+  watch(
+    () => checked.value,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        updateIssue();
       }
     }
   );

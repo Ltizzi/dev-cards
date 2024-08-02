@@ -9,6 +9,7 @@ import com.ltizzi.dev_cards.model.task.utils.TaskUpdate;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 
 
+
 import java.util.List;
 
 /**
@@ -66,5 +67,9 @@ public interface TaskService {
     public TaskDTO updateDescription(Long task_id, String description) throws  NotFoundException;
 
     public TaskDTO updateTaskIssue(Long task_id, ProgressItem issue) throws  NotFoundException;
+
+    public TaskDTO createTaskIssue(Long task_id, ProgressItem issue) throws NotFoundException;
+
+    public TaskDTO deleteTaskIssue(Long task_id, Long issue_id) throws  NotFoundException;
 }
 

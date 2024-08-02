@@ -171,4 +171,16 @@ public class TaskController {
     public ResponseEntity<TaskDTO> updateTaskIssue(@RequestParam Long task_id, @RequestBody ProgressItem issue) throws NotFoundException {
         return new ResponseEntity<>(taskServ.updateTaskIssue(task_id, issue), HttpStatus.OK);
     }
+
+    @PostMapping("/addIssue")
+    @ResponseBody
+    public ResponseEntity<TaskDTO> addIssueToTask(@RequestParam Long task_id, @RequestBody ProgressItem issue) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.createTaskIssue(task_id, issue), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteIssue")
+    @ResponseBody
+    public ResponseEntity<TaskDTO> deleteTaskIssueById(@RequestParam Long task_id, @RequestParam Long issue_id) throws NotFoundException {
+        return new ResponseEntity<>(taskServ.deleteTaskIssue(task_id,issue_id), HttpStatus.OK);
+    }
 }

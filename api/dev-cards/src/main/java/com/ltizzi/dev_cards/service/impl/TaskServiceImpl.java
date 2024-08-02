@@ -302,8 +302,22 @@ public class TaskServiceImpl implements TaskService {
 
     }
 
+    @Override
+    public TaskDTO createTaskIssue(Long task_id, ProgressItem issue) throws NotFoundException {
+        TaskEntity task = findTaskById(task_id);
+        issue.setIssue_id(UUID.randomUUID().getLeastSignificantBits() & Long.MAX_VALUE);
+        List<ProgressItem> issues = task.getProgressItems();
+        issues.add(issue);
+        task.setProgressItems(issues);
+        return taskMapper.toTaskDTO(taskRepo.save(task));
+    }
 
-
-
-
+    @Override
+    public TaskDTO deleteTaskIssue(Long task_id, Long issue_id) throws NotFoundException {
+        TaskEntity task = findTaskById(task_id);
+        List<ProgressItem> issues = task.getProgressItems();
+        issues = issues.stream().filter(i-> !i.getIssue_id().equals(issue_id)).collect(Collectors.toList());
+        task.setProgressItems(issues);
+        return taskMapper.toTaskDTO(taskRepo.save(task));
+    }
 }
