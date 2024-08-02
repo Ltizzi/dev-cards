@@ -11,16 +11,22 @@
           >{{ props.issue.sentence }}
         </span>
       </h1>
-      <font-awesome-icon
-        :class="[
-          'my-auto size-7 hover:cursor-pointer',
-          hovered ? 'animate-pulse duration-150 text-secondary' : '',
-        ]"
-        :icon="['fas', 'pen-to-square']"
-        v-show="hovered"
-        @click="showEditable"
-        ref="editIcon"
-      />
+      <div class="flex flex-row gap-1 my-auto" v-show="hovered">
+        <font-awesome-icon
+          :class="[
+            'my-auto size-7 hover:cursor-pointer',
+            hovered ? 'animate-pulse duration-150 text-secondary' : '',
+          ]"
+          :icon="['fas', 'pen-to-square']"
+          @click="showEditable"
+          ref="editIcon"
+        />
+        <DeleteIssueBtn
+          :id="props.issue.issue_id"
+          :type="'issue'"
+          @delete="deleteIssue"
+        />
+      </div>
     </div>
     <div v-else class="flex flex-row gap-3 w-4/5" ref="issueElement">
       <input
@@ -30,17 +36,6 @@
         v-model="sentence"
         @keydown.enter="updateIssue"
       />
-      <!-- <label class="cursor-pointer label flex flex-row justify-between gap-5">
-        <input
-          type="checkbox"
-          :checked="checked"
-          class="checkbox checkbox-secondary"
-          v-model="checked"
-        />
-      </label> -->
-      <!-- <button class="btn btn-success" @click="updateIssue">
-        <font-awesome-icon :icon="['fas', 'check']" />
-      </button> -->
     </div>
     <div>
       <input
@@ -64,6 +59,7 @@
   import { ProgressItem, Task } from "../../utils/types";
   import { useApiCall } from "../../composables/useAPICall";
   import { EndpointType } from "../../utils/endpoints";
+  import DeleteIssueBtn from "../ui/DeleteIssueBtn.vue";
 
   const props = defineProps<{ issue: ProgressItem; task_id: number }>();
   const emit = defineEmits(["update"]);
@@ -129,6 +125,18 @@
       emit("update", response);
     }
     state.showEditable = false;
+  }
+
+  async function deleteIssue(id: number) {
+    const response = (await apiCall.del(EndpointType.TASK_REMOVE_ISSUE, {
+      params: {
+        task_id: props.task_id,
+        issue_id: props.issue.issue_id,
+      },
+    })) as Task;
+    if (response.task_id == props.task_id) {
+      emit("update", response);
+    }
   }
 
   watch(

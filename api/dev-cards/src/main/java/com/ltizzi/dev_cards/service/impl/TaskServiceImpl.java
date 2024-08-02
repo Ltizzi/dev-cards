@@ -305,7 +305,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskDTO createTaskIssue(Long task_id, ProgressItem issue) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
-        issue.setIssue_id(UUID.randomUUID().getLeastSignificantBits() & Long.MAX_VALUE);
+        issue.setIssue_id(UUID.randomUUID().getLeastSignificantBits()  & 0x1FFFFFFFFFFFFFL);
         List<ProgressItem> issues = task.getProgressItems();
         issues.add(issue);
         task.setProgressItems(issues);

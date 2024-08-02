@@ -109,35 +109,29 @@
             </div>
           </div>
           <div class="flex flex-col divide-y-2 divide-secondary">
-            <!-- <div class="flex my-5 mx-2 flex-col text-start">
-              <p class="text-xl underline font-semibold pb-2">Description:</p>
-              <p class="indent-5 text-lg">{{ card.description }}</p>
-            </div> -->
             <TaskDescription
               :description="card.description"
               :task_id="card.task_id"
               @update="updateTask"
             />
-            <div class="flex my-5 mx-2 flex-col text-start">
-              <p class="text-xl underline font-semibold pb-2">Issues:</p>
+            <div
+              class="flex my-5 mx-2 flex-col text-start"
+              @mouseover="showAddIssueBtn = true"
+              @mouseleave="showAddIssueBtn = false"
+            >
+              <div class="flex flex-row justify-start gap-5 mt-3">
+                <p class="text-xl underline font-semibold pb-2">Issues:</p>
+                <AddIssueBtn
+                  @update="updateTask"
+                  :task_id="card.task_id"
+                  :showBtn="showAddIssueBtn"
+                />
+              </div>
+
               <div
                 class="flex flex-col gap-2 indent-4"
                 v-for="issue in card.progressItems"
               >
-                <!-- <div class="form-control w-3/5">
-                  <label
-                    class="cursor-pointer label flex flex-row justify-between gap-5"
-                  >
-                    <span class="label-text text-black text-lg"
-                      >{{ issue.sentence }}
-                    </span>
-                    <input
-                      type="checkbox"
-                      :checked="issue.isCompleted"
-                      class="checkbox checkbox-secondary"
-                    />
-                  </label>
-                        </div> -->
                 <TaskIssue
                   :task_id="card.task_id"
                   :issue="issue"
@@ -193,6 +187,7 @@
   import TaskSubtitle from "../components/task/TaskSubtitle.vue";
   import TaskDescription from "../components/task/TaskDescription.vue";
   import TaskIssue from "../components/task/TaskIssue.vue";
+  import AddIssueBtn from "../components/ui/AddIssueBtn.vue";
 
   // #region: variables
   const card = ref<Task>();
@@ -205,6 +200,8 @@
   const route = useRoute();
 
   const apiCall = useApiCall();
+
+  const showAddIssueBtn = ref<boolean>();
 
   // #MARK:asdas
 
