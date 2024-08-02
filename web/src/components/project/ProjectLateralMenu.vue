@@ -109,7 +109,7 @@
   watch(
     () => projectStore.current,
     (newValue, oldValue) => {
-      if (newValue.workspace_id == oldValue.workspace_id) {
+      if (newValue.workspace_id != oldValue.workspace_id) {
         project.value = projectStore.current;
       }
     }
