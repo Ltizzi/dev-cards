@@ -19,9 +19,6 @@
           </h2>
 
           <div class="rounded-t-lg my-auto w-6/12 text-center">
-            <!-- <h1 class="text-3xl py-2 font-bold" ref="card_title">
-              {{ card.title }}
-            </h1> -->
             <TaskTitle
               :title="card.title"
               :task_id="card.task_id"
@@ -74,7 +71,12 @@
         #MARK: TASK BODY
         -->
         <div class="px-3 py-5 flex flex-col gap-2 justify-start">
-          <h2 class="text-2xl text-start">{{ card.subtitle }}</h2>
+          <!-- <h2 class="text-2xl text-start">{{ card.subtitle }}</h2> -->
+          <TaskSubtitle
+            :subtitle="card.subtitle"
+            :task_id="card.task_id"
+            @update="updateTask"
+          />
           <div class="flex flex-row justify-start gap-2">
             <div v-for="tag in card.task_tags" class="flex flex-row gap-1">
               <p
@@ -179,6 +181,7 @@
   import TaskPrioritySelectable from "../components/task/TaskPrioritySelectable.vue";
   import TaskCommonSelectable from "../components/task/TaskCommonSelectable.vue";
   import TaskTitle from "../components/task/TaskTitle.vue";
+  import TaskSubtitle from "../components/task/TaskSubtitle.vue";
 
   // #region: variables
   const card = ref<Task>();

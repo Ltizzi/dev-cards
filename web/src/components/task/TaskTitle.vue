@@ -85,7 +85,7 @@
     state.recentChange = true;
     setTimeout(() => {
       state.recentChange = false;
-    }, 100);
+    }, 50);
   }
 
   async function updateTitle() {
