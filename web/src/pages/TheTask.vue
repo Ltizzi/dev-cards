@@ -144,15 +144,18 @@
           <!-- 
           #MARK: task updates
           -->
-          <div class="flex flex-col border-t-2 border-secondary pt-5">
-            <div v-for="update in card.updates">
-              <div class="flex flex-col justify-center">
+          <div
+            class="flex flex-col justify-start border-t-2 border-secondary pt-4"
+          >
+            <div v-for="update in card.updates" class="flex flex-col gap-2">
+              <div class="flex flex-col text-start gap-1">
                 <p>{{ update.description }}</p>
                 <div class="flex flex-row justify-end gap-5">
                   <p>{{ update.created_at }}</p>
                   <p>by {{ update.creator_username }}</p>
                 </div>
               </div>
+              <div class="divider divider-secondary"></div>
             </div>
           </div>
         </div>

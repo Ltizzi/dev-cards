@@ -23,7 +23,9 @@
       @mouseover="hovered = true"
       @mouseleave="hovered = false"
     >
-      <p class="indent-5 text-lg">{{ props.description }}</p>
+      <p class="indent-5 text-lg whitespace-pre-line">
+        {{ props.description }}
+      </p>
     </div>
     <div v-else class="flex flex-col mx-10" ref="descriptionComponent">
       <textarea
