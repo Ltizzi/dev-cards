@@ -4,7 +4,9 @@
       <div
         :class="[
           'avatar',
-          state.selected == 0 ? 'border-l-4 border-primary -ml-1' : '',
+          state.selected == 0
+            ? 'border-l-4 border-primary -ml-1'
+            : 'border-l-0 border-base',
         ]"
         v-if="isLogged"
       >
@@ -62,6 +64,7 @@
 
   const state = reactive({
     selected: 0,
+    isHome: true,
   });
 
   watch(
@@ -80,11 +83,13 @@
 
   function goHome() {
     state.selected = 0;
+    state.isHome = true;
     router.push("/");
   }
 
   function goTo(project: Workspace) {
     state.selected = project.workspace_id;
+    state.isHome = false;
     projectStore.setCurrent(project);
     router.push(`/project/info?id=${project.workspace_id}`);
   }

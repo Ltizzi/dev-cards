@@ -55,7 +55,7 @@
 
   const state = reactive({
     showEditable: false,
-    recentCHange: false,
+    recentChange: false,
   });
 
   addEventListener("keydown", (event) => {
@@ -64,10 +64,10 @@
     }
   });
 
-  const handeOutsideClicks = (event: MouseEvent) => {
+  const handleOutsideClicks = (event: MouseEvent) => {
     if (
       state.showEditable &&
-      !state.recentCHange &&
+      !state.recentChange &&
       subtitleComponent.value &&
       !subtitleComponent.value.contains(event.target as Node) &&
       !editIcon.value?.contains(event.target as Node)
@@ -79,9 +79,9 @@
 
   function showEditable() {
     state.showEditable = true;
-    state.recentCHange = true;
+    state.recentChange = true;
     setTimeout(() => {
-      state.recentCHange = false;
+      state.recentChange = false;
     }, 50);
   }
 
@@ -104,10 +104,10 @@
 
   onBeforeMount(() => {
     subtitle.value = props.subtitle;
-    document.addEventListener("click", handeOutsideClicks);
+    document.addEventListener("click", handleOutsideClicks);
   });
 
   onUnmounted(() => {
-    document.removeEventListener("click", handeOutsideClicks);
+    document.removeEventListener("click", handleOutsideClicks);
   });
 </script>

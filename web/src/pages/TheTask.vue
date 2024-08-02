@@ -109,11 +109,15 @@
             </div>
           </div>
           <div class="flex flex-col divide-y-2 divide-secondary">
-            <div class="flex my-5 mx-2 flex-col text-start">
+            <!-- <div class="flex my-5 mx-2 flex-col text-start">
               <p class="text-xl underline font-semibold pb-2">Description:</p>
               <p class="indent-5 text-lg">{{ card.description }}</p>
-            </div>
-
+            </div> -->
+            <TaskDescription
+              :description="card.description"
+              :task_id="card.task_id"
+              @update="updateTask"
+            />
             <div class="flex my-5 mx-2 flex-col text-start">
               <p class="text-xl underline font-semibold pb-2">Issues:</p>
               <div
@@ -182,6 +186,7 @@
   import TaskCommonSelectable from "../components/task/TaskCommonSelectable.vue";
   import TaskTitle from "../components/task/TaskTitle.vue";
   import TaskSubtitle from "../components/task/TaskSubtitle.vue";
+  import TaskDescription from "../components/task/TaskDescription.vue";
 
   // #region: variables
   const card = ref<Task>();
