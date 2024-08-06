@@ -175,6 +175,7 @@ export interface TaskLite {
   task_id: number;
   title: string;
   //subtitle: string;
+  task_type: TaskType;
   color: Color;
   priority: Priority;
   effort: Effort;

@@ -4,26 +4,3 @@
 <script setup lang="ts">
   import TheHome from "./pages/TheHome.vue";
 </script>
-
-<!-- <template lang="">
-  <div class="w-screen relative">
-    <LateralMenu class="h-screen fixed" />
-    <div class="w-full">
-      <router-view></router-view>
-    </div>
-  </div>
-</template>
-<script setup lang="ts">
-  import LateralMenu from "./layouts/LateralMenu.vue";
-  import { useRouter } from "vue-router";
-  import { onMounted } from "vue";
-
-  const router = useRouter();
-
-  onMounted(() => {
-    const user = JSON.parse(localStorage.getItem("user") as string);
-    if (!user) {
-      router.push("/login");
-    }
-  });
-</script> -->

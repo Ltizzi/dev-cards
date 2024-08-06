@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="w-20">
+  <div class="w-20 z-50 bg-base-100">
     <div class="flex flex-col justify-center mx-auto py-5 px-2" v-if="isLoaded">
       <div
         :class="[

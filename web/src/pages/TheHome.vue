@@ -1,6 +1,8 @@
 <template lang="">
   <div class="w-screen relative">
-    <LateralMenu class="h-screen fixed" />
+    <LateralMenu
+      class="h-screen fixed -translate-x-14 hover:translate-x-0 duration-150 transition-all ease-in-out"
+    />
     <div class="w-full">
       <router-view></router-view>
     </div>
