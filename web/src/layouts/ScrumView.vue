@@ -1,7 +1,7 @@
 <template lang="">
   <div class="pt-10">
     <div
-      class="w-full grid border-2 border-primary grid-cols-5 text-xl font-semibold text-center rounded-t-xl"
+      class="w-full grid border-2 border-primary grid-cols-5 text-xl font-semibold text-center text-base-content rounded-t-xl"
     >
       <div class="w-80 py-3 border-r-2 border-r-primary"><h1>Pool</h1></div>
       <div class="w-80 py-3 border-r-2 border-r-primary">
@@ -17,7 +17,7 @@
       class="w-full grid grid-cols-5 border-x-2 border-b-2 border-primary rounded-b-xl shadow-lg shadow-slate-900"
     >
       <div class="w-80 border-r-2 border-r-primary">
-        <TaskList :tasks="pool" :isRow="false" />
+        <TaskList :tasks="pool" :isRow="true" />
       </div>
       <div class="w-80 border-r-2 border-r-primary">
         <TaskList :tasks="top_priority" :isRow="false" />
@@ -29,7 +29,7 @@
         <TaskList :tasks="testing" :isRow="false" />
       </div>
       <div class="w-80">
-        <TaskList :tasks="complete" :isRow="false" />
+        <TaskList :tasks="completed" :isRow="false" />
       </div>
     </div>
   </div>
@@ -55,7 +55,7 @@
   const top_priority = ref<Array<TaskLite>>([]);
   const in_progress = ref<Array<TaskLite>>([]);
   const testing = ref<Array<TaskLite>>([]);
-  const complete = ref<Array<TaskLite>>([]);
+  const completed = ref<Array<TaskLite>>([]);
 
   watch(
     () => getTasks(),
@@ -68,6 +68,7 @@
   );
 
   function prepareTemplate() {
+    clearColumns();
     tasks.value.forEach((task: TaskLite) => {
       if (task.task_type != TaskType.DOCUMENTATION) {
         if (
@@ -94,15 +95,18 @@
           task.progress == Progress.ADVANCE &&
           task.status == Status.COMPLETED
         ) {
-          complete.value.push(task);
+          completed.value.push(task);
         }
       }
     });
-    console.log(pool.value);
-    console.log(top_priority.value);
-    console.log(in_progress.value);
-    console.log(testing.value);
-    console.log(complete.value);
+  }
+
+  function clearColumns() {
+    pool.value = [];
+    top_priority.value = [];
+    in_progress.value = [];
+    testing.value = [];
+    completed.value = [];
   }
 
   function hasAssignedUser(task: TaskLite) {

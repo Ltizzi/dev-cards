@@ -22,14 +22,20 @@
     </div>
 
     <div v-if="!state.default" class="-mt-1.5 mx-auto w-full">
-      <input
-        type="range"
-        min="0"
-        max="4"
-        v-model="progress_selected"
-        class="range range-secondary"
-        step="1"
-      />
+      <div
+        class="tooltip tooltip-bottom text-white tooltip-accent w-full"
+        :data-tip="`${getProgressEnumValue(progress_selected)}`"
+        v-if="!state.default"
+      >
+        <input
+          type="range"
+          min="0"
+          max="4"
+          v-model="progress_selected"
+          class="range range-secondary"
+          step="1"
+        />
+      </div>
     </div>
   </div>
 </template>

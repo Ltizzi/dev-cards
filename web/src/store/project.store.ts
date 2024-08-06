@@ -39,8 +39,10 @@ export const useProjectStore = defineStore("projects", {
       const response = (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {
         params: { id: this.current.workspace_id },
       })) as Workspace;
-      if (response.workspace_id == this.current.workspace_id)
+      if (response.workspace_id == this.current.workspace_id) {
         this.current = response;
+        return this.current;
+      }
     },
     checkIsLocal() {
       return this.isLocal;

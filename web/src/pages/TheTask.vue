@@ -227,7 +227,7 @@
 
   async function updateTask(task: Task) {
     taskStore.setCurrentTask(task);
-    projectStore.updateCurrent();
+    await projectStore.updateCurrent();
     prepareTaskData(task);
   }
 

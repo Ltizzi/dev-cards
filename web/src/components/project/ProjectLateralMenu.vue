@@ -133,6 +133,15 @@
     }
   );
 
+  watch(
+    () => projectStore.current.tasks,
+    async (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        project.value = await projectStore.updateCurrent();
+      }
+    }
+  );
+
   function goHome() {
     state.selected = 0;
     router.push(`/project/info?id=${id.value}`);

@@ -246,7 +246,7 @@
       )) as Task;
       if (response.task_id) {
         taskStore.addTaskToCurrentProject(response);
-        projectStore.updateCurrent();
+        await projectStore.updateCurrent();
         requestSent.value = false;
         success.value = true;
         setTimeout(() => {

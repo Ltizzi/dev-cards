@@ -54,7 +54,7 @@
 
   const router = useRouter();
 
-  const props = defineProps<{ task: Task }>();
+  const props = defineProps<{ task: Task; isMicro: boolean }>();
 
   const color = ref<string>();
 
