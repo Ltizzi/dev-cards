@@ -11,6 +11,7 @@ import ProjectInfo from "./components/project/ProjectInfo.vue";
 import TheTask from "./pages/TheTask.vue";
 import App from "./App.vue";
 import HomeLayout from "./layouts/HomeLayout.vue";
+import ScrumView from "./layouts/ScrumView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -27,6 +28,7 @@ const router = createRouter({
           children: [
             { path: "info", component: ProjectInfo },
             { path: "task", component: TheTask },
+            { path: "scrum", component: ScrumView },
           ],
         },
       ],

@@ -63,7 +63,7 @@
       <h1 class="text-3xl my-5">Tasks:</h1>
       <NewTaskBtn />
     
-      <TaskList :tasks="project.tasks"/>
+      <TaskList :tasks="project.tasks" :isRow="true"/>
   </div>
 </template>
 

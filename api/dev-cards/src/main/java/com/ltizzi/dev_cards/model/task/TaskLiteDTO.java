@@ -26,5 +26,14 @@ public class TaskLiteDTO {
     private TaskType task_type;
     private WorkspaceLiteDTO workspace;
     private List<String> task_tags = new ArrayList<>();
+    private boolean hasUsers;
     //private UserLiteDTO owner;
+
+    public boolean getHasUsers(){
+        return this.hasUsers;
+    }
+
+    public void  setHasUsers(boolean condition){
+        this.hasUsers = condition;
+    }
 }

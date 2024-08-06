@@ -8,6 +8,7 @@ package com.ltizzi.dev_cards.model.task.utils;
 public enum Status {
     PENDING,
     PROGRESS,
+    TESTING,
     COMPLETED,
     BLOCKED
 }

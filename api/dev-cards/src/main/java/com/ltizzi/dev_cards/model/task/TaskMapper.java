@@ -148,6 +148,11 @@ public class TaskMapper {
         liteDTO.setTask_type(task.getTask_type());
         liteDTO.setWorkspace(wsMapper.toWorkspaceLiteDTO(task.getWorkspace()));
         liteDTO.setTask_tags(task.getTask_tags());
+        if(task.getDesignated_to().size() > 0){
+            liteDTO.setHasUsers(true);
+        }
+        else liteDTO.setHasUsers(false);
+
        // liteDTO.setOwner(userMapper.toUserLiteDTO(task.getOwner()));
 
         return liteDTO;

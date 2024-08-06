@@ -18,7 +18,9 @@
         </summary>
         <ul class="before:ring-offset-purple-400">
           <details open>
-            <summary>
+            <summary
+              class="py-3 rounded-xl hover:cursor-pointer hover:bg-slate-700 transition-all ease-in-out"
+            >
               <span>All</span>
             </summary>
             <ul class="before:ring-offset-purple-400">
@@ -42,9 +44,25 @@
               </li>
             </ul>
           </details>
+          <details
+            open
+            :class="[
+              'active',
+              state.selected == -1 ? 'border-l-2  border-primary -ml-0.5' : '',
+            ]"
+          >
+            <summary
+              class="py-2 rounded-xl hover:cursor-pointer hover:bg-slate-700 transition-all ease-in-out"
+              @click="goScrum()"
+            >
+              <span>Scrum</span>
+            </summary>
+          </details>
 
           <details open>
-            <summary>
+            <summary
+              class="py-3 rounded-xl hover:cursor-pointer hover:bg-slate-700 transition-all ease-in-out"
+            >
               <span>Designated</span>
             </summary>
             <ul class="before:ring-offset-purple-400"></ul>
@@ -123,6 +141,11 @@
   function goTask(id: number) {
     state.selected = id;
     router.push(`/project/task?id=${id}`);
+  }
+
+  function goScrum() {
+    state.selected = -1;
+    router.push("/project/scrum");
   }
 
   function shortName(name: string) {

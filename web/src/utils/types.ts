@@ -83,6 +83,7 @@ export const EffortEnumArray = [Effort.LOW, Effort.MEDIUM, Effort.HIGH];
 export enum Status {
   PENDING = "PENDING",
   PROGRESS = "PROGRESS",
+  TESTING = "TESTING",
   COMPLETED = "COMPLETED",
   BLOCKED = "BLOCKED",
 }
@@ -90,6 +91,7 @@ export enum Status {
 export const StatusEnumArray = [
   Status.PENDING,
   Status.PROGRESS,
+  Status.TESTING,
   Status.COMPLETED,
   Status.BLOCKED,
 ];
@@ -180,6 +182,7 @@ export interface TaskLite {
   progress: Progress;
   workspace: WorkspaceLite;
   task_tags: Array<string>;
+  hasUsers: boolean;
   // owner: UserLite;
 }
 

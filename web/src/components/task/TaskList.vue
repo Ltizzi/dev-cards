@@ -1,5 +1,10 @@
 <template lang="">
-  <div class="flex flex-row flex-wrap justify-start gap-5 my-5">
+  <div
+    :class="[
+      'flex  flex-wrap justify-start gap-5 my-5',
+      props.isRow ? 'flex-row' : 'flex-col justify-center ml-4 w-full',
+    ]"
+  >
     <TaskMiniCard v-for="task in props.tasks" :task="task" />
   </div>
 </template>
@@ -15,7 +20,7 @@
 
   const apiCall = useApiCall();
 
-  const props = defineProps<{ tasks: Task[] }>();
+  const props = defineProps<{ tasks: Task[]; isRow: boolean }>();
 
   const tasks = ref<Array<Task>>();
 

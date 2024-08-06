@@ -191,10 +191,12 @@
   import TaskDescription from "../components/task/TaskDescription.vue";
   import TaskIssue from "../components/task/TaskIssue.vue";
   import AddIssueBtn from "../components/ui/AddIssueBtn.vue";
+  import { useProjectStore } from "../store/project.store";
 
   // #region: variables
   const card = ref<Task>();
   const taskStore = useTaskStore();
+  const projectStore = useProjectStore();
 
   const title_color = ref<string>();
   const progress_value = ref<number>();
@@ -225,6 +227,7 @@
 
   async function updateTask(task: Task) {
     taskStore.setCurrentTask(task);
+    projectStore.updateCurrent();
     prepareTaskData(task);
   }
 
