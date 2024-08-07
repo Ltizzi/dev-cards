@@ -252,6 +252,7 @@
         setTimeout(() => {
           success.value = false;
           clearFields();
+          emit("update");
           closeModal();
         }, 3000);
       } else {
@@ -279,7 +280,7 @@
 
   // MODAL
 
-  const emit = defineEmits(["close"]);
+  const emit = defineEmits(["close", "update"]);
 
   function closeModal() {
     emit("close", false);

@@ -9,6 +9,7 @@
       v-for="task in props.tasks"
       :task="task"
       :isMicro="props.isMicro"
+      :isDraggable="props.isDraggable"
     />
   </div>
 </template>
@@ -24,7 +25,11 @@
 
   const apiCall = useApiCall();
 
-  const props = defineProps<{ tasks: Task[]; isMicro: boolean }>();
+  const props = defineProps<{
+    tasks: Task[];
+    isMicro: boolean;
+    isDraggable: boolean;
+  }>();
 
   const tasks = ref<Array<Task>>();
 

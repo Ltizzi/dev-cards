@@ -1,13 +1,21 @@
 <template lang="">
-  <div class="card bg-base-100 w-72 shadow-xl">
+  <div
+    :class="['card bg-base-100 w-72 shadow-xl', isDragging ? 'absolute' : '']"
+    v-if="!props.isMicro"
+    ref="mini"
+    @mousedown="dragMouseDown"
+  >
     <div
-      class="bg-white text-slate-700 rounded-xl transition-all ease-in-out duration-300 hover:scale-105 max-h-48 min-h-48"
+      :class="[
+        'bg-white text-slate-700 rounded-xl transition-all ease-in-out duration-300 hover:scale-105 max-h-48 min-h-48',
+        props.isDraggable ? 'hover:cursor-pointer' : '',
+      ]"
     >
-      <div :class="['h-7 w-full -mb-5 rounded-t-xl z-10', color]"></div>
+      <div :class="['h-7 w-full -mb-5 rounded-t-xl z-10', color, ,]"></div>
       <div class="px-3 py-7">
         <div class="flex flex-row justify-between my-auto align-middle">
           <h2 class="card-title w-4/6">
-            {{ generateTitle(props.task.title) }}
+            {{ generateTitle(props.task.title, 12) }}
           </h2>
           <h3
             :class="[
@@ -20,19 +28,8 @@
         </div>
         <div class="flex flex-col justify-start gap-2 pt-3">
           <h3>{{ props.task.status }}</h3>
-          <!-- <progress
-            class="progress progress-success w-56 py-2"
-            :value="progress"
-            max="100"
-            v-if="progress > 0"
-          ></progress> -->
         </div>
         <div class="card-actions justify-end relative mr-2.5">
-          <!-- <div class="h-16">
-            <div class="flex flex-row flex-nowrap justify-between">
-              <h4 v-for="tag in task_tags">a{{ tag }}</h4>
-            </div>
-          </div> -->
           <button
             class="btn btn-primary text-white absolute top-5 -right-2.5"
             @click="goToTask()"
@@ -40,8 +37,32 @@
             Enter
           </button>
         </div>
-
-        <!-- <p>{{ props.task.description }}</p> -->
+      </div>
+    </div>
+  </div>
+  <div
+    :class="['card bg-base-100 w-32 shadow-xl', isDragging ? 'absolute' : '']"
+    v-if="props.isMicro"
+    ref="micro"
+    @mousedown="dragMouseDown"
+  >
+    <div
+      :class="[
+        'bg-white text-slate-700 rounded-xl transition-all ease-in-out duration-300 hover:scale-105 max-h-24 min-h-24 relaive',
+        props.isDraggable ? 'hover:cursor-pointer' : '',
+      ]"
+    >
+      <div :class="['h-5 w-full -mb-5 rounded-t-xl z-10', color]"></div>
+      <div class="pt-4 mx-auto flex text-center">
+        <h2 class="w-full text-base text-center leading-4 mt-2 mx-0.5">
+          {{ generateTitle(props.task.title, 20) }}
+        </h2>
+        <button
+          class="btn btn-xs btn-primary text-white absolute bottom-1 left-9"
+          @click="goToTask()"
+        >
+          Enter
+        </button>
       </div>
     </div>
   </div>
@@ -54,13 +75,72 @@
 
   const router = useRouter();
 
-  const props = defineProps<{ task: Task; isMicro: boolean }>();
+  const props = defineProps<{
+    task: Task;
+    isMicro: boolean;
+    isDraggable: boolean;
+  }>();
+
+  const emit = defineEmits(["dragging", "dropped"]);
 
   const color = ref<string>();
 
   const priority_color = ref<string>();
 
   const progress = ref<number>(0);
+
+  const mini = ref<HTMLElement | null>();
+  const micro = ref<HTMLElement | null>();
+  const isDragging = ref<boolean>(false);
+
+  const pos1 = ref<number>(0);
+  const pos2 = ref<number>(0);
+  const pos3 = ref<number>(0);
+  const pos4 = ref<number>(0);
+
+  function dragMouseDown(event: MouseEvent) {
+    isDragging.value = true;
+    event.preventDefault();
+    pos3.value = event.clientX;
+    pos4.value = event.clientY;
+    console.log(pos1.value, " ", pos2.value, " ", pos3.value, " ", pos4.value);
+
+    if (props.isMicro) {
+      micro.value?.addEventListener("mousemove", elementDrag);
+      micro.value?.addEventListener("mouseup", closeDragElement);
+    } else {
+      mini.value?.addEventListener("mousemove", elementDrag);
+      mini.value?.addEventListener("mouseup", closeDragElement);
+    }
+  }
+
+  function elementDrag(e: MouseEvent) {
+    e.preventDefault();
+    pos1.value = pos3.value - e.clientX;
+    pos2.value = pos4.value - e.clientY;
+    pos3.value = e.clientX;
+    pos4.value = e.clientY;
+    if (props.isMicro && micro.value) {
+      micro.value.style.top = micro.value.offsetTop - pos2.value + "px";
+      micro.value.style.left = micro.value.offsetLeft - pos1.value + "px";
+    }
+    if (!props.isMicro && mini.value) {
+      console.log("MINI");
+      mini.value.style.top = mini.value.offsetTop - pos2.value + "px";
+      mini.value.style.left = mini.value.offsetLeft - pos1.value + "px";
+    }
+  }
+
+  function closeDragElement(e: MouseEvent) {
+    isDragging.value = false;
+    if (props.isMicro) {
+      micro.value?.removeEventListener("mousemove", elementDrag);
+      micro.value?.removeEventListener("mouseup", closeDragElement);
+    } else {
+      mini.value?.removeEventListener("mousemove", elementDrag);
+      mini.value?.removeEventListener("mouseup", closeDragElement);
+    }
+  }
 
   function goToTask() {
     router.push(`/project/task?id=${props.task.task_id}`);
@@ -74,9 +154,9 @@
     } else return priority;
   }
 
-  function generateTitle(title: string) {
-    if (title.length > 12) {
-      let splited_title = title.slice(0, 12);
+  function generateTitle(title: string, num: number) {
+    if (title.length > num) {
+      let splited_title = title.slice(0, num);
       //console.log(splited_title);
       return splited_title + "...";
     } else return title;
@@ -91,5 +171,10 @@
       progress.value = 100;
     }
     priority_color.value = taskUtils.calcPriorityColor(props.task.priority);
+    if (props.isMicro) {
+      micro.value?.addEventListener("mousedown", dragMouseDown);
+    } else {
+      mini.value?.addEventListener("mousedown", dragMouseDown);
+    }
   });
 </script>

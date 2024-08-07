@@ -62,6 +62,8 @@
   const isLoaded = ref(false);
   const isLogged = ref(false);
 
+  const firstLoad = ref(true);
+
   const state = reactive({
     selected: 0,
     isHome: true,

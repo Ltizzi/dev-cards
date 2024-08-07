@@ -1,7 +1,7 @@
 <template lang="">
   <div class="pt-5">
-    <h1 class="text-center text-2xl">Scrum view</h1>
-    <div class="flex flex-row py-5">
+    <h1 class="text-center text-2xl">Scrum board</h1>
+    <div class="flex flex-row py-5 justify-between">
       <label
         class="input input-bordered flex items-center gap-2 input-secondary"
       >
@@ -13,6 +13,12 @@
           v-model="search"
         />
       </label>
+      <div class="flex flex-row justify-between gap-5">
+        <NewTaskBtn @update="updateProject" />
+        <button class="btn btn-outline btn-secondary" @click="changeIconSize">
+          Change card size
+        </button>
+      </div>
     </div>
 
     <div
@@ -31,20 +37,27 @@
     <div
       class="w-full grid grid-cols-5 border-x-2 border-b-2 border-primary rounded-b-xl shadow-lg shadow-slate-900"
     >
-      <div class="w-80 border-r-2 border-r-primary min-h-96">
-        <TaskList :tasks="pool" :isMicro="false" />
+      <div
+        class="w-80 border-r-2 border-r-primary min-h-96 relative"
+        ref="col_pool"
+      >
+        <TaskList :tasks="pool" :isMicro="isMicro" :isDraggable="true" />
       </div>
-      <div class="w-80 border-r-2 border-r-primary">
-        <TaskList :tasks="top_priority" :isMicro="false" />
+      <div class="w-80 border-r-2 border-r-primary relative" ref="col_priority">
+        <TaskList
+          :tasks="top_priority"
+          :isMicro="isMicro"
+          :isDraggable="true"
+        />
       </div>
-      <div class="w-80 border-r-2 border-r-primary">
-        <TaskList :tasks="in_progress" :isMicro="false" />
+      <div class="w-80 border-r-2 border-r-primary relative" ref="col_progress">
+        <TaskList :tasks="in_progress" :isMicro="isMicro" :isDraggable="true" />
       </div>
-      <div class="w-80 border-r-2 border-r-primary">
-        <TaskList :tasks="testing" :isMicro="false" />
+      <div class="w-80 border-r-2 border-r-primary relative" ref="col_testing">
+        <TaskList :tasks="testing" :isMicro="isMicro" :isDraggable="true" />
       </div>
-      <div class="w-80">
-        <TaskList :tasks="completed" :isMicro="false" />
+      <div class="w-80 relative" ref="col_completed">
+        <TaskList :tasks="completed" :isMicro="isMicro" :isDraggable="true" />
       </div>
     </div>
   </div>
@@ -60,6 +73,7 @@
   } from "../utils/types";
   import TaskList from "../components/task/TaskList.vue";
   import { useProjectStore } from "../store/project.store";
+  import NewTaskBtn from "../components/task/NewTaskBtn.vue";
 
   const projectStore = useProjectStore();
 
@@ -71,6 +85,16 @@
   const testing = ref<Array<TaskLite>>([]);
   const completed = ref<Array<TaskLite>>([]);
   const search = ref<string>("");
+
+  const isMicro = ref<boolean>(false);
+
+  const col_pool = ref<HTMLElement | null>();
+  const col_priority = ref<HTMLElement | null>();
+  const col_progress = ref<HTMLElement | null>();
+  const col_testing = ref<HTMLElement | null>();
+  const col_completed = ref<HTMLElement | null>();
+
+  const cols = ref<Array<HTMLElement | null | undefined>>([]);
 
   watch(
     () => getTasks(),
@@ -165,9 +189,29 @@
     return projectStore.current.tasks;
   }
 
+  function changeIconSize() {
+    isMicro.value = !isMicro.value;
+  }
+
+  async function updateProject() {
+    await projectStore.updateCurrent();
+    prepareTemplate(getTasks());
+  }
+
+  function dropped(event: MouseEvent) {
+    console.log(event);
+    console.log("DROPPEADO GATO");
+  }
+
   onBeforeMount(() => {
     tasks.value = getTasks();
     prepareTemplate(getTasks());
+
+    col_pool.value?.addEventListener("mouseup", dropped);
+    col_priority.value?.addEventListener("mouseup", dropped);
+    col_progress.value?.addEventListener("mouseup", dropped);
+    col_testing.value?.addEventListener("mouseup", dropped);
+    col_completed.value?.addEventListener("mouseup", dropped);
   });
 </script>
 <style lang=""></style>
