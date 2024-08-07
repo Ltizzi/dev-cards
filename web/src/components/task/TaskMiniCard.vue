@@ -1,68 +1,69 @@
 <template lang="">
-  <div
-    :class="['card bg-base-100 w-72 shadow-xl', isDragging ? 'absolute' : '']"
-    v-if="!props.isMicro"
-    ref="mini"
-    @mousedown="dragMouseDown"
-  >
+  <div ref="task_card" :style="style">
     <div
-      :class="[
-        'bg-white text-slate-700 rounded-xl transition-all ease-in-out duration-300 hover:scale-105 max-h-48 min-h-48',
-        props.isDraggable ? 'hover:cursor-pointer' : '',
-      ]"
+      class="card bg-base-100 w-72 shadow-xl"
+      v-if="!props.isMicro"
+      :style="style"
     >
-      <div :class="['h-7 w-full -mb-5 rounded-t-xl z-10', color, ,]"></div>
-      <div class="px-3 py-7">
-        <div class="flex flex-row justify-between my-auto align-middle">
-          <h2 class="card-title w-4/6">
-            {{ generateTitle(props.task.title, 12) }}
+      <div
+        :class="[
+          'bg-white text-slate-700 rounded-xl transition-all ease-in-out duration-300 hover:scale-105 max-h-48 min-h-48',
+          props.isDraggable ? 'hover:cursor-pointer' : '',
+        ]"
+      >
+        <div :class="['h-7 w-full -mb-5 rounded-t-xl z-10', color, ,]"></div>
+        <div class="px-3 py-7">
+          <div class="flex flex-row justify-between my-auto align-middle">
+            <h2 class="card-title w-4/6">
+              {{ generateTitle(props.task.title, 12) }}
+            </h2>
+            <h3
+              :class="[
+                'font-bold mt-1 text-base text-end  w-2/5',
+                priority_color,
+              ]"
+            >
+              {{ generatePriority(props.task.priority) }}
+            </h3>
+          </div>
+          <div class="flex flex-col justify-start gap-2 pt-3">
+            <h3>{{ props.task.status }}</h3>
+          </div>
+          <div class="card-actions justify-end relative mr-2.5">
+            <button
+              class="btn btn-primary text-white absolute top-5 -right-2.5"
+              @click="goToTask()"
+            >
+              Enter
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="card bg-base-100 w-32 shadow-xl"
+      v-if="props.isMicro"
+      :style="style"
+    >
+      <!-- @mousedown="dragMouseDown" -->
+      <div
+        :class="[
+          'bg-white text-slate-700 rounded-xl transition-all ease-in-out duration-300 hover:scale-105 max-h-24 min-h-24 relaive',
+          props.isDraggable ? 'hover:cursor-pointer' : '',
+        ]"
+      >
+        <div :class="['h-5 w-full -mb-5 rounded-t-xl z-10', color]"></div>
+        <div class="pt-4 mx-auto flex text-center">
+          <h2 class="w-full text-base text-center leading-4 mt-2 mx-0.5">
+            {{ generateTitle(props.task.title, 20) }}
           </h2>
-          <h3
-            :class="[
-              'font-bold mt-1 text-base text-end  w-2/5',
-              priority_color,
-            ]"
-          >
-            {{ generatePriority(props.task.priority) }}
-          </h3>
-        </div>
-        <div class="flex flex-col justify-start gap-2 pt-3">
-          <h3>{{ props.task.status }}</h3>
-        </div>
-        <div class="card-actions justify-end relative mr-2.5">
           <button
-            class="btn btn-primary text-white absolute top-5 -right-2.5"
+            class="btn btn-xs btn-primary text-white absolute bottom-1 left-9"
             @click="goToTask()"
           >
             Enter
           </button>
         </div>
-      </div>
-    </div>
-  </div>
-  <div
-    :class="['card bg-base-100 w-32 shadow-xl', isDragging ? 'absolute' : '']"
-    v-if="props.isMicro"
-    ref="micro"
-    @mousedown="dragMouseDown"
-  >
-    <div
-      :class="[
-        'bg-white text-slate-700 rounded-xl transition-all ease-in-out duration-300 hover:scale-105 max-h-24 min-h-24 relaive',
-        props.isDraggable ? 'hover:cursor-pointer' : '',
-      ]"
-    >
-      <div :class="['h-5 w-full -mb-5 rounded-t-xl z-10', color]"></div>
-      <div class="pt-4 mx-auto flex text-center">
-        <h2 class="w-full text-base text-center leading-4 mt-2 mx-0.5">
-          {{ generateTitle(props.task.title, 20) }}
-        </h2>
-        <button
-          class="btn btn-xs btn-primary text-white absolute bottom-1 left-9"
-          @click="goToTask()"
-        >
-          Enter
-        </button>
       </div>
     </div>
   </div>
@@ -72,6 +73,7 @@
   import { Task, Status } from "../../utils/types";
   import { taskUtils } from "../../utils/task.utils";
   import { useRouter } from "vue-router";
+  import { useDraggable } from "@vueuse/core";
 
   const router = useRouter();
 
@@ -79,9 +81,10 @@
     task: Task;
     isMicro: boolean;
     isDraggable: boolean;
+    col_name: string;
   }>();
 
-  const emit = defineEmits(["dragging", "dropped"]);
+  const emit = defineEmits(["dropped"]);
 
   const color = ref<string>();
 
@@ -89,58 +92,76 @@
 
   const progress = ref<number>(0);
 
-  const mini = ref<HTMLElement | null>();
-  const micro = ref<HTMLElement | null>();
-  const isDragging = ref<boolean>(false);
+  // const mini = ref<HTMLElement | null>();
+  // const micro = ref<HTMLElement | null>();
 
-  const pos1 = ref<number>(0);
-  const pos2 = ref<number>(0);
-  const pos3 = ref<number>(0);
-  const pos4 = ref<number>(0);
+  const task_card = ref<HTMLElement | null>();
 
-  function dragMouseDown(event: MouseEvent) {
-    isDragging.value = true;
-    event.preventDefault();
-    pos3.value = event.clientX;
-    pos4.value = event.clientY;
-    console.log(pos1.value, " ", pos2.value, " ", pos3.value, " ", pos4.value);
+  const { x, y, style } = useDraggable(task_card, {
+    preventDefault: true,
+    onStart: (pos: any, e: PointerEvent) => {
+      pos.x = e.clientX;
+      pos.y = e.clientY;
+    },
+    onEnd: (pos: any, e: PointerEvent) => {
+      let mousePos = {
+        x: e.clientX,
+        y: e.clientY,
+      };
+      emit("dropped", props.col_name, mousePos, props.task);
+    },
+    disabled: !props.isDraggable,
+  });
 
-    if (props.isMicro) {
-      micro.value?.addEventListener("mousemove", elementDrag);
-      micro.value?.addEventListener("mouseup", closeDragElement);
-    } else {
-      mini.value?.addEventListener("mousemove", elementDrag);
-      mini.value?.addEventListener("mouseup", closeDragElement);
-    }
-  }
+  // const isDragging = ref<boolean>(false);
 
-  function elementDrag(e: MouseEvent) {
-    e.preventDefault();
-    pos1.value = pos3.value - e.clientX;
-    pos2.value = pos4.value - e.clientY;
-    pos3.value = e.clientX;
-    pos4.value = e.clientY;
-    if (props.isMicro && micro.value) {
-      micro.value.style.top = micro.value.offsetTop - pos2.value + "px";
-      micro.value.style.left = micro.value.offsetLeft - pos1.value + "px";
-    }
-    if (!props.isMicro && mini.value) {
-      console.log("MINI");
-      mini.value.style.top = mini.value.offsetTop - pos2.value + "px";
-      mini.value.style.left = mini.value.offsetLeft - pos1.value + "px";
-    }
-  }
+  // const pos1 = ref<number>(0);
+  // const pos2 = ref<number>(0);
+  // const pos3 = ref<number>(0);
+  // const pos4 = ref<number>(0);
 
-  function closeDragElement(e: MouseEvent) {
-    isDragging.value = false;
-    if (props.isMicro) {
-      micro.value?.removeEventListener("mousemove", elementDrag);
-      micro.value?.removeEventListener("mouseup", closeDragElement);
-    } else {
-      mini.value?.removeEventListener("mousemove", elementDrag);
-      mini.value?.removeEventListener("mouseup", closeDragElement);
-    }
-  }
+  // function dragMouseDown(event: MouseEvent) {
+  //   isDragging.value = true;
+  //   event.preventDefault();
+  //   pos3.value = event.clientX;
+  //   pos4.value = event.clientY;
+  //   console.log(pos1.value, " ", pos2.value, " ", pos3.value, " ", pos4.value);
+
+  //   if (props.isMicro) {
+  //     micro.value?.addEventListener("mousemove", elementDrag);
+  //     micro.value?.addEventListener("mouseup", closeDragElement);
+  //   } else {
+  //     mini.value?.addEventListener("mousemove", elementDrag);
+  //     mini.value?.addEventListener("mouseup", closeDragElement);
+  //   }
+  // }
+
+  // function elementDrag(e: MouseEvent) {
+  //   e.preventDefault();
+  //   pos1.value = pos3.value - e.clientX;
+  //   pos2.value = pos4.value - e.clientY;
+  //   pos3.value = e.clientX;
+  //   pos4.value = e.clientY;
+  //   if (props.isMicro && micro.value) {
+  //     micro.value.style.top = micro.value.offsetTop - pos2.value + "px";
+  //     micro.value.style.left = micro.value.offsetLeft - pos1.value + "px";
+  //   }
+  //   if (!props.isMicro && mini.value) {
+  //     mini.value.style.top = mini.value.offsetTop - pos2.value + "px";
+  //     mini.value.style.left = mini.value.offsetLeft - pos1.value + "px";
+  //   }
+  // }
+
+  // function closeDragElement(e: MouseEvent) {
+  //   isDragging.value = false;
+  //   if (props.isMicro) {
+  //     micro.value?.removeEventListener("mousemove", elementDrag);
+  //     micro.value?.removeEventListener("mouseup", closeDragElement);
+  //   } else {
+  //     mini.value?.removeEventListener("mousemove", elementDrag);
+  //     mini.value?.removeEventListener("mouseup", closeDragElement);
+  //   }
+  // }
 
   function goToTask() {
     router.push(`/project/task?id=${props.task.task_id}`);
@@ -171,10 +192,10 @@
       progress.value = 100;
     }
     priority_color.value = taskUtils.calcPriorityColor(props.task.priority);
-    if (props.isMicro) {
-      micro.value?.addEventListener("mousedown", dragMouseDown);
-    } else {
-      mini.value?.addEventListener("mousedown", dragMouseDown);
-    }
+    // if (props.isMicro) {
+    //   micro.value?.addEventListener("mousedown", dragMouseDown);
+    // } else {
+    //   mini.value?.addEventListener("mousedown", dragMouseDown);
+    // }
   });
 </script>

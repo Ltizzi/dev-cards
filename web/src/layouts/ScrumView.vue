@@ -35,45 +35,88 @@
       <div class="w-80 py-3"><h1>Complete</h1></div>
     </div>
     <div
-      class="w-full grid grid-cols-5 border-x-2 border-b-2 border-primary rounded-b-xl shadow-lg shadow-slate-900"
+      class="w-full grid grid-cols-5 border-x-2 border-b-2 border-primary rounded-b-xl shadow-lg shadow-slate-900 relative"
+      ref="cols"
     >
       <div
-        class="w-80 border-r-2 border-r-primary min-h-96 relative"
+        class="w-80 border-r-2 border-r-primary min-h-96"
         ref="col_pool"
+        id="col_pool"
       >
-        <TaskList :tasks="pool" :isMicro="isMicro" :isDraggable="true" />
+        <TaskList
+          :tasks="pool"
+          :isMicro="isMicro"
+          :isDraggable="true"
+          :col_name="'pool'"
+          @dropped="dropped"
+        />
       </div>
-      <div class="w-80 border-r-2 border-r-primary relative" ref="col_priority">
+      <div
+        class="w-80 border-r-2 border-r-primary"
+        ref="col_priority"
+        id="col_priority"
+      >
         <TaskList
           :tasks="top_priority"
           :isMicro="isMicro"
           :isDraggable="true"
+          :col_name="'priority'"
+          @dropped="dropped"
         />
       </div>
-      <div class="w-80 border-r-2 border-r-primary relative" ref="col_progress">
-        <TaskList :tasks="in_progress" :isMicro="isMicro" :isDraggable="true" />
+      <div
+        class="w-80 border-r-2 border-r-primary"
+        ref="col_progress"
+        id="col_progress"
+      >
+        <TaskList
+          :tasks="in_progress"
+          :isMicro="isMicro"
+          :isDraggable="true"
+          :col_name="'progress'"
+          @dropped="dropped"
+        />
       </div>
-      <div class="w-80 border-r-2 border-r-primary relative" ref="col_testing">
-        <TaskList :tasks="testing" :isMicro="isMicro" :isDraggable="true" />
+      <div
+        class="w-80 border-r-2 border-r-primary"
+        ref="col_testing"
+        id="col_testing"
+      >
+        <TaskList
+          :tasks="testing"
+          :isMicro="isMicro"
+          :isDraggable="true"
+          :col_name="'testing'"
+          @dropped="dropped"
+        />
       </div>
-      <div class="w-80 relative" ref="col_completed">
-        <TaskList :tasks="completed" :isMicro="isMicro" :isDraggable="true" />
+      <div class="w-80" ref="col_completed" id="col_completed">
+        <TaskList
+          :tasks="completed"
+          :isMicro="isMicro"
+          :isDraggable="true"
+          :col_name="'completed'"
+          @dropped="dropped"
+        />
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-  import { onBeforeMount, ref, watch } from "vue";
+  import { onBeforeMount, onMounted, ref, watch } from "vue";
   import {
     Priority,
     Progress,
     Status,
+    Task,
     TaskLite,
     TaskType,
   } from "../utils/types";
   import TaskList from "../components/task/TaskList.vue";
   import { useProjectStore } from "../store/project.store";
   import NewTaskBtn from "../components/task/NewTaskBtn.vue";
+  import { useApiCall } from "../composables/useAPICall";
+  import { EndpointType } from "../utils/endpoints";
 
   const projectStore = useProjectStore();
 
@@ -88,13 +131,7 @@
 
   const isMicro = ref<boolean>(false);
 
-  const col_pool = ref<HTMLElement | null>();
-  const col_priority = ref<HTMLElement | null>();
-  const col_progress = ref<HTMLElement | null>();
-  const col_testing = ref<HTMLElement | null>();
-  const col_completed = ref<HTMLElement | null>();
-
-  const cols = ref<Array<HTMLElement | null | undefined>>([]);
+  const apiCall = useApiCall();
 
   watch(
     () => getTasks(),
@@ -198,20 +235,122 @@
     prepareTemplate(getTasks());
   }
 
-  function dropped(event: MouseEvent) {
-    console.log(event);
+  function dropped(col_name: string, pos: any, task: TaskLite) {
+    console.log("col name:");
+    console.log(col_name);
+    console.log(col_name, " ", pos, " ", task.title);
     console.log("DROPPEADO GATO");
+    console.log(document.elementsFromPoint(pos.x, pos.y));
+    const element_id = document
+      .elementsFromPoint(pos.x, pos.y)
+      .filter((el: any) => el.id && el.id != "app")[0].id;
+    handleDropped(col_name, element_id, task);
+  }
+
+  async function handleDropped(from: string, to: string, task: TaskLite) {
+    if (from == "pool") {
+      pool.value = pool.value.filter(
+        (t: TaskLite) => t.task_id != task.task_id
+      );
+      if (to == "priority") {
+        top_priority.value.push(task);
+        let taskEntity = await fetchTaskById(task.task_id);
+        if (taskEntity) {
+          taskEntity.priority = Priority.VERY_HIGH;
+        }
+      }
+      if (to == "progress") {
+        in_progress.value.push(task);
+      }
+      if (to == "testing") {
+        testing.value.push(task);
+      }
+      if (to == "completed") {
+        completed.value.push(task);
+      }
+    }
+    if (from == "priority") {
+      top_priority.value = top_priority.value.filter(
+        (t: TaskLite) => t.task_id != task.task_id
+      );
+      if (to == "pool") {
+        pool.value.push(task);
+      }
+      if (to == "progress") {
+        in_progress.value.push(task);
+      }
+      if (to == "testing") {
+        testing.value.push(task);
+      }
+      if (to == "completed") {
+        completed.value.push(task);
+      }
+    }
+    if (from == "progress") {
+      in_progress.value = in_progress.value.filter(
+        (t: TaskLite) => t.task_id != task.task_id
+      );
+      if (to == "pool") {
+        pool.value.push(task);
+      }
+      if (to == "priority") {
+        top_priority.value.push(task);
+      }
+      if (to == "testing") {
+        testing.value.push(task);
+      }
+      if (to == "completed") {
+        completed.value.push(task);
+      }
+    }
+    if (from == "testing") {
+      testing.value = testing.value.filter(
+        (t: TaskLite) => t.task_id != task.task_id
+      );
+      if (to == "pool") {
+        pool.value.push(task);
+      }
+      if (to == "priority") {
+        top_priority.value.push(task);
+      }
+      if (to == "progress") {
+        in_progress.value.push(task);
+      }
+      if (to == "completed") {
+        completed.value.push(task);
+      }
+    }
+    if (from == "completed") {
+      completed.value = completed.value.filter(
+        (t: TaskLite) => t.task_id != task.task_id
+      );
+      if (to == "pool") {
+        pool.value.push(task);
+      }
+      if (to == "priority") {
+        top_priority.value.push(task);
+      }
+      if (to == "progress") {
+        in_progress.value.push(task);
+      }
+      if (to == "testing") {
+        testing.value.push(task);
+      }
+    }
+  }
+
+  async function fetchTaskById(id: number) {
+    const response = (await apiCall.get(EndpointType.TASK_GET_BY_ID, {
+      params: { id: id },
+    })) as Task;
+    if (response.task_id == id) {
+      return response;
+    }
   }
 
   onBeforeMount(() => {
     tasks.value = getTasks();
     prepareTemplate(getTasks());
-
-    col_pool.value?.addEventListener("mouseup", dropped);
-    col_priority.value?.addEventListener("mouseup", dropped);
-    col_progress.value?.addEventListener("mouseup", dropped);
-    col_testing.value?.addEventListener("mouseup", dropped);
-    col_completed.value?.addEventListener("mouseup", dropped);
   });
 </script>
 <style lang=""></style>

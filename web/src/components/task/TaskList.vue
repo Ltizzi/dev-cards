@@ -5,21 +5,23 @@
       props.isMicro ? '' : '',
     ]"
   >
-    <TaskMiniCard
-      v-for="task in props.tasks"
-      :task="task"
-      :isMicro="props.isMicro"
-      :isDraggable="props.isDraggable"
-    />
+    <div v-for="task in props.tasks">
+      <TaskMiniCard
+        :task="task"
+        :isMicro="props.isMicro"
+        :isDraggable="props.isDraggable"
+        :col_name="props.col_name"
+        @dropped="justDrop"
+      />
+    </div>
   </div>
 </template>
 <script setup lang="ts">
-  import { onBeforeMount, defineProps, ref } from "vue";
+  import { defineProps, ref } from "vue";
   import TaskMiniCard from "./TaskMiniCard.vue";
-  import { Task } from "../../utils/types";
+  import { Task, TaskLite } from "../../utils/types";
   import { useTaskStore } from "../../store/task.store";
   import { useApiCall } from "../../composables/useAPICall";
-  import { EndpointType } from "../../utils/endpoints";
 
   const taskStore = useTaskStore();
 
@@ -29,14 +31,14 @@
     tasks: Task[];
     isMicro: boolean;
     isDraggable: boolean;
+    col_name: string;
   }>();
 
-  const tasks = ref<Array<Task>>();
+  const emit = defineEmits(["dropped"]);
 
-  onBeforeMount(async () => {
-    // const list = taskStore.currentProjectTasks;
-    // if (list.length > 0) {
-    //   tasks.value = list;
-    // }
-  });
+  function justDrop(col_name: string, pos: any, task: TaskLite) {
+    emit("dropped", col_name, pos, task);
+  }
+
+  //const tasks = ref<Array<Task>>();
 </script>
