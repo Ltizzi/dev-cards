@@ -1,17 +1,14 @@
 <template lang="">
-  <div ref="task_card" :style="style">
-    <div
-      class="card bg-base-100 w-72 shadow-xl"
-      v-if="!props.isMicro"
-      :style="style"
-    >
+  <div>
+    <!-- ref="task_card" :style="style" -->
+    <div class="card bg-base-100 w-72 shadow-xl" v-if="!props.isMicro">
+      <!--      :style="style" -->
       <div
         :class="[
           'bg-white text-slate-700 rounded-xl transition-all ease-in-out duration-300 hover:scale-105 max-h-48 min-h-48',
-          props.isDraggable ? 'hover:cursor-pointer' : '',
         ]"
       >
-        <div :class="['h-7 w-full -mb-5 rounded-t-xl z-10', color, ,]"></div>
+        <div :class="['h-7 w-full -mb-5 rounded-t-xl z-10', color]"></div>
         <div class="px-3 py-7">
           <div class="flex flex-row justify-between my-auto align-middle">
             <h2 class="card-title w-4/6">
@@ -40,18 +37,15 @@
         </div>
       </div>
     </div>
-    <div
-      class="card bg-base-100 w-32 shadow-xl"
-      v-if="props.isMicro"
-      :style="style"
-    >
+    <div class="card bg-base-100 w-32 shadow-xl" v-if="props.isMicro">
+      <!--       :style="style" -->
       <!-- @mousedown="dragMouseDown" -->
       <div
         :class="[
           'bg-white text-slate-700 rounded-xl transition-all ease-in-out duration-300 hover:scale-105 max-h-24 min-h-24 relaive',
-          props.isDraggable ? 'hover:cursor-pointer' : '',
         ]"
       >
+        <!--    props.isDraggable ? 'hover:cursor-pointer' : '', -->
         <div :class="['h-5 w-full -mb-5 rounded-t-xl z-10', color]"></div>
         <div class="pt-4 mx-auto flex text-center">
           <h2 class="w-full text-base text-center leading-4 mt-2 mx-0.5">
@@ -73,15 +67,14 @@
   import { Task, Status } from "../../utils/types";
   import { taskUtils } from "../../utils/task.utils";
   import { useRouter } from "vue-router";
-  import { useDraggable } from "@vueuse/core";
 
   const router = useRouter();
 
   const props = defineProps<{
     task: Task;
     isMicro: boolean;
-    isDraggable: boolean;
-    col_name: string;
+    // isDraggable: boolean;
+    // col_name: string;
   }>();
 
   const emit = defineEmits(["dropped"]);
@@ -92,76 +85,23 @@
 
   const progress = ref<number>(0);
 
-  // const mini = ref<HTMLElement | null>();
-  // const micro = ref<HTMLElement | null>();
-
   const task_card = ref<HTMLElement | null>();
 
-  const { x, y, style } = useDraggable(task_card, {
-    preventDefault: true,
-    onStart: (pos: any, e: PointerEvent) => {
-      pos.x = e.clientX;
-      pos.y = e.clientY;
-    },
-    onEnd: (pos: any, e: PointerEvent) => {
-      let mousePos = {
-        x: e.clientX,
-        y: e.clientY,
-      };
-      emit("dropped", props.col_name, mousePos, props.task);
-    },
-    disabled: !props.isDraggable,
-  });
-
-  // const isDragging = ref<boolean>(false);
-
-  // const pos1 = ref<number>(0);
-  // const pos2 = ref<number>(0);
-  // const pos3 = ref<number>(0);
-  // const pos4 = ref<number>(0);
-
-  // function dragMouseDown(event: MouseEvent) {
-  //   isDragging.value = true;
-  //   event.preventDefault();
-  //   pos3.value = event.clientX;
-  //   pos4.value = event.clientY;
-  //   console.log(pos1.value, " ", pos2.value, " ", pos3.value, " ", pos4.value);
-
-  //   if (props.isMicro) {
-  //     micro.value?.addEventListener("mousemove", elementDrag);
-  //     micro.value?.addEventListener("mouseup", closeDragElement);
-  //   } else {
-  //     mini.value?.addEventListener("mousemove", elementDrag);
-  //     mini.value?.addEventListener("mouseup", closeDragElement);
-  //   }
-  // }
-
-  // function elementDrag(e: MouseEvent) {
-  //   e.preventDefault();
-  //   pos1.value = pos3.value - e.clientX;
-  //   pos2.value = pos4.value - e.clientY;
-  //   pos3.value = e.clientX;
-  //   pos4.value = e.clientY;
-  //   if (props.isMicro && micro.value) {
-  //     micro.value.style.top = micro.value.offsetTop - pos2.value + "px";
-  //     micro.value.style.left = micro.value.offsetLeft - pos1.value + "px";
-  //   }
-  //   if (!props.isMicro && mini.value) {
-  //     mini.value.style.top = mini.value.offsetTop - pos2.value + "px";
-  //     mini.value.style.left = mini.value.offsetLeft - pos1.value + "px";
-  //   }
-  // }
-
-  // function closeDragElement(e: MouseEvent) {
-  //   isDragging.value = false;
-  //   if (props.isMicro) {
-  //     micro.value?.removeEventListener("mousemove", elementDrag);
-  //     micro.value?.removeEventListener("mouseup", closeDragElement);
-  //   } else {
-  //     mini.value?.removeEventListener("mousemove", elementDrag);
-  //     mini.value?.removeEventListener("mouseup", closeDragElement);
-  //   }
-  // }
+  // const { x, y, style } = useDraggable(task_card, {
+  //   preventDefault: true,
+  //   onStart: (pos: any, e: PointerEvent) => {
+  //     pos.x = e.clientX;
+  //     pos.y = e.clientY;
+  //   },
+  //   onEnd: (pos: any, e: PointerEvent) => {
+  //     let mousePos = {
+  //       x: e.clientX,
+  //       y: e.clientY,
+  //     };
+  //     emit("dropped", props.col_name, mousePos, props.task);
+  //   },
+  //   disabled: !props.isDraggable,
+  // });
 
   function goToTask() {
     router.push(`/project/task?id=${props.task.task_id}`);
@@ -187,15 +127,9 @@
     color.value = taskUtils.getColor(props.task.color);
     if (props.task.status != Status.COMPLETED) {
       progress.value = taskUtils.calcProgress(props.task.progress);
-      // progress.value = Math.floor(Math.random() * 100);
     } else {
       progress.value = 100;
     }
     priority_color.value = taskUtils.calcPriorityColor(props.task.priority);
-    // if (props.isMicro) {
-    //   micro.value?.addEventListener("mousedown", dragMouseDown);
-    // } else {
-    //   mini.value?.addEventListener("mousedown", dragMouseDown);
-    // }
   });
 </script>

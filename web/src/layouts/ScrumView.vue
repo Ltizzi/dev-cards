@@ -43,72 +43,56 @@
         ref="col_pool"
         id="col_pool"
       >
-        <TaskList
-          :tasks="pool"
-          :isMicro="isMicro"
-          :isDraggable="true"
+        <TaskList :tasks="pool" :isMicro="isMicro" />
+        <!--           :isDraggable="true"
           :col_name="'pool'"
-          @dropped="dropped"
-        />
+          @dropped="dropped" -->
       </div>
       <div
         class="w-80 border-r-2 border-r-primary"
         ref="col_priority"
         id="col_priority"
       >
-        <TaskList
-          :tasks="top_priority"
-          :isMicro="isMicro"
-          :isDraggable="true"
+        <TaskList :tasks="top_priority" :isMicro="isMicro" />
+        <!--      :isDraggable="true"
           :col_name="'priority'"
-          @dropped="dropped"
-        />
+          @dropped="dropped" -->
       </div>
       <div
         class="w-80 border-r-2 border-r-primary"
         ref="col_progress"
         id="col_progress"
       >
-        <TaskList
-          :tasks="in_progress"
-          :isMicro="isMicro"
-          :isDraggable="true"
+        <TaskList :tasks="in_progress" :isMicro="isMicro" />
+        <!--       :isDraggable="true"
           :col_name="'progress'"
-          @dropped="dropped"
-        />
+          @dropped="dropped" -->
       </div>
       <div
         class="w-80 border-r-2 border-r-primary"
         ref="col_testing"
         id="col_testing"
       >
-        <TaskList
-          :tasks="testing"
-          :isMicro="isMicro"
-          :isDraggable="true"
+        <TaskList :tasks="testing" :isMicro="isMicro" />
+        <!--     :isDraggable="true"
           :col_name="'testing'"
-          @dropped="dropped"
-        />
+          @dropped="dropped" -->
       </div>
       <div class="w-80" ref="col_completed" id="col_completed">
-        <TaskList
-          :tasks="completed"
-          :isMicro="isMicro"
-          :isDraggable="true"
+        <TaskList :tasks="completed" :isMicro="isMicro" />
+        <!--         :isDraggable="true"
           :col_name="'completed'"
-          @dropped="dropped"
-        />
+          @dropped="dropped" -->
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-  import { onBeforeMount, onMounted, ref, watch } from "vue";
+  import { onBeforeMount, ref, watch } from "vue";
   import {
     Priority,
     Progress,
     Status,
-    Task,
     TaskLite,
     TaskType,
   } from "../utils/types";
@@ -116,7 +100,7 @@
   import { useProjectStore } from "../store/project.store";
   import NewTaskBtn from "../components/task/NewTaskBtn.vue";
   import { useApiCall } from "../composables/useAPICall";
-  import { EndpointType } from "../utils/endpoints";
+  //import { EndpointType } from "../utils/endpoints";
 
   const projectStore = useProjectStore();
 
@@ -228,6 +212,7 @@
 
   function changeIconSize() {
     isMicro.value = !isMicro.value;
+    localStorage.setItem("ui-card-btn-micro", JSON.stringify(isMicro.value));
   }
 
   async function updateProject() {
@@ -235,122 +220,125 @@
     prepareTemplate(getTasks());
   }
 
-  function dropped(col_name: string, pos: any, task: TaskLite) {
-    console.log("col name:");
-    console.log(col_name);
-    console.log(col_name, " ", pos, " ", task.title);
-    console.log("DROPPEADO GATO");
-    console.log(document.elementsFromPoint(pos.x, pos.y));
-    const element_id = document
-      .elementsFromPoint(pos.x, pos.y)
-      .filter((el: any) => el.id && el.id != "app")[0].id;
-    handleDropped(col_name, element_id, task);
-  }
+  // function dropped(col_name: string, pos: any, task: TaskLite) {
+  //   console.log("col name:");
+  //   console.log(col_name);
+  //   console.log(col_name, " ", pos, " ", task.title);
+  //   console.log("DROPPEADO GATO");
+  //   console.log(document.elementsFromPoint(pos.x, pos.y));
+  //   const element_id = document
+  //     .elementsFromPoint(pos.x, pos.y)
+  //     .filter((el: any) => el.id && el.id != "app")[0].id;
+  //   handleDropped(col_name, element_id, task);
+  // }
 
-  async function handleDropped(from: string, to: string, task: TaskLite) {
-    if (from == "pool") {
-      pool.value = pool.value.filter(
-        (t: TaskLite) => t.task_id != task.task_id
-      );
-      if (to == "priority") {
-        top_priority.value.push(task);
-        let taskEntity = await fetchTaskById(task.task_id);
-        if (taskEntity) {
-          taskEntity.priority = Priority.VERY_HIGH;
-        }
-      }
-      if (to == "progress") {
-        in_progress.value.push(task);
-      }
-      if (to == "testing") {
-        testing.value.push(task);
-      }
-      if (to == "completed") {
-        completed.value.push(task);
-      }
-    }
-    if (from == "priority") {
-      top_priority.value = top_priority.value.filter(
-        (t: TaskLite) => t.task_id != task.task_id
-      );
-      if (to == "pool") {
-        pool.value.push(task);
-      }
-      if (to == "progress") {
-        in_progress.value.push(task);
-      }
-      if (to == "testing") {
-        testing.value.push(task);
-      }
-      if (to == "completed") {
-        completed.value.push(task);
-      }
-    }
-    if (from == "progress") {
-      in_progress.value = in_progress.value.filter(
-        (t: TaskLite) => t.task_id != task.task_id
-      );
-      if (to == "pool") {
-        pool.value.push(task);
-      }
-      if (to == "priority") {
-        top_priority.value.push(task);
-      }
-      if (to == "testing") {
-        testing.value.push(task);
-      }
-      if (to == "completed") {
-        completed.value.push(task);
-      }
-    }
-    if (from == "testing") {
-      testing.value = testing.value.filter(
-        (t: TaskLite) => t.task_id != task.task_id
-      );
-      if (to == "pool") {
-        pool.value.push(task);
-      }
-      if (to == "priority") {
-        top_priority.value.push(task);
-      }
-      if (to == "progress") {
-        in_progress.value.push(task);
-      }
-      if (to == "completed") {
-        completed.value.push(task);
-      }
-    }
-    if (from == "completed") {
-      completed.value = completed.value.filter(
-        (t: TaskLite) => t.task_id != task.task_id
-      );
-      if (to == "pool") {
-        pool.value.push(task);
-      }
-      if (to == "priority") {
-        top_priority.value.push(task);
-      }
-      if (to == "progress") {
-        in_progress.value.push(task);
-      }
-      if (to == "testing") {
-        testing.value.push(task);
-      }
-    }
-  }
+  // async function handleDropped(from: string, to: string, task: TaskLite) {
+  //   if (from == "pool") {
+  //     pool.value = pool.value.filter(
+  //       (t: TaskLite) => t.task_id != task.task_id
+  //     );
+  //     if (to == "priority") {
+  //       top_priority.value.push(task);
+  //       let taskEntity = await fetchTaskById(task.task_id);
+  //       if (taskEntity) {
+  //         taskEntity.priority = Priority.VERY_HIGH;
+  //       }
+  //     }
+  //     if (to == "progress") {
+  //       in_progress.value.push(task);
+  //     }
+  //     if (to == "testing") {
+  //       testing.value.push(task);
+  //     }
+  //     if (to == "completed") {
+  //       completed.value.push(task);
+  //     }
+  //   }
+  //   if (from == "priority") {
+  //     top_priority.value = top_priority.value.filter(
+  //       (t: TaskLite) => t.task_id != task.task_id
+  //     );
+  //     if (to == "pool") {
+  //       pool.value.push(task);
+  //     }
+  //     if (to == "progress") {
+  //       in_progress.value.push(task);
+  //     }
+  //     if (to == "testing") {
+  //       testing.value.push(task);
+  //     }
+  //     if (to == "completed") {
+  //       completed.value.push(task);
+  //     }
+  //   }
+  //   if (from == "progress") {
+  //     in_progress.value = in_progress.value.filter(
+  //       (t: TaskLite) => t.task_id != task.task_id
+  //     );
+  //     if (to == "pool") {
+  //       pool.value.push(task);
+  //     }
+  //     if (to == "priority") {
+  //       top_priority.value.push(task);
+  //     }
+  //     if (to == "testing") {
+  //       testing.value.push(task);
+  //     }
+  //     if (to == "completed") {
+  //       completed.value.push(task);
+  //     }
+  //   }
+  //   if (from == "testing") {
+  //     testing.value = testing.value.filter(
+  //       (t: TaskLite) => t.task_id != task.task_id
+  //     );
+  //     if (to == "pool") {
+  //       pool.value.push(task);
+  //     }
+  //     if (to == "priority") {
+  //       top_priority.value.push(task);
+  //     }
+  //     if (to == "progress") {
+  //       in_progress.value.push(task);
+  //     }
+  //     if (to == "completed") {
+  //       completed.value.push(task);
+  //     }
+  //   }
+  //   if (from == "completed") {
+  //     completed.value = completed.value.filter(
+  //       (t: TaskLite) => t.task_id != task.task_id
+  //     );
+  //     if (to == "pool") {
+  //       pool.value.push(task);
+  //     }
+  //     if (to == "priority") {
+  //       top_priority.value.push(task);
+  //     }
+  //     if (to == "progress") {
+  //       in_progress.value.push(task);
+  //     }
+  //     if (to == "testing") {
+  //       testing.value.push(task);
+  //     }
+  //   }
+  // }
 
-  async function fetchTaskById(id: number) {
-    const response = (await apiCall.get(EndpointType.TASK_GET_BY_ID, {
-      params: { id: id },
-    })) as Task;
-    if (response.task_id == id) {
-      return response;
-    }
-  }
+  // async function fetchTaskById(id: number) {
+  //   const response = (await apiCall.get(EndpointType.TASK_GET_BY_ID, {
+  //     params: { id: id },
+  //   })) as Task;
+  //   if (response.task_id == id) {
+  //     return response;
+  //   }
+  // }
 
   onBeforeMount(() => {
     tasks.value = getTasks();
     prepareTemplate(getTasks());
+    isMicro.value = JSON.parse(
+      localStorage.getItem("ui-card-btn-micro") as string
+    );
   });
 </script>
 <style lang=""></style>
