@@ -16,6 +16,7 @@
 <script setup lang="ts">
   import { defineProps, ref } from "vue";
   import TaskMiniCard from "./TaskMiniCard.vue";
+  import { Task } from "../../utils/types";
 
   const props = defineProps<{
     tasks: Task[];
