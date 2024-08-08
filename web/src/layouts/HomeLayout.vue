@@ -25,12 +25,12 @@
             tabindex="0"
             class="dropdown-content dropdown-right bg-base-300 rounded-box z-[1] w-52 p-2 shadow-2xl"
           >
-            <li v-for="theme in themes">
+            <li v-for="(theme, index) in themes">
               <input
                 type="radio"
                 name="theme-dropdown"
                 class="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                :aria-label="theme"
+                :aria-label="themes_name[index]"
                 :value="theme"
                 v-model="selected_theme"
               />
@@ -79,62 +79,53 @@
   const selected_theme = ref<string>();
 
   const themes = [
-    "dracula",
     "default",
+    "dracula",
     "light",
     "dark",
     "cupcake",
     "retro",
-    "bumblebee",
     "emerald",
-    "corporate",
     "synthwave",
     "valentine",
-    "aqua",
     "lofi",
     "fantasy",
     "autumn",
     "acid",
-    "lemonade",
     "night",
-    "coffee",
-    "winter",
     "nord",
-    "sunset",
   ];
 
   const themes_name = [
-    "Dracula",
     "Default",
+    "Dracula",
     "Light",
     "Dark",
     "Cupcake",
     "Retro",
-    "Bumblebee",
     "Emerald",
-    "Corporate",
     "Synthwave",
     "Valentine",
-    "Aqua",
     "Lofi",
     "Fantasy",
     "Autumn",
     "Acid",
-    "Lemonade",
     "Night",
-    "Coffee",
-    "Winter",
     "Nord",
-    "Sunset",
   ];
 
   watch(
     () => selected_theme.value,
     (newValue, oldValue) => {
-      const htmlElement = document.documentElement;
-      htmlElement.setAttribute("data-theme", selected_theme.value as string);
+      changeTheme(newValue as string);
     }
   );
+
+  function changeTheme(theme: string) {
+    const htmlElement = document.documentElement;
+    htmlElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }
 
   function login() {
     router.push("/login");
@@ -154,6 +145,9 @@
     if (!user) {
       router.push("/login");
     } else {
+      if (localStorage.getItem("theme")) {
+        changeTheme(localStorage.getItem("theme") as string);
+      }
       isLoggedIn.value = true;
       isLoaded.value = true;
     }
