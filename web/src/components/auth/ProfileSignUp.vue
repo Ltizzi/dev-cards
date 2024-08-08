@@ -113,6 +113,7 @@
         store.setSelf(response);
         localStorage.setItem("user", JSON.stringify(response));
         isWaiting.value = false;
+        store.flagAsNewUser();
         router.push("/signup/project");
       } else {
         isWaiting.value = false;

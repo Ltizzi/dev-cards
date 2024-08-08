@@ -83,6 +83,18 @@
     }
   );
 
+  watch(
+    () => projectStore.justCreated,
+    async (newValue, oldValue) => {
+      if (newValue) {
+        // user.value = await userStore.refreshSelf();
+        // await fetchProjects(user.value?.user_id as number);
+        console.log("REFRESHED PROJECTS");
+        projects.value = await fetchProjects(user.value?.user_id as number);
+      }
+    }
+  );
+
   function goHome() {
     state.selected = 0;
     state.isHome = true;

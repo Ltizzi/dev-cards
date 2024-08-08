@@ -15,6 +15,7 @@ export const useProjectStore = defineStore("projects", {
     member: [] as Array<Workspace>,
     byId: {} as Workspace,
     current: {} as Workspace,
+    justCreated: false,
   }),
   actions: {
     setOwned(list: Array<Workspace>) {
@@ -25,6 +26,12 @@ export const useProjectStore = defineStore("projects", {
       if (user && project.owner.user_id == user.user_id) {
         this.owned.push(project);
       }
+    },
+    setJustCreated() {
+      this.justCreated = true;
+      setTimeout(() => {
+        this.justCreated = false;
+      }, 1000 * 60);
     },
     setMember(list: Array<Workspace>) {
       this.member = list;

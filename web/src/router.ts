@@ -22,6 +22,7 @@ const router = createRouter({
       component: TheHome,
       children: [
         { path: "", component: HomeLayout },
+        { path: "/newproject", component: NewProject },
         {
           path: "/project",
           component: TheProject,

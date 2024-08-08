@@ -1,7 +1,17 @@
 <template lang="">
-  <div class="mx-auto flex flex-col justify-center my-10">
+  <div
+    :class="[
+      freshUser
+        ? 'mx-auto flex flex-col justify-center my-10'
+        : 'w-3/12 flex  flex-col mx-auto justify-center pt-28',
+    ]"
+  >
     <h1 class="my-5 text-xl font-bold">Hi {{ user.username }}</h1>
-    <h2 class="text-lg mb-5">Now you can create a new Project</h2>
+    <h2 class="text-lg mb-5">
+      {{
+        freshUser ? "Now you can create a new Project" : "Create  new project"
+      }}
+    </h2>
     <div class="flex flex-col justify-center gap-5">
       <label for="">Project name:</label>
       <input
@@ -10,7 +20,12 @@
         v-model="name"
         placeholder="Enter the project name"
       />
-      <div class="flex flex-row gap-4">
+      <div
+        :class="[
+          'flex flex-row gap-4',
+          !freshUser ? 'w-full gap-10 relative' : '',
+        ]"
+      >
         <div class="flex flex-col gap-5 w-5/6">
           <label for="">Project avatar link:</label>
           <input
@@ -21,9 +36,20 @@
           />
         </div>
 
-        <div class="avatar my-auto w-1/6">
+        <div
+          :class="[
+            freshUser
+              ? 'avatar my-auto w-1/6'
+              : 'absolute avatar my-auto -right-36',
+          ]"
+          v-if="avatar"
+        >
           <div
-            class="ring-primary ring-offset-base-100 w-12 h-12 rounded-full ring ring-offset-2 mt-10"
+            :class="[
+              freshUser
+                ? 'ring-primary ring-offset-base-100 w-12 h-12 rounded-full ring ring-offset-2 mt-10'
+                : 'size-40',
+            ]"
           >
             <img :src="avatar ? avatar : default_avatar" />
           </div>
@@ -37,8 +63,14 @@
         v-model="description"
       ></textarea>
 
-      <div class="flex flex-row justify-around">
-        <button class="btn btn-outline btn-accent" @click="newProject">
+      <div
+        :class="[
+          freshUser
+            ? 'flex flex-row justify-around'
+            : 'ml-32 mt-5 justify-center',
+        ]"
+      >
+        <button :class="['btn btn-outline btn-accent']" @click="newProject">
           Create Project
           <span class="loading loading-dots loading-sm" v-if="isWaiting"></span>
         </button>
@@ -87,6 +119,8 @@
 
   const apiCall = useApiCall();
 
+  const freshUser = ref<boolean>(false);
+
   const user = ref<User>();
 
   const name = ref<string>();
@@ -121,6 +155,7 @@
 
       if (response && response.workspace_id) {
         projectStore.setCurrent(response);
+        projectStore.setJustCreated();
         projectStore.addProjectToOwner(response);
         isWaiting.value = false;
         router.push("/");
@@ -140,6 +175,7 @@
   }
 
   onBeforeMount(() => {
+    freshUser.value = userStore.newUser;
     console.log(userStore.self);
     user.value = JSON.parse(localStorage.getItem("user") as string);
     if (route.path == "/signup/project") isInSignUpProcess.value = true;

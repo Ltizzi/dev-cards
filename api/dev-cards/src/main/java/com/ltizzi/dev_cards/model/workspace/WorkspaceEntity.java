@@ -43,7 +43,7 @@ public class WorkspaceEntity {
     @Column(columnDefinition = "TEXT", length = 5000)
     private String description;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="user_id", referencedColumnName = "user_id")
     private UserEntity owner;
 

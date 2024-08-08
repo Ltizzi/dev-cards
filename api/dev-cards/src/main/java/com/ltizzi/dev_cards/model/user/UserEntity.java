@@ -69,6 +69,9 @@ public class UserEntity {
     )
     private List<WorkspaceEntity> workspaces = new ArrayList<>();
 
+    @OneToMany(mappedBy = "owner")
+    private List<WorkspaceEntity> owner_of = new ArrayList<>();
+
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<TaskEntity> created_tasks = new ArrayList<>();
 

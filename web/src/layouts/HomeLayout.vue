@@ -6,6 +6,14 @@
       </div>
 
       <button
+        class="btn btn-outline btn-secondary"
+        @click="createProject"
+        v-if="isLoggedIn"
+      >
+        Create Project
+      </button>
+
+      <button
         class="btn btn-outline btn-success"
         @click="login"
         v-if="!isLoggedIn"
@@ -41,6 +49,10 @@
   function signoff() {
     userStore.logoutUser();
     isLoggedIn.value = false;
+  }
+
+  function createProject() {
+    router.push("/newproject");
   }
 
   onBeforeMount(() => {
