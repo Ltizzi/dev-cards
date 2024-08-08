@@ -5,7 +5,7 @@
     @closeModal="closeModal"
   >
     <div
-      class="sm:px-7 sm:py-5 text-start flex flex-col gap-5 justify-center px-2 py-2 bg-default w-full y"
+      class="sm:px-7 sm:py-5 text-start flex flex-col gap-5 justify-center px-2 py-2 w-full text-neutral-content"
     >
       <h1 class="py-5 text-2xl">
         You are about to delete the task with id {{ task_id }}, are you sure?

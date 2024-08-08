@@ -4,11 +4,11 @@
     :is-active="props.showModal"
     v-if="props.showModal"
   >
-    <h1 class="bg-emerald-600 py-2 w-full text-center text-white font-semibold">
+    <h1 class="bg-emerald-500 py-2 w-full text-center text-white font-semibold">
       Add new Issue
     </h1>
     <dir
-      class="flex flex-col gap-5 justify-center px-5 my-0 bg-neutral w-full h-full py-5"
+      class="flex flex-col gap-5 justify-center px-5 my-0 bg-base w-full h-full py-5"
     >
       <input
         type="text"

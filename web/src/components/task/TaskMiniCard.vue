@@ -1,7 +1,10 @@
 <template lang="">
   <div>
     <!-- ref="task_card" :style="style" -->
-    <div class="card bg-base-100 w-72 shadow-xl" v-if="!props.isMicro">
+    <div
+      class="card bg-base-100 w-72 shadow-xl hover:z-50"
+      v-if="!props.isMicro"
+    >
       <!--      :style="style" -->
       <div
         :class="[
@@ -37,12 +40,15 @@
         </div>
       </div>
     </div>
-    <div class="card bg-base-100 w-32 shadow-xl" v-if="props.isMicro">
+    <div
+      class="card bg-base-100 w-32 shadow-xl -mb-14 hover:z-50"
+      v-if="props.isMicro"
+    >
       <!--       :style="style" -->
       <!-- @mousedown="dragMouseDown" -->
       <div
         :class="[
-          'bg-white text-slate-700 rounded-xl transition-all ease-in-out duration-300 hover:scale-105 max-h-24 min-h-24 relaive',
+          'bg-white text-slate-700 rounded-xl transition-all ease-in-out duration-300 hover:scale-110 max-h-24 min-h-24 relative hover:shadow-2xl hover:shadow-base-300',
         ]"
       >
         <!--    props.isDraggable ? 'hover:cursor-pointer' : '', -->

@@ -5,7 +5,7 @@
     @closeModal="closeModal"
   >
     <div
-      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2 bg-default w-full divide-y-2 divide-secondary"
+      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2 w-full divide-y-2 divide-secondary text-neutral-content"
     >
       <div class="flex flex-col">
         <h1 class="text-xl text-center">Select dependency:</h1>

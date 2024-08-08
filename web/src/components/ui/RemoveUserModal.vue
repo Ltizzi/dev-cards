@@ -5,7 +5,7 @@
     @closeModal="closeModal"
   >
     <div
-      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2 bg-default w-full"
+      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2 bg-base bg-opacity-95 w-full"
     >
       <ul>
         <li v-for="user in users">
@@ -17,7 +17,9 @@
                     <img :src="user.avatar" />
                   </div>
                 </div>
-                <span class="label-text">{{ user.username }}</span>
+                <span class="label-text text-neutral-content">{{
+                  user.username
+                }}</span>
               </div>
               <!-- :checked="getChecked(user.user_id)
                  :disabled="getChecked(user.user_id)"

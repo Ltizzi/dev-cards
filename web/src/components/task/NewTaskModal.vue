@@ -5,7 +5,7 @@
     @closeModal="closeModal"
   >
     <div
-      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2 bg-default w-full"
+      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2 text-base-content w-full"
     >
       <h1 class="2xltext-3xl text-center text-xl font-bold">New Task</h1>
       <div class="flex flex-row justify-evenly gap-3 py-3">

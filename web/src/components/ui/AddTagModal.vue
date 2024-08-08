@@ -5,10 +5,10 @@
     @closeModal="closeModal"
   >
     <div
-      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2 bg-default w-full"
+      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2 bg-base w-full"
     >
       <ul class="flex flex-row gap-2">
-        <li v-for="tag in tags">{{ tag }},</li>
+        <li v-for="tag in tags" class="text-neutral-content">{{ tag }},</li>
         <button
           class="btn btn-circle btn-error rounded-full btn-xs"
           @click="clearTags()"

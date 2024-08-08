@@ -5,8 +5,10 @@
   >
     <li
       :class="[
-        'active',
-        state.selected == 0 ? 'border-l-2  border-primary -ml-0.5' : '',
+        'active hover:bg-accent',
+        state.selected == 0
+          ? 'border-l-2  border-primary -ml-0.5 bg-secondary text-secondary-content'
+          : '',
       ]"
     >
       <a @click="goHome()">Info</a>
@@ -14,12 +16,14 @@
     <li @click="goScrum()">
       <div
         :class="[
-          'disabled',
-          state.selected == -1 ? 'border-l-2  border-primary -ml-0.5' : '',
+          'disabled hover:bg-accent ',
+          state.selected == -1
+            ? 'border-l-2  border-primary -ml-0.5 bg-secondary text-secondary-content'
+            : '',
         ]"
       >
         <summary
-          class="py-1 rounded-xl hover:cursor-pointer hover:bg-slate-700 transition-all ease-in-out w-full"
+          class="py-1 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full"
         >
           <span>Scrum</span>
         </summary>
@@ -28,7 +32,7 @@
     <li>
       <details open>
         <summary
-          class="py-3 rounded-xl hover:cursor-pointer hover:bg-slate-700 transition-all ease-in-out"
+          class="py-3 rounded-xl hover:cursor-pointer hover:bg-accent transition-all ease-in-out"
         >
           <span>All Tasks</span>
         </summary>
@@ -36,12 +40,14 @@
           <li
             v-for="task in project.tasks"
             :class="[
-              'rounded-xl w-full flex flex-row justify-start',
-              state.selected == task.task_id ? 'bg-slate-600' : '',
+              'rounded-xl w-full flex flex-row justify-start hover:bg-accent',
+              state.selected == task.task_id
+                ? 'bg-secondary text-secondary-content'
+                : '',
             ]"
             @click="goTask(task.task_id)"
           >
-            <p class="text-white w-full">
+            <p class="text-base-content w-full">
               <span
                 :class="['size-2 rounded-full', taskUtils.getColor(task.color)]"
               ></span>
@@ -81,7 +87,9 @@
                 <img :src="user.avatar" />
               </div>
             </div>
-            <p class="text-base text-start -ml-6">{{ user.username }}</p>
+            <p class="text-base-content text-start -ml-6">
+              {{ user.username }}
+            </p>
           </li>
         </ul>
       </details>
