@@ -76,6 +76,12 @@ public class TaskEntity {
     private WorkspaceEntity workspace;
 
     @ElementCollection
+    @CollectionTable(
+            name = "tasks_dependencies",
+            joinColumns = @JoinColumn(name = "task_entity_task_id"),
+            uniqueConstraints = {}
+    )
+    @Column(name = "dependencies_task_id")
     private List<TaskEntity> dependencies = new ArrayList<>();
 
     @ElementCollection
