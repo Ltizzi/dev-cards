@@ -1,6 +1,6 @@
 <template lang="">
   <ul
-    class="menu bg-base-200 rounded-box w-52 mt-10 before:ring-offset-purple-400"
+    class="menu bg-base-200 rounded-box w-52 mt-10 before:ring-offset-purple-400 overflow-x-hidden"
     v-if="isLoaded"
   >
     <li
@@ -11,64 +11,62 @@
     >
       <a @click="goHome()">Info</a>
     </li>
+    <li @click="goScrum()">
+      <div
+        :class="[
+          'disabled',
+          state.selected == -1 ? 'border-l-2  border-primary -ml-0.5' : '',
+        ]"
+      >
+        <summary
+          class="py-1 rounded-xl hover:cursor-pointer hover:bg-slate-700 transition-all ease-in-out w-full"
+        >
+          <span>Scrum</span>
+        </summary>
+      </div>
+    </li>
     <li>
       <details open>
+        <summary
+          class="py-3 rounded-xl hover:cursor-pointer hover:bg-slate-700 transition-all ease-in-out"
+        >
+          <span>All Tasks</span>
+        </summary>
+        <ul class="before:ring-offset-purple-400">
+          <li
+            v-for="task in project.tasks"
+            :class="[
+              'rounded-xl w-full flex flex-row justify-start',
+              state.selected == task.task_id ? 'bg-slate-600' : '',
+            ]"
+            @click="goTask(task.task_id)"
+          >
+            <p class="text-white w-full">
+              <span
+                :class="['size-2 rounded-full', taskUtils.getColor(task.color)]"
+              ></span>
+              {{ shortName(task.title) }}
+            </p>
+          </li>
+        </ul>
+      </details>
+    </li>
+
+    <li class="flex">
+      <details open>
+        <summary
+          class="py-3 rounded-xl hover:cursor-pointer hover:bg-slate-700 transition-all ease-in-out"
+        >
+          <span>Designated</span>
+        </summary>
+        <ul class="before:ring-offset-purple-400"></ul>
+      </details>
+      <!-- <details open>
         <summary>
           <span>Tasks</span>
         </summary>
-        <ul class="before:ring-offset-purple-400">
-          <details open>
-            <summary
-              class="py-3 rounded-xl hover:cursor-pointer hover:bg-slate-700 transition-all ease-in-out"
-            >
-              <span>All</span>
-            </summary>
-            <ul class="before:ring-offset-purple-400">
-              <li
-                v-for="task in project.tasks"
-                :class="[
-                  'rounded-xl w-full flex flex-row justify-start',
-                  state.selected == task.task_id ? 'bg-slate-600' : '',
-                ]"
-                @click="goTask(task.task_id)"
-              >
-                <p class="text-white w-full">
-                  <span
-                    :class="[
-                      'size-2 rounded-full',
-                      taskUtils.getColor(task.color),
-                    ]"
-                  ></span>
-                  {{ shortName(task.title) }}
-                </p>
-              </li>
-            </ul>
-          </details>
-          <details
-            open
-            :class="[
-              'active',
-              state.selected == -1 ? 'border-l-2  border-primary -ml-0.5' : '',
-            ]"
-          >
-            <summary
-              class="py-2 rounded-xl hover:cursor-pointer hover:bg-slate-700 transition-all ease-in-out"
-              @click="goScrum()"
-            >
-              <span>Scrum</span>
-            </summary>
-          </details>
-
-          <details open>
-            <summary
-              class="py-3 rounded-xl hover:cursor-pointer hover:bg-slate-700 transition-all ease-in-out"
-            >
-              <span>Designated</span>
-            </summary>
-            <ul class="before:ring-offset-purple-400"></ul>
-          </details>
-        </ul>
-      </details>
+        <ul class="before:ring-offset-purple-400"></ul>
+      </details> -->
     </li>
     <li>
       <details open>
