@@ -63,7 +63,7 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { defineProps, onBeforeMount, ref } from "vue";
+  import { defineProps, onBeforeMount, ref, watch } from "vue";
   import { Task, Status } from "../../utils/types";
   import { taskUtils } from "../../utils/task.utils";
   import { useRouter } from "vue-router";
@@ -86,6 +86,17 @@
   const progress = ref<number>(0);
 
   const task_card = ref<HTMLElement | null>();
+
+  watch(
+    () => props.task,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        priority_color.value = taskUtils.calcPriorityColor(newValue.priority);
+        color.value = taskUtils.getColor(newValue.color);
+        progress.value = taskUtils.calcProgress(newValue.progress);
+      }
+    }
+  );
 
   // const { x, y, style } = useDraggable(task_card, {
   //   preventDefault: true,
