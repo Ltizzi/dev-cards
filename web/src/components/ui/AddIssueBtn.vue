@@ -4,10 +4,10 @@
       :icon="['fas', 'square-plus']"
       class="size-7 text-emerald-600 hover:cursor-pointer hover:scale-110 transition-all ease-in-out duration-150"
       v-if="props.showBtn"
-      @click="switchModal"
+      @click="openModal"
     />
     <AddNewTaskIssueModal
-      @cancel="switchModal"
+      @cancel="closeModal"
       @update="update"
       :showModal="show"
       :task_id="props.task_id"
@@ -27,6 +27,14 @@
   const show = ref<boolean>(false);
 
   const apiCall = useApiCall();
+
+  function openModal() {
+    show.value = true;
+  }
+
+  function closeModal() {
+    show.value = false;
+  }
 
   function switchModal() {
     show.value = !show.value;

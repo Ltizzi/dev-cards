@@ -6,67 +6,67 @@
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Assign User"
-        @click="modalSwitch('addUser')"
+        @click="modalSwitch('addUser', true)"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'user-plus']" />
         <AddUserModal
           :showModal="modalState.addUser"
-          @close="modalSwitch('addUser')"
+          @close="modalSwitch('addUser', false)"
         ></AddUserModal>
       </li>
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Remove User"
-        @click="modalSwitch('removeUser')"
+        @click="modalSwitch('removeUser', true)"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'user-minus']" />
         <RemoveUserModal
           :showModal="modalState.removeUser"
-          @close="modalSwitch('removeUser')"
+          @close="modalSwitch('removeUser', false)"
         ></RemoveUserModal>
       </li>
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Add tag"
-        @click="modalSwitch('addTag')"
+        @click="modalSwitch('addTag', true)"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'circle-plus']" />
         <AddTagModal
           :showModal="modalState.addTag"
-          @close="modalSwitch('addTag')"
+          @close="modalSwitch('addTag', false)"
         ></AddTagModal>
       </li>
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Add dependency"
-        @click="modalSwitch('addDependency')"
+        @click="modalSwitch('addDependency', true)"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'folder-tree']" />
         <AddDependencyModal
           :showModal="modalState.addDependency"
-          @close="modalSwitch('addDependency')"
+          @close="modalSwitch('addDependency', false)"
         ></AddDependencyModal>
       </li>
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Add update"
-        @click="modalSwitch('addUpdate')"
+        @click="modalSwitch('addUpdate', true)"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'pen-to-square']" />
         <AddTaskUpdateModal
           :showModal="modalState.addUpdate"
-          @close="modalSwitch('addUpdate')"
+          @close="modalSwitch('addUpdate', false)"
         ></AddTaskUpdateModal>
       </li>
       <li
         class="tooltip tooltip-left hover:bg-error hover:rounded-lg transition-all"
         data-tip="Delete Task"
-        @click="modalSwitch('deleteTask')"
+        @click="modalSwitch('deleteTask', true)"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'trash']" />
         <DeleteTaskModal
           :showModal="modalState.deleteTask"
-          @close="modalSwitch('deleteTask')"
+          @close="modalSwitch('deleteTask', false)"
         ></DeleteTaskModal>
       </li>
     </ul>
@@ -92,10 +92,10 @@
 
   const emit = defineEmits(["update"]);
 
-  function modalSwitch(modal: string) {
+  function modalSwitch(modal: string, condition: boolean) {
     switch (modal) {
       case "addUser":
-        modalState.addUser = !modalState.addUser;
+        modalState.addUser = condition;
         modalState.removeUser = false;
         modalState.addTag = false;
         modalState.addDependency = false;
@@ -103,7 +103,7 @@
         modalState.deleteTask = false;
         break;
       case "removeUser":
-        modalState.removeUser = !modalState.removeUser;
+        modalState.removeUser = condition;
         modalState.addUser = false;
         modalState.addTag = false;
         modalState.addDependency = false;
@@ -111,7 +111,7 @@
         modalState.deleteTask = false;
         break;
       case "addTag":
-        modalState.addTag = !modalState.addTag;
+        modalState.addTag = condition;
         modalState.removeUser = false;
         modalState.addUser = false;
         modalState.addDependency = false;
@@ -119,7 +119,7 @@
         modalState.deleteTask = false;
         break;
       case "addDependency":
-        modalState.addDependency = !modalState.addDependency;
+        modalState.addDependency = condition;
         modalState.addTag = false;
         modalState.removeUser = false;
         modalState.addUser = false;
@@ -127,7 +127,7 @@
         modalState.deleteTask = false;
         break;
       case "addUpdate":
-        modalState.addUpdate = !modalState.addUpdate;
+        modalState.addUpdate = condition;
         modalState.addDependency = false;
         modalState.addTag = false;
         modalState.removeUser = false;
@@ -136,7 +136,7 @@
         emit("update");
         break;
       case "deleteTask":
-        modalState.deleteTask = !modalState.deleteTask;
+        modalState.deleteTask = condition;
         modalState.addUpdate = false;
         modalState.addDependency = false;
         modalState.addTag = false;

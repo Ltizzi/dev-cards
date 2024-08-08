@@ -1,13 +1,9 @@
 <template lang="">
   <div>
-    <button class="btn btn-outline btn-secondary" @click="modalSwitch">
+    <button class="btn btn-outline btn-secondary" @click="openModal">
       Create Task
     </button>
-    <NewTaskModal
-      :showModal="showModal"
-      @close="modalSwitch"
-      @update="update"
-    />
+    <NewTaskModal :showModal="showModal" @close="closeModal" @update="update" />
   </div>
 </template>
 <script setup lang="ts">
@@ -16,6 +12,14 @@
 
   const showModal = ref(false);
   const emit = defineEmits(["update"]);
+
+  function openModal() {
+    showModal.value = true;
+  }
+
+  function closeModal() {
+    showModal.value = false;
+  }
 
   function modalSwitch() {
     showModal.value = !showModal.value;

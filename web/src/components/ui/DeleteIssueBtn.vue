@@ -3,10 +3,10 @@
     <font-awesome-icon
       :icon="['fas', 'trash']"
       class="size-6 text-error mt-1 hover:cursor-pointer hover:scale-110 transition-all ease-in-out duration-100"
-      @click="switchModal"
+      @click="openModal"
     />
     <BaseDeleteModal
-      @cancel="switchModal"
+      @cancel="closeModal"
       @delete="delElement"
       :id="props.id"
       :type="props.type"
@@ -23,6 +23,14 @@
   const emit = defineEmits(["delete", "close"]);
 
   const show = ref<boolean>(false);
+
+  function openModal() {
+    show.value = true;
+  }
+
+  function closeModal() {
+    show.value = false;
+  }
 
   function switchModal() {
     show.value = !show.value;
