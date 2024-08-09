@@ -27,11 +27,11 @@
               : ''
           "
         >
-          <div class="avatar ml-2">
+          <div class="avatar ml-0">
             <div
-              class="w-14 h-14 rounded-full mx-auto hover:cursor-pointer hover:scale-110 transition-all hover:border-2 hover:border-cyan-200 p-1 hover:border-opacity-80 duration-300 ease-in-out"
+              class="w-16 h-16 rounded-full mx-auto hover:cursor-pointer hover:scale-110 transition-all hover:border-4 hover:border-accent p-3 hover:border-opacity-80 duration-300 ease-in-out"
             >
-              <img :src="project.project_avatar" />
+              <img :src="project.project_avatar" class="w-16 h-16" />
             </div>
           </div>
         </li>

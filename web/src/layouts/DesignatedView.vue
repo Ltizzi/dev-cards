@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="mt-10">
+  <div class="mt-10" v-if="isLoaded">
     <div v-if="no_tasks" class="text-center mt-2/4">
       <h1 class="text-3xl font-bold text-secondary">
         You dont have any current designated tasks
@@ -7,19 +7,25 @@
     </div>
     <div v-else class="flex flex-col gap-5 justify-center">
       <h1 class="text-2xl font-semibold text-base-content">Active tasks:</h1>
-      <TaskList :tasks="active_tasks" :isMicro="false" />
+      <TaskList :tasks="active_tasks" :isMicro="false" :isDark="props.isDark" />
       <h1 class="text-2xl font-semibold text-base-content">Completed tasks:</h1>
-      <TaskList :tasks="completed_tasks" :isMicro="false" />
+      <TaskList
+        :tasks="completed_tasks"
+        :isMicro="false"
+        :isDark="props.isDark"
+      />
     </div>
   </div>
 </template>
 <script setup lang="ts">
-  import { onBeforeMount, ref } from "vue";
+  import { onBeforeMount, ref, watch } from "vue";
   import TaskList from "../components/task/TaskList.vue";
   import { Status, TaskLite } from "../utils/types";
   import { useUserStore } from "../store/user.store";
   import { useRoute } from "vue-router";
   import { useProjectStore } from "../store/project.store";
+
+  const props = defineProps<{ isDark: boolean }>();
 
   const active_tasks = ref<TaskLite[]>();
   const completed_tasks = ref<TaskLite[]>();
@@ -31,13 +37,31 @@
   const userStore = useUserStore();
   const projectStore = useProjectStore();
 
+  const isLoaded = ref<boolean>();
+
   interface FilteredTasks {
     active: TaskLite[];
     completed: TaskLite[];
   }
 
+  watch(
+    () => userStore.getDesignatedTask(),
+    (newValue, oldValue) => {
+      prepareTasks();
+    }
+  );
+  watch(
+    () => userStore.logged,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        isLoaded.value = newValue;
+      }
+    }
+  );
+
   function checkInsideProject(): boolean {
-    return route.path.includes("/project");
+    console.log(route.path);
+    return route.path.includes("project");
   }
 
   function getUserDesignatedTasks() {
@@ -68,7 +92,7 @@
   function prepareDesignatedTasks(): FilteredTasks {
     let active = [] as TaskLite[];
     let completed = [] as TaskLite[];
-    const tasks = projectStore.current.tasks;
+    const tasks = getUserDesignatedTasks();
     tasks.forEach((task: TaskLite) => {
       if (task.status == Status.COMPLETED) {
         completed.push(task);
@@ -81,19 +105,24 @@
     return { active: active, completed: completed };
   }
 
+  function prepareTasks() {
+    if (checkInsideProject()) {
+      const tasks = prepareProjectUserDesignatedTasks();
+      active_tasks.value = tasks.active;
+      completed_tasks.value = tasks.completed;
+    } else {
+      const tasks = prepareDesignatedTasks();
+      active_tasks.value = tasks.active;
+      completed_tasks.value = tasks.completed;
+    }
+  }
+
   onBeforeMount(() => {
     if (userStore.self && userStore.self.designated_tasks) {
-      if (checkInsideProject()) {
-        const tasks = prepareProjectUserDesignatedTasks();
-        active_tasks.value = tasks.active;
-        completed_tasks.value = tasks.completed;
-      } else {
-        const tasks = prepareDesignatedTasks();
-        active_tasks.value = tasks.active;
-        completed_tasks.value = tasks.completed;
-      }
+      prepareTasks();
     } else {
       no_tasks.value = true;
     }
+    isLoaded.value = true;
   });
 </script>

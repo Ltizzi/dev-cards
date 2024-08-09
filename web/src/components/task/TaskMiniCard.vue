@@ -1,7 +1,13 @@
 <template lang="">
   <div>
     <!-- ref="task_card" :style="style" -->
-    <div class="card w-72 shadow-xl hover:z-50" v-if="!props.isMicro">
+    <div
+      :class="[
+        'card w-72 shadow-lg hover:z-50',
+        isDark ? 'shadow-accent-content' : 'shadow-accent-content',
+      ]"
+      v-if="!props.isMicro"
+    >
       <!--      :style="style" -->
       <div
         :class="[
@@ -88,6 +94,7 @@
   const props = defineProps<{
     task: Task;
     isMicro: boolean;
+    isDarkTheme: boolean;
     // isDraggable: boolean;
     // col_name: string;
   }>();
@@ -111,6 +118,15 @@
         priority_color.value = taskUtils.calcPriorityColor(newValue.priority);
         color.value = taskUtils.getColor(newValue.color);
         progress.value = taskUtils.calcProgress(newValue.progress);
+      }
+    }
+  );
+
+  watch(
+    () => props.isDarkTheme,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        isDark.value = newValue as boolean;
       }
     }
   );
@@ -149,6 +165,10 @@
       //console.log(splited_title);
       return splited_title + "...";
     } else return title;
+  }
+
+  function getIsDarkTheme() {
+    return JSON.parse(localStorage.getItem("darkTheme") as string);
   }
 
   onBeforeMount(() => {

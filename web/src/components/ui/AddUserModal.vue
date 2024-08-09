@@ -81,16 +81,18 @@
   import { onBeforeMount, ref } from "vue";
   import { useApiCall } from "../../composables/useAPICall";
   import { useTaskStore } from "../../store/task.store";
-  import { Task, UserLite } from "../../utils/types";
+  import { Task, User, UserLite } from "../../utils/types";
   import BaseModal from "../common/BaseModal.vue";
   import { useProjectStore } from "../../store/project.store";
   import { EndpointType } from "../../utils/endpoints";
+  import { useUserStore } from "../../store/user.store";
 
   const props = defineProps<{ showModal: boolean }>();
   const emit = defineEmits(["close"]);
   const apiCall = useApiCall();
   const taskStore = useTaskStore();
   const projectStore = useProjectStore();
+  const userStore = useUserStore();
 
   const users = ref<Array<UserLite>>();
   const checkedUsers = ref<Array<UserLite>>([]);
@@ -129,7 +131,11 @@
 
   async function addUsers() {
     awaitingResponse.value = true;
+    let addedSelf = false;
     checkedUsers.value.forEach(async (user: UserLite) => {
+      if (!addedSelf) {
+        addedSelf = checkAddedSelf(user.user_id);
+      }
       const response = (await apiCall.post(
         EndpointType.TASK_ASSIGN_USER,
         null,
@@ -143,7 +149,7 @@
       awaitingResponse.value = false;
       if (response.task_id) {
         taskStore.setCurrentTask(response);
-
+        if (addedSelf) await userStore.refreshSelf();
         success.value = true;
         setTimeout(() => {
           success.value = false;
@@ -158,6 +164,11 @@
         }, 2000);
       }
     });
+  }
+
+  function checkAddedSelf(id: number) {
+    const self = userStore.self;
+    return id == self.user_id;
   }
 
   onBeforeMount(() => {

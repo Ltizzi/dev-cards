@@ -6,7 +6,11 @@
     ]"
   >
     <div v-for="task in props.tasks">
-      <TaskMiniCard :task="task" :isMicro="props.isMicro" />
+      <TaskMiniCard
+        :task="task"
+        :isMicro="props.isMicro"
+        :isDarkTheme="props.isDark"
+      />
       <!--         :isDraggable="props.isDraggable"
         :col_name="props.col_name"
         @dropped="justDrop" -->
@@ -21,6 +25,7 @@
   const props = defineProps<{
     tasks: Task[];
     isMicro: boolean;
+    isDark: boolean | null;
     // isDraggable: boolean;
     // col_name: string;
   }>();

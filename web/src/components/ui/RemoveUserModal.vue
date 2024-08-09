@@ -86,12 +86,14 @@
   import { useTaskStore } from "../../store/task.store";
   import { Task, UserLite } from "../../utils/types";
   import { EndpointType } from "../../utils/endpoints";
+  import { useUserStore } from "../../store/user.store";
 
   const apiCall = useApiCall();
 
   const props = defineProps<{ showModal: boolean }>();
   const emit = defineEmits(["close"]);
   const taskStore = useTaskStore();
+  const userStore = useUserStore();
 
   const users = ref<Array<UserLite>>();
   const usersToDelete = ref<Array<UserLite>>([]);
@@ -109,9 +111,17 @@
     emit("close", false);
   }
 
+  function checkUserIsSelf(id: number) {
+    return id == userStore.self.user_id;
+  }
+
   async function removeUsers() {
     awaitingResponse.value = true;
+    let addedSelf = false;
     usersToDelete.value.forEach(async (user: UserLite) => {
+      if (!addedSelf) {
+        addedSelf = checkUserIsSelf(user.user_id);
+      }
       const response = (await apiCall.post(
         EndpointType.TASK_UNASSIGN_USER,
         null,
@@ -124,6 +134,7 @@
       )) as Task;
       awaitingResponse.value = false;
       if (response.task_id) {
+        if (addedSelf) userStore.refreshSelf();
         taskStore.setCurrentTask(response);
         success.value = true;
         setTimeout(() => {

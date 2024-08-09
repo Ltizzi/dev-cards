@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="flex flex-col justify-between w-full" v-if="isLoaded">
+  <div class="flex flex-col justify-center w-full" v-if="isLoaded">
     <div class="flex flex-row justify-between max-w-full ml-24 pt-10">
       <div class="w-full">
         <h1 class="text-2xl">Home page</h1>
@@ -93,7 +93,7 @@
         </button>
       </div>
     </div>
-    <DesignatedView class="ml-32 -mt-20" />
+    <DesignatedView class="ml-10 -mt-40" :isDark="isDark" />
   </div>
 </template>
 <script setup lang="ts">
@@ -109,7 +109,11 @@
   const isLoggedIn = ref(false);
   const isLoaded = ref(false);
 
+  const loadedDesignated = ref(false);
+
   const selected_theme = ref<string>();
+
+  const isDark = ref<boolean>();
 
   const themes = [
     "dracula",
@@ -153,6 +157,7 @@
     htmlElement.setAttribute("data-theme", theme);
     localStorage.setItem("darkTheme", isDarkTheme(theme) as string);
     localStorage.setItem("theme", theme);
+    isDark.value = darkThemes.includes(theme as string);
   }
 
   function isDarkTheme(theme: string): String {
@@ -176,6 +181,10 @@
     router.push("/newproject");
   }
 
+  function setLoadedDesignated() {
+    loadedDesignated.value = true;
+  }
+
   onBeforeMount(() => {
     const user = JSON.parse(localStorage.getItem("user") as string);
     if (!user) {
@@ -183,6 +192,8 @@
     } else {
       if (localStorage.getItem("theme")) {
         changeTheme(localStorage.getItem("theme") as string);
+      } else {
+        changeTheme("dracula");
       }
       isLoggedIn.value = true;
       isLoaded.value = true;
