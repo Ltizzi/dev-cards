@@ -59,12 +59,22 @@
     </li>
 
     <li class="flex">
-      <details open>
+      <details
+        open
+        :class="[
+          'disabled hover:bg-accent ',
+          state.selected == -2
+            ? 'border-l-2  border-primary -ml-0.5 bg-secondary text-secondary-content'
+            : '',
+        ]"
+      >
         <summary
           class="py-3 rounded-xl hover:cursor-pointer hover:bg-slate-700 transition-all ease-in-out"
+          @click="goDesignated()"
         >
           <span>Designated</span>
         </summary>
+
         <ul class="before:ring-offset-purple-400"></ul>
       </details>
       <!-- <details open>
@@ -161,6 +171,11 @@
   function goScrum() {
     state.selected = -1;
     router.push("/project/scrum");
+  }
+
+  function goDesignated() {
+    state.selected = -2;
+    router.push("/project/designated");
   }
 
   function shortName(name: string) {

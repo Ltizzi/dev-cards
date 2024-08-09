@@ -93,12 +93,14 @@
         </button>
       </div>
     </div>
+    <DesignatedView class="ml-32 -mt-20" />
   </div>
 </template>
 <script setup lang="ts">
   import { useRouter } from "vue-router";
   import { onBeforeMount, onMounted, ref, watch } from "vue";
   import { useUserStore } from "../store/user.store";
+  import DesignatedView from "./DesignatedView.vue";
 
   const router = useRouter();
 
