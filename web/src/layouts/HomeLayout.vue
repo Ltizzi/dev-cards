@@ -25,15 +25,31 @@
             tabindex="0"
             class="dropdown-content dropdown-right bg-base-300 rounded-box z-[1] w-52 p-2 shadow-2xl"
           >
-            <li v-for="(theme, index) in themes">
-              <input
-                type="radio"
-                name="theme-dropdown"
-                class="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-                :aria-label="themes_name[index]"
-                :value="theme"
-                v-model="selected_theme"
-              />
+            <li
+              v-for="(theme, index) in themes"
+              class="flex flex-row gap-5 bg-base-200"
+            >
+              <div :data-theme="theme" class="flex flex-row w-full">
+                <input
+                  type="radio"
+                  name="theme-dropdown"
+                  class="theme-controller btn btn-sm btn-block justify-center active:text-primary-content"
+                  :aria-label="themes_name[index]"
+                  :value="theme"
+                  v-model="selected_theme"
+                />
+                <div class="flex flex-row gap-0 w-1/3">
+                  <div class="h-auto w-5 bg-primary" :data-theme="theme"></div>
+
+                  <div
+                    class="h-auto w-5 bg-secondary"
+                    :data-theme="theme"
+                  ></div>
+                  <div class="h-auto w-5 bg-accent" :data-theme="theme"></div>
+                  <div class="h-auto w-5 bg-base-100" :data-theme="theme"></div>
+                  <div class="h-auto w-5 bg-neutral" :data-theme="theme"></div>
+                </div>
+              </div>
             </li>
           </ul>
         </div>
@@ -79,7 +95,6 @@
   const selected_theme = ref<string>();
 
   const themes = [
-    "default",
     "dracula",
     "light",
     "dark",
@@ -97,7 +112,6 @@
   ];
 
   const themes_name = [
-    "Default",
     "Dracula",
     "Light",
     "Dark",
