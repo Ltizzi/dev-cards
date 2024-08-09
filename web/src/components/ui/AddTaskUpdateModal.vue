@@ -5,7 +5,7 @@
     @closeModal="closeModal"
   >
     <div
-      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-5 py-3 w-full divide-y-2 divide-secondary min-w-max text-neutral"
+      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-5 py-3 w-full divide-y-2 divide-secondary min-w-max"
     >
       <h1 class="text-center text-xl py-5">Post a task update</h1>
       <textarea

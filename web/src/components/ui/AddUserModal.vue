@@ -17,7 +17,7 @@
                     <img :src="user.avatar" />
                   </div>
                 </div>
-                <span class="label-text text-neutral">{{ user.username }}</span>
+                <span class="label-text">{{ user.username }}</span>
               </div>
               <input
                 type="checkbox"

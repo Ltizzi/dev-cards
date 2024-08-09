@@ -100,8 +100,22 @@
             </div>
           </div>
 
-          <div class="flex flex-row gap-2" v-if="card.dependencies">
-            <p v-for="task in card.dependencies">{{ task.title }}</p>
+          <div
+            class="flex flex-row gap-2 py-2 align-middle"
+            v-if="card.dependencies"
+          >
+            <font-awesome-icon
+              :icon="['fas', 'sitemap']"
+              class="text-primary text-2xl"
+            />
+            <div v-for="task in card.dependencies" class="flex flex-row">
+              <router-link :to="`/project/task?id=${task.task_id}`">
+                <p class="text-secondary font-bold text-lg italic underline">
+                  {{ task.title }}
+                </p>
+              </router-link>
+              <p class="text-info font-bold text-lg ml-1">,</p>
+            </div>
           </div>
 
           <div class="text-start">
@@ -194,7 +208,7 @@
   import { useTaskStore } from "../store/task.store";
   import { useApiCall } from "../composables/useAPICall";
   import { EndpointType } from "../utils/endpoints";
-  import { useRoute } from "vue-router";
+  import { useRoute, useRouter } from "vue-router";
   import { taskUtils } from "../utils/task.utils";
   import TaskControlSideMenu from "../components/task/TaskControlSideMenu.vue";
   import TaskProgress from "../components/task/TaskProgress.vue";
@@ -217,6 +231,7 @@
   const priority_color = ref<string>();
 
   const route = useRoute();
+  //const router = useRouter();
 
   const apiCall = useApiCall();
 
