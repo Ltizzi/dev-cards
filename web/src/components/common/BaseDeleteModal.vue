@@ -4,7 +4,9 @@
     :is-active="props.showModal"
     v-if="props.showModal"
   >
-    <div class="flex flex-col gap-3 justify-center bg-neutral">
+    <div
+      class="flex flex-col gap-3 justify-center bg-base-100 text-base-content"
+    >
       <h1 class="bg-error py-2 text-center text-neutral-content font-semibold">
         DELETE {{ toUpper(props.type) }}
       </h1>

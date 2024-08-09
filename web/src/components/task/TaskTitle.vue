@@ -28,7 +28,12 @@
       Title
       <input
         type="text"
-        class="grow"
+        :class="[
+          'grow',
+          props.isDark
+            ? 'text-base-300 bg-base-content'
+            : 'bg-base-100 text-base-content',
+        ]"
         v-model="title"
         :placeholder="title"
         @keydown.esc="state.showEditable = false"
@@ -44,7 +49,11 @@
   import { EndpointType } from "../../utils/endpoints";
   import { Task } from "../../utils/types";
 
-  const props = defineProps<{ title: string; task_id: number }>();
+  const props = defineProps<{
+    title: string;
+    task_id: number;
+    isDark: boolean;
+  }>();
   const emit = defineEmits(["update"]);
 
   const title = ref<string>();

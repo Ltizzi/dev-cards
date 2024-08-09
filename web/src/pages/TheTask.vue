@@ -1,10 +1,16 @@
 <template lang="">
   <div class="flex flex-col justify-center mt-1 w-full ml-7 rounded-2xl">
     <div
-      class="w-full rounded-xl border-b-4 border-x-4 border-secondary bg-white text-black pb-2"
+      :class="[
+        'w-full rounded-xl border-b-4 border-x-4 border-secondary  pb-2',
+        isDark
+          ? 'text-base-300 bg-base-content'
+          : 'bg-base-100 text-base-content',
+      ]"
       v-if="card"
     >
       <!-- #MARK: TITLE      
+  
        -->
       <div class="flex flex-col text-center gap-0">
         <div :class="['w-full h-5 rounded-t-lg', title_color]"></div>
@@ -22,6 +28,7 @@
             <TaskTitle
               :title="card.title"
               :task_id="card.task_id"
+              :isDark="isDark"
               @update="updateTask"
             ></TaskTitle>
           </div>
@@ -39,30 +46,35 @@
             >
               <TaskPrioritySelectable
                 :priority="card.priority"
+                :isDark="isDark"
                 @update-priority="updatePriority"
               ></TaskPrioritySelectable>
 
               <TaskCommonSelectable
                 :type="'Status'"
                 :selected="card.status"
+                :isDark="isDark"
                 @update-status="updateTaskOptions"
               ></TaskCommonSelectable>
 
               <TaskCommonSelectable
                 :type="'Effort'"
                 :selected="card.effort"
+                :isDark="isDark"
                 @update-effort="updateTaskOptions"
               ></TaskCommonSelectable>
 
               <TaskCommonSelectable
                 :type="'TaskType'"
                 :selected="card.task_type"
+                :isDark="isDark"
                 @update-task-type="updateTaskOptions"
               ></TaskCommonSelectable>
             </div>
 
             <TaskProgress
               :progress_value="progress_value"
+              :isDark="isDark"
               @update="updateProgress"
             ></TaskProgress>
           </div>
@@ -75,6 +87,7 @@
           <TaskSubtitle
             :subtitle="card.subtitle"
             :task_id="card.task_id"
+            :isDark="isDark"
             @update="updateTask"
           />
           <div class="flex flex-row justify-start gap-2">
@@ -112,6 +125,7 @@
             <TaskDescription
               :description="card.description"
               :task_id="card.task_id"
+              :isDark="isDark"
               @update="updateTask"
             />
             <div
@@ -207,6 +221,8 @@
   const apiCall = useApiCall();
 
   const showAddIssueBtn = ref<boolean>();
+
+  const isDark = ref<boolean>();
 
   // #MARK:asdas
 
@@ -372,6 +388,9 @@
         taskStore.setCurrentTask(data);
         prepareTaskData(data);
       }
+    }
+    if (localStorage.getItem("darkTheme")) {
+      isDark.value = JSON.parse(localStorage.getItem("darkTheme") as string);
     }
   });
 </script>

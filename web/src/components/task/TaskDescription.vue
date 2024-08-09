@@ -29,7 +29,12 @@
     </div>
     <div v-else class="flex flex-col mx-10" ref="descriptionComponent">
       <textarea
-        class="textarea textarea-secondary textarea-lg bg-gray-50 my-5"
+        :class="[
+          'textarea textarea-secondary textarea-lg  my-5',
+          props.isDark
+            ? 'text-base-300 bg-base-content'
+            : 'bg-base-100 text-base-content',
+        ]"
         :placeholder="description"
         v-model="description"
         @keydown.esc="state.showEditable = false"
@@ -48,7 +53,11 @@
   import { EndpointType } from "../../utils/endpoints";
   import { Task } from "../../utils/types";
 
-  const props = defineProps<{ description: string; task_id: number }>();
+  const props = defineProps<{
+    description: string;
+    task_id: number;
+    isDark: boolean;
+  }>();
 
   const emit = defineEmits(["update"]);
 

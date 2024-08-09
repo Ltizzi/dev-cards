@@ -29,25 +29,40 @@
               v-for="(theme, index) in themes"
               class="flex flex-row gap-5 bg-base-200"
             >
-              <div :data-theme="theme" class="flex flex-row w-full">
+              <div
+                :data-theme="theme"
+                class="flex flex-row justify-center w-full bg-base-300"
+              >
                 <input
                   type="radio"
                   name="theme-dropdown"
-                  class="theme-controller btn btn-sm btn-block justify-center active:text-primary-content"
-                  :aria-label="themes_name[index]"
+                  class="theme-controller btn btn-sm btn-block justify-start active:text-primary-content relative"
+                  :aria-label="capitalizeString(theme)"
                   :value="theme"
                   v-model="selected_theme"
                 />
-                <div class="flex flex-row gap-0 w-1/3">
-                  <div class="h-auto w-5 bg-primary" :data-theme="theme"></div>
-
+                <div class="flex flex-row gap-0.5 absolute right-3 mt-2">
                   <div
-                    class="h-auto w-5 bg-secondary"
+                    class="size-4 rounded-full bg-primary"
                     :data-theme="theme"
                   ></div>
-                  <div class="h-auto w-5 bg-accent" :data-theme="theme"></div>
-                  <div class="h-auto w-5 bg-base-100" :data-theme="theme"></div>
-                  <div class="h-auto w-5 bg-neutral" :data-theme="theme"></div>
+
+                  <div
+                    class="size-4 rounded-full bg-secondary"
+                    :data-theme="theme"
+                  ></div>
+                  <div
+                    class="size-4 rounded-full bg-accent"
+                    :data-theme="theme"
+                  ></div>
+                  <div
+                    class="size-4 rounded-full bg-base-100"
+                    :data-theme="theme"
+                  ></div>
+                  <div
+                    class="size-4 rounded-full bg-neutral"
+                    :data-theme="theme"
+                  ></div>
                 </div>
               </div>
             </li>
@@ -109,23 +124,19 @@
     "acid",
     "night",
     "nord",
+    "dim",
+    "forest",
+    "aqua",
   ];
 
-  const themes_name = [
-    "Dracula",
-    "Light",
-    "Dark",
-    "Cupcake",
-    "Retro",
-    "Emerald",
-    "Synthwave",
-    "Valentine",
-    "Lofi",
-    "Fantasy",
-    "Autumn",
-    "Acid",
-    "Night",
-    "Nord",
+  const darkThemes = [
+    "dracula",
+    "dark",
+    "synthwave",
+    "night",
+    "dim",
+    "forest",
+    "aqua",
   ];
 
   watch(
@@ -138,7 +149,16 @@
   function changeTheme(theme: string) {
     const htmlElement = document.documentElement;
     htmlElement.setAttribute("data-theme", theme);
+    localStorage.setItem("darkTheme", isDarkTheme(theme) as string);
     localStorage.setItem("theme", theme);
+  }
+
+  function isDarkTheme(theme: string): String {
+    return darkThemes.includes(theme).toString();
+  }
+
+  function capitalizeString(str: string) {
+    return str[0].toUpperCase() + str.slice(1);
   }
 
   function login() {

@@ -15,13 +15,36 @@
       {{ props.selected }}
     </h3>
     <select
-      data-theme="light"
-      class="select select-secondary w-fit select-xs max-w-28 font-semibold"
+      :class="[
+        'select select-secondary w-fit select-xs max-w-28 font-semibold',
+        props.isDark
+          ? 'text-base-300 bg-base-content'
+          : 'bg-base-100 text-base-content',
+      ]"
       v-model="selectedOption"
       v-if="!state.default"
     >
-      <option disabled selected class="text-black">Pick task priority</option>
-      <option class="font-bold" v-for="option in options">{{ option }}</option>
+      <option
+        disabled
+        selected
+        :class="[
+          props.isDark
+            ? 'text-base-300 bg-base-content'
+            : 'bg-base-100 text-base-content',
+        ]"
+      >
+        Pick task priority
+      </option>
+      <option
+        :class="
+          props.isDark
+            ? 'text-base-300 bg-base-content'
+            : 'bg-base-100 text-base-content'
+        "
+        v-for="option in options"
+      >
+        {{ option }}
+      </option>
     </select>
   </div>
 </template>
@@ -37,6 +60,7 @@
   const props = defineProps<{
     type: string;
     selected: Status | Effort | TaskType;
+    isDark: boolean;
   }>();
 
   const emit = defineEmits(["updateStatus", "updateEffort", "updateTaskType"]);

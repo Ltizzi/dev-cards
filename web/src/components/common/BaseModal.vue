@@ -9,7 +9,7 @@
         @click="close()"
       ></div>
       <div
-        class="container fixed z-50 w-auto rounded-md border-2 border-secondary bg-neutral bg-opacity-100 shadow-xl"
+        class="container fixed z-50 w-auto rounded-md border-2 border-secondary bg-base-100 text-base-content bg-opacity-100 shadow-xl"
       >
         <slot></slot>
       </div>

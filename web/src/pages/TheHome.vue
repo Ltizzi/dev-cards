@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="w-screen relative">
+  <div class="w-screen relative bg-base-100">
     <LateralMenu
       :class="
         firstLoaded

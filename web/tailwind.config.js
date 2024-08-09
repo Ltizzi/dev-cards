@@ -21,6 +21,9 @@ export default {
       "acid",
       "night",
       "nord",
+      "dim",
+      "forest",
+      "aqua",
     ],
   },
 };

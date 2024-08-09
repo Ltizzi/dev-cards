@@ -21,15 +21,15 @@ function calcProgress(progress: Progress) {
 function calcPriorityColor(priority: Priority) {
   switch (priority) {
     case Priority.VERY_LOW:
-      return "font_emerald";
+      return "text-info"; //"font_emerald";
     case Priority.LOW:
-      return "font_green";
+      return "text-success"; //"font_green";
     case Priority.MEDIUM:
-      return "font_lime";
+      return "text-accent"; //"font_lime";
     case Priority.HIGH:
-      return "font_amber";
+      return "text-warning"; //"font_amber";
     case Priority.VERY_HIGH:
-      return "font_red";
+      return "text-error"; //"font_red";
   }
 }
 

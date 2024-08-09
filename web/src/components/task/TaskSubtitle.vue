@@ -25,7 +25,12 @@
       Subtitle
       <input
         type="text"
-        class="grow"
+        :lass="[
+          'grow',
+          props.isDark
+            ? 'text-base-300 bg-base-content'
+            : 'bg-base-100 text-base-content',
+        ]"
         v-model="subtitle"
         :placeholder="subtitle"
         @keydown.esc="state.showEditable = false"
@@ -41,7 +46,11 @@
   import { EndpointType } from "../../utils/endpoints";
   import { Task } from "../../utils/types";
 
-  const props = defineProps<{ subtitle: string; task_id: number }>();
+  const props = defineProps<{
+    subtitle: string;
+    task_id: number;
+    isDark: boolean;
+  }>();
   const emit = defineEmits(["update"]);
 
   const subtitle = ref<string>();

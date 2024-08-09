@@ -1,14 +1,14 @@
 <template lang="">
   <div>
     <!-- ref="task_card" :style="style" -->
-    <div
-      class="card bg-base-100 w-72 shadow-xl hover:z-50"
-      v-if="!props.isMicro"
-    >
+    <div class="card w-72 shadow-xl hover:z-50" v-if="!props.isMicro">
       <!--      :style="style" -->
       <div
         :class="[
-          'bg-white text-slate-700 rounded-xl transition-all ease-in-out duration-300 hover:scale-105 max-h-48 min-h-48',
+          ' rounded-xl transition-all ease-in-out duration-300 hover:scale-105 max-h-48 min-h-48',
+          isDark
+            ? 'text-base-300 bg-base-content'
+            : 'bg-base-100 text-base-content',
         ]"
       >
         <div :class="['h-7 w-full -mb-5 rounded-t-xl z-10', color]"></div>
@@ -31,7 +31,10 @@
           </div>
           <div class="card-actions justify-end relative mr-2.5">
             <button
-              class="btn btn-primary text-white absolute top-5 -right-2.5"
+              :class="[
+                'btn btn-primary  absolute top-5 -right-2.5',
+                isDark ? 'text-white' : 'text-base-100',
+              ]"
               @click="goToTask()"
             >
               Enter
@@ -48,7 +51,10 @@
       <!-- @mousedown="dragMouseDown" -->
       <div
         :class="[
-          'bg-white text-slate-700 rounded-xl transition-all ease-in-out duration-300 hover:scale-110 max-h-24 min-h-24 relative hover:shadow-2xl hover:shadow-base-300',
+          'rounded-xl transition-all ease-in-out duration-300 hover:scale-110 max-h-24 min-h-24 relative hover:shadow-2xl hover:shadow-base-300',
+          isDark
+            ? 'text-base-300 bg-base-content'
+            : 'bg-base-100 text-base-content',
         ]"
       >
         <!--    props.isDraggable ? 'hover:cursor-pointer' : '', -->
@@ -58,7 +64,10 @@
             {{ generateTitle(props.task.title, 20) }}
           </h2>
           <button
-            class="btn btn-xs btn-primary text-white absolute bottom-1 left-9"
+            :class="[
+              'btn btn-xs btn-primary absolute bottom-1 left-9',
+              isDark ? 'text-white' : 'text-base-100',
+            ]"
             @click="goToTask()"
           >
             Enter
@@ -92,6 +101,8 @@
   const progress = ref<number>(0);
 
   const task_card = ref<HTMLElement | null>();
+
+  const isDark = ref<boolean>();
 
   watch(
     () => props.task,
@@ -148,5 +159,8 @@
       progress.value = 100;
     }
     priority_color.value = taskUtils.calcPriorityColor(props.task.priority);
+    if (localStorage.getItem("darkTheme")) {
+      isDark.value = JSON.parse(localStorage.getItem("darkTheme") as string);
+    }
   });
 </script>

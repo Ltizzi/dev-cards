@@ -11,15 +11,13 @@
         <li v-for="user in users">
           <div class="form-control">
             <label class="cursor-pointer label">
-              <div class="flex flex-row">
+              <div class="flex flex-row gap-5">
                 <div class="avatar">
                   <div class="w-5 rounded-full">
                     <img :src="user.avatar" />
                   </div>
                 </div>
-                <span class="label-text text-neutral-content">{{
-                  user.username
-                }}</span>
+                <span class="label-text text-neutral">{{ user.username }}</span>
               </div>
               <!-- :checked="getChecked(user.user_id)
                  :disabled="getChecked(user.user_id)"
@@ -27,7 +25,7 @@
                 -->
               <input
                 type="checkbox"
-                class="checkbox checkbox-error"
+                class="checkbox checkbox-error ml-3"
                 @change="checkUser(user)"
               />
             </label>

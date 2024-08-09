@@ -12,20 +12,68 @@
     </h3>
     <select
       :class="[
-        'select select-secondary w-fit select-xs max-w-28  bg-white font-bold',
+        'select select-secondary w-fit select-xs max-w-28   font-bold',
         selectedPriority && selectedPriority?.length > 0
           ? taskUtils.calcPriorityColor(selectedPriority)
-          : 'text-slate-800',
+          : '',
+        props.isDark
+          ? 'text-base-300 bg-base-content'
+          : 'bg-base-100 text-base-content',
       ]"
       v-model="selectedPriority"
       v-if="!state.default"
     >
-      <option disabled selected class="text-black">Pick task priority</option>
-      <option class="font_emerald font-bold">VERY_LOW</option>
-      <option class="font_green font-bold">LOW</option>
-      <option class="font_lime font-bold">MEDIUM</option>
-      <option class="font_amber font-bold">HIGH</option>
-      <option class="font_red font-bold">VERY_HIGH</option>
+      <option
+        disabled
+        selected
+        :class="[
+          props.isDark
+            ? 'bg-base-content text-base-300'
+            : 'bg-base-100 text-base-content',
+        ]"
+      >
+        Pick task priority
+      </option>
+      <option
+        :class="[
+          'text-info font-bold',
+          props.isDark ? 'bg-base-content' : 'bg-base-100 ',
+        ]"
+      >
+        VERY_LOW
+      </option>
+      <option
+        :class="[
+          'text-success font-bold',
+          props.isDark ? 'bg-base-content' : 'bg-base-100 ',
+        ]"
+      >
+        LOW
+      </option>
+      <option
+        :class="[
+          'text-accent font-bold',
+          props.isDark ? 'bg-base-content' : 'bg-base-100 ',
+        ]"
+      >
+        MEDIUM
+      </option>
+      <option
+        :class="[
+          'text-warning font-bold',
+          props.isDark ? 'bg-base-content' : 'bg-base-100 ',
+        ]"
+      >
+        HIGH
+      </option>
+      <option
+        :class="[
+          'text-error font-bold',
+          props.isDark ? 'bg-base-content' : 'bg-base-100 ',
+        ]"
+      >
+        VERY_HIGH
+      </option>
     </select>
   </div>
 </template>
@@ -34,7 +82,7 @@
   import { Priority } from "../../utils/types";
   import { reactive, ref, watch } from "vue";
 
-  const props = defineProps<{ priority: Priority }>();
+  const props = defineProps<{ priority: Priority; isDark: boolean }>();
   const emit = defineEmits(["updatePriority"]);
 
   const state = reactive({

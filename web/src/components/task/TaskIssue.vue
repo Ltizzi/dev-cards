@@ -1,5 +1,12 @@
 <template lang="">
-  <div class="w-full flex flex-row">
+  <div
+    :class="[
+      'w-full flex flex-row',
+      isDark
+        ? 'text-base-300 bg-base-content'
+        : 'bg-base-100 text-base-content',
+    ]"
+  >
     <div
       class="form-control w-4/5 flex flex-row gap-5"
       @mouseover="hovered = true"
@@ -7,7 +14,13 @@
       v-if="!state.showEditable"
     >
       <h1 class="cursor-pointer label flex flex-row justify-between gap-5">
-        <span class="label-text text-black text-lg"
+        <span
+          :class="[
+            'label-text text-lg',
+            isDark
+              ? 'text-base-300 bg-base-content'
+              : 'bg-base-100 text-base-content',
+          ]"
           >{{ props.issue.sentence }}
         </span>
       </h1>
@@ -32,7 +45,12 @@
       <input
         type="text"
         :placeholder="props.issue.sentence"
-        class="input input-bordered input-secondary w-full bg-gray-100 text-black"
+        :class="[
+          'input input-bordered input-secondary w-full',
+          isDark
+            ? 'text-base-300 bg-base-content'
+            : 'bg-base-100 text-base-content',
+        ]"
         v-model="sentence"
         @keydown.enter="updateIssue"
       />
@@ -73,6 +91,8 @@
 
   const editIcon = ref<HTMLElement | null>();
   const issueElement = ref<HTMLElement | null>();
+
+  const isDark = ref<boolean>();
 
   const state = reactive({
     showEditable: false,
@@ -161,6 +181,10 @@
     sentence.value = props.issue.sentence;
     checked.value = props.issue.isCompleted;
     document.addEventListener("click", handleOutsideClicks);
+
+    if (localStorage.getItem("darkTheme")) {
+      isDark.value = JSON.parse(localStorage.getItem("darkTheme") as string);
+    }
   });
 
   onUnmounted(() => {
