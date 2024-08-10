@@ -11,7 +11,11 @@
           : '',
       ]"
     >
-      <a @click="goHome()">Info</a>
+      <a
+        @click="goHome()"
+        class="py-3 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full"
+        >Info</a
+      >
     </li>
     <li @click="goScrum()">
       <div
@@ -23,20 +27,30 @@
         ]"
       >
         <summary
-          class="py-1 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full"
+          class="py-2 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full"
         >
           <span>Scrum</span>
         </summary>
       </div>
     </li>
-    <li>
-      <details open>
+    <li @click="goAllTasks()">
+      <div
+        :class="[
+          'disabled hover:bg-accent ',
+          state.selected == -3
+            ? 'border-l-2  border-primary -ml-0.5 bg-secondary text-secondary-content'
+            : '',
+        ]"
+      >
         <summary
-          class="py-3 rounded-xl hover:cursor-pointer hover:bg-accent transition-all ease-in-out"
+          class="py-2 rounded-xl hover:cursor-pointer hover:bg-accent transition-all ease-in-out"
         >
           <span>All Tasks</span>
         </summary>
-        <ul class="before:ring-offset-purple-400">
+      </div>
+      <!-- <details close> -->
+
+      <!-- <ul class="before:ring-offset-purple-400">
           <li
             v-for="task in project.tasks"
             :class="[
@@ -54,28 +68,51 @@
               {{ shortName(task.title) }}
             </p>
           </li>
-        </ul>
-      </details>
+        </ul> -->
+      <!-- </details> -->
     </li>
 
     <li class="flex">
-      <details
-        open
-        :class="[
-          'disabled hover:bg-accent ',
-          state.selected == -2
-            ? 'border-l-2  border-primary -ml-0.5 bg-secondary text-secondary-content'
-            : '',
-        ]"
-      >
+      <details open>
         <summary
-          class="py-3 rounded-xl hover:cursor-pointer hover:bg-slate-700 transition-all ease-in-out"
+          class="py-3 rounded-xl hover:cursor-pointer transition-all ease-in-out"
           @click="goDesignated()"
+          :class="[
+            'disabled hover:bg-accent ',
+            state.selected == -2
+              ? 'border-l-2  border-primary -ml-0.5 bg-secondary text-secondary-content'
+              : '',
+          ]"
         >
           <span>Designated</span>
         </summary>
 
-        <ul class="before:ring-offset-purple-400"></ul>
+        <ul class="before:ring-offset-purple-400">
+          <li
+            v-for="task in user_designated_tasks"
+            :class="[
+              'disabled rounded-xl w-full flex flex-row justify-start hover:bg-accent',
+              state.selected == task.task_id
+                ? 'bg-secondary text-secondary-content'
+                : '',
+            ]"
+            @click="goTask(task.task_id)"
+          >
+            <p
+              :class="[
+                'w-full ',
+                state.selected == task.task_id
+                  ? 'bg-secondary text-secondary-content'
+                  : 'text-base-content',
+              ]"
+            >
+              <span
+                :class="['size-2 rounded-full', taskUtils.getColor(task.color)]"
+              ></span>
+              {{ shortName(task.title) }}
+            </p>
+          </li>
+        </ul>
       </details>
       <!-- <details open>
         <summary>
@@ -109,11 +146,12 @@
 <script setup lang="ts">
   import { useRoute, useRouter } from "vue-router";
   import { onBeforeMount, ref, reactive, watch } from "vue";
-  import { Workspace } from "../../utils/types";
+  import { TaskLite, Workspace } from "../../utils/types";
   import { useProjectStore } from "../../store/project.store";
   import { useApiCall } from "../../composables/useAPICall";
   import { EndpointType } from "../../utils/endpoints";
   import { taskUtils } from "../../utils/task.utils";
+  import { useUserStore } from "../../store/user.store";
 
   const route = useRoute();
   const router = useRouter();
@@ -121,10 +159,13 @@
   const id = ref<number>();
 
   const projectStore = useProjectStore();
+  const userStore = useUserStore();
 
   const apiCall = useApiCall();
 
   const project = ref<Workspace>();
+
+  const user_designated_tasks = ref<TaskLite[]>();
 
   const isLoaded = ref(false);
 
@@ -178,16 +219,33 @@
     router.push("/project/designated");
   }
 
+  function goAllTasks() {
+    state.selected = -3;
+    router.push("/project/tasks");
+  }
+
   function shortName(name: string) {
     if (name.length > 15) {
       return name.slice(0, 15) + "(...)";
     } else return name;
+  }
+  //TODO: AGREGAR A TASKS UTILS
+  function getProjectDesignatedTasks() {
+    let userTasks = [] as TaskLite[];
+    const allUserTasks = userStore.getDesignatedTask();
+    allUserTasks.forEach((task: TaskLite) => {
+      if (task.workspace.workspace_id == project.value?.workspace_id) {
+        userTasks.push(task);
+      }
+    });
+    return userTasks;
   }
 
   onBeforeMount(async () => {
     if (route.query.id) id.value = +route.query.id;
     project.value = projectStore.current;
     if (project.value.workspace_id) {
+      user_designated_tasks.value = getProjectDesignatedTasks();
       isLoaded.value = true;
     } else {
       const response = (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {
@@ -197,6 +255,7 @@
         projectStore.setCurrent(response);
         project.value = response;
         isLoaded.value = true;
+        user_designated_tasks.value = getProjectDesignatedTasks();
       }
     }
   });

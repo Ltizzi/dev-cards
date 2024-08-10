@@ -13,6 +13,7 @@ import App from "./App.vue";
 import HomeLayout from "./layouts/HomeLayout.vue";
 import ScrumView from "./layouts/ScrumView.vue";
 import DesignatedView from "./layouts/DesignatedView.vue";
+import AllTasksView from "./layouts/AllTasksView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -32,6 +33,7 @@ const router = createRouter({
             { path: "task", component: TheTask },
             { path: "scrum", component: ScrumView },
             { path: "designated", component: DesignatedView },
+            { path: "tasks", component: AllTasksView },
           ],
         },
       ],
