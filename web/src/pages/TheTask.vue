@@ -102,7 +102,7 @@
 
           <div
             class="flex flex-row gap-2 py-2 align-middle"
-            v-if="card.dependencies"
+            v-if="card.dependencies.length > 0"
           >
             <font-awesome-icon
               :icon="['fas', 'sitemap']"
