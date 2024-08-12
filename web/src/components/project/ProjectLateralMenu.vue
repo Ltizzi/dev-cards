@@ -146,7 +146,7 @@
 <script setup lang="ts">
   import { useRoute, useRouter } from "vue-router";
   import { onBeforeMount, ref, reactive, watch } from "vue";
-  import { TaskLite, Workspace } from "../../utils/types";
+  import { Status, TaskLite, Workspace } from "../../utils/types";
   import { useProjectStore } from "../../store/project.store";
   import { useApiCall } from "../../composables/useAPICall";
   import { EndpointType } from "../../utils/endpoints";
@@ -182,10 +182,11 @@
   );
 
   watch(
-    () => projectStore.current,
+    () => projectStore.current.workspace_id,
     (newValue, oldValue) => {
-      if (newValue.workspace_id != oldValue.workspace_id) {
+      if (newValue != oldValue) {
         project.value = projectStore.current;
+        user_designated_tasks.value = getProjectDesignatedTasks();
       }
     }
   );
@@ -193,7 +194,10 @@
   watch(
     () => projectStore.current.tasks,
     async (newValue, oldValue) => {
-      if (newValue != oldValue) {
+      if (
+        project.value?.workspace_id != projectStore.current.workspace_id &&
+        newValue != oldValue
+      ) {
         project.value = await projectStore.updateCurrent();
       }
     }
@@ -234,7 +238,9 @@
     let userTasks = [] as TaskLite[];
     const allUserTasks = userStore.getDesignatedTask();
     allUserTasks.forEach((task: TaskLite) => {
-      if (task.workspace.workspace_id == project.value?.workspace_id) {
+      if (
+        task.workspace.workspace_id == project.value?.workspace_id //&& task.status != Status.COMPLETED
+      ) {
         userTasks.push(task);
       }
     });

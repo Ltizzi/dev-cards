@@ -87,9 +87,12 @@
   import { defineProps, onBeforeMount, ref, watch } from "vue";
   import { Task, Status } from "../../utils/types";
   import { taskUtils } from "../../utils/task.utils";
-  import { useRouter } from "vue-router";
+  import { useRoute, useRouter } from "vue-router";
+  import { useProjectStore } from "../../store/project.store";
 
   const router = useRouter();
+  const route = useRoute();
+  const projectStore = useProjectStore();
 
   const props = defineProps<{
     task: Task;
@@ -148,6 +151,13 @@
   // });
 
   function goToTask() {
+    if (
+      !projectStore.current ||
+      projectStore.current.workspace_id != props.task.workspace.workspace_id
+    ) {
+      const project_id = props.task.workspace.workspace_id;
+      projectStore.fetchProjectById(project_id);
+    }
     router.push(`/project/task?id=${props.task.task_id}`);
   }
 

@@ -67,6 +67,7 @@
   const state = reactive({
     selected: 0,
     isHome: true,
+    justChange: false,
   });
 
   watch(
@@ -95,6 +96,15 @@
     }
   );
 
+  watch(
+    () => projectStore.current,
+    (newValue, oldValue) => {
+      if (newValue.workspace_id != oldValue.workspace_id && !state.justChange) {
+        state.selected = newValue.workspace_id;
+      }
+    }
+  );
+
   function goHome() {
     state.selected = 0;
     state.isHome = true;
@@ -105,6 +115,11 @@
     state.selected = project.workspace_id;
     state.isHome = false;
     projectStore.setCurrent(project);
+    state.justChange = true;
+    setTimeout(() => {
+      state.justChange = false;
+    }, 200);
+
     router.push(`/project/info?id=${project.workspace_id}`);
   }
 

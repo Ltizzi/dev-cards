@@ -13,7 +13,6 @@ export const useProjectStore = defineStore("projects", {
     localList: [] as Array<Workspace>,
     local: {} as Workspace,
     member: [] as Array<Workspace>,
-    byId: {} as Workspace,
     current: {} as Workspace,
     justCreated: false,
   }),
@@ -36,20 +35,23 @@ export const useProjectStore = defineStore("projects", {
     setMember(list: Array<Workspace>) {
       this.member = list;
     },
-    setById(project: Workspace) {
-      this.byId = project;
-    },
     setCurrent(project: Workspace) {
       this.current = project;
     },
-    async updateCurrent() {
+    async fetchProjectById(id: number) {
       const response = (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {
-        params: { id: this.current.workspace_id },
+        params: { id: id },
       })) as Workspace;
-      if (response.workspace_id == this.current.workspace_id) {
+      if (response.workspace_id == id) {
         this.current = response;
+
         return this.current;
       }
+    },
+    async updateCurrent() {
+      await this.fetchProjectById(this.current.workspace_id);
+
+      return this.current;
     },
     checkIsLocal() {
       return this.isLocal;
