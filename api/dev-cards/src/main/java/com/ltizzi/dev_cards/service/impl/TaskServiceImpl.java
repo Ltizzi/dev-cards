@@ -9,6 +9,7 @@ import com.ltizzi.dev_cards.model.task.TaskMapper;
 import com.ltizzi.dev_cards.model.task.utils.*;
 import com.ltizzi.dev_cards.model.user.UserEntity;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
+import com.ltizzi.dev_cards.model.utils.RandomIdGenerator;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 import com.ltizzi.dev_cards.repository.TaskRepository;
 import com.ltizzi.dev_cards.repository.UserRepository;
@@ -156,6 +157,7 @@ public class TaskServiceImpl implements TaskService {
             throw new InvalidUserException("User is already assigned to the task");
         }
         task.assignUser(user);
+        task.setStatus(Status.PROGRESS);
         return taskMapper.toTaskDTO(taskRepo.save(task));
 
     }
@@ -171,6 +173,9 @@ public class TaskServiceImpl implements TaskService {
             throw new InvalidUserException("User is not assigned to task");
         }
         task.unassingUser(user);
+        if(task.getDesignated_to().size() ==0){
+            task.setStatus(Status.PENDING);
+        }
         return taskMapper.toTaskDTO(taskRepo.save(task));
     }
 
@@ -193,7 +198,9 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskUpdate> addTaskUpdate(Long task_id, TaskUpdate update) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
-        update.setUpdate_id(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE);
+        //update.setUpdate_id(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE);
+        RandomIdGenerator randIdGen = new RandomIdGenerator();
+        update.setUpdate_id(randIdGen.generateRandomLong());
         task.addUpdate(update);
         return taskRepo.save(task).getUpdates();
     }
