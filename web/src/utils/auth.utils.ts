@@ -1,8 +1,9 @@
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { useUserStore } from "../store/user.store";
+import { Role, UserWorkspaceRoles } from "./types";
 
 interface CustomJwtPayload extends JwtPayload {
   scope: Array<string> | string;
+  roles: UserWorkspaceRoles[];
 }
 
 function saveToken(token: string) {
@@ -35,14 +36,62 @@ function logout() {
   removeToken();
 }
 
-function getRoles(): Array<string> | string | undefined {
+function getRoles(): UserWorkspaceRoles[] {
   const token = localStorage.getItem("token");
   if (token) {
-    const decoded = jwtDecode(token) as CustomJwtPayload;
-    return decoded.scope;
+    const decoded = JSON.parse(jwtDecode(token) as string) as CustomJwtPayload;
+    return decoded.roles;
   } else {
-    ("something went wrong.");
+    throw new Error("Something went wrong, couldn't get roles");
   }
 }
 
-export { saveToken, isTokenExpired, removeToken, getRoles, logout };
+function checkIsOwner(workspace_id: number): boolean {
+  return (
+    getRoles()?.filter(
+      (uwr: UserWorkspaceRoles) =>
+        uwr.workspace_id == workspace_id && uwr.role == Role.ROLE_OWNER
+    ).length > 0
+  );
+}
+
+function checkIsModerator(workspace_id: number): boolean {
+  return (
+    getRoles().filter(
+      (uwr: UserWorkspaceRoles) =>
+        uwr.workspace_id == workspace_id && uwr.role == Role.ROLE_MODERATOR
+    ).length > 0
+  );
+}
+
+function checkIsModOrOwner(workspace_id: number): boolean {
+  return (
+    getRoles().filter(
+      (uwr: UserWorkspaceRoles) =>
+        uwr.workspace_id == workspace_id &&
+        (uwr.role == Role.ROLE_MODERATOR || uwr.role == Role.ROLE_OWNER)
+    ).length > 0
+  );
+}
+
+function checkIsDesignated(workspace_id: number, task_id: number) {
+  return (
+    getRoles().filter(
+      (uwr: UserWorkspaceRoles) =>
+        uwr.workspace_id == workspace_id &&
+        uwr.assigned_tasks_ids?.includes(task_id)
+    ).length > 0
+  );
+}
+
+export {
+  saveToken,
+  isTokenExpired,
+  removeToken,
+  getRoles,
+  logout,
+  checkIsDesignated,
+  checkIsModOrOwner,
+  checkIsOwner,
+  checkIsModerator,
+};

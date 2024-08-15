@@ -7,7 +7,7 @@
       :class="[
         'active hover:bg-accent',
         state.selected == 0
-          ? 'border-l-2  border-primary -ml-0.5 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
+          ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
           : '',
       ]"
     >
@@ -22,7 +22,7 @@
         :class="[
           'disabled hover:bg-accent ',
           state.selected == -1
-            ? 'border-l-2  border-primary -ml-0.5 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
+            ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
             : '',
         ]"
       >
@@ -38,7 +38,7 @@
         :class="[
           'disabled hover:bg-accent ',
           state.selected == -3
-            ? 'border-l-2  border-primary -ml-0.5 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
+            ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
             : '',
         ]"
       >
@@ -73,14 +73,14 @@
     </li>
 
     <li class="flex">
-      <details open>
+      <details close>
         <summary
           class="py-3 rounded-xl hover:cursor-pointer transition-all ease-in-out"
           @click="goDesignated()"
           :class="[
             'disabled hover:bg-accent ',
             state.selected == -2
-              ? 'border-l-2  border-primary -ml-0.5 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
+              ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
               : '',
           ]"
         >
@@ -93,7 +93,7 @@
             :class="[
               'disabled rounded-xl w-full flex flex-row justify-start hover:bg-accent',
               state.selected == task.task_id
-                ? 'bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
+                ? 'opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
                 : '',
             ]"
             @click="goTask(task.task_id)"
@@ -102,7 +102,7 @@
               :class="[
                 'w-full ',
                 state.selected == task.task_id
-                  ? 'bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
+                  ? 'opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
                   : 'text-base-content',
               ]"
             >
@@ -122,7 +122,7 @@
       </details> -->
     </li>
     <li>
-      <details open>
+      <details close>
         <summary>Users</summary>
         <ul class="before:ring-offset-purple-400">
           <li
@@ -239,7 +239,8 @@
     const allUserTasks = userStore.getDesignatedTask();
     allUserTasks.forEach((task: TaskLite) => {
       if (
-        task.workspace.workspace_id == project.value?.workspace_id //&& task.status != Status.COMPLETED
+        task.workspace.workspace_id == project.value?.workspace_id &&
+        task.status != Status.COMPLETED
       ) {
         userTasks.push(task);
       }

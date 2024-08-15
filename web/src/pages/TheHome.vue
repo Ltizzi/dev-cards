@@ -2,7 +2,7 @@
   <div class="w-screen relative bg-base-100">
     <LateralMenu
       :class="[
-        'duration-150 transition-all bg-blend-overlay ease-in-out opacity-90 z-0 h-screen fixed  bg-gradient-to-br from-0% via-30% from-primary via-secondary to-100% to-transparent -mx-16   hover:translate-x-16 hover:z-20',
+        'duration-150 transition-all  ease-in-out opacity-90 z-0 h-screen fixed  bg-gradient-to-br from-0% via-30% from-primary via-secondary to-100% to-transparent -mx-16   hover:translate-x-16 hover:z-20',
         firstLoaded
           ? `translate-x-16 z-50  
               `

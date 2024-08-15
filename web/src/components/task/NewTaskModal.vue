@@ -60,7 +60,7 @@
         <ol class="flex flex-col justify-center text-white">
           <li
             v-for="item in progressItems"
-            class="text-base text-center text-white"
+            class="text-base text-center text-base-content"
           >
             {{ item.sentence }}
           </li>
