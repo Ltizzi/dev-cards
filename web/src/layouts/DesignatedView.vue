@@ -2,7 +2,11 @@
   <div class="mt-10" v-if="isLoaded">
     <div v-if="no_tasks" class="text-center mt-2/4">
       <h1 class="text-3xl font-bold text-secondary">
-        You dont have any current designated tasks
+        {{
+          props.isLoggedIn
+            ? "You dont have any current designated tasks"
+            : "No tasks in local enviroment. You need to log in to see remote tasks or load local workspace data."
+        }}
       </h1>
     </div>
     <div v-else class="flex flex-col gap-5 justify-center">
@@ -25,7 +29,7 @@
   import { useRoute } from "vue-router";
   import { useProjectStore } from "../store/project.store";
 
-  const props = defineProps<{ isDark: boolean }>();
+  const props = defineProps<{ isDark: boolean; isLoggedIn: boolean }>();
 
   const active_tasks = ref<TaskLite[]>();
   const completed_tasks = ref<TaskLite[]>();
@@ -45,19 +49,40 @@
   }
 
   watch(
+    () => props.isLoggedIn,
+    (newValue, oldValue) => {
+      console.log("Deslogueoo");
+      if (!newValue) {
+        cleanTasks();
+        no_tasks.value = true;
+        //isLoaded.value = false;
+      } else {
+        no_tasks.value = false;
+        prepareTasks();
+      }
+    }
+  );
+
+  watch(
     () => userStore.getDesignatedTask(),
     (newValue, oldValue) => {
       prepareTasks();
     }
   );
-  watch(
-    () => userStore.logged,
-    (newValue, oldValue) => {
-      if (newValue != oldValue) {
-        isLoaded.value = newValue;
-      }
-    }
-  );
+  // watch(
+  //   () => props.isLoggedIn,
+  //   (newValue, oldValue) => {
+  //     console.log("DESLOGUEO");
+  //     if (newValue != oldValue) {
+  //       isLoaded.value = newValue;
+  //     }
+  //   }
+  // );
+
+  function cleanTasks() {
+    active_tasks.value = [];
+    completed_tasks.value = [];
+  }
 
   function checkInsideProject(): boolean {
     console.log(route.path);
@@ -65,7 +90,12 @@
   }
 
   function getUserDesignatedTasks() {
-    return userStore.self.designated_tasks;
+    if (userStore.getDesignatedTask()) {
+      return userStore.getDesignatedTask();
+    } else {
+      no_tasks.value = true;
+      return [];
+    }
   }
 
   function prepareProjectUserDesignatedTasks(): FilteredTasks {
@@ -93,15 +123,17 @@
     let active = [] as TaskLite[];
     let completed = [] as TaskLite[];
     const tasks = getUserDesignatedTasks();
-    tasks.forEach((task: TaskLite) => {
-      if (task.status == Status.COMPLETED) {
-        completed.push(task);
-      } else {
-        if (task.status != Status.BLOCKED) {
-          active.push(task);
+    if (tasks) {
+      tasks.forEach((task: TaskLite) => {
+        if (task.status == Status.COMPLETED) {
+          completed.push(task);
+        } else {
+          if (task.status != Status.BLOCKED) {
+            active.push(task);
+          }
         }
-      }
-    });
+      });
+    }
     return { active: active, completed: completed };
   }
 

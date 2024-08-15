@@ -1,16 +1,30 @@
 <template lang="">
-  <div class="w-20 z-50 bg-base-100">
-    <div class="flex flex-col justify-center mx-auto py-5 px-2" v-if="isLoaded">
+  <div
+    class="w-20 z-50 hover:translate-x-0 duration-150 transition-all ease-in-out"
+    v-if="isLogged"
+  >
+    <div
+      class="flex flex-col justify-center mx-auto py-5 px-2"
+      v-if="isLoaded"
+      @mouseover="state.isHovering = true"
+      @mouseleave="state.isHovering = false"
+    >
       <div
         :class="[
-          'avatar',
-          state.selected == 0
+          'avatar ',
+          state.selected == 0 && state.isHovering
             ? 'border-l-4 border-primary -ml-1'
             : 'border-l-0 border-base',
+          state.selected == 0 && !state.isHovering
+            ? 'border-r-4 border-primary mr-2'
+            : 'border-r-0 border-base',
         ]"
         v-if="isLogged"
       >
-        <div class="w-14 h-14 rounded-full mx-auto" @click="goHome">
+        <div
+          class="w-16 h-16 rounded-full mx-auto hover:cursor-pointer hover:border-4 border-accent"
+          @click="goHome"
+        >
           <img :src="user.avatar" />
         </div>
       </div>
@@ -21,11 +35,14 @@
           v-for="project in projects"
           v-if="isLoaded"
           @click="goTo(project)"
-          :class="
-            state.selected == project.workspace_id
+          :class="[
+            state.selected == project.workspace_id && state.isHovering
               ? 'border-l-4 border-primary -ml-1'
-              : ''
-          "
+              : '',
+            state.selected == project.workspace_id && !state.isHovering
+              ? 'border-r-4 border-primary mr-2'
+              : 'border-r-0 border-base',
+          ]"
         >
           <div class="avatar ml-0">
             <div
@@ -68,6 +85,7 @@
     selected: 0,
     isHome: true,
     justChange: false,
+    isHovering: false,
   });
 
   watch(
@@ -104,6 +122,14 @@
       }
     }
   );
+
+  function hovering() {
+    state.isHovering = true;
+  }
+
+  function mouseOut() {
+    state.isHovering = false;
+  }
 
   function goHome() {
     state.selected = 0;

@@ -35,7 +35,8 @@ export const useUserStore = defineStore("auth", {
       this.users = users;
     },
     getDesignatedTask() {
-      return this.self.designated_tasks;
+      if (this.logged) return this.self.designated_tasks;
+      else return [];
     },
     logoutUser() {
       this.self = {} as User;

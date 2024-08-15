@@ -1,12 +1,21 @@
 <template lang="">
   <div class="w-screen relative bg-base-100">
     <LateralMenu
-      :class="
+      :class="[
+        `transition-all bg-gradient-to-br from-${
+          randomNum < 50 ? 'primary' : 'secondary'
+        } via-${randomNum < 50 ? 'primary' : 'secondary'} to-${
+          randomNum < 50 ? 'secondary' : 'primary'
+        }  opacity-${float}`,
         firstLoaded
-          ? 'translate-x-0'
-          : '-translate-x-14 hover:translate-x-0 duration-150 transition-all ease-in-out h-screen fixed '
-      "
+          ? `translate-x-0 h-screen fixed  
+              }`
+          : '-translate-x-14  h-screen fixed ',
+      ]"
     />
+
+    <!-- </div> -->
+
     <div class="w-full">
       <router-view></router-view>
     </div>
@@ -19,15 +28,26 @@
 
   const router = useRouter();
 
+  const float = ref(0);
+
   const firstLoaded = ref(true);
 
+  const randomNum = ref(0);
+
+  function chooseColor() {
+    randomNum.value = Math.floor(Math.random() * 100);
+  }
+
   onMounted(() => {
+    chooseColor();
     setTimeout(() => {
       firstLoaded.value = false;
-    }, 1500);
+    }, 2500);
     const user = JSON.parse(localStorage.getItem("user") as string);
     if (!user) {
       router.push("/login");
     }
   });
 </script>
+
+<style></style>

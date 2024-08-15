@@ -93,7 +93,11 @@
         </button>
       </div>
     </div>
-    <DesignatedView class="ml-10 -mt-40" :isDark="isDark" />
+    <DesignatedView
+      class="ml-10 -mt-40"
+      :isDark="isDark"
+      :isLoggedIn="isLoggedIn"
+    />
   </div>
 </template>
 <script setup lang="ts">
@@ -173,8 +177,9 @@
   }
 
   function signoff() {
-    userStore.logoutUser();
+    console.log("logout!");
     isLoggedIn.value = false;
+    userStore.logoutUser();
   }
 
   function createProject() {

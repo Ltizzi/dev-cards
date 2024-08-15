@@ -61,5 +61,8 @@ export const useProjectStore = defineStore("projects", {
       this.localList.push(ws);
       this.isLocal = true;
     },
+    clean() {
+      this.current = {} as Workspace;
+    },
   },
 });

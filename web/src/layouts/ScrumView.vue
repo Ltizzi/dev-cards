@@ -118,7 +118,7 @@
   const apiCall = useApiCall();
 
   watch(
-    () => getTasks(),
+    () => projectStore.current.tasks,
     (newValue, oldValue) => {
       if (newValue.length != oldValue.length) {
         tasks.value = getTasks();
@@ -156,7 +156,7 @@
           top_priority.value.push(task);
         } else if (
           hasAssignedUser(task) &&
-          task.status == Status.PROGRESS &&
+          (task.status == Status.PENDING || task.status == Status.PROGRESS) &&
           task.progress != Progress.ADVANCE
         ) {
           in_progress.value.push(task);
