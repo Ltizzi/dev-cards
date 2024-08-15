@@ -8,6 +8,7 @@ import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.user.UserLiteDTO;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
+import com.ltizzi.dev_cards.security.filter.JwtUtils;
 import com.ltizzi.dev_cards.service.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -29,6 +30,9 @@ public class WorkspaceController {
     @Autowired
     private WorkspaceService wsServ;
 
+    @Autowired
+    private JwtUtils jwtUtils;
+
     @GetMapping("/all")
     @ResponseBody
     public ResponseEntity<List<WorkspaceDTO>> getWorkspaces(@RequestParam(defaultValue = "0")int page,
@@ -38,8 +42,14 @@ public class WorkspaceController {
 
     @GetMapping("/byId")
     @ResponseBody
-    public ResponseEntity<WorkspaceDTO> getWorkspaceById(@RequestParam Long id) throws NotFoundException {
-        return new ResponseEntity<>(wsServ.getWorkspaceDTOById(id), HttpStatus.OK);
+    public ResponseEntity<WorkspaceDTO> getWorkspaceById(@RequestParam Long id, @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
+        if(!jwtUtils.checkIsMember(id, token)){
+            throw new NotAllowedException("No puede acceder al workspace");
+        }
+        else {
+            return new ResponseEntity<>(wsServ.getWorkspaceDTOById(id), HttpStatus.OK);
+        }
+
     }
 
     @PostMapping("/new")
@@ -50,44 +60,93 @@ public class WorkspaceController {
 
     @PatchMapping("/update")
     @ResponseBody
-    public ResponseEntity<WorkspaceDTO> updateWorkspace(@RequestParam Long id, @RequestBody WorkspaceDTO workspace) throws InvalidWorkspaceException, NotFoundException {
-        return new ResponseEntity<>(wsServ.updateWorkspace(id, workspace), HttpStatus.OK);
+    public ResponseEntity<WorkspaceDTO> updateWorkspace(@RequestParam Long id,
+                                                        @RequestBody WorkspaceDTO workspace,
+                                                        @RequestHeader("Authorization")String token) throws InvalidWorkspaceException, NotFoundException, NotAllowedException {
+        if(!jwtUtils.checkIsModerator(id, token) && !jwtUtils.checkIsOwner(id, token)){
+            throw  new NotAllowedException("User can't modify workspace data");
+        }
+        else{
+            return new ResponseEntity<>(wsServ.updateWorkspace(id, workspace), HttpStatus.OK);
+        }
+
     }
 
     @PatchMapping("/add_user")
     @ResponseBody
-    public ResponseEntity<List<UserLiteDTO>> addUserToWorkspace(@RequestParam Long ws_id, @RequestParam Long user_id) throws NotFoundException {
-        return new ResponseEntity<>(wsServ.addUserToWorkspace(ws_id,user_id), HttpStatus.OK);
+    public ResponseEntity<List<UserLiteDTO>> addUserToWorkspace(@RequestParam Long ws_id,
+                                                                @RequestParam Long user_id,
+                                                                @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
+        if(!jwtUtils.checkIsModerator(ws_id, token) && !jwtUtils.checkIsOwner(ws_id, token)){
+            throw new NotAllowedException("User can't modify workspace data");
+        }
+        else{
+            return new ResponseEntity<>(wsServ.addUserToWorkspace(ws_id,user_id), HttpStatus.OK);
+        }
+
     }
 
     @PatchMapping("/remove_user")
     @ResponseBody
-    public ResponseEntity<List<UserLiteDTO>> removeUserFromWorkspace(@RequestParam Long ws_id, @RequestParam Long user_id) throws NotFoundException {
-        return new ResponseEntity<>(wsServ.removeUserFromWorkspace(ws_id, user_id), HttpStatus.OK);
+    public ResponseEntity<List<UserLiteDTO>> removeUserFromWorkspace(@RequestParam Long ws_id,
+                                                                     @RequestParam Long user_id,
+                                                                     @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
+        if(!jwtUtils.checkIsModerator(ws_id, token) && !jwtUtils.checkIsOwner(ws_id, token)){
+            throw new NotAllowedException("User can't modify workspace data");
+        }
+        else {
+            return new ResponseEntity<>(wsServ.removeUserFromWorkspace(ws_id, user_id), HttpStatus.OK);
+        }
     }
 
     @PatchMapping("/add_mod")
     @ResponseBody
-    public ResponseEntity<List<UserLiteDTO>> addModToUser(@RequestParam Long ws_id, @RequestParam Long user_id) throws NotFoundException, InvalidUserException {
-        return new ResponseEntity<>(wsServ.addUserAsMod(ws_id, user_id), HttpStatus.OK);
+    public ResponseEntity<List<UserLiteDTO>> addModToUser(@RequestParam Long ws_id,
+                                                          @RequestParam Long user_id,
+                                                          @RequestHeader("Authorization")String token) throws NotFoundException, InvalidUserException, NotAllowedException {
+        if(!jwtUtils.checkIsOwner(ws_id, token)){
+            throw new NotAllowedException("User can't modify workspace data");
+        }
+        else {
+            return new ResponseEntity<>(wsServ.addUserAsMod(ws_id, user_id), HttpStatus.OK);
+        }
     }
 
     @PatchMapping("/remove_mod")
     @ResponseBody
-    public ResponseEntity<List<UserLiteDTO>> removeUserAsMod(@RequestParam Long ws_id, @RequestParam Long user_id) throws NotFoundException, InvalidUserException {
-        return new ResponseEntity<>(wsServ.removeUserAsMod(ws_id, user_id), HttpStatus.OK);
+    public ResponseEntity<List<UserLiteDTO>> removeUserAsMod(@RequestParam Long ws_id,
+                                                             @RequestParam Long user_id,
+                                                             @RequestHeader("Authorization")String token) throws NotFoundException, InvalidUserException, NotAllowedException {
+        if(!jwtUtils.checkIsOwner(ws_id, token)){
+            throw new NotAllowedException("User can't modify workspace data");
+        }
+        else {
+            return new ResponseEntity<>(wsServ.removeUserAsMod(ws_id, user_id), HttpStatus.OK);
+        }
     }
 
     @DeleteMapping("/delete")
     @ResponseBody
-    public ResponseEntity<APIResponse> deleteWorkspaceById(@RequestParam Long id) throws NotFoundException {
-        return new ResponseEntity<>(wsServ.deleteWorkspace(id), HttpStatus.OK);
+    public ResponseEntity<APIResponse> deleteWorkspaceById(@RequestParam Long id, @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
+        if(!jwtUtils.checkIsOwner(id, token)){
+            throw new NotAllowedException("User can't modify workspace data");
+        }
+        else {
+            return new ResponseEntity<>(wsServ.deleteWorkspace(id), HttpStatus.OK);
+        }
     }
 
     @PostMapping("/inviteByEmail")
     @ResponseBody
-    public ResponseEntity<List<UserLiteDTO>> inviteUserByEmail(@RequestParam Long id, @RequestParam String email) throws NotFoundException {
-        return new ResponseEntity<>(wsServ.addUserByEmail(id, email), HttpStatus.OK);
+    public ResponseEntity<List<UserLiteDTO>> inviteUserByEmail(@RequestParam Long id,
+                                                               @RequestParam String email,
+                                                               @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
+        if(!jwtUtils.checkIsOwner(id, token) && !jwtUtils.checkIsModerator(id, token)){
+            throw new NotAllowedException("User can't modify workspace data");
+        }
+        else {
+            return new ResponseEntity<>(wsServ.addUserByEmail(id, email), HttpStatus.OK);
+        }
     }
 
 //    @GetMapping("/tasks")
@@ -98,15 +157,22 @@ public class WorkspaceController {
 
     @GetMapping("/json")
     @ResponseBody
-    public ResponseEntity<InputStreamResource> donwloadJson(@RequestParam Long ws_id, @RequestParam Long user_id) throws NotFoundException, NotAllowedException, JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
-        String project_name = wsServ.getWorkspaceName(ws_id);
-        String headerString = "attachment; filename=" + project_name +".json";
-        headers.add("Content-Disposition", headerString );
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(new InputStreamResource(wsServ.donwloadJSON(ws_id, user_id)));
+    public ResponseEntity<InputStreamResource> donwloadJson(@RequestParam Long ws_id,
+                                                            @RequestParam Long user_id,
+                                                            @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException, JsonProcessingException {
+        if(!jwtUtils.checkIsOwner(ws_id, token) && !jwtUtils.checkIsModerator(ws_id, token)){
+            throw new NotAllowedException("User can't modify workspace data");
+        }
+        else {
+            HttpHeaders headers = new HttpHeaders();
+            String project_name = wsServ.getWorkspaceName(ws_id);
+            String headerString = "attachment; filename=" + project_name + ".json";
+            headers.add("Content-Disposition", headerString);
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(new InputStreamResource(wsServ.donwloadJSON(ws_id, user_id)));
+        }
     }
 
 }

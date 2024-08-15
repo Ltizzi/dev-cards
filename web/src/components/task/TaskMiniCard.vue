@@ -50,7 +50,7 @@
       </div>
     </div>
     <div
-      class="card bg-base-100 w-32 shadow-xl -mb-14 hover:z-50"
+      class="card bg-base-100 w-32 shadow-xl -mb-12 hover:z-50"
       v-if="props.isMicro"
     >
       <!--       :style="style" -->

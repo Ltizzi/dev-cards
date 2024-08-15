@@ -1,7 +1,6 @@
 package com.ltizzi.dev_cards.model.utils;
 
 import com.ltizzi.dev_cards.model.task.TaskDTO;
-
 import com.ltizzi.dev_cards.model.user.UserLiteDTO;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 

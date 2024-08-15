@@ -13,6 +13,7 @@ import com.ltizzi.dev_cards.model.user.utils.Role;
 import com.ltizzi.dev_cards.model.user.utils.UserLoginCredentials;
 import com.ltizzi.dev_cards.model.user.utils.UserRegistration;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
+import com.ltizzi.dev_cards.model.utils.UserWorkspacesRoles;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceMapper;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Leonardo Terlizzi
@@ -95,9 +97,10 @@ public class UserServiceImpl implements UserService {
         roles.add(Role.ROLE_USER);
         newUser.setRoles(roles);
         UserDTO registerUser =userMapper.toUserDTO(userRepo.save(newUser));
+        List<UserWorkspacesRoles> user_roles  = new ArrayList<>();
         String token = jwtUtils.generateToken(authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(newUser.getUsername(), credentials.getPassword())),
-                credentials.getUsername());
+                credentials.getUsername(), user_roles);
         return LoginResponse.builder()
                 .user(registerUser)
                 .token(token)
@@ -115,25 +118,15 @@ public class UserServiceImpl implements UserService {
             if(user == null){
                 throw new InvalidUserException("Invalid username");
             }
+            List<UserWorkspacesRoles> roles = jwtUtils.getUserRoles(user);
             String token = jwtUtils.generateToken(authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword())),
-                    credentials.getUsername());
+                    credentials.getUsername(), roles);
             return LoginResponse.builder()
                     .user(userMapper.toUserDTO(user))
                     .token(token)
                     .build();
 
-
-//        UserEntity user = userRepo.findByUsername(credentials.getUsername()).get(0);
-//        if(user != null){
-//            Authentication auth = authManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword()));
-//            if(auth.isAuthenticated()){
-//                return userMapper.toUserDTO(user);
-//            }
-//            else throw  new InvalidUserException("Invalid credentials.");
-//        }
-//        else throw new InvalidUserException("Invalid credentials, user is null");
     }
 
     @Override
@@ -183,4 +176,30 @@ public class UserServiceImpl implements UserService {
         List<TaskEntity> tasks = user.getDesignated_tasks();
         return taskMapper.toArrayTaskDTO(tasks);
     }
+//
+//    private List<UserWorkspacesRoles> getUserRoles(UserEntity user){
+//        List<UserWorkspacesRoles> roles = new ArrayList<>();
+//        for(WorkspaceEntity ws: user.getWorkspaces()){
+//            UserWorkspacesRoles user_roles = new UserWorkspacesRoles();
+//            user_roles.setWorkspace_id(ws.getWorkspace_id());
+//            if(ws.getOwner().getUser_id().equals(user.getUser_id())){
+//                user_roles.setRole(Role.ROLE_OWNER);
+//            } else if (ws.getModerators().stream()
+//                    .filter(mod -> mod.getUser_id().equals(user.getUser_id()))
+//                    .collect(Collectors.toList()).size() >0) {
+//                user_roles.setRole(Role.ROLE_MODERATOR);
+//            }
+//            else{
+//                user_roles.setRole(Role.ROLE_USER);
+//            }
+//            List<Long> tasks_ids = user.getDesignated_tasks().stream()
+//                    .map(t->t.getWorkspace().getWorkspace_id().equals(ws.getWorkspace_id()) ? t.getTask_id() : null)
+//                    .filter(out-> out!=null)
+//                    .collect(Collectors.toList());
+//            user_roles.setAssigned_tasks_ids(tasks_ids);
+//            roles.add(user_roles);
+//        }
+//        return roles;
+//    }
+
 }

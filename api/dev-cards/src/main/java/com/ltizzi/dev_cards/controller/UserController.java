@@ -60,7 +60,7 @@ public class UserController {
 
     @GetMapping("/workspaces")
     @ResponseBody
-    public ResponseEntity<List<WorkspaceDTO>> getWorkspacesFromUser(@RequestParam Long user_id) throws NotFoundException {
+    public ResponseEntity<List<WorkspaceDTO>> getWorkspacesFromUser(@RequestParam Long user_id ) throws NotFoundException {
         return new ResponseEntity<>(userServ.getWorkspacesByUserId(user_id), HttpStatus.OK);
     }
 

@@ -7,7 +7,8 @@ package com.ltizzi.dev_cards.model.user.utils;
 
 public enum Role {
     ROLE_ADMIN,
-    ROLE_OWNER,
+   ROLE_OWNER,
     ROLE_MODERATOR,
-    ROLE_USER
+    ROLE_USER,
+
 }

@@ -1,20 +1,10 @@
 package com.ltizzi.dev_cards;
 
-import com.ltizzi.dev_cards.model.task.TaskEntity;
-import com.ltizzi.dev_cards.model.user.UserEntity;
-import com.ltizzi.dev_cards.repository.UserRepository;
 import com.ltizzi.dev_cards.security.utils.RsaKeyProperties;
-import com.ltizzi.dev_cards.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootApplication
 @EnableConfigurationProperties(RsaKeyProperties.class)

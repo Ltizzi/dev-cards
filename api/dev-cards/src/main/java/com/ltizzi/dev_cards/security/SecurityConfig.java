@@ -1,6 +1,7 @@
 package com.ltizzi.dev_cards.security;
 
 
+import com.ltizzi.dev_cards.security.utils.CustomJwtAuthenticationConverter;
 import com.ltizzi.dev_cards.security.utils.RsaKeyProperties;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -26,6 +27,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
@@ -78,7 +80,10 @@ public class SecurityConfig {
                 ))
 //                .addFilterAfter(new JwtGenerationFilter(), BasicAuthenticationFilter.class)
 //                .addFilterBefore(new JwtValidatorFilter(), BasicAuthenticationFilter.class)
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+//                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+                .oauth2ResourceServer(oauth2->
+                        oauth2.jwt(jwt->
+                                jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
                 .authorizeHttpRequests(req->req
                 //USER
                 .requestMatchers(HttpMethod.POST, "/user/new").permitAll()
@@ -99,19 +104,12 @@ public class SecurityConfig {
         return http.build();
     }
 
-    //    new CorsConfigurationSource() {
-//        @Override
-//        public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-//            CorsConfiguration config = new CorsConfiguration();
-//            config.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
-//            config.setAllowedMethods(Collections.singletonList("*"));
-//            config.setAllowCredentials(true);
-//            config.setAllowedHeaders(Collections.singletonList("*"));
-//            config.setExposedHeaders(Arrays.asList("Authorization"));
-//            config.setMaxAge(3600L);
-//            return config;
-//        }}
-
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter(){
+        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        converter.setJwtGrantedAuthoritiesConverter(new CustomJwtAuthenticationConverter());
+        return converter;
+    }
 
 
     @Bean
