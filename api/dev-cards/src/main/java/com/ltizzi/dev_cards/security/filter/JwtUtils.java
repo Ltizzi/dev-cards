@@ -59,7 +59,7 @@ public class JwtUtils {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
-                .expiresAt(now.plus(Duration.ofMinutes(60)))
+                .expiresAt(now.plus(Duration.ofDays(7)))
                 .subject(username)
                 .claim("scope", scope)
                 .claim( "roles", roles)

@@ -1,8 +1,5 @@
 <template lang="">
-  <div
-    class="w-20 z-50 hover:translate-x-0 duration-150 transition-all ease-in-out"
-    v-if="isLogged"
-  >
+  <div class="w-20" v-if="isLogged">
     <div
       class="flex flex-col justify-center mx-auto py-5 px-2"
       v-if="isLoaded"
