@@ -5,7 +5,7 @@
     @mouseover="state.isHovering = true"
     @mouseleave="state.isHovering = false"
   >
-    <div class="flex flex-col justify-center py-5 px-1" v-if="isLoaded">
+    <div class="flex flex-col justify-center py-5 px-0.5" v-if="isLoaded">
       <div
         :class="[
           'avatar ',
@@ -28,13 +28,13 @@
       <div class="divider divider-primary"></div>
 
       <ul
-        class="flex flex-col justify-center w-11/12 gap-4 my-2 mx-auto bg-base-100 bg-opacity-40 rounded-md px-5 py-1.5"
+        class="flex flex-col justify-center w-11/12 gap-4 my-2 mx-auto bg-base-100 bg-opacity-40 rounded-md px-4 py-1.5"
       >
         <li
           v-for="project in projects"
           v-if="isLoaded"
           @click="goTo(project)"
-          :class="['-ml-4  px-1']"
+          :class="['-ml-3  px-1']"
         >
           <div
             :class="[
@@ -48,9 +48,12 @@
             ]"
           >
             <div
-              class="w-14 h-14 rounded-full mx-auto hover:cursor-pointer hover:scale-110 transition-all hover:border-4 hover:border-accent p-3 hover:border-opacity-80 duration-300 ease-in-out"
+              class="w-16 h-16 rounded-full border-4 border-transparent mx-auto hover:cursor-pointer 0 transition-all hover:border-4 hover:border-accent p-3 hover:border-opacity-80 duration-300 ease-in-out"
             >
-              <img :src="project.project_avatar" class="w-16 h-16" />
+              <img
+                :src="project.project_avatar"
+                class="w-full h-full hover:scale-125 transition-all duration-200 ease-in-out"
+              />
             </div>
           </div>
         </li>

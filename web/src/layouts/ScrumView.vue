@@ -2,8 +2,11 @@
   <div class="pt-5">
     <h1 class="text-center text-2xl">Scrum board</h1>
     <div class="flex flex-row py-5 justify-between">
-      <label
-        class="input input-bordered flex items-center gap-2 input-secondary"
+      <!-- <label
+        :class="[
+          'input input-bordered flex items-center gap-2 input-secondary bg-gradient-to-r from-0% via-transparent via-50%  to-100%',
+          isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
+        ]"
       >
         Search
         <input
@@ -12,7 +15,8 @@
           placeholder="by Tag or Title/subtitle"
           v-model="search"
         />
-      </label>
+      </label> -->
+      <TaskFilterInput @search="defineSearch" />
       <div class="flex flex-row justify-between gap-5">
         <NewTaskBtn @update="updateProject" />
         <button class="btn btn-outline btn-secondary" @click="changeIconSize">
@@ -21,68 +25,120 @@
       </div>
     </div>
 
-    <div
-      class="w-full grid border-2 border-primary grid-cols-5 text-xl font-semibold text-center text-base-content rounded-t-xl"
-    >
-      <div class="w-80 py-3 border-r-2 border-r-primary"><h1>Pool</h1></div>
-      <div class="w-80 py-3 border-r-2 border-r-primary">
-        <h1>Top Priority</h1>
-      </div>
-      <div class="w-80 py-3 border-r-2 border-r-primary">
-        <h1>In Progress</h1>
-      </div>
-      <div class="w-80 py-3 border-r-2 border-r-primary"><h1>Testing</h1></div>
-      <div class="w-80 py-3"><h1>Complete</h1></div>
-    </div>
-    <div
-      class="w-full grid grid-cols-5 border-x-2 border-b-2 border-primary rounded-b-xl shadow-lg shadow-slate-900 relative"
-      ref="cols"
-    >
+    <div class="min-h-full">
       <div
-        class="w-80 border-r-2 border-r-primary min-h-96"
-        ref="col_pool"
-        id="col_pool"
+        class="w-full grid border-2 border-secondary grid-cols-5 text-xl font-semibold text-center text-base-content rounded-t-xl"
       >
-        <TaskList :tasks="pool" :isMicro="isMicro" />
-        <!--           :isDraggable="true"
+        <div
+          :class="[
+            'w-80 py-3 border-r-2 border-r-secondary bg-gradient-to-r from-0% via-transparent via-50%   to-100% rounded-tl-xl',
+            isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
+          ]"
+        >
+          <h1>Pool</h1>
+        </div>
+        <div
+          :class="[
+            'w-80 py-3 border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100%',
+            isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
+          ]"
+        >
+          <h1>Top Priority</h1>
+        </div>
+        <div
+          :class="[
+            'w-80 py-3 border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100%',
+            isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
+          ]"
+        >
+          <h1>In Progress</h1>
+        </div>
+        <div
+          :class="[
+            'w-80 py-3 border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100% ',
+            isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
+          ]"
+        >
+          <h1>Testing</h1>
+        </div>
+        <div
+          :class="[
+            'w-80 py-3 bg-gradient-to-r rounded-tr-xl  from-0% via-transparent via-50%  to-100%',
+            isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
+          ]"
+        >
+          <h1>Complete</h1>
+        </div>
+      </div>
+      <div
+        class="w-full grid grid-cols-5 border-x-2 border-b-2 border-secondary rounded-b-xl shadow-lg shadow-slate-900 relative min-h-full"
+        ref="cols"
+      >
+        <div
+          :class="[
+            'w-80 border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% rounded-bl-xl min-h-full pb-12',
+            isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
+          ]"
+          ref="col_pool"
+          id="col_pool"
+        >
+          <TaskList :tasks="pool" :isMicro="isMicro" />
+          <!--           :isDraggable="true"
           :col_name="'pool'"
           @dropped="dropped" -->
-      </div>
-      <div
-        class="w-80 border-r-2 border-r-primary"
-        ref="col_priority"
-        id="col_priority"
-      >
-        <TaskList :tasks="top_priority" :isMicro="isMicro" />
-        <!--      :isDraggable="true"
+        </div>
+        <div
+          :class="[
+            'w-80 border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% pb-12',
+            isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
+          ]"
+          ref="col_priority"
+          id="col_priority"
+        >
+          <TaskList :tasks="top_priority" :isMicro="isMicro" />
+          <!--      :isDraggable="true"
           :col_name="'priority'"
           @dropped="dropped" -->
-      </div>
-      <div
-        class="w-80 border-r-2 border-r-primary"
-        ref="col_progress"
-        id="col_progress"
-      >
-        <TaskList :tasks="in_progress" :isMicro="isMicro" />
-        <!--       :isDraggable="true"
+        </div>
+        <div
+          :class="[
+            'w-80 border-r-2 border-r-secondary bg-gradient-to-r from-0% via-transparent via-50% to-100% pb-12',
+            isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
+          ]"
+          ref="col_progress"
+          id="col_progress"
+        >
+          <TaskList :tasks="in_progress" :isMicro="isMicro" />
+          <!--       :isDraggable="true"
           :col_name="'progress'"
           @dropped="dropped" -->
-      </div>
-      <div
-        class="w-80 border-r-2 border-r-primary"
-        ref="col_testing"
-        id="col_testing"
-      >
-        <TaskList :tasks="testing" :isMicro="isMicro" />
-        <!--     :isDraggable="true"
+        </div>
+        <div
+          :class="[
+            'w-80 border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% pb-12',
+            isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
+          ]"
+          ref="col_testing"
+          id="col_testing"
+        >
+          <TaskList :tasks="testing" :isMicro="isMicro" />
+          <!--     :isDraggable="true"
           :col_name="'testing'"
           @dropped="dropped" -->
-      </div>
-      <div class="w-80" ref="col_completed" id="col_completed">
-        <TaskList :tasks="completed" :isMicro="isMicro" />
-        <!--         :isDraggable="true"
+        </div>
+        <div
+          :class="[
+            'w-80 bg-gradient-to-r  from-0% via-transparent via-50%  to-100% rounded-br-xl pb-12',
+            isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
+          ]"
+          ref="col_completed"
+          id="col_completed"
+        >
+          <TaskList :tasks="completed" :isMicro="isMicro" />
+          <!--         :isDraggable="true"
           :col_name="'completed'"
           @dropped="dropped" -->
+        </div>
       </div>
     </div>
   </div>
@@ -100,6 +156,8 @@
   import { useProjectStore } from "../store/project.store";
   import NewTaskBtn from "../components/task/NewTaskBtn.vue";
   import { useApiCall } from "../composables/useAPICall";
+  import { checkThemeIsDark } from "../utils/client.utils";
+  import TaskFilterInput from "../components/ui/TaskFilterInput.vue";
   //import { EndpointType } from "../utils/endpoints";
 
   const projectStore = useProjectStore();
@@ -116,6 +174,8 @@
   const isMicro = ref<boolean>(false);
 
   const apiCall = useApiCall();
+
+  const isDark = ref<boolean>();
 
   watch(
     () => projectStore.current.tasks,
@@ -171,6 +231,10 @@
         }
       }
     });
+  }
+
+  function defineSearch(value: string) {
+    search.value = value;
   }
 
   function searchTasks(searchValue: string): TaskLite[] {
@@ -334,6 +398,7 @@
   // }
 
   onBeforeMount(() => {
+    isDark.value = checkThemeIsDark();
     tasks.value = getTasks();
     prepareTemplate(getTasks());
     isMicro.value = JSON.parse(

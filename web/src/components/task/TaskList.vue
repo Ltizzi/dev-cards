@@ -1,16 +1,12 @@
 <template lang="">
-  <div
-    :class="[
-      'flex  flex-wrap justify-start gap-5 my-5 flex-row ml-4',
-      props.isMicro ? '' : '',
-    ]"
-  >
+  <div :class="['flex  flex-wrap justify-start gap-5 my-5 flex-row ml-4', ,]">
     <div v-for="task in props.tasks">
       <TaskMiniCard
         :task="task"
         :isMicro="props.isMicro"
         :isDarkTheme="props.isDark"
       />
+
       <!--         :isDraggable="props.isDraggable"
         :col_name="props.col_name"
         @dropped="justDrop" -->
