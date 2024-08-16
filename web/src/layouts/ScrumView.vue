@@ -22,7 +22,7 @@
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
         >
-          <h1>Pool</h1>
+          <h1>Backlog</h1>
         </div>
         <div
           :class="[
@@ -146,6 +146,7 @@
   import { checkThemeIsDark } from "../utils/client.utils";
   import TaskFilterInput from "../components/ui/TaskFilterInput.vue";
   import ChangeCardSizeBtn from "../components/ui/ChangeCardSizeBtn.vue";
+  import { taskUtils } from "../utils/task.utils";
 
   const projectStore = useProjectStore();
 
@@ -178,7 +179,7 @@
     () => search.value,
     (newValue, oldValue) => {
       if (newValue != oldValue) {
-        let searched_tasks = searchTasks(newValue);
+        let searched_tasks = taskUtils.searchTasks(newValue, tasks.value);
         if (searched_tasks) {
           prepareTemplate(searched_tasks);
         }
@@ -222,27 +223,6 @@
 
   function defineSearch(value: string) {
     search.value = value;
-  }
-
-  function searchTasks(searchValue: string): TaskLite[] {
-    let returned_tasks: TaskLite[] = [];
-    searchValue = searchValue.toLowerCase();
-    if (!searchValue) {
-      return tasks.value;
-    }
-    tasks.value.forEach((task: TaskLite) => {
-      if (task.title.toLowerCase().includes(searchValue)) {
-        returned_tasks.push(task);
-        return;
-      }
-      task.task_tags.forEach((tag: string) => {
-        if (tag.toLowerCase().includes(searchValue)) {
-          returned_tasks.push(task);
-          return;
-        }
-      });
-    });
-    return returned_tasks;
   }
 
   function clearColumns() {

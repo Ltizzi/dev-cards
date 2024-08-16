@@ -1,4 +1,4 @@
-import { Color, Priority, Progress } from "./types";
+import { Color, Priority, Progress, TaskLite } from "./types";
 
 function calcProgress(progress: Progress) {
   switch (progress) {
@@ -44,9 +44,31 @@ function stringShortener(value: string) {
   return value;
 }
 
+function searchTasks(searchValue: string, tasks: TaskLite[]): TaskLite[] {
+  let returned_tasks: TaskLite[] = [];
+  searchValue = searchValue.toLowerCase();
+  if (!searchValue) {
+    return tasks;
+  }
+  tasks.forEach((task: TaskLite) => {
+    if (task.title.toLowerCase().includes(searchValue)) {
+      returned_tasks.push(task);
+      return;
+    }
+    task.task_tags.forEach((tag: string) => {
+      if (tag.toLowerCase().includes(searchValue)) {
+        returned_tasks.push(task);
+        return;
+      }
+    });
+  });
+  return returned_tasks;
+}
+
 export const taskUtils = {
   calcPriorityColor,
   calcProgress,
   stringShortener,
   getColor,
+  searchTasks,
 };
