@@ -22,57 +22,27 @@
   import LateralMenu from "../layouts/LateralMenu.vue";
   import { useRouter } from "vue-router";
   import { ref, onMounted } from "vue";
+  import {
+    changeTheme,
+    checkThemeIsDark,
+    getActualTheme,
+  } from "../utils/client.utils";
 
   const router = useRouter();
 
-  const float = ref(0);
-
   const firstLoaded = ref(true);
 
-  const randomNum = ref(0);
-
-  const blur = ref(0);
-  const blur_max = ref(false);
-  const blur_min = ref(true);
-  const blur_class = ref("none");
-
-  function chooseColor() {
-    console.log("Choosing color");
-    randomNum.value = Math.floor(Math.random() * 100);
-    console.log(randomNum.value);
-  }
-
-  // setInterval(() => {
-  //   if (blur_min.value) blur.value += 1;
-  //   if (blur_max.value) blur.value -= 1;
-  //   if (blur.value >= 12) {
-  //     blur_max.value = true;
-  //     blur_min.value = false;
-  //   }
-  //   if (blur.value <= 0) {
-  //     blur_max.value = false;
-  //     blur_min.value = true;
-  //   }
-  //   if (blur.value == 0) {
-  //     blur_class.value = "none";
-  //   }
-  //   if (blur.value == 6) {
-  //     blur_class.value = "sm";
-  //   }
-  //   if (blur.value == 12) {
-  //     blur_class.value = "md";
-  //   }
-  // }, 150);
-
-  setInterval(() => {
-    chooseColor();
-  }, 500);
+  const isDark = ref<boolean>(false);
 
   onMounted(() => {
-    chooseColor();
+    const theme = localStorage.getItem("theme") as string;
+    if (theme) {
+      changeTheme(theme);
+      isDark.value = checkThemeIsDark();
+    }
     setTimeout(() => {
       firstLoaded.value = false;
-    }, 2500);
+    }, 1500);
     const user = JSON.parse(localStorage.getItem("user") as string);
     if (!user) {
       router.push("/login");

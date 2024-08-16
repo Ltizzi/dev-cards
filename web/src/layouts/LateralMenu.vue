@@ -1,19 +1,19 @@
 <template lang="">
-  <div class="w-20" v-if="isLogged">
-    <div
-      class="flex flex-col justify-center mx-auto py-5 px-2"
-      v-if="isLoaded"
-      @mouseover="state.isHovering = true"
-      @mouseleave="state.isHovering = false"
-    >
+  <div
+    class="w-20"
+    v-if="isLogged"
+    @mouseover="state.isHovering = true"
+    @mouseleave="state.isHovering = false"
+  >
+    <div class="flex flex-col justify-center py-5 px-1" v-if="isLoaded">
       <div
         :class="[
           'avatar ',
           state.selected == 0 && state.isHovering
-            ? 'border-l-4 border-primary -ml-1'
+            ? 'border-l-4 border-accent -ml-1'
             : 'border-l-0 border-base',
           state.selected == 0 && !state.isHovering
-            ? 'border-r-4 border-primary mr-2'
+            ? 'border-r-4 border-accent mr-2'
             : 'border-r-0 border-base',
         ]"
         v-if="isLogged"
@@ -27,23 +27,28 @@
       </div>
       <div class="divider divider-primary"></div>
 
-      <ul class="flex flex-col gap-4 my-2 mx-auto">
+      <ul
+        class="flex flex-col justify-center w-11/12 gap-4 my-2 mx-auto bg-base-100 bg-opacity-40 rounded-md px-5 py-1.5"
+      >
         <li
           v-for="project in projects"
           v-if="isLoaded"
           @click="goTo(project)"
-          :class="[
-            state.selected == project.workspace_id && state.isHovering
-              ? 'border-l-4 border-primary -ml-1'
-              : '',
-            state.selected == project.workspace_id && !state.isHovering
-              ? 'border-r-4 border-primary mr-2'
-              : 'border-r-0 border-base',
-          ]"
+          :class="['-ml-4  px-1']"
         >
-          <div class="avatar ml-0">
+          <div
+            :class="[
+              'avatar -ml-2',
+              state.selected == project.workspace_id && state.isHovering
+                ? 'border-l-4 border-accent px-1. '
+                : 'border-l-4 border-l-transparent',
+              state.selected == project.workspace_id && !state.isHovering
+                ? 'border-r-4 border-accent'
+                : 'border-r-4 border-r-transparent',
+            ]"
+          >
             <div
-              class="w-16 h-16 rounded-full mx-auto hover:cursor-pointer hover:scale-110 transition-all hover:border-4 hover:border-accent p-3 hover:border-opacity-80 duration-300 ease-in-out"
+              class="w-14 h-14 rounded-full mx-auto hover:cursor-pointer hover:scale-110 transition-all hover:border-4 hover:border-accent p-3 hover:border-opacity-80 duration-300 ease-in-out"
             >
               <img :src="project.project_avatar" class="w-16 h-16" />
             </div>

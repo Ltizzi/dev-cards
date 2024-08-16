@@ -18,9 +18,10 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { defineProps, ref } from "vue";
+  import { defineProps, ref, onBeforeMount } from "vue";
   import TaskMiniCard from "./TaskMiniCard.vue";
   import { Task } from "../../utils/types";
+  import { checkThemeIsDark, getActualTheme } from "../../utils/client.utils";
 
   const props = defineProps<{
     tasks: Task[];
@@ -30,6 +31,8 @@
     // col_name: string;
   }>();
 
+  const isDark = ref<boolean>();
+
   // const emit = defineEmits(["dropped"]);
 
   // function justDrop(col_name: string, pos: any, task: TaskLite) {
@@ -37,4 +40,10 @@
   // }
 
   //const tasks = ref<Array<Task>>();
+
+  onBeforeMount(() => {
+    if (!props.isDark) {
+      isDark.value = checkThemeIsDark();
+    } else isDark.value = props.isDark as boolean;
+  });
 </script>

@@ -57,7 +57,7 @@
       <!-- @mousedown="dragMouseDown" -->
       <div
         :class="[
-          'rounded-xl transition-all ease-in-out duration-300 hover:scale-110 max-h-24 min-h-24 relative hover:shadow-2xl hover:shadow-base-300',
+          'rounded-xl transition-all ease-in-out duration-300 hover:scale-110 max-h-24 min-h-24 relative hover:shadow-2xl hover:shadow-neutral',
           isDark
             ? 'text-base-300 bg-base-content'
             : 'bg-base-100 text-base-content',
