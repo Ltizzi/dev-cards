@@ -2,26 +2,13 @@
   <div class="pt-5">
     <h1 class="text-center text-2xl">Scrum board</h1>
     <div class="flex flex-row py-5 justify-between">
-      <!-- <label
-        :class="[
-          'input input-bordered flex items-center gap-2 input-secondary bg-gradient-to-r from-0% via-transparent via-50%  to-100%',
-          isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
-        ]"
-      >
-        Search
-        <input
-          type="text"
-          class="grow"
-          placeholder="by Tag or Title/subtitle"
-          v-model="search"
-        />
-      </label> -->
       <TaskFilterInput @search="defineSearch" />
       <div class="flex flex-row justify-between gap-5">
         <NewTaskBtn @update="updateProject" />
-        <button class="btn btn-outline btn-secondary" @click="changeIconSize">
+        <!-- <button class="btn btn-outline btn-secondary" @click="changeIconSize">
           Change card size
-        </button>
+        </button> -->
+        <ChangeCardSizeBtn @changeIconSize="changeIconSize" />
       </div>
     </div>
 
@@ -158,7 +145,7 @@
   import { useApiCall } from "../composables/useAPICall";
   import { checkThemeIsDark } from "../utils/client.utils";
   import TaskFilterInput from "../components/ui/TaskFilterInput.vue";
-  //import { EndpointType } from "../utils/endpoints";
+  import ChangeCardSizeBtn from "../components/ui/ChangeCardSizeBtn.vue";
 
   const projectStore = useProjectStore();
 
