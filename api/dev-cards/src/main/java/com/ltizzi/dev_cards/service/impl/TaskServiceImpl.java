@@ -74,7 +74,8 @@ public class TaskServiceImpl implements TaskService {
     public List<ProgressItem> addIdToIssues(List<ProgressItem> issues){
         List<ProgressItem> serializedIssues = new ArrayList<>();
         for(ProgressItem issue: issues){
-            issue.setIssue_id(UUID.randomUUID().getLeastSignificantBits() & Long.MAX_VALUE);
+            //issue.setIssue_id(UUID.randomUUID().getLeastSignificantBits() & Long.MAX_VALUE);
+            issue.setIssue_id(UUID.randomUUID().getLeastSignificantBits()  & 0x1FFFFFFFFFFFFFL);
             serializedIssues.add(issue);
         }
         return serializedIssues;

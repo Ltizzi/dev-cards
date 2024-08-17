@@ -1,8 +1,10 @@
 package com.ltizzi.dev_cards.security.filter;
 
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.google.gson.Gson;
+//import com.google.gson.reflect.TypeToken;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskEntity;
 import com.ltizzi.dev_cards.model.user.UserEntity;
@@ -20,7 +22,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
+//import java.lang.reflect.Type;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -73,13 +75,16 @@ public class JwtUtils {
 
     public List<UserWorkspacesRoles> getRoles(String token){
         Map<String, Object> rolesClaim = jwtDecoder.decode(token).getClaims();
+        ObjectMapper objectMapper = new ObjectMapper();
         Object rolesObject = rolesClaim.get("roles");
 
-        Type listType = new TypeToken<List<Map<String,Object>>>() {}.getType();
-        Gson gson = new Gson();
-        List<Map<String,Object>>rolesList = gson.fromJson(gson.toJson(rolesObject), listType);
-        Type userWorkspaceRolesType = new TypeToken<List<UserWorkspacesRoles>>() {}.getType();
-        List<UserWorkspacesRoles> uwrs = gson.fromJson(gson.toJson(rolesList), userWorkspaceRolesType);
+        List<UserWorkspacesRoles> uwrs = objectMapper.convertValue(rolesObject, new TypeReference<List<UserWorkspacesRoles>>() {});
+
+//        Type listType = new TypeToken<List<Map<String,Object>>>() {}.getType();
+//        Gson gson = new Gson();
+//        List<Map<String,Object>>rolesList = gson.fromJson(gson.toJson(rolesObject), listType);
+//        Type userWorkspaceRolesType = new TypeToken<List<UserWorkspacesRoles>>() {}.getType();
+//        List<UserWorkspacesRoles> uwrs = gson.fromJson(gson.toJson(rolesList), userWorkspaceRolesType);
         return uwrs;
     }
 
