@@ -106,6 +106,7 @@ public class JwtUtils {
             for(Long id: uwr.getAssigned_tasks_ids()){
                 if(id.equals(task_id)){
                     canAccess = true;
+                    break;
                 }
             }
             if(task.getWorkspace().getWorkspace_id().equals(uwr.getWorkspace_id())

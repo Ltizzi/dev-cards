@@ -93,11 +93,7 @@
         </button>
       </div>
     </div>
-    <DesignatedView
-      class="ml-10 -mt-40"
-      :isDark="isDark"
-      :isLoggedIn="isLoggedIn"
-    />
+    <DesignatedView class="ml-10" :isDark="isDark" :isLoggedIn="isLoggedIn" />
   </div>
 </template>
 <script setup lang="ts">

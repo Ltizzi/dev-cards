@@ -6,13 +6,13 @@
     <li
       :class="[
         'active hover:bg-accent',
-        state.selected == 0
+        state.selected === -10
           ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
           : '',
       ]"
+      @click="goHome()"
     >
       <a
-        @click="goHome()"
         class="py-3 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full"
         >Info</a
       >
@@ -21,7 +21,7 @@
       <div
         :class="[
           'disabled hover:bg-accent ',
-          state.selected == -1
+          state.selected === -1
             ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
             : '',
         ]"
@@ -37,13 +37,13 @@
       <div
         :class="[
           'disabled hover:bg-accent ',
-          state.selected == -3
+          state.selected === -3
             ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
             : '',
         ]"
       >
         <summary
-          class="py-2 rounded-xl hover:cursor-pointer hover:bg-accent transition-all ease-in-out"
+          class="py-2 rounded-xl hover:cursor-pointer transition-all ease-in-out"
         >
           <span>All Tasks</span>
         </summary>
@@ -79,7 +79,7 @@
           @click="goDesignated()"
           :class="[
             'disabled hover:bg-accent ',
-            state.selected == -2
+            state.selected === -2
               ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
               : '',
           ]"
@@ -92,7 +92,7 @@
             v-for="task in user_designated_tasks"
             :class="[
               'disabled rounded-xl w-full flex flex-row justify-start hover:bg-accent',
-              state.selected == task.task_id
+              state.selected === task.task_id
                 ? 'opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
                 : '',
             ]"
@@ -101,7 +101,7 @@
             <p
               :class="[
                 'w-full ',
-                state.selected == task.task_id
+                state.selected === task.task_id
                   ? 'opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
                   : 'text-base-content',
               ]"
@@ -170,7 +170,7 @@
   const isLoaded = ref(false);
 
   const state = reactive({
-    selected: 0,
+    selected: -10,
   });
 
   watch(
@@ -204,28 +204,32 @@
   );
 
   function goHome() {
-    state.selected = 0;
+    // state.selected = -10;
     router.push(`/project/info?id=${id.value}`);
+    setTimeout(() => (state.selected = -10), 100);
   }
 
   function goTask(id: number) {
-    state.selected = id;
+    // state.selected = id;
     router.push(`/project/task?id=${id}`);
   }
 
   function goScrum() {
-    state.selected = -1;
+    // state.selected = -1;
     router.push("/project/scrum");
+    setTimeout(() => (state.selected = -1), 100);
   }
 
   function goDesignated() {
-    state.selected = -2;
+    //state.selected = -2;
     router.push("/project/designated");
+    setTimeout(() => (state.selected = -2), 100);
   }
 
   function goAllTasks() {
-    state.selected = -3;
+    // state.selected = -3;
     router.push("/project/tasks");
+    setTimeout(() => (state.selected = -3), 100);
   }
 
   function shortName(name: string) {

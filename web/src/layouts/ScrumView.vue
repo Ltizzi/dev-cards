@@ -1,6 +1,6 @@
 <template lang="">
   <div class="pt-5">
-    <h1 class="text-center text-2xl">Scrum board</h1>
+    <h1 class="text-center text-4xl">Scrum board</h1>
     <div class="flex flex-row py-5 justify-between">
       <TaskFilterInput @search="defineSearch" />
       <div class="flex flex-row justify-between gap-5">
@@ -14,11 +14,11 @@
 
     <div class="min-h-full">
       <div
-        class="w-full grid border-2 border-secondary grid-cols-5 text-xl font-semibold text-center text-base-content rounded-t-xl"
+        class="w-full grid border-2 border-spacing-10 border-dashed border-secondary grid-cols-5 text-xl font-semibold text-center text-base-content rounded-t-xl"
       >
         <div
           :class="[
-            'w-80 py-3 border-r-2 border-r-secondary bg-gradient-to-r from-0% via-transparent via-50%   to-100% rounded-tl-xl',
+            'w-80 py-3 border-r-2 border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r from-0% via-transparent via-50%   to-100% rounded-tl-xl',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
         >
@@ -26,7 +26,7 @@
         </div>
         <div
           :class="[
-            'w-80 py-3 border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100%',
+            'w-80 py-3 border-r-2 border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100%',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
         >
@@ -34,7 +34,7 @@
         </div>
         <div
           :class="[
-            'w-80 py-3 border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100%',
+            'w-80 py-3 border-spacing-10 border-dashed border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100%',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
         >
@@ -42,7 +42,7 @@
         </div>
         <div
           :class="[
-            'w-80 py-3 border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100% ',
+            'w-80 py-3 border-spacing-10 border-dashed border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100% ',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
         >
@@ -58,12 +58,12 @@
         </div>
       </div>
       <div
-        class="w-full grid grid-cols-5 border-x-2 border-b-2 border-secondary rounded-b-xl shadow-lg shadow-slate-900 relative min-h-full"
+        class="w-full grid grid-cols-5 border-spacing-10 border-dashed border-x-2 border-b-2 border-secondary rounded-b-xl shadow-lg shadow-slate-900 relative min-h-full"
         ref="cols"
       >
         <div
           :class="[
-            'w-80 border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% rounded-bl-xl min-h-full pb-12',
+            'w-80 border-r-2 border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% rounded-bl-xl min-h-full pb-12',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_pool"
@@ -76,7 +76,7 @@
         </div>
         <div
           :class="[
-            'w-80 border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% pb-12',
+            'w-80 border-r-2 border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% pb-12',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_priority"
@@ -89,7 +89,7 @@
         </div>
         <div
           :class="[
-            'w-80 border-r-2 border-r-secondary bg-gradient-to-r from-0% via-transparent via-50% to-100% pb-12',
+            'w-80 border-r-2 border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r from-0% via-transparent via-50% to-100% pb-12',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_progress"
@@ -102,7 +102,7 @@
         </div>
         <div
           :class="[
-            'w-80 border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% pb-12',
+            'w-80 border-r-2 border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% pb-12',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_testing"
@@ -115,7 +115,7 @@
         </div>
         <div
           :class="[
-            'w-80 bg-gradient-to-r  from-0% via-transparent via-50%  to-100% rounded-br-xl pb-12',
+            'w-80 bg-gradient-to-r  border-spacing-10 border-dashed from-0% via-transparent via-50%  to-100% rounded-br-xl pb-12',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_completed"

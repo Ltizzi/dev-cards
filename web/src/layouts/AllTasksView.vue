@@ -1,11 +1,11 @@
 <template lang="">
   <div class="text-center">
-    <h1 class="text-4xl mt-5 mb-7 text-base-content">All Tasks View</h1>
-    <div class="flex flex-row justify-between">
-      <TaskFilterInput @search="defineSearch" class="ml-4" />
+    <h1 class="text-4xl mt-5 text-base-content">All Tasks View</h1>
+    <div class="flex flex-row justify-between py-5">
+      <TaskFilterInput @search="defineSearch" class="ml-0" />
       <ChangeCardSizeBtn @changeIconSize="changeIconSize" class="mr-16" />
     </div>
-    <TaskList :isMicro="isMicro" :tasks="getTasks()" />
+    <TaskList :isMicro="isMicro" :tasks="getTasks()" class="-ml-1" />
   </div>
 </template>
 <script setup lang="ts">
