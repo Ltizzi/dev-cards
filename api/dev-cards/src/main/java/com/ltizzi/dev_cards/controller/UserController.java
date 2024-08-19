@@ -9,6 +9,7 @@ import com.ltizzi.dev_cards.model.user.utils.UserLoginCredentials;
 import com.ltizzi.dev_cards.model.user.utils.UserRegistration;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
+import com.ltizzi.dev_cards.security.filter.JwtUtils;
 import com.ltizzi.dev_cards.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,9 @@ public class UserController {
 
     @Autowired
     private UserService userServ;
+
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @GetMapping("/all")
     @ResponseBody
@@ -86,5 +90,11 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<LoginResponse> loginUser(@RequestBody UserLoginCredentials credentials) throws InvalidUserException {
         return new ResponseEntity<>(userServ.loginUser(credentials), HttpStatus.OK);
+    }
+
+    @GetMapping("/refresh")
+    @ResponseBody
+    public ResponseEntity<LoginResponse> refreshJwt(@RequestHeader("Authorization")String token) throws NotFoundException {
+        return new ResponseEntity<>(userServ.updateToken(token), HttpStatus.OK);
     }
 }

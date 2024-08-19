@@ -113,7 +113,7 @@ public class JwtUtils {
         return  objMapper.convertValue(scopeObj, new TypeReference<String>() {});
     }
 
-    private UserEntity getUserByToken(String token) throws NotFoundException {
+    public UserEntity getUserByToken(String token) throws NotFoundException {
         List<UserEntity> user = userRepo.findByUsername(extractUsername(token));
         if(user.get(0)!= null){
             return user.get(0);

@@ -38,4 +38,6 @@ public interface UserService {
     public List<TaskDTO> getCreatedTasksByUserId(Long user_id) throws NotFoundException;
 
     public List<TaskDTO> getDesignatedTasksByUserId(Long user_id) throws NotFoundException;
+
+    public LoginResponse updateToken(String token) throws  NotFoundException;
 }

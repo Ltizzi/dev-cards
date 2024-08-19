@@ -45,17 +45,21 @@ export const useProjectStore = defineStore("projects", {
       })) as Workspace;
       if (response.workspace_id == id) {
         this.current = response;
-        this.justUpdated = true;
-        setTimeout(() => {
-          this.justUpdated = false;
-        }, 1000);
+        if (!this.justUpdated) {
+          this.justUpdated = true;
+          setTimeout(() => {
+            this.justUpdated = false;
+          }, 1000);
+        }
+
         return this.current;
       }
     },
     async updateCurrent() {
-      await this.fetchProjectById(this.current.workspace_id);
-
-      return this.current;
+      return await this.fetchProjectById(this.current.workspace_id);
+    },
+    async updateCurrentById(id: number) {
+      return await this.fetchProjectById(id);
     },
     checkIsLocal() {
       return this.isLocal;

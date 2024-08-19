@@ -176,30 +176,14 @@ public class UserServiceImpl implements UserService {
         List<TaskEntity> tasks = user.getDesignated_tasks();
         return taskMapper.toArrayTaskDTO(tasks);
     }
-//
-//    private List<UserWorkspacesRoles> getUserRoles(UserEntity user){
-//        List<UserWorkspacesRoles> roles = new ArrayList<>();
-//        for(WorkspaceEntity ws: user.getWorkspaces()){
-//            UserWorkspacesRoles user_roles = new UserWorkspacesRoles();
-//            user_roles.setWorkspace_id(ws.getWorkspace_id());
-//            if(ws.getOwner().getUser_id().equals(user.getUser_id())){
-//                user_roles.setRole(Role.ROLE_OWNER);
-//            } else if (ws.getModerators().stream()
-//                    .filter(mod -> mod.getUser_id().equals(user.getUser_id()))
-//                    .collect(Collectors.toList()).size() >0) {
-//                user_roles.setRole(Role.ROLE_MODERATOR);
-//            }
-//            else{
-//                user_roles.setRole(Role.ROLE_USER);
-//            }
-//            List<Long> tasks_ids = user.getDesignated_tasks().stream()
-//                    .map(t->t.getWorkspace().getWorkspace_id().equals(ws.getWorkspace_id()) ? t.getTask_id() : null)
-//                    .filter(out-> out!=null)
-//                    .collect(Collectors.toList());
-//            user_roles.setAssigned_tasks_ids(tasks_ids);
-//            roles.add(user_roles);
-//        }
-//        return roles;
-//    }
 
+    @Override
+    public LoginResponse updateToken(String token) throws NotFoundException {
+        UserEntity user = jwtUtils.getUserByToken(token);
+        String newToken = jwtUtils.regenerateToken(token);
+        return LoginResponse.builder()
+                .user(userMapper.toUserDTO(user))
+                .token(newToken)
+                .build();
+    }
 }

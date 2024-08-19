@@ -211,6 +211,9 @@
         project.value?.workspace_id != projectStore.current.workspace_id
       ) {
         project.value = await projectStore.updateCurrent();
+      } else if (newValue != oldValue) {
+        project.value = projectStore.current;
+        user_designated_tasks.value = getProjectDesignatedTasks();
       }
     }
   );

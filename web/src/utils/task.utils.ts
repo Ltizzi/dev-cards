@@ -65,10 +65,26 @@ function searchTasks(searchValue: string, tasks: TaskLite[]): TaskLite[] {
   return returned_tasks;
 }
 
+function getProjectUserDesignatedTasks(
+  tasks: TaskLite[],
+  designated_tasks: TaskLite[]
+) {
+  let project_designated_tasks = [] as TaskLite[];
+  tasks.forEach((task: TaskLite) => {
+    designated_tasks.forEach((t: TaskLite) => {
+      if (task.task_id == t.task_id) {
+        project_designated_tasks.push(t);
+      }
+    });
+  });
+  return project_designated_tasks;
+}
+
 export const taskUtils = {
   calcPriorityColor,
   calcProgress,
   stringShortener,
   getColor,
   searchTasks,
+  getProjectUserDesignatedTasks,
 };
