@@ -145,6 +145,7 @@
               class
               clas="text-base-content flex flex-row w-full justify-center"
               @click="showFindUserByMailModal"
+              v-if="isModOrOwner"
             >
               <p class="w-full">
                 <font-awesome-icon
