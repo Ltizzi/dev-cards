@@ -14,15 +14,20 @@ import com.ltizzi.dev_cards.model.user.UserLiteDTO;
 import com.ltizzi.dev_cards.model.user.UserMapper;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.utils.JSONWorkspace;
+import com.ltizzi.dev_cards.model.utils.WorkspaceDtoWithJwtResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceMapper;
 import com.ltizzi.dev_cards.repository.UserRepository;
 import com.ltizzi.dev_cards.repository.WorkspaceRepository;
+import com.ltizzi.dev_cards.security.filter.JwtUtils;
 import com.ltizzi.dev_cards.service.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -53,6 +58,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private JwtUtils jwtUtils;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
 
@@ -69,7 +82,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public WorkspaceDTO saveWorkspace(WorkspaceDTO workspace) throws InvalidWorkspaceException, NotFoundException {
+    public WorkspaceDtoWithJwtResponse saveWorkspace(WorkspaceDTO workspace, String oldToken) throws InvalidWorkspaceException, NotFoundException {
         WorkspaceEntity ws = wsMapper.toWorkspaceEntity(workspace);
         UserEntity user = userRepo.findById(ws.getOwner().getUser_id()).orElseThrow(()->new NotFoundException("Owner not found!"));
         List<UserEntity> users = new ArrayList<>();
@@ -80,7 +93,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         user_ws.add(new_ws);
         user.setWorkspaces(user_ws);
         userRepo.save(user);
-        return wsMapper.toWorkspaceDTO(wsRepo.save(ws));
+        WorkspaceDTO wsDto = wsMapper.toWorkspaceDTO(wsRepo.save(ws));
+        String token = jwtUtils.regenerateToken(oldToken);
+
+        return WorkspaceDtoWithJwtResponse.builder()
+                .workspace(wsDto)
+                .token(token)
+                .build();
     }
 
     @Override

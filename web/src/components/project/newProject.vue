@@ -107,9 +107,15 @@
   import { useUserStore } from "../../store/user.store";
   import { useProjectStore } from "../../store/project.store";
   import { useRoute, useRouter } from "vue-router";
-  import { User, UserLite, Workspace } from "../../utils/types";
+  import {
+    User,
+    UserLite,
+    Workspace,
+    WorkspaceWithJwt,
+  } from "../../utils/types";
   import { useApiCall } from "../../composables/useAPICall";
   import { EndpointType } from "../../utils/endpoints";
+  import { saveToken } from "../../utils/auth.utils";
 
   const userStore = useUserStore();
   const projectStore = useProjectStore();
@@ -151,12 +157,13 @@
       const response = (await apiCall.post(
         EndpointType.WORKSPACE_NEW,
         newProject
-      )) as Workspace;
+      )) as WorkspaceWithJwt;
 
-      if (response && response.workspace_id) {
-        projectStore.setCurrent(response);
+      if (response && response.workspace.workspace_id) {
+        projectStore.setCurrent(response.workspace);
         projectStore.setJustCreated();
-        projectStore.addProjectToOwner(response);
+        projectStore.addProjectToOwner(response.workspace);
+        saveToken(response.token);
         isWaiting.value = false;
         router.push("/");
       } else {

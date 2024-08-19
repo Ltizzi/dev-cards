@@ -15,6 +15,7 @@ export const useProjectStore = defineStore("projects", {
     member: [] as Array<Workspace>,
     current: {} as Workspace,
     justCreated: false,
+    justUpdated: false,
   }),
   actions: {
     setOwned(list: Array<Workspace>) {
@@ -44,7 +45,10 @@ export const useProjectStore = defineStore("projects", {
       })) as Workspace;
       if (response.workspace_id == id) {
         this.current = response;
-
+        this.justUpdated = true;
+        setTimeout(() => {
+          this.justUpdated = false;
+        }, 1000);
         return this.current;
       }
     },

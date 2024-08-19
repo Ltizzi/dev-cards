@@ -7,6 +7,7 @@ import com.ltizzi.dev_cards.exception.NotAllowedException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.user.UserLiteDTO;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
+import com.ltizzi.dev_cards.model.utils.WorkspaceDtoWithJwtResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 import com.ltizzi.dev_cards.security.filter.JwtUtils;
 import com.ltizzi.dev_cards.service.WorkspaceService;
@@ -54,8 +55,8 @@ public class WorkspaceController {
 
     @PostMapping("/new")
     @ResponseBody
-    public ResponseEntity<WorkspaceDTO> saveWorkspace(@RequestBody WorkspaceDTO workspace) throws InvalidWorkspaceException, NotFoundException {
-        return new ResponseEntity<>(wsServ.saveWorkspace(workspace), HttpStatus.OK);
+    public ResponseEntity<WorkspaceDtoWithJwtResponse> saveWorkspace(@RequestBody WorkspaceDTO workspace, @RequestHeader("Authorization")String token) throws InvalidWorkspaceException, NotFoundException {
+        return new ResponseEntity<>(wsServ.saveWorkspace(workspace, token), HttpStatus.OK);
     }
 
     @PatchMapping("/update")

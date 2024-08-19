@@ -57,7 +57,7 @@ public class JwtUtils {
         String scope = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(""));
-        System.out.println(scope);
+        //System.out.println(scope);
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
@@ -67,6 +67,24 @@ public class JwtUtils {
                 .claim( "roles", roles)
                 .build();
         return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    public String regenerateToken(String token) throws NotFoundException {
+        Instant now = Instant.now();
+        String scope = getScope(token);
+        UserEntity user = getUserByToken(token);
+        String username = user.getUsername();
+        List<UserWorkspacesRoles> roles = getUserRoles(user);
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(now)
+                .expiresAt(now.plus(Duration.ofDays(7)))
+                .subject(username)
+                .claim("scope", scope)
+                .claim("roles", roles)
+                .build();
+        return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+
     }
 
     public String extractUsername(String token){
@@ -86,6 +104,13 @@ public class JwtUtils {
 //        Type userWorkspaceRolesType = new TypeToken<List<UserWorkspacesRoles>>() {}.getType();
 //        List<UserWorkspacesRoles> uwrs = gson.fromJson(gson.toJson(rolesList), userWorkspaceRolesType);
         return uwrs;
+    }
+
+    public String getScope(String token){
+        Map<String, Object> scopeCLaim = jwtDecoder.decode(token).getClaims();
+        ObjectMapper objMapper = new ObjectMapper();
+        Object scopeObj = scopeCLaim.get("scope");
+        return  objMapper.convertValue(scopeObj, new TypeReference<String>() {});
     }
 
     private UserEntity getUserByToken(String token) throws NotFoundException {

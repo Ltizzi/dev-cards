@@ -203,6 +203,18 @@
     }
   );
 
+  watch(
+    () => projectStore.justUpdated,
+    async (newValue, oldValue) => {
+      if (
+        newValue &&
+        project.value?.workspace_id != projectStore.current.workspace_id
+      ) {
+        project.value = await projectStore.updateCurrent();
+      }
+    }
+  );
+
   function goHome() {
     // state.selected = -10;
     router.push(`/project/info?id=${id.value}`);

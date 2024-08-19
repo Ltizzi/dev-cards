@@ -201,6 +201,11 @@ export interface Workspace {
   updated_at: Date;
 }
 
+export interface WorkspaceWithJwt {
+  workspace: Workspace;
+  token: string;
+}
+
 export interface WorkspaceLite {
   workspace_id: number;
   project_name: string;
