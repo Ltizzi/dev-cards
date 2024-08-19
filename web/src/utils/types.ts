@@ -213,10 +213,10 @@ export interface WorkspaceLite {
 }
 
 export enum Role {
-  ROLE_ADMIN,
-  ROLE_OWNER,
-  ROLE_MODERATOR,
-  ROLE_USER,
+  ROLE_ADMIN = "ROLE_ADMIN",
+  ROLE_OWNER = "ROLE_OWNER",
+  ROLE_MODERATOR = "ROLE_MODERATOR",
+  ROLE_USER = "ROLE_USER",
 }
 
 export interface UserWorkspaceRoles {

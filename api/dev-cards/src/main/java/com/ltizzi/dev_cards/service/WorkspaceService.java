@@ -30,7 +30,7 @@ public interface WorkspaceService {
 
     public List<UserLiteDTO> addUserToWorkspace(Long workspace_id, Long user_id) throws  NotFoundException;
 
-    public List<UserLiteDTO> addUserByEmail(Long workspace_id, String email) throws  NotFoundException;
+    public List<UserLiteDTO> addUserByEmail(Long workspace_id, String email) throws NotFoundException, InvalidUserException;
 
     public List<UserLiteDTO> removeUserFromWorkspace(Long workspace_id, Long user_id) throws  NotFoundException;
 

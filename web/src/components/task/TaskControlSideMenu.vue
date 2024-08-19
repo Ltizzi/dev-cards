@@ -7,6 +7,7 @@
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Assign User"
         @click="modalSwitch('addUser', true)"
+        v-if="isModOrOwner"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'user-plus']" />
         <AddUserModal
@@ -18,6 +19,7 @@
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Remove User"
         @click="modalSwitch('removeUser', true)"
+        v-if="isModOrOwner"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'user-minus']" />
         <RemoveUserModal
@@ -29,6 +31,7 @@
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Add tag"
         @click="modalSwitch('addTag', true)"
+        v-if="isModOrOwner || isDesignatedUser"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'circle-plus']" />
         <AddTagModal
@@ -40,6 +43,7 @@
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Add dependency"
         @click="modalSwitch('addDependency', true)"
+        v-if="isModOrOwner || isDesignatedUser"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'folder-tree']" />
         <AddDependencyModal
@@ -62,6 +66,7 @@
         class="tooltip tooltip-left hover:bg-error hover:rounded-lg transition-all"
         data-tip="Delete Task"
         @click="modalSwitch('deleteTask', true)"
+        v-if="isModOrOwner"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'trash']" />
         <DeleteTaskModal
@@ -73,13 +78,18 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { reactive } from "vue";
+  import { onBeforeMount, reactive, ref } from "vue";
   import AddUserModal from "../ui/AddUserModal.vue";
   import RemoveUserModal from "../ui/RemoveUserModal.vue";
   import AddTagModal from "../ui/AddTagModal.vue";
   import AddDependencyModal from "../ui/AddDependencyModal.vue";
   import AddTaskUpdateModal from "../ui/AddTaskUpdateModal.vue";
   import DeleteTaskModal from "../ui/DeleteTaskModal.vue";
+  import { checkIsDesignated, checkIsModOrOwner } from "../../utils/auth.utils";
+  import { useProjectStore } from "../../store/project.store";
+  import { useTaskStore } from "../../store/task.store";
+
+  const props = defineProps<{ projectId: number; taskId: number }>();
 
   const modalState = reactive({
     addUser: false,
@@ -89,6 +99,12 @@
     addUpdate: false,
     deleteTask: false,
   });
+
+  const isModOrOwner = ref<boolean>();
+  const isDesignatedUser = ref<boolean>();
+
+  const projectStore = useProjectStore();
+  const taskStore = useTaskStore();
 
   const emit = defineEmits(["update"]);
 
@@ -145,4 +161,13 @@
         break;
     }
   }
+
+  onBeforeMount(() => {
+    const projectId = props.projectId
+      ? props.projectId
+      : projectStore.current.workspace_id;
+    const taskId = props.taskId ? props.taskId : taskStore.currentTask.task_id;
+    isModOrOwner.value = checkIsModOrOwner(projectId);
+    isDesignatedUser.value = checkIsDesignated(projectId, taskId as number);
+  });
 </script>

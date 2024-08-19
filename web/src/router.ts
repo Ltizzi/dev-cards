@@ -14,6 +14,8 @@ import HomeLayout from "./layouts/HomeLayout.vue";
 import ScrumView from "./layouts/ScrumView.vue";
 import DesignatedView from "./layouts/DesignatedView.vue";
 import AllTasksView from "./layouts/AllTasksView.vue";
+import ProjectSettings from "./components/project/ProjectSettings.vue";
+import { checkIsModOrOwner } from "./utils/auth.utils";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -34,6 +36,17 @@ const router = createRouter({
             { path: "scrum", component: ScrumView },
             { path: "designated", component: DesignatedView },
             { path: "tasks", component: AllTasksView },
+            {
+              path: "settings",
+              component: ProjectSettings,
+              beforeEnter: (to, from) => {
+                const workspace_id = to.query.id as unknown as number;
+
+                return checkIsModOrOwner(workspace_id)
+                  ? checkIsModOrOwner(workspace_id)
+                  : "/";
+              },
+            },
           ],
         },
       ],

@@ -1,56 +1,56 @@
 <template lang="">
-  <ul
-    class="menu bg-base-200 rounded-box w-52 mt-10 before:ring-offset-purple-400 overflow-x-hidden"
-    v-if="isLoaded"
-  >
-    <li
-      :class="[
-        'active hover:bg-accent',
-        state.selected === -10
-          ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
-          : '',
-      ]"
-      @click="goHome()"
+  <div class="w-52 bg-base-200 flex flex-col justify-between" v-if="isLoaded">
+    <ul
+      class="menu bg-base-200 rounded-box before:ring-offset-purple-400 overflow-x-hidden mt-7"
     >
-      <a
-        class="py-3 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full"
-        >Info</a
-      >
-    </li>
-    <li @click="goScrum()">
-      <div
+      <li
         :class="[
-          'disabled hover:bg-accent ',
-          state.selected === -1
+          'active hover:bg-accent',
+          state.selected === -10
             ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
             : '',
         ]"
+        @click="goHome()"
       >
-        <summary
-          class="py-2 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full"
+        <a
+          class="py-3 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full"
+          >Info</a
         >
-          <span>Scrum</span>
-        </summary>
-      </div>
-    </li>
-    <li @click="goAllTasks()">
-      <div
-        :class="[
-          'disabled hover:bg-accent ',
-          state.selected === -3
-            ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
-            : '',
-        ]"
-      >
-        <summary
-          class="py-2 rounded-xl hover:cursor-pointer transition-all ease-in-out"
+      </li>
+      <li @click="goScrum()">
+        <div
+          :class="[
+            'disabled hover:bg-accent ',
+            state.selected === -1
+              ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
+              : '',
+          ]"
         >
-          <span>All Tasks</span>
-        </summary>
-      </div>
-      <!-- <details close> -->
+          <summary
+            class="py-2 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full"
+          >
+            <span>Scrum</span>
+          </summary>
+        </div>
+      </li>
+      <li @click="goAllTasks()">
+        <div
+          :class="[
+            'disabled hover:bg-accent ',
+            state.selected === -3
+              ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
+              : '',
+          ]"
+        >
+          <summary
+            class="py-2 rounded-xl hover:cursor-pointer transition-all ease-in-out"
+          >
+            <span>All Tasks</span>
+          </summary>
+        </div>
+        <!-- <details close> -->
 
-      <!-- <ul class="before:ring-offset-purple-400">
+        <!-- <ul class="before:ring-offset-purple-400">
           <li
             v-for="task in project.tasks"
             :class="[
@@ -69,79 +69,116 @@
             </p>
           </li>
         </ul> -->
-      <!-- </details> -->
-    </li>
+        <!-- </details> -->
+      </li>
 
-    <li class="flex">
-      <details close>
-        <summary
-          class="py-3 rounded-xl hover:cursor-pointer transition-all ease-in-out"
-          @click="goDesignated()"
-          :class="[
-            'disabled hover:bg-accent ',
-            state.selected === -2
-              ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
-              : '',
-          ]"
-        >
-          <span>Designated</span>
-        </summary>
-
-        <ul class="before:ring-offset-purple-400">
-          <li
-            v-for="task in user_designated_tasks"
+      <li class="flex">
+        <details close>
+          <summary
+            class="py-3 rounded-xl hover:cursor-pointer transition-all ease-in-out"
+            @click="goDesignated()"
             :class="[
-              'disabled rounded-xl w-full flex flex-row justify-start hover:bg-accent',
-              state.selected === task.task_id
-                ? 'opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
+              'disabled hover:bg-accent ',
+              state.selected === -2
+                ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
                 : '',
             ]"
-            @click="goTask(task.task_id)"
           >
-            <p
+            <span>Designated</span>
+          </summary>
+
+          <ul class="before:ring-offset-purple-400">
+            <li
+              v-for="task in user_designated_tasks"
               :class="[
-                'w-full ',
+                'disabled rounded-xl w-full flex flex-row justify-start hover:bg-accent',
                 state.selected === task.task_id
                   ? 'opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
-                  : 'text-base-content',
+                  : '',
               ]"
+              @click="goTask(task.task_id)"
             >
-              <span
-                :class="['size-2 rounded-full', taskUtils.getColor(task.color)]"
-              ></span>
-              {{ shortName(task.title) }}
-            </p>
-          </li>
-        </ul>
-      </details>
-      <!-- <details open>
+              <p
+                :class="[
+                  'w-full ',
+                  state.selected === task.task_id
+                    ? 'opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
+                    : 'text-base-content',
+                ]"
+              >
+                <span
+                  :class="[
+                    'size-2 rounded-full',
+                    taskUtils.getColor(task.color),
+                  ]"
+                ></span>
+                {{ shortName(task.title) }}
+              </p>
+            </li>
+          </ul>
+        </details>
+        <!-- <details open>
         <summary>
           <span>Tasks</span>
         </summary>
         <ul class="before:ring-offset-purple-400"></ul>
       </details> -->
-    </li>
-    <li>
-      <details close>
-        <summary>Users</summary>
-        <ul class="before:ring-offset-purple-400">
-          <li
-            v-for="user in project.users"
-            class="text-white flex flex-row justify-start align-middle w-full"
-          >
-            <div class="avatar">
-              <div class="w-6 rounded-full">
-                <img :src="user.avatar" />
+      </li>
+      <li>
+        <details close>
+          <summary>Users</summary>
+          <ul class="before:ring-offset-purple-400">
+            <li
+              v-for="user in project.users"
+              class="text-white flex flex-row justify-start align-middle w-full"
+            >
+              <div class="avatar">
+                <div class="w-6 rounded-full">
+                  <img :src="user.avatar" />
+                </div>
               </div>
-            </div>
-            <p class="text-base-content text-start -ml-6">
-              {{ user.username }}
-            </p>
-          </li>
-        </ul>
-      </details>
-    </li>
-  </ul>
+              <p class="text-base-content text-start -ml-6">
+                {{ user.username }}
+              </p>
+            </li>
+            <li
+              class
+              clas="text-base-content flex flex-row w-full justify-center"
+              @click="showFindUserByMailModal"
+            >
+              <p class="w-full">
+                <font-awesome-icon
+                  :icon="['fas', 'circle-plus']"
+                  class="size-5 text-success"
+                />Invitar Usuario
+              </p>
+            </li>
+          </ul>
+        </details>
+      </li>
+    </ul>
+    <div
+      class="flex flex-row flex-wrap justify-evenly gap-2 mb-5"
+      v-if="isModOrOwner"
+    >
+      <font-awesome-icon
+        class="size-8 text-success py-2 px-3 rounded-xl hover:cursor-pointer hover:bg-neutral"
+        :icon="['fas', 'user-plus']"
+        @click="showFindUserByMailModal"
+      />
+
+      <font-awesome-icon
+        class="size-8 py-2 px-3 text-primary rounded-xl hover:cursor-pointer hover:bg-neutral"
+        :icon="['fas', 'sliders']"
+        @click="goProjectSettings()"
+      />
+    </div>
+    <BaseInputTextModal
+      :showModal="state.addUserModal"
+      :ws_id="project.workspace_id"
+      @cancel="closeModal"
+    />
+  </div>
 </template>
 <script setup lang="ts">
   import { useRoute, useRouter } from "vue-router";
@@ -152,6 +189,8 @@
   import { EndpointType } from "../../utils/endpoints";
   import { taskUtils } from "../../utils/task.utils";
   import { useUserStore } from "../../store/user.store";
+  import { checkIsModOrOwner } from "../../utils/auth.utils";
+  import BaseInputTextModal from "../ui/AddUserByEmailModal.vue";
 
   const route = useRoute();
   const router = useRouter();
@@ -169,8 +208,11 @@
 
   const isLoaded = ref(false);
 
+  const isModOrOwner = ref<boolean>();
+
   const state = reactive({
     selected: -10,
+    addUserModal: false,
   });
 
   watch(
@@ -247,6 +289,19 @@
     setTimeout(() => (state.selected = -3), 100);
   }
 
+  function goProjectSettings() {
+    router.push(`/project/settings?id=${project.value?.workspace_id}`);
+    setTimeout(() => (state.selected = -4), 100);
+  }
+
+  function showFindUserByMailModal() {
+    state.addUserModal = true;
+  }
+
+  function closeModal() {
+    state.addUserModal = false;
+  }
+
   function shortName(name: string) {
     if (name.length > 15) {
       return name.slice(0, 15) + "(...)";
@@ -267,12 +322,17 @@
     return userTasks;
   }
 
+  function initComponent(id: number) {
+    isLoaded.value = true;
+    isModOrOwner.value = checkIsModOrOwner(id);
+  }
+
   onBeforeMount(async () => {
     if (route.query.id) id.value = +route.query.id;
     project.value = projectStore.current;
     if (project.value.workspace_id) {
       user_designated_tasks.value = getProjectDesignatedTasks();
-      isLoaded.value = true;
+      initComponent(project.value.workspace_id);
     } else {
       const response = (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {
         params: { id: id.value },
@@ -280,7 +340,7 @@
       if (response.workspace_id) {
         projectStore.setCurrent(response);
         project.value = response;
-        isLoaded.value = true;
+        initComponent(response.workspace_id);
         user_designated_tasks.value = getProjectDesignatedTasks();
       }
     }

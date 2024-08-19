@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 /**
@@ -122,16 +123,24 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public List<UserLiteDTO> addUserByEmail(Long workspace_id, String email) throws NotFoundException {
+    public List<UserLiteDTO> addUserByEmail(Long workspace_id, String email) throws NotFoundException, InvalidUserException {
         WorkspaceEntity ws = wsRepo.findById(workspace_id).orElseThrow(()-> new NotFoundException("Workspace not found!"));
         UserEntity user = userRepo.findByEmail(email).get(0);
         if(user == null){
             throw  new NotFoundException("User not found!");
         }
+        List<UserEntity> alreadyUser = ws.getUsers().stream().filter(u->u.getUser_id()==user.getUser_id()).collect(Collectors.toList());
+        if(alreadyUser.size()>0){
+            throw new  InvalidUserException("User already is in workspace");
+        }
         List<UserEntity> users = ws.getUsers();
         users.add(user);
         ws.setUsers(users);
         ws = wsRepo.save(ws);
+        List<WorkspaceEntity> user_ws = user.getWorkspaces();
+        user_ws.add(ws);
+        user.setWorkspaces(user_ws);
+        userRepo.save(user);
         return wsMapper.toWorkspaceDTO(ws).getUsers();
     }
 

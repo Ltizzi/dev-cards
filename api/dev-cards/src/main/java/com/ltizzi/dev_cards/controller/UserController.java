@@ -97,4 +97,10 @@ public class UserController {
     public ResponseEntity<LoginResponse> refreshJwt(@RequestHeader("Authorization")String token) throws NotFoundException {
         return new ResponseEntity<>(userServ.updateToken(token), HttpStatus.OK);
     }
+
+    @GetMapping("/checkByMail")
+    @ResponseBody
+    public boolean  checkUserByEmail(@RequestParam String email, @RequestHeader("Authorization")String token){
+        return userServ.checkUserByEmail(email);
+    }
 }

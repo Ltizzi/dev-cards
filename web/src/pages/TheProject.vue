@@ -58,15 +58,19 @@
             projectStore.current.tasks,
             userStore.getDesignatedTask()
           ).length;
+          await updateToken();
         }
       }
     }
   );
 
   setInterval(async () => {
-    await updateToken();
     await projectStore.updateCurrent();
   }, 1000 * 60);
+
+  setInterval(async () => {
+    await updateToken();
+  }, 1000 * 60 * 5);
 
   async function updateToken() {
     const response = (await apiCall.get(

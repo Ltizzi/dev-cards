@@ -139,14 +139,14 @@ public class WorkspaceController {
 
     @PostMapping("/inviteByEmail")
     @ResponseBody
-    public ResponseEntity<List<UserLiteDTO>> inviteUserByEmail(@RequestParam Long id,
+    public ResponseEntity<List<UserLiteDTO>> inviteUserByEmail(@RequestParam Long ws_id,
                                                                @RequestParam String email,
-                                                               @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
-        if(!jwtUtils.checkIsOwner(id, token) && !jwtUtils.checkIsModerator(id, token)){
+                                                               @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException, InvalidUserException {
+        if(!jwtUtils.checkIsOwner(ws_id, token) && !jwtUtils.checkIsModerator(ws_id, token)){
             throw new NotAllowedException("User can't modify workspace data");
         }
         else {
-            return new ResponseEntity<>(wsServ.addUserByEmail(id, email), HttpStatus.OK);
+            return new ResponseEntity<>(wsServ.addUserByEmail(ws_id, email), HttpStatus.OK);
         }
     }
 

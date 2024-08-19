@@ -38,8 +38,9 @@ function logout() {
 
 function getRoles(): UserWorkspaceRoles[] {
   const token = localStorage.getItem("token");
+  //console.log(token);
   if (token) {
-    const decoded = JSON.parse(jwtDecode(token) as string) as CustomJwtPayload;
+    const decoded = jwtDecode(token) as CustomJwtPayload;
     return decoded.roles;
   } else {
     throw new Error("Something went wrong, couldn't get roles");

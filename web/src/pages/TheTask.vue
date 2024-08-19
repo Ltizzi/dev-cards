@@ -189,7 +189,11 @@
         </div>
       </div>
     </div>
-    <TaskControlSideMenu @update="updateTaskById"></TaskControlSideMenu>
+    <TaskControlSideMenu
+      @update="updateTaskById"
+      :projectId="projectStore.current.workspace_id"
+      :taskId="taskId"
+    ></TaskControlSideMenu>
   </div>
 </template>
 <!-- 
@@ -223,6 +227,7 @@
 
   // #region: variables
   const card = ref<Task>();
+  const taskId = ref<number>();
   const taskStore = useTaskStore();
   const projectStore = useProjectStore();
 
@@ -376,6 +381,7 @@
         const task = await fetchTask(+id);
         if (task) {
           card.value = task;
+          taskId.value = task.task_id;
           taskStore.setCurrentTask(task);
           prepareTaskData(task);
         }
@@ -388,6 +394,7 @@
     (newValue, oldValue) => {
       if (newValue != oldValue) {
         card.value = newValue;
+        taskId.value = newValue.task_id;
         prepareTaskData(newValue);
       }
     }
@@ -400,6 +407,7 @@
 
       if (data) {
         card.value = data;
+        taskId.value = data.task_id;
         taskStore.setCurrentTask(data);
         prepareTaskData(data);
       }

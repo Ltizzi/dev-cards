@@ -186,4 +186,10 @@ public class UserServiceImpl implements UserService {
                 .token(newToken)
                 .build();
     }
+
+    @Override
+    public boolean checkUserByEmail(String email) {
+        List<UserEntity> user = userRepo.findByEmail(email);
+        return user.size() >0;
+    }
 }

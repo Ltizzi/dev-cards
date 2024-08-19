@@ -40,4 +40,6 @@ public interface UserService {
     public List<TaskDTO> getDesignatedTasksByUserId(Long user_id) throws NotFoundException;
 
     public LoginResponse updateToken(String token) throws  NotFoundException;
+
+    public boolean checkUserByEmail(String email);
 }

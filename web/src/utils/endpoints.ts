@@ -35,6 +35,7 @@ export enum EndpointType {
   USER_REGISTER = "/user/register",
   USER_MEMBER = "/user/workspaces",
   USER_REFRESH = "/user/refresh",
+  USER_CHECK = "/user/checkByMail",
 
   WORKSPACE_GET_ALL = "/workspace/all",
   WORKSPACE_GET_BY_ID = "/workspace/byId",
@@ -42,6 +43,7 @@ export enum EndpointType {
   WORKSPACE_UPDATE = "/workspace/update",
   WORKSPACE_DELETE = "/workspace/delete",
   WORKSPACE_ADD_USER = "/workspace/add_user",
+  WORKSPACE_ADD_USER_BY_EMAIL = "/workspace/inviteByEmail",
   WORKSPACE_REMOVE_USER = "/workspace/remove_user",
   WORKSPACE_ADD_MOD = "/workspace/add_mod",
   WORKSPACE_REMOVE_MOD = "/workspace/remove_mod",
