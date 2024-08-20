@@ -1,7 +1,7 @@
 <template lang="">
   <div class="mt-5">
     <h1 class="text-4xl text-center">Project Settings</h1>
-    <div class="my-10 flex flex-col gap-5 justify-center">
+    <div class="my-10 flex flex-col gap-5 justify-center" v-if="isOwner">
       <h2 class="text-2xl">Add/Remove Mods</h2>
       <h3 class="text-xl pt-3">User List:</h3>
       <ul class="py-3 flex flex-row justify-start gap-5">
@@ -25,14 +25,28 @@
           <p>{{ user.username }} ,</p>
         </li>
       </ul>
+      <div class="flex flex-row justify-center">
+        <button class="btn btn-error text-white" @click="showDeleteWsModal">
+          DELETE WORKSPACE
+        </button>
+      </div>
+
+      <BaseDeleteModal
+        :id="modal_id"
+        :type="'user as moderator'"
+        :showModal="showModal"
+        @cancel="closeModal"
+        @delete="deleteAsMod"
+      />
+
+      <BaseDeleteModal
+        :id="projectStore.current.workspace_id"
+        :type="'WORKSPACE'"
+        :showModal="showDelWsModal"
+        @cancel="closeDeleteWsModal"
+        @delete="deleteWs"
+      />
     </div>
-    <BaseDeleteModal
-      :id="modal_id"
-      :type="modal_type"
-      :showModal="showModal"
-      @cancel="closeModal"
-      @delete="deleteAsMod"
-    />
   </div>
 </template>
 <script setup lang="ts">
@@ -43,8 +57,11 @@
   import BaseDeleteModal from "../common/BaseDeleteModal.vue";
   import { EndpointType } from "../../utils/endpoints";
   import { checkIsOwner } from "../../utils/auth.utils";
+  import { useRouter } from "vue-router";
 
   const projectStore = useProjectStore();
+
+  const router = useRouter();
 
   const user_list = ref<UserLite[]>();
   const mod_list = ref<UserLite[]>();
@@ -54,6 +71,8 @@
   const modal_id = ref<number>();
   const modal_type = ref<string>();
   const showModal = ref<boolean>(false);
+
+  const showDelWsModal = ref<boolean>();
 
   const isOwner = ref<boolean>();
 
@@ -105,6 +124,22 @@
 
   function closeModal() {
     showModal.value = false;
+  }
+
+  function showDeleteWsModal() {
+    showDelWsModal.value = true;
+  }
+
+  function closeDeleteWsModal() {
+    showDelWsModal.value = false;
+  }
+
+  function deleteWs() {
+    console.log("DELETED");
+    setTimeout(() => {
+      showDelWsModal.value = false;
+      router.push("/");
+    }, 500);
   }
 
   onBeforeMount(() => {

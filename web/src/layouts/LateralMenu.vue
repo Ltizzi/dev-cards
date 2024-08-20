@@ -64,7 +64,7 @@
 <script setup lang="ts">
   import { useUserStore } from "../store/user.store";
   import { useProjectStore } from "../store/project.store";
-  import { useRouter } from "vue-router";
+  import { useRoute, useRouter } from "vue-router";
   import { Workspace, User } from "../utils/types";
   import { onBeforeMount, ref, watch, reactive } from "vue";
   import { useApiCall } from "../composables/useAPICall";
@@ -77,6 +77,7 @@
   const apiCall = useApiCall();
 
   const router = useRouter();
+  const route = useRoute();
 
   const projects = ref<Array<Workspace>>();
   const user = ref<User>();
@@ -124,6 +125,15 @@
     (newValue, oldValue) => {
       if (newValue.workspace_id != oldValue.workspace_id && !state.justChange) {
         state.selected = newValue.workspace_id;
+      }
+    }
+  );
+
+  watch(
+    () => route.path,
+    (newValue, oldValue) => {
+      if (newValue == "/" && oldValue.includes("/project")) {
+        state.selected = 0;
       }
     }
   );
