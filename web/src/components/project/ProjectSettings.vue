@@ -42,6 +42,7 @@
   import { useApiCall } from "../../composables/useAPICall";
   import BaseDeleteModal from "../common/BaseDeleteModal.vue";
   import { EndpointType } from "../../utils/endpoints";
+  import { checkIsOwner } from "../../utils/auth.utils";
 
   const projectStore = useProjectStore();
 
@@ -53,6 +54,8 @@
   const modal_id = ref<number>();
   const modal_type = ref<string>();
   const showModal = ref<boolean>(false);
+
+  const isOwner = ref<boolean>();
 
   async function addMod(id: number) {
     const response = (await apiCall.patch(
@@ -107,5 +110,6 @@
   onBeforeMount(() => {
     user_list.value = projectStore.current.users;
     mod_list.value = projectStore.current.moderators;
+    isOwner.value = checkIsOwner(projectStore.current.workspace_id);
   });
 </script>

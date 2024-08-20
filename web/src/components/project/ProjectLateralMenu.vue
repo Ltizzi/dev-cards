@@ -230,6 +230,7 @@
       if (newValue != oldValue) {
         project.value = projectStore.current;
         user_designated_tasks.value = getProjectDesignatedTasks();
+        isModOrOwner.value = checkIsModOrOwner(newValue);
       }
     }
   );

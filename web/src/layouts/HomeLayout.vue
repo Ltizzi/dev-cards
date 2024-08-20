@@ -133,10 +133,8 @@
     "dim",
     "forest",
     "aqua",
-
     "winter",
     "lemonade",
-
     "pastel",
     "garden",
     "corporate",
