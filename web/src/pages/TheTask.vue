@@ -118,7 +118,7 @@
             </div>
           </div>
 
-          <div class="text-start">
+          <div class="text-start" v-if="card.designated_to.length > 0">
             <p class="text-xl py-5 underline">Designated to:</p>
             <div class="flex flex-row justify-start gap-5 ml-5">
               <div class="w-auto" v-for="user of card.designated_to">

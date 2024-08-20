@@ -24,6 +24,12 @@ export default {
       "dim",
       "forest",
       "aqua",
+      "winter",
+      "lemonade",
+      "pastel",
+      "garden",
+      "corporate",
+      "wireframe",
     ],
   },
 };

@@ -133,6 +133,14 @@
     "dim",
     "forest",
     "aqua",
+
+    "winter",
+    "lemonade",
+
+    "pastel",
+    "garden",
+    "corporate",
+    "wireframe",
   ];
 
   const darkThemes = [
