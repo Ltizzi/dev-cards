@@ -158,22 +158,31 @@
         </details>
       </li>
     </ul>
-    <div
-      class="flex flex-row flex-wrap justify-evenly gap-2 mb-5"
-      v-if="isModOrOwner"
-    >
-      <font-awesome-icon
-        class="size-8 text-success py-2 px-3 rounded-xl hover:cursor-pointer hover:bg-neutral"
-        :icon="['fas', 'user-plus']"
-        @click="showFindUserByMailModal"
+    <div class="flex flex-col justify-cemter gap-0.5">
+      <NewTaskBtn
+        :class="['mx-auto', isModOrOwner ? '' : 'mb-5']"
+        :icon="true"
       />
+      <div class="divider divider-secondary my-2" v-if="isModOrOwner"></div>
 
-      <font-awesome-icon
-        class="size-8 py-2 px-3 text-primary rounded-xl hover:cursor-pointer hover:bg-neutral"
-        :icon="['fas', 'sliders']"
-        @click="goProjectSettings()"
-      />
+      <div
+        class="flex flex-row flex-wrap justify-evenly gap-2 mb-3"
+        v-if="isModOrOwner"
+      >
+        <font-awesome-icon
+          class="size-6 text-success py-2 px-3 rounded-xl hover:cursor-pointer hover:bg-neutral"
+          :icon="['fas', 'user-plus']"
+          @click="showFindUserByMailModal"
+        />
+
+        <font-awesome-icon
+          class="size-6 py-2 px-3 text-primary rounded-xl hover:cursor-pointer hover:bg-neutral"
+          :icon="['fas', 'sliders']"
+          @click="goProjectSettings()"
+        />
+      </div>
     </div>
+
     <BaseInputTextModal
       :showModal="state.addUserModal"
       :ws_id="project.workspace_id"
@@ -192,6 +201,7 @@
   import { useUserStore } from "../../store/user.store";
   import { checkIsModOrOwner } from "../../utils/auth.utils";
   import BaseInputTextModal from "../ui/AddUserByEmailModal.vue";
+  import NewTaskBtn from "../task/NewTaskBtn.vue";
 
   const route = useRoute();
   const router = useRouter();
