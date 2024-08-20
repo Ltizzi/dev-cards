@@ -25,8 +25,15 @@
           <p>{{ user.username }} ,</p>
         </li>
       </ul>
-      <div class="flex flex-row justify-center">
-        <button class="btn btn-error text-white" @click="showDeleteWsModal">
+      <div class="flex flex-row justify-between gap-5">
+        <button class="btn btn-primary text-white" @click="downloadJson">
+          Download JSON
+        </button>
+        <button
+          class="btn btn-error text-white"
+          disabled
+          @click="showDeleteWsModal"
+        >
           DELETE WORKSPACE
         </button>
       </div>
@@ -52,14 +59,16 @@
 <script setup lang="ts">
   import { onBeforeMount, ref } from "vue";
   import { useProjectStore } from "../../store/project.store";
-  import { UserLite, Workspace } from "../../utils/types";
+  import { APIResponse, UserLite, Workspace } from "../../utils/types";
   import { useApiCall } from "../../composables/useAPICall";
   import BaseDeleteModal from "../common/BaseDeleteModal.vue";
   import { EndpointType } from "../../utils/endpoints";
   import { checkIsOwner } from "../../utils/auth.utils";
   import { useRouter } from "vue-router";
+  import { useUserStore } from "../../store/user.store";
 
   const projectStore = useProjectStore();
+  const userStore = useUserStore();
 
   const router = useRouter();
 
@@ -134,12 +143,49 @@
     showDelWsModal.value = false;
   }
 
-  function deleteWs() {
+  async function deleteWs() {
     console.log("DELETED");
-    setTimeout(() => {
-      showDelWsModal.value = false;
-      router.push("/");
-    }, 500);
+
+    const response = (await apiCall.del(EndpointType.WORKSPACE_DELETE, {
+      params: {
+        id: projectStore.current.workspace_id,
+      },
+    })) as APIResponse;
+    if (response.message == "Workspace deleted!") {
+      setTimeout(() => {
+        showDelWsModal.value = false;
+        router.push("/");
+      }, 500);
+    } else console.error(response.message);
+  }
+
+  async function downloadJson() {
+    try {
+      const response = (await apiCall.get(EndpointType.WORKSPACE_JSON, {
+        params: {
+          ws_id: projectStore.current.workspace_id,
+          user_id: userStore.self.user_id,
+        },
+        responseType: "blob",
+      })) as BlobPart;
+      const fileURL = window.URL.createObjectURL(new Blob([response]));
+      const fileLink = document.createElement("a");
+      fileLink.href = fileURL;
+      fileLink.setAttribute(
+        "download",
+        `${
+          projectStore.current.project_name +
+          "_" +
+          projectStore.current.updated_at
+        }.json`
+      );
+      document.body.appendChild(fileLink);
+      fileLink.click();
+      document.body.removeChild(fileLink);
+      window.URL.revokeObjectURL(fileURL);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   onBeforeMount(() => {

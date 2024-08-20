@@ -47,4 +47,5 @@ export enum EndpointType {
   WORKSPACE_REMOVE_USER = "/workspace/remove_user",
   WORKSPACE_ADD_MOD = "/workspace/add_mod",
   WORKSPACE_REMOVE_MOD = "/workspace/remove_mod",
+  WORKSPACE_JSON = "/workspace/json",
 }

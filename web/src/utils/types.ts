@@ -250,3 +250,8 @@ export interface AuthResponse {
   user: User;
   token: string;
 }
+
+export interface APIResponse {
+  http_method: string;
+  message: string;
+}
