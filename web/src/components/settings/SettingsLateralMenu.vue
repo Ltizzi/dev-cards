@@ -11,7 +11,7 @@
               state.selected == index
                 ? 'bg-primary bg-opacity-70 text-white rounded-lg '
                 : '',
-              'py-2 px-2 w-fit',
+              'py-2 px-2 w-fit hover:cursor-pointer',
             ]"
             @click="changeMenu(index)"
             v-if="checkVisible(option)"
@@ -40,6 +40,11 @@
       title: "Moderators",
       path: "mods",
       needOwner: true,
+    },
+    {
+      title: "Remove Users",
+      path: "remove_users",
+      needOwner: false,
     },
   ]);
 

@@ -20,6 +20,14 @@
           :mod_list="project.moderators"
           v-show="state.selected == 'mods'"
         />
+        <RemoveUserControl
+          :workspace_id="project.workspace_id"
+          :user_list="project.users"
+          :mod_list="project.moderators"
+          :owner_id="state.ownerId"
+          @update="updateProject"
+          v-show="state.selected == 'remove_users'"
+        />
       </div>
     </div>
     <div class="flex flex-row justify-between gap-5" v-if="isOwner">
@@ -45,7 +53,7 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { onBeforeMount, reactive, ref } from "vue";
+  import { onBeforeMount, reactive, ref, watch } from "vue";
   import { useProjectStore } from "../store/project.store";
   import {
     APIResponse,
@@ -59,10 +67,10 @@
   import { checkIsOwner } from "../utils/auth.utils";
   import { useRouter } from "vue-router";
   import { useUserStore } from "../store/user.store";
-  //import BaseEditDescription from "../components/common/BaseEditDescription.vue";
   import SettingsLateralMenu from "../components/settings/SettingsLateralMenu.vue";
   import ModControl from "../components/settings/ModControl.vue";
   import ProjectBasicControl from "../components/settings/ProjectBasicControl.vue";
+  import RemoveUserControl from "../components/settings/RemoveUserControl.vue";
 
   const projectStore = useProjectStore();
   const userStore = useUserStore();
@@ -79,11 +87,12 @@
 
   const state = reactive({
     selected: "basic",
+    ownerId: 0,
   });
 
   function changeMenu(option: MenuOptionUI) {
     state.selected = option.path;
-    console.log("SELECTED: ", state.selected);
+    //console.log("SELECTED: ", state.selected);
   }
 
   function showDeleteWsModal() {
@@ -95,10 +104,13 @@
   }
 
   async function updateProject(ws?: Workspace) {
-    if (ws) projectStore.setCurrent(ws);
-    else await projectStore.updateCurrent();
+    console.log("UPDATING");
+    if (ws) {
+      projectStore.setCurrent(ws);
+      project.value = projectStore.current;
+    } else project.value = await projectStore.updateCurrent();
 
-    project.value = projectStore.current;
+    projectStore.current;
   }
 
   async function deleteWs() {
@@ -146,8 +158,18 @@
     }
   }
 
+  watch(
+    () => projectStore.justUpdated,
+    (newValue, oldValue) => {
+      if (newValue) {
+        project.value = projectStore.current;
+      }
+    }
+  );
+
   onBeforeMount(() => {
     isOwner.value = checkIsOwner(projectStore.current.workspace_id);
     project.value = projectStore.current;
+    state.ownerId = project.value.owner.user_id;
   });
 </script>

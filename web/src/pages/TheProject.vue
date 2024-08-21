@@ -1,6 +1,6 @@
 <template lang="">
   <div class="flex flex-row justify-center w-screen" v-if="isLoaded">
-    <ProjectLateralMenu class="h-screen left-4 fixed" />
+    <ProjectLateralMenu class="h-screen left-4 fixed" @update="updateProject" />
 
     <div class="ml-52 w-10/12">
       <router-view></router-view>
@@ -63,6 +63,10 @@
       }
     }
   );
+
+  async function updateProject() {
+    await projectStore.updateCurrent();
+  }
 
   setInterval(async () => {
     await projectStore.updateCurrent();

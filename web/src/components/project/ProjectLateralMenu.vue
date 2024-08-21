@@ -1,28 +1,29 @@
 <template lang="">
   <div class="w-52 bg-base-200 flex flex-col justify-between" v-if="isLoaded">
     <ul
-      class="menu bg-base-200 rounded-box before:ring-offset-purple-400 overflow-x-hidden mt-7"
+      class="menu bg-base-200 rounded-box before:ring-offset-purple-400 overflow-x-hidden mt-3"
     >
-      <li
-        :class="[
-          'active hover:bg-accent',
-          state.selected === -10
-            ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
-            : '',
-        ]"
-        @click="goHome()"
-      >
-        <a
-          class="py-3 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full"
-          >Info</a
+      <li class="font-extrabold text-base text-center pb-3">
+        {{ project.project_name }}
+      </li>
+      <li @click="goHome()">
+        <div
+          :class="[
+            'hover:bg-accent py-3 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full',
+            state.selected === -10
+              ? 'border-l-2 text-white border-primary -ml-0.5 opacity-90 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent  font-semibold'
+              : '',
+          ]"
         >
+          Info
+        </div>
       </li>
       <li @click="goScrum()">
         <div
           :class="[
             'disabled hover:bg-accent ',
             state.selected === -1
-              ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
+              ? 'border-l-2  text-white border-primary -ml-0.5 opacity-90 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent font-semibold'
               : '',
           ]"
         >
@@ -38,7 +39,7 @@
           :class="[
             'disabled hover:bg-accent ',
             state.selected === -3
-              ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
+              ? 'border-l-2 text-white border-primary -ml-0.5 opacity-90 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent font-semibold'
               : '',
           ]"
         >
@@ -80,7 +81,7 @@
             :class="[
               'disabled hover:bg-accent ',
               state.selected === -2
-                ? 'border-l-2  border-primary -ml-0.5 opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
+                ? 'border-l-2 text-white border-primary -ml-0.5 opacity-90 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent  font-semibold'
                 : '',
             ]"
           >
@@ -93,7 +94,7 @@
               :class="[
                 'disabled rounded-xl w-full flex flex-row justify-start hover:bg-accent',
                 state.selected === task.task_id
-                  ? 'opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
+                  ? 'opacity-70 text-white bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent  font-semibold'
                   : '',
               ]"
               @click="goTask(task.task_id)"
@@ -102,10 +103,11 @@
                 :class="[
                   'w-full ',
                   state.selected === task.task_id
-                    ? 'opacity-70 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent text-secondary-content font-semibold'
+                    ? 'opacity-70 text-white bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent  font-semibold'
                     : 'text-base-content',
                 ]"
               >
+                <!-- text-secondary-content -->
                 <span
                   :class="[
                     'size-2 rounded-full',
@@ -183,10 +185,11 @@
       </div>
     </div>
 
-    <BaseInputTextModal
+    <AddUserByEmailModal
       :showModal="state.addUserModal"
       :ws_id="project.workspace_id"
       @cancel="closeModal"
+      @update="updateProject"
     />
   </div>
 </template>
@@ -200,11 +203,13 @@
   import { taskUtils } from "../../utils/task.utils";
   import { useUserStore } from "../../store/user.store";
   import { checkIsModOrOwner } from "../../utils/auth.utils";
-  import BaseInputTextModal from "../ui/AddUserByEmailModal.vue";
+  import AddUserByEmailModal from "../ui/AddUserByEmailModal.vue";
   import NewTaskBtn from "../task/NewTaskBtn.vue";
 
   const route = useRoute();
   const router = useRouter();
+
+  const emit = defineEmits(["update"]);
 
   const id = ref<number>();
 
@@ -272,6 +277,8 @@
     }
   );
 
+  //NAVIGATION
+
   function goHome() {
     // state.selected = -10;
     router.push(`/project/info?id=${id.value}`);
@@ -337,6 +344,11 @@
   function initComponent(id: number) {
     isLoaded.value = true;
     isModOrOwner.value = checkIsModOrOwner(id);
+  }
+
+  async function updateProject() {
+    project.value = await projectStore.updateCurrent();
+    emit("update");
   }
 
   onBeforeMount(async () => {

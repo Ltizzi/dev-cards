@@ -48,9 +48,10 @@ export const useProjectStore = defineStore("projects", {
         params: { id: id },
       })) as Workspace;
       if (response.workspace_id == id) {
-        this.current = response;
-        this.currentName = response.project_name;
-        this.currentAvatar = response.avatar;
+        this.setCurrent(response);
+        // this.current = response;
+        // this.currentName = response.project_name;
+        // this.currentAvatar = response.avatar;
         if (!this.justUpdated) {
           this.justUpdated = true;
           setTimeout(() => {

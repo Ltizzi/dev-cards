@@ -20,6 +20,8 @@ import {
   faSitemap,
   faSliders,
   faSquareCheck,
+  faHammer,
+  faCrown,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -35,7 +37,9 @@ library.add(
   faSquarePlus,
   faSitemap,
   faSliders,
-  faSquareCheck
+  faSquareCheck,
+  faHammer,
+  faCrown
 );
 
 const app = createApp(App);

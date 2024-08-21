@@ -5,14 +5,14 @@
     v-if="props.showModal"
   >
     <div
-      class="flex flex-col gap-3 justify-center bg-base-100 text-base-content"
+      class="flex flex-col gap-3 justify-center bg-base-100 text-base-content w-72"
     >
       <h1
-        class="bg-secondary py-2 text-center text-neutral-content font-semibold"
+        class="bg-secondary py-2 text-center text-neutral-content text-xl px-2 font-bold"
       >
-        {{ props.text }}
+        Invite user to project
       </h1>
-      <div class="flex flex-col justify-center">
+      <div class="flex flex-col justify-center px-5 py-5">
         <div
           role="alert"
           class="alert alert-success"
@@ -77,7 +77,7 @@
         </label>
       </div>
 
-      <div class="flex flex-row gap-5 pb-5 px-10">
+      <div class="flex flex-row gap-5 pb-5 px-10 mx-auto">
         <button class="btn btn-success text-white" @click="addUser">
           Search
         </button>
@@ -106,7 +106,7 @@
     showModal: boolean;
     ws_id: number;
   }>();
-  const emit = defineEmits(["updateProject", "cancel"]);
+  const emit = defineEmits(["update", "cancel"]);
 
   const apiCall = useApiCall();
 
@@ -124,7 +124,7 @@
     )) as UserLite[];
     if (response[0].user_id) {
       successMsg.value = "User added to Workspace!";
-      emit("updateProject");
+      emit("update");
       setTimeout(() => {
         cancel();
       }, 1000);

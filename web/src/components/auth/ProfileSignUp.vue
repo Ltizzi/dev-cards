@@ -75,7 +75,9 @@
   const router = useRouter();
 
   const user = ref<User>();
-  const default_avatar = new URL(`@/assets/avatar.png`, import.meta.url).href;
+  const default_avatar = ref<string>(
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Default_avatar_profile.jpg/600px-Default_avatar_profile.jpg?20231202140256"
+  ); //new URL(`@/assets/avatar.png`, import.meta.url).href;
   const avatar = ref<string>();
   const githubProfile = ref<string>();
   const about = ref<string>();
@@ -90,7 +92,7 @@
         user_id: user.value.user_id,
         username: user.value.username,
         email: user.value.email,
-        avatar: avatar.value,
+        avatar: avatar.value ? avatar.value : default_avatar.value,
         about: about.value,
         githubProfile: githubProfile.value,
         roles: user.value.roles,
