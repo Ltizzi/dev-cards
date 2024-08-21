@@ -70,6 +70,7 @@
   import { useApiCall } from "../composables/useAPICall";
   import { EndpointType } from "../utils/endpoints";
   import { isTokenExpired } from "../utils/auth.utils";
+  import { workspaceUtils } from "../utils/workspace.utils";
 
   const userStore = useUserStore();
   const projectStore = useProjectStore();
@@ -170,6 +171,14 @@
     })) as Array<Workspace>;
   }
 
+  function sortProjects(projs: Workspace[]) {
+    return projs.sort((ws_a, ws_b) => {
+      const dateA = new Date(ws_a.updated_at).getTime();
+      const dateB = new Date(ws_b.updated_at).getTime();
+      return dateA < dateB ? 1 : -1;
+    });
+  }
+
   onBeforeMount(async () => {
     if (isTokenExpired()) {
       router.push("/login");
@@ -189,7 +198,10 @@
       // const response = (await apiCall.get(EndpointType.USER_MEMBER, {
       //   params: { user_id: user.value.user_id },
       // })) as Array<Workspace>;
-      projects.value = await fetchProjects(user.value?.user_id as number);
+      const projs = await fetchProjects(user.value?.user_id as number);
+      projects.value = sortProjects(projs);
+      console.log("PROYSSS");
+      console.log(projects.value);
       isLogged.value = true;
       isLoaded.value = true;
     }

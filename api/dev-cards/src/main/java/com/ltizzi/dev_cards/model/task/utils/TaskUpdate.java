@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,16 +37,16 @@ public class TaskUpdate {
     private List<String> old_descriptions = new ArrayList<>();
 
     @Builder.Default
-    private Instant created_at = Instant.now();
+    private Date created_at = new Date();
 
     @Builder.Default
-    private Instant updated_at = Instant.now();
+    private Date updated_at = new Date();
 
     public TaskUpdate update(Long editor_id, String editor_username, String new_description){
         this.editors_usernames.add(editor_username);
         this.old_descriptions.add(this.description);
         this.description = new_description;
-        this.updated_at = Instant.now();
+        this.updated_at = new Date();
         return this;
     }
 

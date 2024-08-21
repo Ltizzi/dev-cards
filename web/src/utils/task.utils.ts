@@ -1,4 +1,4 @@
-import { Color, Priority, Progress, TaskLite } from "./types";
+import { Color, Priority, Progress, Task, TaskLite, Workspace } from "./types";
 
 function calcProgress(progress: Progress) {
   switch (progress) {

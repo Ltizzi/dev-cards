@@ -11,8 +11,15 @@
       </div>
     </div>
     <div class="my-5">
-      <h1 class="mb-2 text-xl font-bold">Description:</h1>
-      <p class="mx-10 text-lg">{{ project.description }}</p>
+      <!-- <h1 class="mb-2 text-xl font-bold">Description:</h1>
+      <p class="mx-10 text-lg">{{ project.description }}</p> -->
+      <BaseEditDescription
+      :description="project.description"
+      :id="project.workspace_id"
+      :isDark="isDark"
+      :type="workspace"
+      @update="updateProject"
+      />
     </div>
     <div class="my-5">
       <h1 class="mb-2 text-xl font-bold">Created by:</h1>
@@ -74,6 +81,7 @@
   import { useRoute } from "vue-router";
   import { useApiCall } from "../../composables/useAPICall";
   import { EndpointType } from "../../utils/endpoints";
+  import BaseEditDescription from "../common/BaseEditDescription.vue";
   import NewTaskBtn from "../task/NewTaskBtn.vue";
   import TaskList from "../task/TaskList.vue";
 
@@ -87,12 +95,19 @@
 
   const isLoaded = ref(false);
 
+  const isDark = ref<boolean>();
+
   watch(()=> projectStore.current, (newValue, oldValue)=>{
     if(newValue != oldValue){
       project.value = projectStore.current;
     }
     
   })
+
+  async function updateProject(workspace: Workspace){
+    projectStore.setCurrent(workspace);
+    project.value = projectStore.current;
+  }
 
 
   onBeforeMount(async () => {
@@ -110,6 +125,9 @@
       } else {
         console.error(response);
       }
+    }
+    if(localStorage.getItem("darkTheme")){
+      isDark.value = JSON.parse(localStorage.getItem("darkTheme")as string);
     }
   });
 </script>

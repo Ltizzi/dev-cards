@@ -1,5 +1,6 @@
 package com.ltizzi.dev_cards.model.utils;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.user.UserLiteDTO;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
@@ -10,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,10 +30,15 @@ public class JSONWorkspace {
     private List<TaskDTO> tasks;
 
     @Builder.Default
-    private String created_at = Instant.now().toString();
+    //@JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy'T'HH:mm:ss'Z'", timezone = "UTC")
+    private Date created_at = new Date();
+
     @Builder.Default
-    private String downloaded_at = Instant.now().toString();
+
+    private Date downloaded_at = new Date();
+
     @Builder.Default
-    private String updated_at = Instant.now().toString();
+
+    private Date updated_at = new Date();
 
 }

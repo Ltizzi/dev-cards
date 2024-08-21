@@ -5,6 +5,7 @@ import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.InvalidWorkspaceException;
 import com.ltizzi.dev_cards.exception.NotAllowedException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
+import com.ltizzi.dev_cards.model.task.utils.UpdateDescriptionRequest;
 import com.ltizzi.dev_cards.model.user.UserLiteDTO;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.utils.WorkspaceDtoWithJwtResponse;
@@ -142,7 +143,7 @@ public class WorkspaceController {
     public ResponseEntity<List<UserLiteDTO>> inviteUserByEmail(@RequestParam Long ws_id,
                                                                @RequestParam String email,
                                                                @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException, InvalidUserException {
-        if(!jwtUtils.checkIsOwner(ws_id, token) && !jwtUtils.checkIsModerator(ws_id, token)){
+        if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
             throw new NotAllowedException("User can't modify workspace data");
         }
         else {
@@ -161,7 +162,7 @@ public class WorkspaceController {
     public ResponseEntity<InputStreamResource> donwloadJson(@RequestParam Long ws_id,
                                                             @RequestParam Long user_id,
                                                             @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException, JsonProcessingException {
-        if(!jwtUtils.checkIsOwner(ws_id, token) && !jwtUtils.checkIsModerator(ws_id, token)){
+        if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
             throw new NotAllowedException("User can't modify workspace data");
         }
         else {
@@ -173,6 +174,45 @@ public class WorkspaceController {
                     .headers(headers)
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(new InputStreamResource(wsServ.donwloadJSON(ws_id, user_id)));
+        }
+    }
+
+    @PatchMapping("/updateDescription")
+    @ResponseBody
+    public ResponseEntity<WorkspaceDTO> updateDescription(@RequestParam Long ws_id,
+                                                          @RequestBody UpdateDescriptionRequest data,
+                                                          @RequestHeader("Authorization")String token) throws NotAllowedException, NotFoundException {
+        if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
+            throw new NotAllowedException("User can't modify workspace description");
+        }
+        else{
+            return new ResponseEntity<>(wsServ.updateWorkspaceDescription(ws_id, data.getDescription()), HttpStatus.OK);
+                    }
+    }
+
+    @PatchMapping("/updateName")
+    @ResponseBody
+    public ResponseEntity<WorkspaceDTO> updateWorkspaceName(@RequestParam Long ws_id,
+                                                            @RequestParam String name,
+                                                            @RequestHeader("Authorization")String token) throws NotAllowedException, NotFoundException {
+        if(!jwtUtils.checkIsOwner(ws_id,token)){
+            throw  new NotAllowedException("User can't modify workspace's name");
+        }
+        else{
+            return new ResponseEntity<>(wsServ.updateWorkspaceName(ws_id, name), HttpStatus.OK);
+        }
+    }
+
+    @PatchMapping("/updateAvatar")
+    @ResponseBody
+    public ResponseEntity<WorkspaceDTO> updateWorkspaceAvatar(@RequestParam Long ws_id,
+                                                              @RequestParam String url,
+                                                              @RequestHeader("Authorization")String token) throws NotAllowedException, NotFoundException {
+        if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
+            throw  new NotAllowedException("User can't modifiy workspace's avatar");
+        }
+        else{
+            return new ResponseEntity<>(wsServ.updateWorkspaceAvatar(ws_id,url), HttpStatus.OK);
         }
     }
 

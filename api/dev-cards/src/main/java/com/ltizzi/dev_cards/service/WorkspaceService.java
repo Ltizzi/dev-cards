@@ -49,6 +49,14 @@ public interface WorkspaceService {
     public InputStream donwloadJSON(Long ws_id, Long user_id) throws NotFoundException, NotAllowedException, JsonProcessingException;
 
     public String getWorkspaceName(Long ws_id) throws NotFoundException;
+
+    public WorkspaceDTO updateWorkspaceDescription(Long ws_id, String description) throws NotFoundException, NotAllowedException;
+
+    public WorkspaceDTO updateWorkspaceAvatar(Long ws_id, String img_url) throws NotFoundException, NotAllowedException;
+
+
+    public WorkspaceDTO updateWorkspaceName(Long ws_id, String name) throws NotFoundException, NotAllowedException;
+
 }
 
 

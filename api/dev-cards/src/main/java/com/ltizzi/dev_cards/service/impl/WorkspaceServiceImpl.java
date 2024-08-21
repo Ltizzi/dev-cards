@@ -3,6 +3,7 @@ package com.ltizzi.dev_cards.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.InvalidWorkspaceException;
 import com.ltizzi.dev_cards.exception.NotAllowedException;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -82,10 +84,18 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return wsMapper.toWorkspaceDTO(wsRepo.findById(id).orElseThrow(()-> new NotFoundException("Workspace not Found")));
     }
 
+    public WorkspaceEntity getWorkspaceById(Long id) throws  NotFoundException{
+        return wsRepo.findById(id).orElseThrow(()->new NotFoundException("Workspace not found!"));
+    }
+
+    public UserEntity getUserById(Long id)throws  NotFoundException{
+        return userRepo.findById(id).orElseThrow(()->new NotFoundException("Owner not found!"));
+    }
+
     @Override
     public WorkspaceDtoWithJwtResponse saveWorkspace(WorkspaceDTO workspace, String oldToken) throws InvalidWorkspaceException, NotFoundException {
         WorkspaceEntity ws = wsMapper.toWorkspaceEntity(workspace);
-        UserEntity user = userRepo.findById(ws.getOwner().getUser_id()).orElseThrow(()->new NotFoundException("Owner not found!"));
+        UserEntity user = getUserById(ws.getOwner().getUser_id());//userRepo.findById(ws.getOwner().getUser_id()).orElseThrow(()->new NotFoundException("Owner not found!"));
         List<UserEntity> users = new ArrayList<>();
         List<WorkspaceEntity>  user_ws = user.getWorkspaces();
         users.add(user);
@@ -114,8 +124,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public List<UserLiteDTO> addUserToWorkspace(Long workspace_id, Long user_id) throws NotFoundException {
-        WorkspaceEntity ws = wsRepo.findById(workspace_id).orElseThrow(()->new NotFoundException("Workspace not found!"));
-        UserEntity user = userRepo.findById(user_id).orElseThrow(()->new NotFoundException("User not found!"));
+        WorkspaceEntity ws = getWorkspaceById(workspace_id);//wsRepo.findById(workspace_id).orElseThrow(()->new NotFoundException("Workspace not found!"));
+        UserEntity user = getUserById(user_id);//userRepo.findById(user_id).orElseThrow(()->new NotFoundException("User not found!"));
         ws.addUser(user);
         ws = wsRepo.save(ws);
         return wsMapper.toWorkspaceDTO(ws).getUsers();
@@ -124,7 +134,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public List<UserLiteDTO> addUserByEmail(Long workspace_id, String email) throws NotFoundException, InvalidUserException {
-        WorkspaceEntity ws = wsRepo.findById(workspace_id).orElseThrow(()-> new NotFoundException("Workspace not found!"));
+        WorkspaceEntity ws = getWorkspaceById(workspace_id); //wsRepo.findById(workspace_id).orElseThrow(()-> new NotFoundException("Workspace not found!"));
         UserEntity user = userRepo.findByEmail(email).get(0);
         if(user == null){
             throw  new NotFoundException("User not found!");
@@ -147,8 +157,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public List<UserLiteDTO> removeUserFromWorkspace(Long workspace_id, Long user_id) throws NotFoundException {
-        WorkspaceEntity ws = wsRepo.findById(workspace_id).orElseThrow(()-> new NotFoundException("Workspace not found!"));
-        UserEntity user = userRepo.findById(user_id).orElseThrow(()->new NotFoundException("User not found!"));
+        WorkspaceEntity ws = getWorkspaceById(workspace_id);//wsRepo.findById(workspace_id).orElseThrow(()-> new NotFoundException("Workspace not found!"));
+        UserEntity user = getUserById(user_id);//userRepo.findById(user_id).orElseThrow(()->new NotFoundException("User not found!"));
         ws.removeUser(user);;
         ws = wsRepo.save(ws);
         return wsMapper.toWorkspaceDTO(ws).getUsers();
@@ -159,8 +169,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public List<UserLiteDTO> addUserAsMod(Long workspace_id, Long user_id) throws NotFoundException, InvalidUserException {
-        WorkspaceEntity ws = wsRepo.findById(workspace_id).orElseThrow(()->new NotFoundException("Workspace not found!"));
-        UserEntity user = userRepo.findById(user_id).orElseThrow(()-> new NotFoundException("User not found!"));
+        WorkspaceEntity ws = getWorkspaceById(workspace_id);//wsRepo.findById(workspace_id).orElseThrow(()->new NotFoundException("Workspace not found!"));
+        UserEntity user = getUserById(user_id);//userRepo.findById(user_id).orElseThrow(()-> new NotFoundException("User not found!"));
         if (ws.getUsers().contains(user)){
             ws.addUserAsMod(user);
             ws = wsRepo.save(ws);
@@ -171,8 +181,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public List<UserLiteDTO> removeUserAsMod(Long workspace_id, Long user_id) throws NotFoundException, InvalidUserException {
-        WorkspaceEntity ws = wsRepo.findById(workspace_id).orElseThrow(()->new NotFoundException("Workspace not found!"));
-        UserEntity user = userRepo.findById(user_id).orElseThrow(()-> new NotFoundException("User not found!"));
+        WorkspaceEntity ws = getWorkspaceById(workspace_id);//wsRepo.findById(workspace_id).orElseThrow(()->new NotFoundException("Workspace not found!"));
+        UserEntity user = getUserById(user_id);//userRepo.findById(user_id).orElseThrow(()-> new NotFoundException("User not found!"));
         if(ws.getModerators().contains(user)){
             ws.removeUserAsMod(user);
             ws = wsRepo.save(ws);
@@ -199,8 +209,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public InputStream donwloadJSON(Long ws_id, Long user_id) throws NotFoundException, NotAllowedException, JsonProcessingException {
-        WorkspaceEntity ws = wsRepo.findById(ws_id).orElseThrow(()-> new NotFoundException("Workspace not found"));
-        UserEntity user = userRepo.findById(user_id).orElseThrow(()-> new NotFoundException("User not found!"));
+        WorkspaceEntity ws = getWorkspaceById(ws_id);//wsRepo.findById(ws_id).orElseThrow(()-> new NotFoundException("Workspace not found"));
+        UserEntity user = getUserById(user_id);//userRepo.findById(user_id).orElseThrow(()-> new NotFoundException("User not found!"));
         Optional<UserEntity> filtrado= ws.getUsers().stream().filter(u-> u.getUser_id().equals(user_id)).findFirst();
         if(!filtrado.isPresent()){
             throw  new NotAllowedException("Usuario no permitido");
@@ -213,11 +223,35 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 .tasks(tasks)
                 .user(userLite)
                 .build();
+
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        objectMapper.setDateFormat(new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss.SSSZ"));
         String jsonString = objectMapper.writeValueAsString(json);
         return new ByteArrayInputStream(jsonString.getBytes());
     }
 
     public String getWorkspaceName(Long ws_id) throws NotFoundException {
-        return wsRepo.findById(ws_id).orElseThrow(()->new NotFoundException("Not found!")).getProject_name();
+        return getWorkspaceById(ws_id).getProject_name();//wsRepo.findById(ws_id).orElseThrow(()->new NotFoundException("Not found!")).getProject_name();
+    }
+
+    @Override
+    public WorkspaceDTO updateWorkspaceDescription(Long ws_id, String description) throws NotFoundException, NotAllowedException {
+        WorkspaceEntity ws = getWorkspaceById(ws_id);
+        ws.setDescription(description);
+        return wsMapper.toWorkspaceDTO(wsRepo.save(ws));
+    }
+
+    @Override
+    public WorkspaceDTO updateWorkspaceAvatar(Long ws_id, String img_url) throws NotFoundException, NotAllowedException {
+        WorkspaceEntity ws = getWorkspaceById(ws_id);
+        ws.setProject_avatar(img_url);
+        return wsMapper.toWorkspaceDTO(wsRepo.save(ws));
+    }
+
+    @Override
+    public WorkspaceDTO updateWorkspaceName(Long ws_id, String name) throws NotFoundException, NotAllowedException {
+        WorkspaceEntity ws = getWorkspaceById(ws_id);
+        ws.setProject_name(name);
+        return wsMapper.toWorkspaceDTO(wsRepo.save(ws));
     }
 }

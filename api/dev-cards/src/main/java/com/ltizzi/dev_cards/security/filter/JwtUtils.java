@@ -167,6 +167,10 @@ public class JwtUtils {
                 .toList().size()>0;
     }
 
+    public boolean checkIsOwnerOrModerator(Long ws_id, String token){
+        return checkIsOwner(ws_id,token) || checkIsModerator(ws_id,token);
+    }
+
     public List<UserWorkspacesRoles> getUserRoles(UserEntity user){
         List<UserWorkspacesRoles> roles = new ArrayList<>();
         for(WorkspaceEntity ws: user.getWorkspaces()){

@@ -14,6 +14,8 @@ export const useProjectStore = defineStore("projects", {
     local: {} as Workspace,
     member: [] as Array<Workspace>,
     current: {} as Workspace,
+    currentName: "" as string,
+    currentAvatar: "" as string,
     justCreated: false,
     justUpdated: false,
   }),
@@ -38,6 +40,8 @@ export const useProjectStore = defineStore("projects", {
     },
     setCurrent(project: Workspace) {
       this.current = project;
+      this.currentName = project.project_name;
+      this.currentAvatar = project.avatar;
     },
     async fetchProjectById(id: number) {
       const response = (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {
@@ -45,6 +49,8 @@ export const useProjectStore = defineStore("projects", {
       })) as Workspace;
       if (response.workspace_id == id) {
         this.current = response;
+        this.currentName = response.project_name;
+        this.currentAvatar = response.avatar;
         if (!this.justUpdated) {
           this.justUpdated = true;
           setTimeout(() => {
@@ -71,6 +77,8 @@ export const useProjectStore = defineStore("projects", {
     },
     clean() {
       this.current = {} as Workspace;
+      this.currentName = "";
+      this.currentAvatar = "";
     },
   },
 });

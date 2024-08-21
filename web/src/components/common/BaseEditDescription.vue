@@ -110,12 +110,16 @@
     if (props.type == "task") {
       endpoint = EndpointType.TASK_UPDATE_DESCRIPTION;
       params = {
-        task_id: props.id,
+        params: {
+          task_id: props.id,
+        },
       };
     } else {
       endpoint = EndpointType.WORKSPACE_UPDATE_DESCRIPTION;
       params = {
-        ws_id: props.id,
+        params: {
+          ws_id: props.id,
+        },
       };
     }
     const response = (await apiCall.patch(endpoint, newDes, params)) as any;
