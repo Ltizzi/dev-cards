@@ -136,10 +136,17 @@
             </div>
           </div>
           <div class="flex flex-col divide-y-2 divide-secondary">
-            <TaskDescription
+            <!-- <TaskDescription
               :description="card.description"
               :task_id="card.task_id"
               :isDark="isDark"
+              @update="updateTask"
+            /> -->
+            <BaseEditDescription
+              :description="card.description"
+              :id="card.task_id"
+              :isDark="isDark"
+              :type="'task'"
               @update="updateTask"
             />
             <div
@@ -220,7 +227,8 @@
   import TaskCommonSelectable from "../components/task/TaskCommonSelectable.vue";
   import TaskTitle from "../components/task/TaskTitle.vue";
   import TaskSubtitle from "../components/task/TaskSubtitle.vue";
-  import TaskDescription from "../components/task/TaskDescription.vue";
+  import BaseEditDescription from "../components/common/BaseEditDescription.vue";
+  //import TaskDescription from "../components/task/TaskDescription.vue";
   import TaskIssue from "../components/task/TaskIssue.vue";
   import AddIssueBtn from "../components/ui/AddIssueBtn.vue";
   import { useProjectStore } from "../store/project.store";
