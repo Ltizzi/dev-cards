@@ -1,5 +1,5 @@
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { Role, UserWorkspaceRoles } from "./types";
+import { Role, TaskLite, User, UserWorkspaceRoles } from "./types";
 
 interface CustomJwtPayload extends JwtPayload {
   scope: Array<string> | string;
@@ -85,6 +85,13 @@ function checkIsDesignated(workspace_id: number, task_id: number) {
   );
 }
 
+function checkIfUserisTaskOwner(task_id: number) {
+  const user = JSON.parse(localStorage.getItem("user") as string) as User;
+  return (
+    user.created_tasks.filter((t: TaskLite) => t.task_id == task_id).length > 0
+  );
+}
+
 export {
   saveToken,
   isTokenExpired,
@@ -95,4 +102,5 @@ export {
   checkIsModOrOwner,
   checkIsOwner,
   checkIsModerator,
+  checkIfUserisTaskOwner,
 };

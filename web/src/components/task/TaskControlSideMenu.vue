@@ -31,7 +31,7 @@
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Add tag"
         @click="modalSwitch('addTag', true)"
-        v-if="isModOrOwner || isDesignatedUser"
+        v-if="isModOrOwner || isDesignatedUser || canModify"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'circle-plus']" />
         <AddTagModal
@@ -43,7 +43,7 @@
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Add dependency"
         @click="modalSwitch('addDependency', true)"
-        v-if="isModOrOwner || isDesignatedUser"
+        v-if="isModOrOwner || isDesignatedUser || canModify"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'folder-tree']" />
         <AddDependencyModal
@@ -66,7 +66,7 @@
         class="tooltip tooltip-left hover:bg-error hover:rounded-lg transition-all"
         data-tip="Delete Task"
         @click="modalSwitch('deleteTask', true)"
-        v-if="isModOrOwner"
+        v-if="isModOrOwner || canModify"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'trash']" />
         <DeleteTaskModal
@@ -78,14 +78,18 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { onBeforeMount, reactive, ref } from "vue";
+  import { onBeforeMount, reactive, ref, watch } from "vue";
   import AddUserModal from "../ui/AddUserModal.vue";
   import RemoveUserModal from "../ui/RemoveUserModal.vue";
   import AddTagModal from "../ui/AddTagModal.vue";
   import AddDependencyModal from "../ui/AddDependencyModal.vue";
   import AddTaskUpdateModal from "../ui/AddTaskUpdateModal.vue";
   import DeleteTaskModal from "../ui/DeleteTaskModal.vue";
-  import { checkIsDesignated, checkIsModOrOwner } from "../../utils/auth.utils";
+  import {
+    checkIfUserisTaskOwner,
+    checkIsDesignated,
+    checkIsModOrOwner,
+  } from "../../utils/auth.utils";
   import { useProjectStore } from "../../store/project.store";
   import { useTaskStore } from "../../store/task.store";
 
@@ -102,6 +106,7 @@
 
   const isModOrOwner = ref<boolean>();
   const isDesignatedUser = ref<boolean>();
+  const canModify = ref<boolean>();
 
   const projectStore = useProjectStore();
   const taskStore = useTaskStore();
@@ -162,12 +167,33 @@
     }
   }
 
-  onBeforeMount(() => {
+  watch(
+    () => props.taskId,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        prepareAuthorization();
+      }
+    }
+  );
+
+  function prepareAuthorization() {
     const projectId = props.projectId
       ? props.projectId
       : projectStore.current.workspace_id;
     const taskId = props.taskId ? props.taskId : taskStore.currentTask.task_id;
     isModOrOwner.value = checkIsModOrOwner(projectId);
     isDesignatedUser.value = checkIsDesignated(projectId, taskId as number);
+    canModify.value = checkIfUserisTaskOwner(taskId as number);
+  }
+
+  onBeforeMount(() => {
+    // const projectId = props.projectId
+    //   ? props.projectId
+    //   : projectStore.current.workspace_id;
+    // const taskId = props.taskId ? props.taskId : taskStore.currentTask.task_id;
+    // isModOrOwner.value = checkIsModOrOwner(projectId);
+    // isDesignatedUser.value = checkIsDesignated(projectId, taskId as number);
+    // canModify.value = checkIfUserisTaskOwner(taskId as number);
+    prepareAuthorization();
   });
 </script>

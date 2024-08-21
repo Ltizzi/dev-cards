@@ -3,7 +3,7 @@
     <div
       class="flex flex-row relative w-full justify-center"
       v-if="!state.showEditable"
-      @mouseover="hovered = true"
+      @mouseover="props.canModify ? (hovered = true) : (hovered = false)"
       @mouseleave="hovered = false"
     >
       <h1 class="text-3xl py-2 font-bold" ref="card_title">
@@ -53,6 +53,7 @@
     title: string;
     task_id: number;
     isDark: boolean;
+    canModify: boolean;
   }>();
   const emit = defineEmits(["update"]);
 
@@ -90,11 +91,13 @@
   };
 
   function showEditable() {
-    state.showEditable = true;
-    state.recentChange = true;
-    setTimeout(() => {
-      state.recentChange = false;
-    }, 50);
+    if (props.canModify) {
+      state.showEditable = true;
+      state.recentChange = true;
+      setTimeout(() => {
+        state.recentChange = false;
+      }, 50);
+    }
   }
 
   async function updateTitle() {

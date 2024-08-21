@@ -2,7 +2,7 @@
   <div>
     <div
       class="flex flex-row gap-5 my-5"
-      @mouseover="hovered = true"
+      @mouseover="props.canModify ? (hovered = true) : (hovered = false)"
       @mouseleave="hovered = false"
     >
       <p class="text-xl underline font-semibold pb-2">Description:</p>
@@ -20,7 +20,7 @@
     <div
       class="flex my-5 mx-2 flex-col text-start"
       v-if="!state.showEditable"
-      @mouseover="hovered = true"
+      @mouseover="props.canModify ? (hovered = true) : (hovered = false)"
       @mouseleave="hovered = false"
     >
       <p class="indent-5 text-lg whitespace-pre-line">
@@ -58,6 +58,7 @@
     id: number;
     isDark: boolean;
     type: string;
+    canModify: boolean;
   }>();
 
   const emit = defineEmits(["update"]);
@@ -96,11 +97,13 @@
   };
 
   function showEditable() {
-    state.showEditable = true;
-    state.recentChange = true;
-    setTimeout(() => {
-      state.recentChange = false;
-    }, 50);
+    if (props.canModify) {
+      state.showEditable = true;
+      state.recentChange = true;
+      setTimeout(() => {
+        state.recentChange = false;
+      }, 50);
+    }
   }
 
   async function updateDescription() {

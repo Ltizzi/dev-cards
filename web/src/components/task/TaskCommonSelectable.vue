@@ -1,7 +1,7 @@
 <template lang="">
   <div
     :class="[
-      'hover:cursor-pointer ',
+      props.canModify ? 'hover:cursor-pointer ' : '',
       props.type == 'TaskType' ? 'min-w-28' : 'border-r-2  border-secondary',
     ]"
   >
@@ -61,6 +61,7 @@
     type: string;
     selected: Status | Effort | TaskType;
     isDark: boolean;
+    canModify: boolean;
   }>();
 
   const emit = defineEmits(["updateStatus", "updateEffort", "updateTaskType"]);
@@ -73,8 +74,10 @@
   const selectedOption = ref<Status | Effort | TaskType>();
 
   function changeElement() {
-    if (state.default) {
-      state.default = false;
+    if (props.canModify) {
+      if (state.default) {
+        state.default = false;
+      }
     }
   }
 

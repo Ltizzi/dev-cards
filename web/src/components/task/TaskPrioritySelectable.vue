@@ -1,5 +1,10 @@
 <template>
-  <div class="hover:cursor-pointer border-r-2 min-w-32 border-secondary">
+  <div
+    :class="[
+      ' border-r-2 min-w-32 border-secondary',
+      props.canModify ? 'hover:cursor-pointer' : '',
+    ]"
+  >
     <h3
       :class="[
         'font-bold  px-2 hover:animate-pulse transition-all ease-in-out duration-200',
@@ -82,7 +87,11 @@
   import { Priority } from "../../utils/types";
   import { reactive, ref, watch } from "vue";
 
-  const props = defineProps<{ priority: Priority; isDark: boolean }>();
+  const props = defineProps<{
+    priority: Priority;
+    isDark: boolean;
+    canModify: boolean;
+  }>();
   const emit = defineEmits(["updatePriority"]);
 
   const state = reactive({
@@ -92,8 +101,10 @@
   const selectedPriority = ref<Priority>();
 
   function changeElement() {
-    if (state.default) {
-      state.default = false;
+    if (props.canModify) {
+      if (state.default) {
+        state.default = false;
+      }
     }
   }
 

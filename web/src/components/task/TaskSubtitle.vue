@@ -3,7 +3,7 @@
     <div
       class="flex flex-row justify-start gap-5 w-full"
       v-if="!state.showEditable"
-      @mouseover="hovered = true"
+      @mouseover="props.canModify ? (hovered = true) : (hovered = false)"
       @mouseleave="hovered = false"
     >
       <h2 class="text-2xl text-start">{{ props.subtitle }}</h2>
@@ -50,6 +50,7 @@
     subtitle: string;
     task_id: number;
     isDark: boolean;
+    canModify: boolean;
   }>();
   const emit = defineEmits(["update"]);
 
@@ -87,11 +88,13 @@
   };
 
   function showEditable() {
-    state.showEditable = true;
-    state.recentChange = true;
-    setTimeout(() => {
-      state.recentChange = false;
-    }, 50);
+    if (props.canModify) {
+      state.showEditable = true;
+      state.recentChange = true;
+      setTimeout(() => {
+        state.recentChange = false;
+      }, 50);
+    }
   }
 
   async function updateSubtitle() {

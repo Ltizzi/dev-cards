@@ -259,4 +259,5 @@ export interface APIResponse {
 export interface MenuOptionUI {
   title: string;
   path: string;
+  needOwner: boolean;
 }

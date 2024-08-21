@@ -1,22 +1,24 @@
 <template lang="">
   <ul
-    class="menu rounded-box w-fit mr-10 bg-gradient-to-br from-secondary-content to-transparent"
+    class="menu rounded-box w-fit mr-10 bg-gradient-to-br from-base-200 to-transparent"
   >
     <li>
       <h2 class="menu-title text-xl">Project Settings</h2>
       <ul>
-        <li
-          :class="[
-            state.selected == index
-              ? 'bg-primary bg-opacity-70 text-white rounded-lg '
-              : '',
-            'py-2 px-2 w-fit',
-          ]"
-          v-for="(option, index) in options"
-          @click="changeMenu(index)"
-        >
-          {{ option.title }}
-        </li>
+        <template v-for="(option, index) in options">
+          <li
+            :class="[
+              state.selected == index
+                ? 'bg-primary bg-opacity-70 text-white rounded-lg '
+                : '',
+              'py-2 px-2 w-fit',
+            ]"
+            @click="changeMenu(index)"
+            v-if="checkVisible(option)"
+          >
+            {{ option.title }}
+          </li>
+        </template>
       </ul>
     </li>
   </ul>
@@ -25,16 +27,19 @@
   import { reactive } from "vue";
   import { MenuOptionUI } from "../../utils/types";
 
+  const props = defineProps<{ isOwner: boolean }>();
   const emit = defineEmits(["menuOption"]);
 
   const options: MenuOptionUI[] = reactive([
     {
       title: "Basic Settings",
       path: "basic",
+      needOwner: false,
     },
     {
       title: "Moderators",
       path: "mods",
+      needOwner: true,
     },
   ]);
 
@@ -46,5 +51,9 @@
     console.log("INDEX: ", num);
     state.selected = num;
     emit("menuOption", options[num]);
+  }
+
+  function checkVisible(option: MenuOptionUI) {
+    return option.needOwner ? props.isOwner : true;
   }
 </script>

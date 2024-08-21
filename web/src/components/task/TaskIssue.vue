@@ -9,7 +9,7 @@
   >
     <div
       class="form-control w-4/5 flex flex-row gap-5"
-      @mouseover="hovered = true"
+      @mouseover="props.canModify ? (hovered = true) : (hovered = false)"
       @mouseleave="hovered = false"
       v-if="!state.showEditable"
     >
@@ -59,6 +59,7 @@
       <input
         type="checkbox"
         :checked="props.issue.isCompleted"
+        :disabled="!canModify"
         class="checkbox checkbox-secondary"
         v-model="checked"
       />
@@ -79,7 +80,11 @@
   import { EndpointType } from "../../utils/endpoints";
   import DeleteIssueBtn from "../ui/DeleteIssueBtn.vue";
 
-  const props = defineProps<{ issue: ProgressItem; task_id: number }>();
+  const props = defineProps<{
+    issue: ProgressItem;
+    task_id: number;
+    canModify: boolean;
+  }>();
   const emit = defineEmits(["update"]);
 
   const sentence = ref<string>();
@@ -119,11 +124,13 @@
   };
 
   function showEditable() {
-    state.showEditable = true;
-    state.recentChange = true;
-    setTimeout(() => {
-      state.recentChange = false;
-    }, 50);
+    if (props.canModify) {
+      state.showEditable = true;
+      state.recentChange = true;
+      setTimeout(() => {
+        state.recentChange = false;
+      }, 50);
+    }
   }
 
   async function updateIssue() {

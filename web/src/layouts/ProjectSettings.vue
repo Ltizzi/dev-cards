@@ -2,9 +2,13 @@
   <div class="mt-5">
     <h1 class="text-4xl text-center">Project Settings</h1>
     <div
-      class="flex flex-row border-2 border-secondary bg-gradient-to-br from-secondary-content to-transparent min-h-96 my-10"
+      class="flex flex-row border-2 border-secondary bg-gradient-to-br from-base-200 to-transparent min-h-96 my-10"
     >
-      <SettingsLateralMenu class="w-1/6" @menuOption="changeMenu" />
+      <SettingsLateralMenu
+        class="w-1/6"
+        @menuOption="changeMenu"
+        :isOwner="isOwner"
+      />
       <div class="w-5/6 h-fit">
         <ProjectBasicControl
           :project="project"
@@ -18,7 +22,7 @@
         />
       </div>
     </div>
-    <div class="flex flex-row justify-between gap-5">
+    <div class="flex flex-row justify-between gap-5" v-if="isOwner">
       <button class="btn btn-primary text-white" @click="downloadJson">
         Download JSON
       </button>

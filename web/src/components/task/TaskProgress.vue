@@ -1,6 +1,9 @@
 <template lang="">
   <div
-    class="w-full px-2 flex flex-col justify-center my-auto border-secondary hover:cursor-pointer max-h-5"
+    :class="[
+      'w-full px-2 flex flex-col justify-center my-auto border-secondary  max-h-5',
+      props.canModify ? 'hover:cursor-pointer' : '',
+    ]"
     @click="changeElement()"
     @mouseup="updateProgress()"
   >
@@ -43,7 +46,7 @@
   import { reactive, ref } from "vue";
   import { Progress, ProgressEnumArray } from "../../utils/types";
 
-  const props = defineProps<{ progress_value: number }>();
+  const props = defineProps<{ progress_value: number; canModify: boolean }>();
   const emit = defineEmits(["update"]);
 
   const progress_selected = ref();
@@ -59,7 +62,9 @@
   }
 
   function changeElement() {
-    if (state.default) state.default = false;
+    if (props.canModify) {
+      if (state.default) state.default = false;
+    }
   }
 
   function updateProgress() {

@@ -51,6 +51,7 @@
       :id="project.workspace_id"
       :isDark="isDark"
       :type="workspace"
+      :canModify="true"
       @update="updateProject"
     />
   </div>

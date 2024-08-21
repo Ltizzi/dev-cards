@@ -29,6 +29,7 @@
               :title="card.title"
               :task_id="card.task_id"
               :isDark="isDark"
+              :canModify="canModify"
               @update="updateTask"
             ></TaskTitle>
           </div>
@@ -47,12 +48,14 @@
               <TaskPrioritySelectable
                 :priority="card.priority"
                 :isDark="isDark"
+                :canModify="canModify"
                 @update-priority="updatePriority"
               ></TaskPrioritySelectable>
 
               <TaskCommonSelectable
                 :type="'Status'"
                 :selected="card.status"
+                :canModify="canModify"
                 :isDark="isDark"
                 @update-status="updateTaskOptions"
               ></TaskCommonSelectable>
@@ -60,6 +63,7 @@
               <TaskCommonSelectable
                 :type="'Effort'"
                 :selected="card.effort"
+                :canModify="canModify"
                 :isDark="isDark"
                 @update-effort="updateTaskOptions"
               ></TaskCommonSelectable>
@@ -67,6 +71,7 @@
               <TaskCommonSelectable
                 :type="'TaskType'"
                 :selected="card.task_type"
+                :canModify="canModify"
                 :isDark="isDark"
                 @update-task-type="updateTaskOptions"
               ></TaskCommonSelectable>
@@ -74,6 +79,7 @@
 
             <TaskProgress
               :progress_value="progress_value"
+              :canModify="canModify"
               :isDark="isDark"
               @update="updateProgress"
             ></TaskProgress>
@@ -87,6 +93,7 @@
           <TaskSubtitle
             :subtitle="card.subtitle"
             :task_id="card.task_id"
+            :canModify="canModify"
             :isDark="isDark"
             @update="updateTask"
           />
@@ -146,12 +153,15 @@
               :description="card.description"
               :id="card.task_id"
               :isDark="isDark"
+              :canModify="canModify"
               :type="'task'"
               @update="updateTask"
             />
             <div
               class="flex my-5 mx-2 flex-col text-start"
-              @mouseover="showAddIssueBtn = true"
+              @mouseover="
+                canModify ? (showAddIssueBtn = true) : (showAddIssueBtn = false)
+              "
               @mouseleave="showAddIssueBtn = false"
             >
               <div class="flex flex-row justify-start gap-5 mt-3">
@@ -170,6 +180,7 @@
                 <TaskIssue
                   :task_id="card.task_id"
                   :issue="issue"
+                  :canModify="canModify"
                   @update="updateTask"
                 />
               </div>
@@ -232,6 +243,11 @@
   import TaskIssue from "../components/task/TaskIssue.vue";
   import AddIssueBtn from "../components/ui/AddIssueBtn.vue";
   import { useProjectStore } from "../store/project.store";
+  import {
+    checkIfUserisTaskOwner,
+    checkIsDesignated,
+    checkIsModOrOwner,
+  } from "../utils/auth.utils";
 
   // #region: variables
   const card = ref<Task>();
@@ -251,6 +267,8 @@
   const showAddIssueBtn = ref<boolean>();
 
   const isDark = ref<boolean>();
+
+  const canModify = ref<boolean>();
 
   // #MARK:asdas
 
@@ -381,6 +399,17 @@
     priority_color.value = taskUtils.calcPriorityColor(data.priority);
   }
 
+  function checkUserCanModifyTask() {
+    return (
+      checkIsModOrOwner(projectStore.current.workspace_id) ||
+      checkIsDesignated(
+        projectStore.current.workspace_id,
+        card.value?.task_id as number
+      ) ||
+      checkIfUserisTaskOwner(card.value?.task_id as number)
+    );
+  }
+
   watch(
     () => route.query.id,
     async (newValue, oldValue) => {
@@ -390,6 +419,7 @@
         if (task) {
           card.value = task;
           taskId.value = task.task_id;
+          canModify.value = checkUserCanModifyTask();
           taskStore.setCurrentTask(task);
           prepareTaskData(task);
         }
@@ -416,6 +446,7 @@
       if (data) {
         card.value = data;
         taskId.value = data.task_id;
+        canModify.value = checkUserCanModifyTask();
         taskStore.setCurrentTask(data);
         prepareTaskData(data);
       }

@@ -131,7 +131,13 @@ public class JwtUtils {
         //UserEntity user = getUserByToken(token);
         boolean canAccess = false;
         List<UserWorkspacesRoles> uwrs = getRoles(token);
+        String username = extractUsername(token);
         TaskEntity task = taskRepo.findById(task_id).orElseThrow(()->new NotFoundException("Task not found!"));
+        List<UserEntity> user = userRepo.findByUsername(username);
+        if(user.get(0)!=null && task.getOwner().getUser_id().equals(user.get(0).getUser_id())){
+            return true;
+        }
+
         for(UserWorkspacesRoles uwr: uwrs){
             for(Long id: uwr.getAssigned_tasks_ids()){
                 if(id.equals(task_id)){
