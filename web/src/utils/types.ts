@@ -255,3 +255,8 @@ export interface APIResponse {
   http_method: string;
   message: string;
 }
+
+export interface MenuOptionUI {
+  title: string;
+  path: string;
+}

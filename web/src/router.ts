@@ -14,7 +14,7 @@ import HomeLayout from "./layouts/HomeLayout.vue";
 import ScrumView from "./layouts/ScrumView.vue";
 import DesignatedView from "./layouts/DesignatedView.vue";
 import AllTasksView from "./layouts/AllTasksView.vue";
-import ProjectSettings from "./components/project/ProjectSettings.vue";
+import ProjectSettings from "./layouts/ProjectSettings.vue";
 import { checkIsModOrOwner } from "./utils/auth.utils";
 
 const router = createRouter({
