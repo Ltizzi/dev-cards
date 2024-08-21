@@ -2,8 +2,8 @@
   <ul
     class="menu rounded-box w-fit mr-10 bg-gradient-to-br from-base-200 to-transparent"
   >
+    <h2 class="menu-title">Project Settings</h2>
     <li>
-      <h2 class="menu-title text-xl">Project Settings</h2>
       <ul>
         <template v-for="(option, index) in options">
           <li

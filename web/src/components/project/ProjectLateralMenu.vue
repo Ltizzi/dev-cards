@@ -1,9 +1,9 @@
 <template lang="">
   <div class="w-52 bg-base-200 flex flex-col justify-between" v-if="isLoaded">
     <ul
-      class="menu bg-base-200 rounded-box before:ring-offset-purple-400 overflow-x-hidden mt-3"
+      class="menu menu-vertical bg-base-200 rounded-box before:ring-offset-purple-400 overflow-x-clip overflow-y-auto mt-3 h-auto"
     >
-      <li class="font-extrabold text-base text-center pb-3">
+      <li class="font-extrabold text-base text-center pb-3 sticky">
         {{ project.project_name }}
       </li>
       <li @click="goHome()">
@@ -49,28 +49,6 @@
             <span>All Tasks</span>
           </summary>
         </div>
-        <!-- <details close> -->
-
-        <!-- <ul class="before:ring-offset-purple-400">
-          <li
-            v-for="task in project.tasks"
-            :class="[
-              'rounded-xl w-full flex flex-row justify-start hover:bg-accent',
-              state.selected == task.task_id
-                ? 'bg-secondary text-secondary-content'
-                : '',
-            ]"
-            @click="goTask(task.task_id)"
-          >
-            <p class="text-base-content w-full">
-              <span
-                :class="['size-2 rounded-full', taskUtils.getColor(task.color)]"
-              ></span>
-              {{ shortName(task.title) }}
-            </p>
-          </li>
-        </ul> -->
-        <!-- </details> -->
       </li>
 
       <li class="flex">
@@ -160,7 +138,9 @@
         </details>
       </li>
     </ul>
-    <div class="flex flex-col justify-cemter gap-0.5">
+    <div
+      class="flex flex-col justify-cemter gap-0.5 min-h-28 max-h-28 fixed bottom-0 z-30"
+    >
       <NewTaskBtn
         :class="['mx-auto', isModOrOwner ? '' : 'mb-5']"
         :icon="true"

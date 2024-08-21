@@ -1,6 +1,6 @@
 <template lang="">
   <div class="mt-5">
-    <h1 class="text-4xl text-center">Project Settings</h1>
+    <h1 class="text-3xl text-center">Project Settings</h1>
     <div
       class="flex flex-row border-2 border-secondary bg-gradient-to-br from-base-200 to-transparent min-h-96 my-10"
     >
@@ -9,6 +9,8 @@
         @menuOption="changeMenu"
         :isOwner="isOwner"
       />
+      <div class="divider lg:divider-horizontal divider-secondary"></div>
+
       <div class="w-5/6 h-fit">
         <ProjectBasicControl
           :project="project"
