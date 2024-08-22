@@ -261,3 +261,8 @@ export interface MenuOptionUI {
   path: string;
   needOwner: boolean;
 }
+
+export interface TagPool {
+  workspace_id: number;
+  tags: string[];
+}

@@ -1,7 +1,7 @@
 <template lang="">
-  <div class="w-52 bg-base-200 flex flex-col justify-between" v-if="isLoaded">
+  <div class="w-56 bg-base-200 flex flex-col justify-between" v-if="isLoaded">
     <ul
-      class="menu menu-vertical bg-base-200 rounded-box before:ring-offset-purple-400 overflow-x-clip overflow-y-auto mt-3 h-auto"
+      class="menu bg-base-200 rounded-box before:ring-offset-purple-400 overflow-x-clip overflow-y-scroll mt-3 h-full"
     >
       <li class="font-extrabold text-base text-center pb-3 sticky">
         {{ project.project_name }}
@@ -139,7 +139,7 @@
       </li>
     </ul>
     <div
-      class="flex flex-col justify-cemter gap-0.5 min-h-28 max-h-28 fixed bottom-0 z-30"
+      class="flex flex-col justify-cemter gap-0.5 w-56 bg-gradient-to-br from-base-100 to-base-300 bottom-0 z-30"
     >
       <NewTaskBtn
         :class="['mx-auto', isModOrOwner ? '' : 'mb-5']"

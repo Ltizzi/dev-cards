@@ -1,7 +1,7 @@
 import { UserLite } from '../../utils/types';
 <template lang="">
-  <div class="flex flex-col justify-center gap-10">
-    <h1 class="text-start text-xl">Workspace's users</h1>
+  <div class="flex flex-col justify-center gap-10 py-10 px-10">
+    <h1 class="text-start text-2xl">Workspace's users</h1>
     <div class="flex flex-col gap-5">
       <ul class="flex flex-col gap-5">
         <li

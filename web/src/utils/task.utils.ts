@@ -1,4 +1,12 @@
-import { Color, Priority, Progress, Task, TaskLite, Workspace } from "./types";
+import {
+  Color,
+  Priority,
+  Progress,
+  TagPool,
+  Task,
+  TaskLite,
+  Workspace,
+} from "./types";
 
 function calcProgress(progress: Progress) {
   switch (progress) {
@@ -80,6 +88,55 @@ function getProjectUserDesignatedTasks(
   return project_designated_tasks;
 }
 
+function addTagToTagsPool(tag: string, ws_id: number) {
+  let tag_pools = [] as TagPool[];
+  let tags = [] as string[];
+  if (localStorage.getItem("tags")) {
+    tag_pools = JSON.parse(localStorage.getItem("tags") as string);
+    const tp = getTagPoolById(tag_pools, ws_id);
+    if (tp.length > 0) {
+      tp[0].tags.push(tag);
+      tags = tp[0].tags;
+      tag_pools = tag_pools.map((t: TagPool) => {
+        if (t.workspace_id === ws_id) {
+          t.tags = tags;
+        }
+        return t;
+      });
+    } else {
+      // tags.push(tag);
+      // const newTagPool: TagPool = {
+      //   workspace_id: ws_id,
+      //   tags: tags,
+      // };
+      // tag_pools.push(newTagPool);
+      tag_pools = addNewTagPool(tags, tag_pools, ws_id, tag);
+    }
+  } else {
+    tag_pools = addNewTagPool(tags, tag_pools, ws_id, tag);
+  }
+  localStorage.setItem("tags", JSON.stringify(tag_pools));
+}
+
+function getTagPoolById(tag_pools: TagPool[], id: number) {
+  return tag_pools.filter((tp: TagPool) => tp.workspace_id === id);
+}
+
+function addNewTagPool(
+  tags: string[],
+  pools: TagPool[],
+  ws_id: number,
+  tag: string
+) {
+  tags.push(tag);
+  const newTagPool: TagPool = {
+    workspace_id: ws_id,
+    tags: tags,
+  };
+  pools.push(newTagPool);
+  return pools;
+}
+
 export const taskUtils = {
   calcPriorityColor,
   calcProgress,
@@ -87,4 +144,5 @@ export const taskUtils = {
   getColor,
   searchTasks,
   getProjectUserDesignatedTasks,
+  addTagToTagsPool,
 };

@@ -11,13 +11,24 @@
         <h1 class="text-xl text-center">Select dependency:</h1>
       </div>
 
-      <ul class="flex flex-row pt-5 flex-wrap w-96 gap-5 mx-auto">
+      <input
+        type="text"
+        placeholder="Search task"
+        class="input input-bordered input-primary w-full max-w-xs mx-auto mb-2"
+        v-model="search_value"
+      />
+      <ul class="flex flex-row pt-5 flex-wrap gap-5 mx-auto">
         <li
-          v-for="task in tasks"
-          class="flex flex-row gap-2 min-w-44 max-w-44 hover:cursor-pointer transition-all hover:bg-slate-600 py-1 px-2 rounded-xl ease-in-out duration-300"
+          v-for="task in filtered_tasks"
+          class="flex flex-row gap-2 min-w-60 max-w-60 hover:cursor-pointer transition-all hover:bg-slate-600 py-1 px-2 rounded-xl ease-in-out duration-300 my-auto"
           @click="selectTask(task)"
         >
-          <span :class="['rounded-full p-2', taskUtils.getColor(task.color)]">
+          <span
+            :class="[
+              'rounded-full p-2 h-3 w-3 my-auto',
+              taskUtils.getColor(task.color),
+            ]"
+          >
           </span>
           {{ taskUtils.stringShortener(task.title) }}
         </li>
@@ -27,7 +38,7 @@
           Selected:
           <span
             :class="[
-              'rounded-full p-2',
+              'rounded-full p-2 h-3 w-3 my-auto',
               taskUtils.getColor(selectedTask.color),
             ]"
           ></span>
@@ -92,6 +103,8 @@
 
   const tasks = ref<Array<TaskLite>>();
 
+  const filtered_tasks = ref<TaskLite[]>();
+
   const projectStore = useProjectStore();
   const taskStore = useTaskStore();
   const apiCall = useApiCall();
@@ -105,6 +118,8 @@
   const success = ref<boolean>(false);
   const failed = ref<boolean>(false);
   const errorMessage = ref<string>();
+
+  const search_value = ref<string>();
 
   function closeModal() {
     //selectedTask.value = {} as TaskLite;
@@ -173,8 +188,22 @@
     }
   );
 
+  watch(
+    () => search_value.value,
+    (newValue, oldValue) => {
+      if (newValue && newValue != oldValue) {
+        filtered_tasks.value = [];
+        filtered_tasks.value = taskUtils.searchTasks(
+          newValue,
+          tasks.value as TaskLite[]
+        );
+      }
+    }
+  );
+
   onBeforeMount(() => {
     tasks.value = filterTask(projectStore.current.tasks);
+    filtered_tasks.value = tasks.value;
     //console.log(tasks.value);
   });
 </script>
