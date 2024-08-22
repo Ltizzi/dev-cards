@@ -197,7 +197,7 @@
               <div class="flex flex-col text-start gap-1">
                 <p>{{ update.description }}</p>
                 <div class="flex flex-row justify-end gap-5">
-                  <p>{{ update.created_at }}</p>
+                  <p>{{ dateUtils.generateDateTemplate(update.created_at) }}</p>
                   <p>by {{ update.creator_username }}</p>
                 </div>
               </div>
@@ -248,6 +248,7 @@
     checkIsDesignated,
     checkIsModOrOwner,
   } from "../utils/auth.utils";
+  import { dateUtils } from "../utils/date.utils";
 
   // #region: variables
   const card = ref<Task>();

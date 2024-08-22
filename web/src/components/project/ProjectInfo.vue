@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="flex flex-col justify-center max-w-fit mx-5 bg-base-100" v-if="isLoaded">
+  <div class="flex flex-col justify-center w-full mx-5 bg-base-100" v-if="isLoaded">
     <div class="flex flex-row justify-center gap-5 align-middle">
       <h1 class="text-4xl text-center my-5 font-bold">
         {{ project.project_name }}
@@ -30,7 +30,7 @@
           </div>
         </div>
         <p class="mx-10 text-lg">
-          {{ project.owner.username }}, at {{ project.created_at }}
+          {{ project.owner.username }}, at {{ dateUtils.generateDateTemplate(project.created_at) }}
         </p>
       </div>
     </div>
@@ -84,6 +84,7 @@
   import BaseEditDescription from "../common/BaseEditDescription.vue";
   import NewTaskBtn from "../task/NewTaskBtn.vue";
   import TaskList from "../task/TaskList.vue";
+  import { dateUtils } from '../../utils/date.utils';
 
   const projectStore = useProjectStore();
 

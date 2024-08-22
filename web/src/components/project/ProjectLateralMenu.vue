@@ -7,7 +7,7 @@
       class="menu bg-base-200 rounded-box before:ring-offset-purple-400 overflow-x-hidden overflow-y-auto mt-3 whitespace-nowrap flex-shrink-0 flex-nowrap h-5/6"
     >
       <li
-        class="font-extrabold text-base text-center py-3 sticky top-0 bg-gradient-to-br from-base-100 to-neutral z-50 whitespace-nowrap flex-shrink-0 w-52"
+        class="font-extrabold text-base text-center py-3 sticky top-0 bg-gradient-to-br from-base-100 to-neutral z-50 whitespace-nowrap flex-shrink-0 w-52 rounded-xl"
       >
         {{ project.project_name }}
       </li>
