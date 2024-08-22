@@ -1,9 +1,14 @@
 <template lang="">
-  <div class="w-56 bg-base-200 flex flex-col justify-between" v-if="isLoaded">
+  <div
+    class="w-56 bg-base-200 flex flex-col flex-nowrap h-screen"
+    v-if="isLoaded"
+  >
     <ul
-      class="menu bg-base-200 rounded-box before:ring-offset-purple-400 overflow-x-clip overflow-y-scroll mt-3 h-full"
+      class="menu bg-base-200 rounded-box before:ring-offset-purple-400 overflow-x-hidden overflow-y-auto mt-3 whitespace-nowrap flex-shrink-0 flex-nowrap h-5/6"
     >
-      <li class="font-extrabold text-base text-center pb-3 sticky">
+      <li
+        class="font-extrabold text-base text-center py-3 sticky top-0 bg-gradient-to-br from-base-100 to-neutral z-50 whitespace-nowrap flex-shrink-0 w-52"
+      >
         {{ project.project_name }}
       </li>
       <li @click="goHome()">
@@ -51,7 +56,7 @@
         </div>
       </li>
 
-      <li class="flex">
+      <li class="whitespace-nowrap flex-shrink-0 flex">
         <details close>
           <summary
             class="py-3 rounded-xl hover:cursor-pointer transition-all ease-in-out"
@@ -104,7 +109,7 @@
         <ul class="before:ring-offset-purple-400"></ul>
       </details> -->
       </li>
-      <li>
+      <li class="whitespace-nowrap flex-shrink-0">
         <details close>
           <summary>Users</summary>
           <ul class="before:ring-offset-purple-400">
@@ -139,7 +144,7 @@
       </li>
     </ul>
     <div
-      class="flex flex-col justify-cemter gap-0.5 w-56 bg-gradient-to-br from-base-100 to-base-300 bottom-0 z-30"
+      class="flex flex-col justify-center gap-0.5 w-56 bg-gradient-to-br from-base-100 to-base-300 bottom-0 z-30"
     >
       <NewTaskBtn
         :class="['mx-auto', isModOrOwner ? '' : 'mb-5']"

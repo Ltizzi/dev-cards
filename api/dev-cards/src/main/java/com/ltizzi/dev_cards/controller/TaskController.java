@@ -5,6 +5,7 @@ import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotAllowedException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
+import com.ltizzi.dev_cards.model.task.TaskEntity;
 import com.ltizzi.dev_cards.model.task.utils.ProgressItem;
 import com.ltizzi.dev_cards.model.task.utils.TaskUpdate;
 import com.ltizzi.dev_cards.model.task.utils.UpdateDescriptionRequest;
@@ -80,6 +81,7 @@ public class TaskController {
     @ResponseBody
     public ResponseEntity<APIResponse> deleteTask(@RequestParam Long id,
                                                   @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
+        TaskDTO task = taskServ.getTaskById(id);
         if(!jwtUtils.checkUserCanModifyTask(token, id)){
             throw  new NotAllowedException("Can't access task, user is not moderator or is not assigned to task");
         }
@@ -169,14 +171,15 @@ public class TaskController {
     @PostMapping("/add_update")
     @ResponseBody
     public ResponseEntity<List<TaskUpdate>> addTaskUpdate(@RequestParam Long task_id,
-                                                          @RequestBody TaskUpdate update,
-                                                          @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
-        if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
-            throw  new NotAllowedException("Can't access task, user is not moderator or is not assigned to task");
-        }
-        else {
+                                                          @RequestBody TaskUpdate update
+                                                          ) throws NotFoundException, NotAllowedException {
+        //@RequestHeader("Authorization")String token
+//        if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
+//            throw  new NotAllowedException("Can't access task, user is not moderator or is not assigned to task");
+//        }
+//        else {
             return new ResponseEntity<>(taskServ.addTaskUpdate(task_id, update), HttpStatus.OK);
-        }
+        //}
     }
 
     @PatchMapping("/remove_update")

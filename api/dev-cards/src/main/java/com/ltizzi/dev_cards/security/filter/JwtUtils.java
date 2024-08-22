@@ -155,6 +155,13 @@ public class JwtUtils {
         return canAccess;
   }
 
+  public boolean checkUserIsTaskOwner(String token, Long task_id) throws NotFoundException {
+        String username = extractUsername(token);
+        TaskEntity task = taskRepo.findById(task_id).orElseThrow(()->new NotFoundException("Task not found"));
+        List<UserEntity> users = userRepo.findByUsername(username);
+        return users.get(0) != null && users.get(0).getUser_id().equals(task.getOwner().getUser_id());
+  }
+
     public boolean checkIsModerator(Long ws_id, String token){
         return getRoles(token).stream()
                 .filter(uwr->uwr.getWorkspace_id().equals(ws_id) && uwr.getRole().equals(Role.ROLE_MODERATOR))
