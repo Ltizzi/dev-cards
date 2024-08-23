@@ -107,7 +107,7 @@
   const errorMessage = ref<string>();
 
   function closeModal() {
-    reset();
+    clearTags();
     emit("close", false);
   }
 
@@ -123,6 +123,7 @@
   }
 
   function clearTags() {
+    tag.value = "";
     tags.value = [];
   }
 
@@ -150,9 +151,6 @@
       taskStore.setCurrentTask(response);
       setTimeout(() => {
         success.value = false;
-
-        //reset();
-        //closeModal();
       }, 1000);
     } else {
       failed.value = true;
@@ -166,13 +164,16 @@
 
   function reset() {
     // tags.value = [];
+    tags.value = taskStore.currentTask.task_tags as Array<string>;
     tag.value = "";
   }
 
   watch(
     () => props.showModal,
     (newValue, oldValue) => {
-      if (newValue) reset();
+      if (newValue) {
+        reset();
+      } else clearTags();
     }
   );
 
