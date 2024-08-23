@@ -62,7 +62,7 @@
             class="py-3 rounded-xl hover:cursor-pointer transition-all ease-in-out"
             @click="goDesignated()"
             :class="[
-              'disabled hover:bg-accent ',
+              'hover:bg-accent ',
               state.selected === -2
                 ? 'border-l-2 text-white border-primary -ml-0.5 opacity-90 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent  font-semibold'
                 : '',
@@ -75,7 +75,7 @@
             <li
               v-for="task in user_designated_tasks"
               :class="[
-                'disabled rounded-xl w-full flex flex-row justify-start hover:bg-accent',
+                'rounded-xl w-full flex flex-row justify-start hover:bg-accent',
                 state.selected === task.task_id
                   ? 'opacity-70 text-white bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent  font-semibold'
                   : '',
