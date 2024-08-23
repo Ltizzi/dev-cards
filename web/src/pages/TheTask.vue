@@ -97,13 +97,44 @@
             :isDark="isDark"
             @update="updateTask"
           />
-          <div class="flex flex-row justify-start gap-2">
-            <div v-for="tag in card.task_tags" class="flex flex-row gap-1">
+
+          <div
+            :class="[
+              'flex flex-row justify-between gap-2 w-2/4 py-5 h-16 my-auto',
+              removeTagActive ? 'hover:cursor-not-allowed' : '',
+            ]"
+            @mouseover="mouseOverTag = true"
+            @mouseleave="mouseOverTag = false"
+            @keydown.esc="removeTagActive ? (removeTagActive = false) : ''"
+          >
+            <div class="flex flex-row justify-start w-full gap-1 my-auto">
               <p
-                class="rounded-lg bg-secondary text-white capitalize px-3 transition-all ease-in-out duration-300 hover:scale-110"
+                :class="[
+                  'rounded-lg bg-secondary text-white capitalize px-3 transition-all ease-in-out duration-300 hover:scale-110',
+                  removeTagActive ? 'hover:bg-error' : '',
+                ]"
+                v-for="tag in card.task_tags"
+                @click="removeTagActive ? removeTag(tag) : goToTag(tag)"
               >
                 {{ tag }}
               </p>
+            </div>
+            <div class="tooltip" data-tip="Click to remove tags!">
+              <button
+                :class="[
+                  'btn btn-error',
+                  removeTagActive
+                    ? 'hover:cursor-not-allowed'
+                    : 'hover:cursor:pointer ',
+                ]"
+                v-if="mouseOverTag && canModify"
+                @click="activeRemoveTag()"
+              >
+                <font-awesome-icon
+                  :icon="['fas', 'trash']"
+                  class="text-white size-5 my-auto"
+                />
+              </button>
             </div>
           </div>
 
@@ -224,6 +255,7 @@
     Priority,
     Progress,
     Status,
+    TagPool,
     Task,
     TaskType,
   } from "../utils/types";
@@ -259,6 +291,8 @@
   const title_color = ref<string>();
   const progress_value = ref<number>();
   const priority_color = ref<string>();
+  const mouseOverTag = ref<boolean>(false);
+  const removeTagActive = ref<boolean>();
 
   const route = useRoute();
   //const router = useRouter();
@@ -392,6 +426,41 @@
     if (response.task_id == card.value?.task_id) {
       updateTask(response);
     } else console.error("CAN'T UPDATE TASK TYPE");
+  }
+
+  function activeRemoveTag() {
+    removeTagActive.value = !removeTagActive.value;
+  }
+
+  async function removeTag(tag: string) {
+    if (card.value) {
+      card.value.task_tags = card.value.task_tags?.filter(
+        (t: string) => t.toLowerCase() != tag.toLowerCase()
+      );
+    }
+    const response = (await apiCall.patch(
+      EndpointType.TASK_REMOVE_TAG,
+      {},
+      {
+        params: {
+          task_id: card.value?.task_id,
+          tag: tag,
+        },
+      }
+    )) as Task;
+    if (response.task_id == card.value?.task_id) {
+      card.value = response;
+      let tags = JSON.parse(localStorage.getItem("tags") as string); //removing tag from tag pool in local
+      tags = tags.map((tp: TagPool) => {
+        if (tp.workspace_id === card.value?.workspace.workspace_id) {
+          tp.tags = tp.tags.filter(
+            (t: string) => t.toLowerCase() !== tag.toLowerCase()
+          );
+        }
+        return tp;
+      });
+      localStorage.setItem("tags", JSON.stringify(tags));
+    }
   }
 
   function prepareTaskData(data: Task) {
