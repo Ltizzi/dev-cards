@@ -151,48 +151,37 @@
   function filterByOptions(opts: any[], type: string) {
     // console.log(opts, type);
 
+    state.selectedValues = opts;
     switch (type.toLowerCase()) {
       case "color":
         state.selectedColors = opts;
-        state.selectedValues = opts;
+
         break;
       case "status":
         state.selectedStatus = opts;
-        state.selectedValues = opts;
         break;
       case "progress":
         state.selectedProgress = opts;
-        state.selectedValues = opts;
         break;
       case "priority":
         state.selectedPriority = opts;
-        state.selectedValues = opts;
         break;
       case "type":
         state.selectedTypes = opts;
-        state.selectedValues = opts;
         break;
       case "effort":
         state.selectedEffort = opts;
-        state.selectedValues = opts;
         break;
     }
-    //prepareCheckedValues();
-    // if (search.value) {
-    //   filteredTasks.value = taskUtils.searchTasks(
-    //     search.value,
-    //     tasks.value as TaskLite[]
-    //   );
-    // }
-    // filteredTasks.value = taskUtils.searchTasksByFilters(
-    //   state.selectedValues,
-    //   filteredTasks.value as TaskLite[]
-    // );
+    if (opts.length == 0) {
+      prepareCheckedValues();
+    }
     if (
       filteredTasks.value &&
       filteredTasks.value.length > 0 &&
-      type == "Color" &&
-      state.lastSelected == "Color" &&
+      // type == "Color" &&
+      // state.lastSelected == "Color" &&
+      type == state.lastSelected &&
       !search.value
     ) {
       filteredTasks.value = taskUtils.searchTasksByFilters(
@@ -215,6 +204,12 @@
     state.lastSelected = type;
     state.lastSearchResultsCount = filteredTasks.value.length;
     state.selectedValues = [];
+    if (state.lastSearchResultsCount == 0 && search.value) {
+      filteredTasks.value = taskUtils.searchTasks(
+        search.value,
+        tasks.value as TaskLite[]
+      );
+    }
   }
 
   function prepareCheckedValues() {
