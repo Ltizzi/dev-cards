@@ -262,6 +262,11 @@ export interface MenuOptionUI {
   needOwner: boolean;
 }
 
+export interface DropdownCheckboxOption {
+  text: Status | Effort | Color | Priority | TaskType | Progress;
+  check: boolean;
+}
+
 export interface TagPool {
   workspace_id: number;
   tags: string[];

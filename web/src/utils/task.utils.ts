@@ -73,6 +73,21 @@ function searchTasks(searchValue: string, tasks: TaskLite[]): TaskLite[] {
   return returned_tasks;
 }
 
+function searchTasksByFilters(options: any[], tasks: TaskLite[]): TaskLite[] {
+  // console.log("Searching...");
+  // console.log(tasks);
+  return tasks.filter((t: TaskLite) => {
+    return options.some((opt: any) => {
+      if (t.color == opt) return true;
+      else if (t.status == opt) return true;
+      else if (t.effort == opt) return true;
+      else if (t.task_type == opt) return true;
+      else if (t.progress == opt) return true;
+      else if (t.priority == opt) return true;
+    });
+  });
+}
+
 function getProjectUserDesignatedTasks(
   tasks: TaskLite[],
   designated_tasks: TaskLite[]
@@ -104,12 +119,6 @@ function addTagToTagsPool(tag: string, ws_id: number) {
         return t;
       });
     } else {
-      // tags.push(tag);
-      // const newTagPool: TagPool = {
-      //   workspace_id: ws_id,
-      //   tags: tags,
-      // };
-      // tag_pools.push(newTagPool);
       tag_pools = addNewTagPool(tags, tag_pools, ws_id, tag);
     }
   } else {
@@ -145,4 +154,5 @@ export const taskUtils = {
   searchTasks,
   getProjectUserDesignatedTasks,
   addTagToTagsPool,
+  searchTasksByFilters,
 };
