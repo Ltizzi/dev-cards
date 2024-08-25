@@ -17,7 +17,8 @@
       :description="project.description"
       :id="project.workspace_id"
       :isDark="isDark"
-      :type="workspace"
+      :type="'workspace'"
+      :canModify="canModify"
       @update="updateProject"
       />
     </div>
@@ -70,7 +71,7 @@
       <h1 class="text-3xl my-5">Tasks:</h1>
       <NewTaskBtn />
     
-      <TaskList :tasks="project.tasks" :isMicro="false" :isDraggable="false"/>
+      <TaskList :tasks="project.tasks" :isMicro="false" :isDraggable="false" :isDark="isDark"/>
   </div>
 </template>
 
@@ -85,6 +86,7 @@
   import NewTaskBtn from "../task/NewTaskBtn.vue";
   import TaskList from "../task/TaskList.vue";
   import { dateUtils } from '../../utils/date.utils';
+import { checkIsModOrOwner } from "../../utils/auth.utils";
 
   const projectStore = useProjectStore();
 
@@ -97,6 +99,8 @@
   const isLoaded = ref(false);
 
   const isDark = ref<boolean>();
+
+  const canModify = ref<boolean>();
 
   watch(()=> projectStore.current, (newValue, oldValue)=>{
     if(newValue != oldValue){
@@ -127,6 +131,8 @@
         console.error(response);
       }
     }
+
+    canModify.value = checkIsModOrOwner(project.value?.workspace_id as number);
     if(localStorage.getItem("darkTheme")){
       isDark.value = JSON.parse(localStorage.getItem("darkTheme")as string);
     }

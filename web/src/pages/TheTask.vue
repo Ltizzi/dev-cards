@@ -103,7 +103,7 @@
               'flex flex-row justify-between gap-2 w-2/4 py-5 h-16 my-auto',
               removeTagActive ? 'hover:cursor-not-allowed' : '',
             ]"
-            @mouseover="mouseOverTag = true"
+            @mouseover="card.task_tags.length > 0 ? (mouseOverTag = true) : ''"
             @mouseleave="mouseOverTag = false"
             @keydown.esc="removeTagActive ? (removeTagActive = false) : ''"
           >

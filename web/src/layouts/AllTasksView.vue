@@ -134,6 +134,7 @@
         tasksToFilter as TaskLite[]
       );
       state.noResults = checkNoResults();
+      filterByOptions([], "");
     }
   );
 
