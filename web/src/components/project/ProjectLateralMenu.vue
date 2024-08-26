@@ -11,7 +11,7 @@
       >
         {{ project.project_name }}
       </li>
-      <li @click="goHome()">
+      <li @click="goTo('home')">
         <div
           :class="[
             'hover:bg-accent py-3 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full',
@@ -23,23 +23,7 @@
           Info
         </div>
       </li>
-      <li @click="goScrum()">
-        <div
-          :class="[
-            'disabled hover:bg-accent ',
-            state.selected === -1
-              ? 'border-l-2  text-white border-primary -ml-0.5 opacity-90 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent font-semibold'
-              : '',
-          ]"
-        >
-          <summary
-            class="py-2 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full"
-          >
-            <span>Scrum</span>
-          </summary>
-        </div>
-      </li>
-      <li @click="goAllTasks()">
+      <li @click="goTo('all')">
         <div
           :class="[
             'disabled hover:bg-accent ',
@@ -55,12 +39,44 @@
           </summary>
         </div>
       </li>
+      <li @click="goTo('scrum')">
+        <div
+          :class="[
+            'disabled hover:bg-accent ',
+            state.selected === -1
+              ? 'border-l-2  text-white border-primary -ml-0.5 opacity-90 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent font-semibold'
+              : '',
+          ]"
+        >
+          <summary
+            class="py-2 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full"
+          >
+            <span>Scrum Board</span>
+          </summary>
+        </div>
+      </li>
+      <li @click="goTo('blocked')">
+        <div
+          :class="[
+            'disabled hover:bg-accent ',
+            state.selected === -5
+              ? 'border-l-2  text-white border-primary -ml-0.5 opacity-90 bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent font-semibold'
+              : '',
+          ]"
+        >
+          <summary
+            class="py-2 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full"
+          >
+            <span>Blocked</span>
+          </summary>
+        </div>
+      </li>
 
       <li class="whitespace-nowrap flex-shrink-0 flex">
         <details close>
           <summary
             class="py-3 rounded-xl hover:cursor-pointer transition-all ease-in-out"
-            @click="goDesignated()"
+            @click="goTo('designated')"
             :class="[
               'hover:bg-accent ',
               state.selected === -2
@@ -80,7 +96,7 @@
                   ? 'opacity-70 text-white bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent  font-semibold'
                   : '',
               ]"
-              @click="goTask(task.task_id)"
+              @click="goTo('task', task.task_id)"
             >
               <p
                 :class="[
@@ -90,7 +106,6 @@
                     : 'text-base-content',
                 ]"
               >
-                <!-- text-secondary-content -->
                 <span
                   :class="[
                     'size-2 rounded-full',
@@ -165,7 +180,7 @@
         <font-awesome-icon
           class="size-6 py-2 px-3 text-primary rounded-xl hover:cursor-pointer hover:bg-neutral"
           :icon="['fas', 'sliders']"
-          @click="goProjectSettings()"
+          @click="goTo('settings')"
         />
       </div>
     </div>
@@ -264,39 +279,72 @@
 
   //NAVIGATION
 
-  function goHome() {
-    // state.selected = -10;
-    router.push(`/project/info?id=${id.value}`);
-    setTimeout(() => (state.selected = -10), 100);
+  // function goHome() {
+  //   // state.selected = -10;
+  //   router.push(`/project/info?id=${id.value}`);
+  //   setTimeout(() => (state.selected = -10), 100);
+  // }
+
+  // function goTask(id: number) {
+  //   // state.selected = id;
+  //   router.push(`/project/task?id=${id}`);
+  // }
+
+  function goTo(path: string, task_id?: number) {
+    let stateSelected: number;
+    switch (path) {
+      case "home":
+        router.push(`/project/info?id=${id.value}`);
+        stateSelected = -10;
+        break;
+      case "scrum":
+        router.push("/project/scrum");
+        stateSelected = -1;
+        break;
+      case "designated":
+        router.push("/project/designated");
+        stateSelected = -2;
+        break;
+      case "all":
+        router.push("/project/tasks");
+        stateSelected = -3;
+        break;
+      case "settings":
+        router.push(`/project/settings?id=${project.value?.workspace_id}`);
+        stateSelected = -4;
+        break;
+      case "blocked":
+        stateSelected = -5;
+        break;
+      case "task":
+        router.push(`/project/task?id=${task_id}`);
+        break;
+    }
+    setTimeout(() => (state.selected = stateSelected), 100);
   }
 
-  function goTask(id: number) {
-    // state.selected = id;
-    router.push(`/project/task?id=${id}`);
-  }
+  // function goScrum() {
+  //   // state.selected = -1;
+  //   router.push("/project/scrum");
+  //   setTimeout(() => (state.selected = -1), 100);
+  // }
 
-  function goScrum() {
-    // state.selected = -1;
-    router.push("/project/scrum");
-    setTimeout(() => (state.selected = -1), 100);
-  }
+  // function goDesignated() {
+  //   //state.selected = -2;
+  //   router.push("/project/designated");
+  //   setTimeout(() => (state.selected = -2), 100);
+  // }
 
-  function goDesignated() {
-    //state.selected = -2;
-    router.push("/project/designated");
-    setTimeout(() => (state.selected = -2), 100);
-  }
+  // function goAllTasks() {
+  //   // state.selected = -3;
+  //   router.push("/project/tasks");
+  //   setTimeout(() => (state.selected = -3), 100);
+  // }
 
-  function goAllTasks() {
-    // state.selected = -3;
-    router.push("/project/tasks");
-    setTimeout(() => (state.selected = -3), 100);
-  }
-
-  function goProjectSettings() {
-    router.push(`/project/settings?id=${project.value?.workspace_id}`);
-    setTimeout(() => (state.selected = -4), 100);
-  }
+  // function goProjectSettings() {
+  //   router.push(`/project/settings?id=${project.value?.workspace_id}`);
+  //   setTimeout(() => (state.selected = -4), 100);
+  // }
 
   function showFindUserByMailModal() {
     state.addUserModal = true;
