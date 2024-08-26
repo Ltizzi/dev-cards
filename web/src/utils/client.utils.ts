@@ -17,10 +17,12 @@ export function changeTheme(theme: string) {
 }
 
 function isDarkTheme(theme: string): String {
+  //necesita theme
   return darkThemes.includes(theme).toString();
 }
 
 export function checkThemeIsDark(): boolean {
+  //no usa la variable en el localstorage
   return darkThemes.includes(getActualTheme());
 }
 
@@ -28,4 +30,8 @@ export function getActualTheme() {
   return localStorage.getItem("theme") != null
     ? (localStorage.getItem("theme") as string)
     : "dracula";
+}
+
+export function checkIsDark(): boolean {
+  return JSON.parse(localStorage.getItem("darkTheme") as string);
 }

@@ -2,6 +2,7 @@ import {
   Color,
   Priority,
   Progress,
+  Status,
   TagPool,
   Task,
   TaskLite,
@@ -88,6 +89,10 @@ function searchTasksByFilters(options: any[], tasks: TaskLite[]): TaskLite[] {
   });
 }
 
+function searchBlockedTasks(tasks: TaskLite[]): TaskLite[] {
+  return tasks.filter((t: TaskLite) => t.status == Status.BLOCKED);
+}
+
 function getProjectUserDesignatedTasks(
   tasks: TaskLite[],
   designated_tasks: TaskLite[]
@@ -155,4 +160,5 @@ export const taskUtils = {
   getProjectUserDesignatedTasks,
   addTagToTagsPool,
   searchTasksByFilters,
+  searchBlockedTasks,
 };

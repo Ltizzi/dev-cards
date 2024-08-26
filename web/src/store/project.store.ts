@@ -42,6 +42,10 @@ export const useProjectStore = defineStore("projects", {
       this.current = project;
       this.currentName = project.project_name;
       this.currentAvatar = project.avatar;
+      localStorage.setItem(
+        "current_workspace_id",
+        project.workspace_id.toString()
+      );
     },
     async fetchProjectById(id: number) {
       const response = (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {

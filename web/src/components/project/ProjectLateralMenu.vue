@@ -314,6 +314,7 @@
         stateSelected = -4;
         break;
       case "blocked":
+        router.push(`/project/blocked`);
         stateSelected = -5;
         break;
       case "task":

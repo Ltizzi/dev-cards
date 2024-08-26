@@ -1,5 +1,7 @@
 <template lang="">
-  <div :class="['flex  flex-wrap justify-start gap-5 my-5 flex-row ml-4', ,]">
+  <div
+    :class="['flex  flex-wrap justify-start gap-5 my-5 flex-row ml-4 w-full']"
+  >
     <div v-for="task in props.tasks">
       <TaskMiniCard
         :task="task"

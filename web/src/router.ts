@@ -16,6 +16,7 @@ import DesignatedView from "./layouts/DesignatedView.vue";
 import AllTasksView from "./layouts/AllTasksView.vue";
 import ProjectSettings from "./layouts/ProjectSettings.vue";
 import { checkIsModOrOwner } from "./utils/auth.utils";
+import BlockedTasksView from "./layouts/BlockedTasksView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -36,6 +37,16 @@ const router = createRouter({
             { path: "scrum", component: ScrumView },
             { path: "designated", component: DesignatedView },
             { path: "tasks", component: AllTasksView },
+            {
+              path: "blocked",
+              component: BlockedTasksView,
+              beforeEnter: (to, from) => {
+                const workspace_id = +JSON.parse(
+                  localStorage.getItem("current_workspace_id") as string
+                );
+                return checkIsModOrOwner(workspace_id) ? true : "/";
+              },
+            },
             {
               path: "settings",
               component: ProjectSettings,

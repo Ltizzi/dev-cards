@@ -99,6 +99,7 @@
       // })) as Workspace;
       if (response.workspace_id) {
         project.value = response;
+        projectStore.setCurrent(response);
         moderators.value = project.value.moderators;
         isLoaded.value = true;
       } else {
