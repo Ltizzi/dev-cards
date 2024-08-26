@@ -38,6 +38,7 @@ public interface TaskService {
 
     public TaskDTO unassignUser(Long task_id, Long user_id) throws NotFoundException, InvalidUserException, InvalidTaskException;
 
+    public TaskDTO autoAssignTask(String token, Long task_id) throws NotFoundException, InvalidTaskException, InvalidUserException;
     public TaskDTO addTagToTask(Long task_id, String tag) throws NotFoundException;
 
     public TaskDTO removeTagFromTask(Long task_id, String tag) throws NotFoundException;

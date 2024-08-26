@@ -129,6 +129,17 @@ public class TaskController {
         return new ResponseEntity<>(taskServ.assignUser(task_id,user_id), HttpStatus.OK);}
     }
 
+    @PostMapping("/autoAssign")
+    @ResponseBody
+    public ResponseEntity<TaskDTO> autoAssignTask(@RequestParam Long task_id,
+                                                  @RequestParam Long ws_id,
+                                                  @RequestHeader("Authorization")String token) throws NotAllowedException, InvalidTaskException, NotFoundException, InvalidUserException {
+        if(!jwtUtils.checkIsCollaborator(ws_id, token) && !jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
+            throw new NotAllowedException("Can't autoassign task");
+        }
+        return new ResponseEntity<>(taskServ.autoAssignTask(token, task_id), HttpStatus.OK);
+    }
+
     @PostMapping("/unassign")
     @ResponseBody
     public ResponseEntity<TaskDTO> unassignUserFromTask(@RequestParam Long task_id,

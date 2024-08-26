@@ -127,6 +127,32 @@ public class WorkspaceController {
         }
     }
 
+    @PatchMapping("/addCollaborator")
+    @ResponseBody
+    public ResponseEntity<List<UserLiteDTO>> addUserAsCollaborator(@RequestParam Long ws_id,
+                                                                   @RequestParam Long user_id,
+                                                                   @RequestHeader("Authorization")String token) throws NotAllowedException, NotFoundException, InvalidUserException {
+        if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
+            throw  new NotAllowedException("User can't modify workspace data");
+        }
+        else {
+            return new ResponseEntity<>(wsServ.addUserAsCollaborator(ws_id,user_id), HttpStatus.OK);
+        }
+    }
+
+    @PatchMapping("/removeCollaborator")
+    @ResponseBody
+    public ResponseEntity<List<UserLiteDTO>> removeUserAsCollaborator(@RequestParam Long ws_id,
+                                                                      @RequestParam Long user_id,
+                                                                      @RequestHeader("Authorization")String token) throws NotAllowedException, NotFoundException, InvalidUserException {
+        if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
+            throw new NotAllowedException("User can't modify workspace data");
+        }
+        else {
+            return new ResponseEntity<>(wsServ.removeUserAsCollaborator(ws_id, user_id), HttpStatus.OK);
+        }
+    }
+
     @DeleteMapping("/delete")
     @ResponseBody
     public ResponseEntity<APIResponse> deleteWorkspaceById(@RequestParam Long id, @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {

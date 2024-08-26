@@ -14,6 +14,7 @@ import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 import com.ltizzi.dev_cards.repository.TaskRepository;
 import com.ltizzi.dev_cards.repository.UserRepository;
 import com.ltizzi.dev_cards.repository.WorkspaceRepository;
+import com.ltizzi.dev_cards.security.filter.JwtUtils;
 import com.ltizzi.dev_cards.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,6 +42,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private WorkspaceRepository wsRepo;
+
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @Override
     public List<TaskDTO> getTasks(int page, int limit) {
@@ -178,6 +182,17 @@ public class TaskServiceImpl implements TaskService {
             task.setStatus(Status.PENDING);
         }
         return taskMapper.toTaskDTO(taskRepo.save(task));
+    }
+
+    @Override
+    public TaskDTO autoAssignTask(String token, Long task_id) throws NotFoundException, InvalidTaskException, InvalidUserException {
+        String username = jwtUtils.extractUsername(token);
+        List<UserEntity> user = userRepo.findByUsername(username);
+        if(user.get(0)== null){
+            throw  new NotFoundException("User not found!");
+        }
+        return assignUser(task_id, user.get(0).getUser_id());
+
     }
 
     @Override

@@ -22,12 +22,15 @@ import {
   faSquareCheck,
   faHammer,
   faCrown,
+  faPeopleGroup,
+  faCircleMinus,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
   faUserPlus,
   faUserMinus,
   faCirclePlus,
+  faCircleMinus,
   faFolderTree,
   faPenToSquare,
   faPlus,
@@ -39,7 +42,8 @@ library.add(
   faSliders,
   faSquareCheck,
   faHammer,
-  faCrown
+  faCrown,
+  faPeopleGroup
 );
 
 const app = createApp(App);

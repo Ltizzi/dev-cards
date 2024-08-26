@@ -192,6 +192,30 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
+    public List<UserLiteDTO> addUserAsCollaborator(Long workspace_id, Long user_id) throws NotFoundException, InvalidUserException {
+        WorkspaceEntity ws = getWorkspaceById(workspace_id);
+        UserEntity user = getUserById(user_id);
+        if(ws.getUsers().contains(user)){
+            ws.addUserAsCollaborator(user);
+            ws = wsRepo.save(ws);
+            return wsMapper.toWorkspaceDTO(ws).getModerators();
+        }
+        else throw new InvalidUserException("User can't be collaborator because is not in the current Workspace");
+    }
+
+    @Override
+    public List<UserLiteDTO> removeUserAsCollaborator(Long workspace_id, Long user_Id) throws NotFoundException, InvalidUserException {
+        WorkspaceEntity ws = getWorkspaceById(workspace_id);
+        UserEntity user = getUserById(user_Id);
+        if(ws.getCollaborators().contains(user)){
+            ws.removeUserAsCollaborator(user);
+            ws = wsRepo.save(ws);
+            return wsMapper.toWorkspaceDTO(ws).getModerators();
+        }
+        else throw  new InvalidUserException("User can't be removed as collaborator because isn't a workspace's collaborator");
+    }
+
+    @Override
     public APIResponse deleteWorkspace(Long workspace_id) throws NotFoundException {
         APIResponse apiRes = new APIResponse();
         apiRes.setHttp_method("DELETE");

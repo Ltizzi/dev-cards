@@ -25,6 +25,7 @@ export enum EndpointType {
   TASK_UPDATE_ISSUE = "/task/updateIssue",
   TASK_CREATE_ISSUE = "/task/addIssue",
   TASK_REMOVE_ISSUE = "/task/deleteIssue",
+  TASK_AUTOASSIGN = "/task/autoAssign",
 
   USER_GET_ALL = "/user/all",
   USER_GET_BY_ID = "/user/byId",
@@ -51,4 +52,6 @@ export enum EndpointType {
   WORKSPACE_UPDATE_DESCRIPTION = "/workspace/updateDescription",
   WORKSPACE_UPDATE_NAME = "/workspace/updateName",
   WORKSPACE_UPDATE_AVATAR = "/workspace/updateAvatar",
+  WORKSPACE_ADD_COLLABORATOR = "/workspace/addCollaborator",
+  WORKSPACE_REMOVE_COLLABORATOR = "/workspace/removeCollaborator",
 }

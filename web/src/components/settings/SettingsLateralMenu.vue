@@ -42,8 +42,8 @@
       needOwner: true,
     },
     {
-      title: "Remove Users",
-      path: "remove_users",
+      title: "Users Control",
+      path: "users_control",
       needOwner: false,
     },
   ]);

@@ -35,6 +35,7 @@ public class WorkspaceMapper {
         dto.setOwner(userMapper.toUserLiteDTO(workspace.getOwner()));
         dto.setTasks(taskMapper.toArrayTaskLiteDTO(workspace.getTasks()));
         dto.setModerators(userMapper.toArrayUserLiteDTO(workspace.getModerators()));
+        dto.setCollaborators(userMapper.toArrayUserLiteDTO(workspace.getCollaborators()));
         dto.setUsers(userMapper.toArrayUserLiteDTO(workspace.getUsers()));
         dto.setCreated_at(workspace.getCreated_at());
         dto.setUpdated_at(workspace.getUpdated_at());
@@ -63,6 +64,7 @@ public class WorkspaceMapper {
         workspace.setOwner(userMapper.toUserEntity(dto.getOwner()));
         workspace.setTasks(taskMapper.toArrayTaskEntityFromLiteDTO(dto.getTasks()));
         workspace.setModerators(userMapper.toArrayUserEntityFromLite(dto.getModerators()));
+        workspace.setCollaborators(userMapper.toArrayUserEntityFromLite(dto.getCollaborators()));
         workspace.setUsers(userMapper.toArrayUserEntityFromLite(dto.getUsers()));
         workspace.setCreated_at(dto.getCreated_at());
         workspace.setUpdated_at(dto.getUpdated_at());

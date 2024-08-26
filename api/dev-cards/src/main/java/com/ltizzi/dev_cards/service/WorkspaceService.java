@@ -40,6 +40,10 @@ public interface WorkspaceService {
 
     public List<UserLiteDTO> removeUserAsMod(Long workspace_id, Long user_id) throws NotFoundException, InvalidUserException;
 
+    public List<UserLiteDTO> addUserAsCollaborator(Long workspace_id, Long user_id) throws  NotFoundException, InvalidUserException;
+
+    public List<UserLiteDTO> removeUserAsCollaborator(Long workspace_id, Long user_Id) throws NotFoundException, InvalidUserException;
+
     public APIResponse deleteWorkspace(Long workspace_id) throws  NotFoundException;
 
 //    public List<TaskDTO> getTasksByWorkspace(Long workspace_id) throws NotFoundException;

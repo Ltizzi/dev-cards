@@ -9,6 +9,7 @@ public enum Role {
     ROLE_ADMIN,
    ROLE_OWNER,
     ROLE_MODERATOR,
+    ROLE_COLLABORATOR,
     ROLE_USER,
 
 }

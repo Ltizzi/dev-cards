@@ -61,6 +61,14 @@ public class WorkspaceEntity {
 
     @ManyToMany
     @JoinTable(
+            name="workspace_collaborators",
+            joinColumns =  @JoinColumn(name = "workspace_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<UserEntity> collaborators = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
             name = "workspace_users",
             joinColumns = @JoinColumn(name = "workspace_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
@@ -97,5 +105,13 @@ public class WorkspaceEntity {
 
     public void removeUserAsMod(UserEntity user){
         moderators.remove(user);
+    }
+
+    public void addUserAsCollaborator(UserEntity user){
+        collaborators.add(user);
+    }
+
+    public void removeUserAsCollaborator(UserEntity user){
+        collaborators.remove(user);
     }
 }

@@ -174,6 +174,19 @@ public class JwtUtils {
                 .toList().size()>0;
     }
 
+    public boolean checkIsCollaborator(Long ws_id, String token){
+//        List<UserWorkspacesRoles> usss =  getRoles(token).stream()
+//                .filter(uwr->uwr.getWorkspace_id().equals(ws_id) && uwr.getRole().equals(Role.ROLE_COLLABORATOR))
+//                .toList();
+//        System.out.println(ws_id.equals(usss.get(0).getWorkspace_id()));
+//        System.out.println(Role.ROLE_COLLABORATOR.equals(usss.get(0).getRole()));
+//        System.out.println(usss.toString());
+//        return (ws_id.equals(usss.get(0).getWorkspace_id()) && Role.ROLE_COLLABORATOR.equals(usss.get(0).getRole()));
+        return getRoles(token).stream()
+                .filter(uwr->uwr.getWorkspace_id().equals(ws_id) && uwr.getRole().equals(Role.ROLE_COLLABORATOR))
+                .toList().size()>0;
+    }
+
     public boolean checkIsMember(Long ws_id, String token){
         return getRoles(token).stream()
                 .filter(uwr->uwr.getWorkspace_id().equals(ws_id))
@@ -195,6 +208,11 @@ public class JwtUtils {
                     .filter(mod -> mod.getUser_id().equals(user.getUser_id()))
                     .collect(Collectors.toList()).size() >0) {
                 user_roles.setRole(Role.ROLE_MODERATOR);
+            }
+            else if(ws.getCollaborators().stream()
+                    .filter(col->col.getUser_id().equals(user.getUser_id()))
+                    .collect(Collectors.toList()).size()>0){
+                user_roles.setRole(Role.ROLE_COLLABORATOR);
             }
             else{
                 user_roles.setRole(Role.ROLE_USER);

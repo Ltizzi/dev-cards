@@ -25,6 +25,7 @@ public class WorkspaceDTO {
     private UserLiteDTO owner;
     private List<TaskLiteDTO> tasks = new ArrayList<>();
     private List<UserLiteDTO> moderators = new ArrayList<>();
+    private List<UserLiteDTO> collaborators = new ArrayList<>();
     private List<UserLiteDTO> users = new ArrayList<>();
     private Timestamp created_at;
     private Timestamp updated_at;

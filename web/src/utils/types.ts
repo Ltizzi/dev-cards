@@ -195,6 +195,7 @@ export interface Workspace {
   owner: UserLite;
   tasks: Array<TaskLite>;
   moderators: Array<UserLite>;
+  collaborators: Array<UserLite>;
   users: Array<UserLite>;
 
   created_at: Date;
@@ -216,6 +217,7 @@ export enum Role {
   ROLE_ADMIN = "ROLE_ADMIN",
   ROLE_OWNER = "ROLE_OWNER",
   ROLE_MODERATOR = "ROLE_MODERATOR",
+  ROLE_COLLABORATOR = "ROLE_COLLABORATOR",
   ROLE_USER = "ROLE_USER",
 }
 

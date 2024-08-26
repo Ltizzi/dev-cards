@@ -22,13 +22,14 @@
           :mod_list="project.moderators"
           v-show="state.selected == 'mods'"
         />
-        <RemoveUserControl
+        <UsersControl
           :workspace_id="project.workspace_id"
           :user_list="project.users"
           :mod_list="project.moderators"
+          :coll_list="project.collaborators"
           :owner_id="state.ownerId"
           @update="updateProject"
-          v-show="state.selected == 'remove_users'"
+          v-show="state.selected == 'users_control'"
         />
       </div>
     </div>
@@ -72,7 +73,7 @@
   import SettingsLateralMenu from "../components/settings/SettingsLateralMenu.vue";
   import ModControl from "../components/settings/ModControl.vue";
   import ProjectBasicControl from "../components/settings/ProjectBasicControl.vue";
-  import RemoveUserControl from "../components/settings/RemoveUserControl.vue";
+  import UsersControl from "../components/settings/UsersControl.vue";
 
   const projectStore = useProjectStore();
   const userStore = useUserStore();

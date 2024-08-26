@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import { User } from "../utils/types";
-import { logout } from "../utils/auth.utils";
+import { AuthResponse, User } from "../utils/types";
+import { logout, saveToken } from "../utils/auth.utils";
 import { useApiCall } from "../composables/useAPICall";
 import { EndpointType } from "../utils/endpoints";
 
@@ -15,12 +15,16 @@ export const useUserStore = defineStore("auth", {
   actions: {
     async refreshSelf() {
       const apiCall = useApiCall();
-      const response = (await apiCall.get(EndpointType.USER_GET_BY_ID, {
-        params: { user_id: this.self.user_id },
-      })) as User;
-      if (response.user_id == this.self.user_id) {
-        this.self = response;
+      // const response = (await apiCall.get(EndpointType.USER_GET_BY_ID, {
+      //   params: { user_id: this.self.user_id },
+      // })) as User;
+      const response = (await apiCall.get(
+        EndpointType.USER_REFRESH
+      )) as AuthResponse;
+      if (response.user.user_id == this.self.user_id) {
+        this.self = response.user;
         localStorage.setItem("user", JSON.stringify(response));
+        saveToken(response.token);
         return this.self;
       }
     },

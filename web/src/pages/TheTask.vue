@@ -173,6 +173,17 @@
               </div>
             </div>
           </div>
+          <div
+            v-if="
+              card.designated_to.length == 0 &&
+              checkIsCollaborator(card.workspace.workspace_id)
+            "
+            class="flex justify-start"
+          >
+            <button class="btn btn-outline btn-primary" @click="autoAssignTask">
+              Auto assign
+            </button>
+          </div>
           <div class="flex flex-col divide-y-2 divide-secondary">
             <!-- <TaskDescription
               :description="card.description"
@@ -279,14 +290,17 @@
     checkIfUserisTaskOwner,
     checkIsDesignated,
     checkIsModOrOwner,
+    checkIsCollaborator,
   } from "../utils/auth.utils";
   import { dateUtils } from "../utils/date.utils";
+  import { useUserStore } from "../store/user.store";
 
   // #region: variables
   const card = ref<Task>();
   const taskId = ref<number>();
   const taskStore = useTaskStore();
   const projectStore = useProjectStore();
+  const userStore = useUserStore();
 
   const title_color = ref<string>();
   const progress_value = ref<number>();
@@ -478,6 +492,23 @@
       ) ||
       checkIfUserisTaskOwner(card.value?.task_id as number)
     );
+  }
+
+  async function autoAssignTask() {
+    const response = (await apiCall.post(
+      EndpointType.TASK_AUTOASSIGN,
+      {},
+      {
+        params: {
+          task_id: card.value?.task_id,
+          ws_id: card.value?.workspace.workspace_id,
+        },
+      }
+    )) as Task;
+    if (response.task_id == card.value?.task_id) {
+      card.value = response;
+      await userStore.refreshSelf();
+    }
   }
 
   watch(

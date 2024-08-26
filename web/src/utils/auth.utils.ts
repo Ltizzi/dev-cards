@@ -75,6 +75,15 @@ function checkIsModOrOwner(workspace_id: number): boolean {
   );
 }
 
+function checkIsCollaborator(workspace_id: number): boolean {
+  return (
+    getRoles().filter(
+      (uwr: UserWorkspaceRoles) =>
+        uwr.workspace_id == workspace_id && uwr.role == Role.ROLE_COLLABORATOR
+    ).length > 0
+  );
+}
+
 function checkIsDesignated(workspace_id: number, task_id: number) {
   return (
     getRoles().filter(
@@ -103,4 +112,5 @@ export {
   checkIsOwner,
   checkIsModerator,
   checkIfUserisTaskOwner,
+  checkIsCollaborator,
 };
