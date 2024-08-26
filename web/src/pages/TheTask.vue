@@ -176,7 +176,8 @@
           <div
             v-if="
               card.designated_to.length == 0 &&
-              checkIsCollaborator(card.workspace.workspace_id)
+              (checkIsCollaborator(card.workspace.workspace_id) ||
+                checkIsModOrOwner)
             "
             class="flex justify-start"
           >
