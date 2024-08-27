@@ -7,6 +7,8 @@
         :task="task"
         :isMicro="props.isMicro"
         :isDarkTheme="props.isDark"
+        :darkerCards="props.darkerCards"
+        :viewList="props.viewList"
       />
 
       <!--         :isDraggable="props.isDraggable"
@@ -25,6 +27,8 @@
     tasks: Task[];
     isMicro: boolean;
     isDark: boolean | null;
+    darkerCards: boolean | null;
+    viewList: boolean;
     // isDraggable: boolean;
     // col_name: string;
   }>();

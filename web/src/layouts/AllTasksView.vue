@@ -17,7 +17,12 @@
       @filterTasks="setFilteredTasks"
       @noResults="noResults"
     />
-    <TaskList :isMicro="isMicro" :tasks="getTasks()" class="-ml-1" />
+    <TaskList
+      :isMicro="isMicro"
+      :viewList="true"
+      :tasks="getTasks()"
+      class="-ml-1"
+    />
 
     <div
       role="alert"

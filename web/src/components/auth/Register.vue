@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="mx-auto flex flex-col justify-center my-10">
+  <div class="mx-auto flex flex-col justify-center my-auto min-h-screen">
     <h1 class="my-5 text-xl font-bold">Create a new user</h1>
     <h2 class="text-lg mb-7">
       Please, complete this form to register you as a new user:

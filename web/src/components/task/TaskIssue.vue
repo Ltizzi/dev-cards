@@ -1,14 +1,14 @@
 <template lang="">
-  <div
-    :class="[
-      'w-full flex flex-row',
-      isDark
-        ? 'text-base-300 bg-base-content'
-        : 'bg-base-100 text-base-content',
-    ]"
-  >
+  <div class="w-full flex flex-row">
     <div
-      class="form-control w-4/5 flex flex-row gap-5"
+      :class="[
+        'form-control w-4/5 flex flex-row gap-5',
+        !isDark
+          ? 'bg-base-100 text-base-content'
+          : props.darkerCard
+          ? 'bg-neutral bg-opacity-95 text-neutral-content'
+          : 'text-base-300 bg-base-content',
+      ]"
       @mouseover="props.canModify ? (hovered = true) : (hovered = false)"
       @mouseleave="hovered = false"
       v-if="!state.showEditable"
@@ -17,9 +17,11 @@
         <span
           :class="[
             'label-text text-lg',
-            isDark
-              ? 'text-base-300 bg-base-content'
-              : 'bg-base-100 text-base-content',
+            !isDark
+              ? 'bg-base-100 text-base-content'
+              : props.darkerCard
+              ? 'bg-neutral bg-opacity-95 text-neutral-content'
+              : 'text-base-300 bg-base-content',
           ]"
           >{{ props.issue.sentence }}
         </span>
@@ -84,6 +86,7 @@
     issue: ProgressItem;
     task_id: number;
     canModify: boolean;
+    darkerCard: boolean;
   }>();
   const emit = defineEmits(["update"]);
 

@@ -2,8 +2,9 @@
   <div
     :class="[
       freshUser
-        ? 'mx-auto flex flex-col justify-center my-10'
-        : 'w-3/12 flex  flex-col mx-auto justify-center pt-28',
+        ? 'mx-auto flex flex-col justify-center my-auto'
+        : 'w-1/5  flex  flex-col mx-auto justify-center',
+      'min-h-screen',
     ]"
   >
     <h1 class="my-5 text-xl font-bold">Hi {{ user.username }}</h1>
@@ -67,7 +68,7 @@
         :class="[
           freshUser
             ? 'flex flex-row justify-around'
-            : 'ml-32 mt-5 justify-center',
+            : 'flex flex-row gap-5 -ml-12 mt-5 justify-center',
         ]"
       >
         <button :class="['btn btn-outline btn-accent']" @click="newProject">
@@ -80,6 +81,13 @@
           v-if="isInSignUpProcess"
         >
           Not now
+        </button>
+        <button
+          class="btn btn-outline btn-secondary"
+          @click="notNow"
+          v-if="!isInSignUpProcess"
+        >
+          Cancel
         </button>
       </div>
 
@@ -182,7 +190,7 @@
   }
 
   onBeforeMount(() => {
-    freshUser.value = userStore.newUser;
+    freshUser.value = userStore.checkIfUserIsNew();
     console.log(userStore.self);
     user.value = JSON.parse(localStorage.getItem("user") as string);
     if (route.path == "/signup/project") isInSignUpProcess.value = true;

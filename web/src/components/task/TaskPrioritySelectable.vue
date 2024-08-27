@@ -22,7 +22,9 @@
           ? taskUtils.calcPriorityColor(selectedPriority)
           : '',
         props.isDark
-          ? 'text-base-300 bg-base-content'
+          ? props.darkerCard
+            ? 'bg-neutral text-neutral-content'
+            : 'text-base-300 bg-base-content'
           : 'bg-base-100 text-base-content',
       ]"
       v-model="selectedPriority"
@@ -33,7 +35,9 @@
         selected
         :class="[
           props.isDark
-            ? 'bg-base-content text-base-300'
+            ? props.darkerCard
+              ? 'bg-neutral text-neutral-content'
+              : 'bg-base-content text-base-300'
             : 'bg-base-100 text-base-content',
         ]"
       >
@@ -42,7 +46,11 @@
       <option
         :class="[
           'text-info font-bold',
-          props.isDark ? 'bg-base-content' : 'bg-base-100 ',
+          props.isDark
+            ? props.darkerCard
+              ? 'bg-neutral '
+              : 'bg-base-content'
+            : 'bg-base-100 ',
         ]"
       >
         VERY_LOW
@@ -50,7 +58,11 @@
       <option
         :class="[
           'text-success font-bold',
-          props.isDark ? 'bg-base-content' : 'bg-base-100 ',
+          props.isDark
+            ? props.darkerCard
+              ? 'bg-neutral'
+              : 'bg-base-content'
+            : 'bg-base-100 ',
         ]"
       >
         LOW
@@ -58,7 +70,11 @@
       <option
         :class="[
           'text-accent font-bold',
-          props.isDark ? 'bg-base-content' : 'bg-base-100 ',
+          props.isDark
+            ? props.darkerCard
+              ? 'bg-neutral'
+              : 'bg-base-content'
+            : 'bg-base-100 ',
         ]"
       >
         MEDIUM
@@ -66,7 +82,11 @@
       <option
         :class="[
           'text-warning font-bold',
-          props.isDark ? 'bg-base-content' : 'bg-base-100 ',
+          props.isDark
+            ? props.darkerCard
+              ? 'bg-neutral'
+              : 'bg-base-content'
+            : 'bg-base-100 ',
         ]"
       >
         HIGH
@@ -74,7 +94,11 @@
       <option
         :class="[
           'text-error font-bold',
-          props.isDark ? 'bg-base-content' : 'bg-base-100 ',
+          props.isDark
+            ? props.darkerCard
+              ? 'bg-neutral'
+              : 'bg-base-content'
+            : 'bg-base-100 ',
         ]"
       >
         VERY_HIGH
@@ -91,6 +115,7 @@
     priority: Priority;
     isDark: boolean;
     canModify: boolean;
+    darkerCard: boolean;
   }>();
   const emit = defineEmits(["updatePriority"]);
 

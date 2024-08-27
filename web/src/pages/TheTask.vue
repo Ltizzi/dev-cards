@@ -1,13 +1,17 @@
 <template lang="">
   <div
-    class="flex flex-col justify-start my-5 w-full ml-0 rounded-2xl min-h-screen"
+    :class="[
+      'flex flex-col justify-start my-5 w-full ml-0 rounded-2xl min-h-screen',
+    ]"
   >
     <div
       :class="[
-        'w-full rounded-xl border-b-4 border-x-4 border-secondary  pb-2',
-        isDark
-          ? 'text-base-300 bg-base-content'
-          : 'bg-base-100 text-base-content',
+        'w-full rounded-xl border-b-4 border-x-4 border-secondary  pb-2 ',
+        !isDark
+          ? 'bg-base-100 text-base-content'
+          : darkerCard
+          ? 'bg-neutral text-neutral-content'
+          : 'text-base-300 bg-base-content',
       ]"
       v-if="card"
     >
@@ -31,6 +35,7 @@
               :title="card.title"
               :task_id="card.task_id"
               :isDark="isDark"
+              :darkerCard="darkerCard"
               :canModify="canModify"
               @update="updateTask"
             ></TaskTitle>
@@ -50,6 +55,7 @@
               <TaskPrioritySelectable
                 :priority="card.priority"
                 :isDark="isDark"
+                :darkerCard="darkerCard"
                 :canModify="canModify"
                 @update-priority="updatePriority"
               ></TaskPrioritySelectable>
@@ -59,6 +65,7 @@
                 :selected="card.status"
                 :canModify="canModify"
                 :isDark="isDark"
+                :darkerCard="darkerCard"
                 @update-status="updateTaskOptions"
               ></TaskCommonSelectable>
 
@@ -67,6 +74,7 @@
                 :selected="card.effort"
                 :canModify="canModify"
                 :isDark="isDark"
+                :darkerCard="darkerCard"
                 @update-effort="updateTaskOptions"
               ></TaskCommonSelectable>
 
@@ -75,6 +83,7 @@
                 :selected="card.task_type"
                 :canModify="canModify"
                 :isDark="isDark"
+                :darkerCard="darkerCard"
                 @update-task-type="updateTaskOptions"
               ></TaskCommonSelectable>
             </div>
@@ -83,6 +92,7 @@
               :progress_value="progress_value"
               :canModify="canModify"
               :isDark="isDark"
+              :darkerCard="darkerCard"
               @update="updateProgress"
             ></TaskProgress>
           </div>
@@ -97,6 +107,7 @@
             :task_id="card.task_id"
             :canModify="canModify"
             :isDark="isDark"
+            :darkerCard="darkerCard"
             @update="updateTask"
           />
 
@@ -226,6 +237,7 @@
                   :task_id="card.task_id"
                   :issue="issue"
                   :canModify="canModify"
+                  :darkerCard="darkerCard"
                   @update="updateTask"
                 />
               </div>
@@ -319,6 +331,8 @@
   const showAddIssueBtn = ref<boolean>();
 
   const isDark = ref<boolean>();
+
+  const darkerCard = ref<boolean>();
 
   const canModify = ref<boolean>();
 
@@ -557,6 +571,9 @@
     }
     if (localStorage.getItem("darkTheme")) {
       isDark.value = JSON.parse(localStorage.getItem("darkTheme") as string);
+      darkerCard.value = JSON.parse(
+        localStorage.getItem("darkerCards") as string
+      );
     }
   });
 </script>

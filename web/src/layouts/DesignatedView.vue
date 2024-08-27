@@ -1,6 +1,9 @@
 <template lang="">
   <div class="mt-10" v-if="isLoaded">
-    <div v-if="no_tasks" class="text-center mt-2/4">
+    <div
+      v-if="no_tasks"
+      class="text-center mt-2/4 min-h-screen align-middle my-56"
+    >
       <h1 class="text-3xl font-bold text-secondary">
         {{
           props.isLoggedIn
@@ -11,12 +14,20 @@
     </div>
     <div v-else class="flex flex-col gap-5 justify-center">
       <h1 class="text-2xl font-semibold text-base-content">Active tasks:</h1>
-      <TaskList :tasks="active_tasks" :isMicro="false" :isDark="props.isDark" />
+      <TaskList
+        :tasks="active_tasks"
+        :isMicro="false"
+        :isDark="props.isDark"
+        :darkerCards="props.darkerCards"
+        :viewList="true"
+      />
       <h1 class="text-2xl font-semibold text-base-content">Completed tasks:</h1>
       <TaskList
         :tasks="completed_tasks"
         :isMicro="false"
         :isDark="props.isDark"
+        :darkerCards="props.darkerCards"
+        :viewList="true"
       />
     </div>
   </div>
@@ -29,7 +40,11 @@
   import { useRoute } from "vue-router";
   import { useProjectStore } from "../store/project.store";
 
-  const props = defineProps<{ isDark: boolean; isLoggedIn: boolean }>();
+  const props = defineProps<{
+    isDark: boolean;
+    darkerCards: boolean;
+    isLoggedIn: boolean;
+  }>();
 
   const active_tasks = ref<TaskLite[]>();
   const completed_tasks = ref<TaskLite[]>();
@@ -152,6 +167,7 @@
   onBeforeMount(() => {
     if (userStore.self && userStore.self.designated_tasks) {
       prepareTasks();
+      if (userStore.self.designated_tasks.length == 0) no_tasks.value = true;
     } else {
       no_tasks.value = true;
     }

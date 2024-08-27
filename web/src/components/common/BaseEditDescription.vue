@@ -23,7 +23,7 @@
       @mouseover="props.canModify ? (hovered = true) : (hovered = false)"
       @mouseleave="hovered = false"
     >
-      <p class="indent-5 text-lg whitespace-pre-line">
+      <p class="indent-5 text-base whitespace-pre-line">
         {{ props.description }}
       </p>
     </div>

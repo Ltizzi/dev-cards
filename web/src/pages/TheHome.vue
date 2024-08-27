@@ -26,12 +26,13 @@
 <script setup lang="ts">
   import LateralMenu from "../layouts/LateralMenu.vue";
   import { useRouter } from "vue-router";
-  import { ref, onMounted } from "vue";
+  import { ref, onMounted, watch } from "vue";
   import {
     changeTheme,
     checkThemeIsDark,
     getActualTheme,
   } from "../utils/client.utils";
+  import { useUIStore } from "../store/ui.store";
 
   const router = useRouter();
 
@@ -39,11 +40,23 @@
 
   const isDark = ref<boolean>(false);
 
+  const UIStore = useUIStore();
+
+  watch(
+    () => UIStore.justUpdated,
+    (newValue, oldValue) => {
+      if (newValue) {
+        isDark.value = UIStore.darkTheme;
+      }
+    }
+  );
+
   onMounted(() => {
     const theme = localStorage.getItem("theme") as string;
     if (theme) {
-      changeTheme(theme);
-      isDark.value = checkThemeIsDark();
+      //changeTheme(theme);
+      UIStore.setTheme(theme);
+      isDark.value = UIStore.darkTheme;
     }
     setTimeout(() => {
       firstLoaded.value = false;

@@ -4,7 +4,11 @@
     <div
       :class="[
         'card w-72 shadow-lg hover:z-50 -ml-1',
-        isDark ? 'shadow-accent-content' : 'shadow-accent-content',
+        isDark
+          ? !props.darkerCards
+            ? 'shadow-md  shadow-secondary'
+            : 'shadow-accent-content bg-white'
+          : 'shadow-accent-content',
       ]"
       v-if="!props.isMicro"
     >
@@ -12,9 +16,11 @@
       <div
         :class="[
           ' rounded-xl transition-all ease-in-out duration-300 hover:scale-105 max-h-48 min-h-48',
-          isDark
-            ? 'text-base-300 bg-base-content'
-            : 'bg-base-100 text-base-content',
+          !isDark
+            ? 'bg-base-100 text-base-content'
+            : darkerCards
+            ? 'bg-neutral bg-opacity-95 text-neutral-content'
+            : 'text-base-300 bg-base-content',
         ]"
       >
         <div :class="['h-7 w-full -mb-5 rounded-t-xl z-10', color]"></div>
@@ -50,7 +56,15 @@
       </div>
     </div>
     <div
-      class="card bg-base-100 w-32 shadow-xl -mb-12 hover:z-50"
+      :class="[
+        'card w-32 shadow-xl  hover:z-50',
+        isDark
+          ? !props.darkerCards
+            ? 'shadow-sm  shadow-secondary'
+            : 'shadow-accent-content bg-white'
+          : 'bg-base-100',
+        props.viewList ? 'mb-2' : '-mb-12',
+      ]"
       v-if="props.isMicro"
     >
       <!--       :style="style" -->
@@ -58,15 +72,17 @@
       <div
         :class="[
           'rounded-xl transition-all ease-in-out duration-300 hover:scale-110 max-h-24 min-h-24 relative hover:shadow-2xl hover:shadow-neutral',
-          isDark
-            ? 'text-base-300 bg-base-content'
-            : 'bg-base-100 text-base-content',
+          !isDark
+            ? 'bg-base-100 text-base-content'
+            : darkerCards
+            ? 'bg-neutral bg-opacity-95 text-neutral-content'
+            : 'text-base-300 bg-base-content',
         ]"
       >
         <!--    props.isDraggable ? 'hover:cursor-pointer' : '', -->
         <div :class="['h-5 w-full -mb-5 rounded-t-xl z-10', color]"></div>
         <div class="pt-4 mx-auto flex text-center">
-          <h2 class="w-full text-base text-center leading-4 mt-2 mx-0.5">
+          <h2 class="w-full text-sm text-center leading-4 mt-2 mx-0.5">
             {{ generateTitle(props.task.title, 20) }}
           </h2>
           <button
@@ -89,6 +105,7 @@
   import { taskUtils } from "../../utils/task.utils";
   import { useRoute, useRouter } from "vue-router";
   import { useProjectStore } from "../../store/project.store";
+  import { isDarkerCardsActive } from "../../utils/client.utils";
 
   const router = useRouter();
   const route = useRoute();
@@ -98,6 +115,8 @@
     task: Task;
     isMicro: boolean;
     isDarkTheme: boolean;
+    darkerCards: boolean | null;
+    viewList: boolean | null;
     // isDraggable: boolean;
     // col_name: string;
   }>();
@@ -113,6 +132,8 @@
   const task_card = ref<HTMLElement | null>();
 
   const isDark = ref<boolean>();
+
+  const darkerCards = ref<boolean>();
 
   watch(
     () => props.task,
@@ -131,6 +152,15 @@
       if (newValue != oldValue) {
         isDark.value = newValue as boolean;
       }
+    }
+  );
+
+  watch(
+    () => props.darkerCards,
+    (newValue, oldValue) => {
+      if (newValue) {
+        darkerCards.value = newValue as boolean;
+      } else darkerCards.value = isDarkerCardsActive();
     }
   );
 
@@ -191,6 +221,8 @@
     priority_color.value = taskUtils.calcPriorityColor(props.task.priority);
     if (localStorage.getItem("darkTheme")) {
       isDark.value = JSON.parse(localStorage.getItem("darkTheme") as string);
+      if (props.darkerCards) darkerCards.value = props.darkerCards;
+      else darkerCards.value = isDarkerCardsActive();
     }
   });
 </script>

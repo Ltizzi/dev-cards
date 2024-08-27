@@ -18,7 +18,9 @@
       :class="[
         'select select-secondary w-fit select-xs max-w-28 font-semibold',
         props.isDark
-          ? 'text-base-300 bg-base-content'
+          ? props.darkerCard
+            ? 'bg-neutral text-neutral-content'
+            : 'text-base-300 bg-base-content'
           : 'bg-base-100 text-base-content',
       ]"
       v-model="selectedOption"
@@ -29,7 +31,9 @@
         selected
         :class="[
           props.isDark
-            ? 'text-base-300 bg-base-content'
+            ? props.darkerCard
+              ? 'bg-neutral text-neutral-content'
+              : 'text-base-300 bg-base-content'
             : 'bg-base-100 text-base-content',
         ]"
       >
@@ -38,7 +42,9 @@
       <option
         :class="
           props.isDark
-            ? 'text-base-300 bg-base-content'
+            ? props.darkerCard
+              ? 'bg-neutral text-neutral-content'
+              : 'text-base-300 bg-base-content'
             : 'bg-base-100 text-base-content'
         "
         v-for="option in options"
@@ -61,6 +67,7 @@
     type: string;
     selected: Status | Effort | TaskType;
     isDark: boolean;
+    darkerCard: boolean;
     canModify: boolean;
   }>();
 

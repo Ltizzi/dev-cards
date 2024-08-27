@@ -53,6 +53,7 @@
     title: string;
     task_id: number;
     isDark: boolean;
+    darkerCard: boolean;
     canModify: boolean;
   }>();
   const emit = defineEmits(["update"]);

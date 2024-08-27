@@ -4,6 +4,8 @@ import { logout, saveToken } from "../utils/auth.utils";
 import { useApiCall } from "../composables/useAPICall";
 import { EndpointType } from "../utils/endpoints";
 
+const NEW_uSER_TIME = 1000 * 60 * 1;
+
 export const useUserStore = defineStore("auth", {
   state: () => ({
     logged: false,
@@ -49,9 +51,22 @@ export const useUserStore = defineStore("auth", {
     },
     flagAsNewUser() {
       this.newUser = true;
+      const now = Date.now();
+      localStorage.setItem("registerIn", JSON.stringify(now));
       setTimeout(() => {
         this.newUser = false;
-      }, 1000 * 60 * 10);
+      }, NEW_uSER_TIME);
+    },
+    checkIfUserIsNew() {
+      if (localStorage.getItem("registerIn")) {
+        const registerTime = JSON.parse(
+          localStorage.getItem("registerIn") as string
+        );
+        return Date.now() - registerTime < NEW_uSER_TIME;
+      } else {
+        const created_at = new Date(this.self.created_at).getTime();
+        return Date.now() - created_at < NEW_uSER_TIME;
+      }
     },
   },
 });

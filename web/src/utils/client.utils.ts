@@ -35,3 +35,7 @@ export function getActualTheme() {
 export function checkIsDark(): boolean {
   return JSON.parse(localStorage.getItem("darkTheme") as string);
 }
+
+export function isDarkerCardsActive(): boolean {
+  return JSON.parse(localStorage.getItem("darkerCards") as string);
+}

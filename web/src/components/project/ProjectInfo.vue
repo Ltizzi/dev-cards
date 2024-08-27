@@ -30,7 +30,7 @@
             <img :src="project.owner.avatar" />
           </div>
         </div>
-        <p class="mx-10 text-lg">
+        <p class="mx-10 text-base my-auto">
           {{ project.owner.username }}, at {{ dateUtils.generateDateTemplate(project.created_at) }}
         </p>
       </div>
@@ -44,7 +44,7 @@
                 <img :src="mod.avatar" />
               </div>
             </div>
-            <p class="mx-10 text-lg">
+            <p class="mx-10 text-base my-auto">
               {{ mod.username }}
             </p>
           </div>
@@ -60,7 +60,7 @@
                     <img :src="user.avatar" />
                   </div>
                 </div>
-                <p class="text-lg">
+                <p class="text-base my-auto">
                   {{ user.username }}
                 </p>
               </div>

@@ -1,11 +1,24 @@
 <template lang="">
   <div class="flex flex-col justify-center w-full" v-if="isLoaded">
-    <div class="flex flex-row justify-between max-w-full ml-24 pt-10">
+    <div class="flex flex-row justify-between max-w-full ml-24 pt-10 max-h-40">
       <div class="w-full">
         <h1 class="text-2xl">Home page</h1>
       </div>
 
-      <div class="flex flex-row justify-end gap-5 w-4/5 mr-10">
+      <div
+        class="flex flex-row justify-end gap-5 w-4/5 mr-10 max-h-12 my-auto align-middle"
+      >
+        <div class="form-control w-40 mt-2" v-if="isDark">
+          <label class="label cursor-pointer">
+            <span class="label-text">Darker Cards</span>
+            <input
+              type="checkbox"
+              class="toggle toggle-primary"
+              :checked="darkerCards"
+              v-model="darkerCards"
+            />
+          </label>
+        </div>
         <div class="dropdown mb-72">
           <div tabindex="0" role="button" class="btn m-1">
             Theme
@@ -93,7 +106,12 @@
         </button>
       </div>
     </div>
-    <DesignatedView class="ml-10" :isDark="isDark" :isLoggedIn="isLoggedIn" />
+    <DesignatedView
+      class="ml-10"
+      :isDark="isDark"
+      :darkerCards="darkerCards"
+      :isLoggedIn="isLoggedIn"
+    />
   </div>
 </template>
 <script setup lang="ts">
@@ -101,10 +119,13 @@
   import { onBeforeMount, onMounted, ref, watch } from "vue";
   import { useUserStore } from "../store/user.store";
   import DesignatedView from "./DesignatedView.vue";
+  import { isDarkerCardsActive } from "../utils/client.utils";
+  import { useUIStore } from "../store/ui.store";
 
   const router = useRouter();
 
   const userStore = useUserStore();
+  const UIStore = useUIStore();
 
   const isLoggedIn = ref(false);
   const isLoaded = ref(false);
@@ -114,6 +135,8 @@
   const selected_theme = ref<string>();
 
   const isDark = ref<boolean>();
+
+  const darkerCards = ref<boolean>();
 
   const themes = [
     "dracula",
@@ -158,11 +181,19 @@
     }
   );
 
+  watch(
+    () => darkerCards.value,
+    (newValue, oldValue) => {
+      const falsie = false;
+      if (newValue != oldValue) {
+        darkerCards.value = UIStore.setDarkerCards(newValue as boolean);
+        //localStorage.setItem("darkerCards", newValue.toString());
+      } //else localStorage.setItem("darkerCards", falsie.toString());
+    }
+  );
+
   function changeTheme(theme: string) {
-    const htmlElement = document.documentElement;
-    htmlElement.setAttribute("data-theme", theme);
-    localStorage.setItem("darkTheme", isDarkTheme(theme) as string);
-    localStorage.setItem("theme", theme);
+    UIStore.setTheme(theme);
     isDark.value = darkThemes.includes(theme as string);
   }
 
@@ -197,7 +228,7 @@
     if (!user) {
       router.push("/login");
     } else {
-      if (localStorage.getItem("theme")) {
+      if (UIStore.theme || localStorage.getItem("theme")) {
         changeTheme(localStorage.getItem("theme") as string);
       } else {
         changeTheme("dracula");
@@ -205,5 +236,6 @@
       isLoggedIn.value = true;
       isLoaded.value = true;
     }
+    darkerCards.value = isDarkerCardsActive();
   });
 </script>
