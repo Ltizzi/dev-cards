@@ -6,6 +6,7 @@ export const useUIStore = defineStore("uiStore", {
     darkTheme: true,
     theme: "dracula",
     darkerCard: false,
+    darkerMiniCard: false,
     justUpdated: false,
   }),
   actions: {
@@ -26,12 +27,18 @@ export const useUIStore = defineStore("uiStore", {
       this.setJustUpdate();
       return this.darkerCard;
     },
+    setDarkerMiniCards(value: boolean) {
+      this.darkerMiniCard = value;
+      localStorage.setItem("darkerMiniCards", value.toString());
+      this.setJustUpdate();
+      return this.darkerMiniCard;
+    },
 
     setJustUpdate() {
       this.justUpdated = true;
       setTimeout(() => {
         this.justUpdated = false;
-      }, 1000);
+      }, 10);
     },
   },
 });

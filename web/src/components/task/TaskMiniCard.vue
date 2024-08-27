@@ -5,7 +5,7 @@
       :class="[
         'card w-72 shadow-lg hover:z-50 -ml-1',
         isDark
-          ? !props.darkerCards
+          ? darkerMiniCards
             ? 'shadow-md  shadow-secondary'
             : 'shadow-accent-content bg-white'
           : 'shadow-accent-content',
@@ -18,7 +18,7 @@
           ' rounded-xl transition-all ease-in-out duration-300 hover:scale-105 max-h-48 min-h-48',
           !isDark
             ? 'bg-base-100 text-base-content'
-            : darkerCards
+            : darkerMiniCards
             ? 'bg-neutral bg-opacity-95 text-neutral-content'
             : 'text-base-300 bg-base-content',
         ]"
@@ -59,7 +59,7 @@
       :class="[
         'card w-32 shadow-xl  hover:z-50',
         isDark
-          ? !props.darkerCards
+          ? darkerMiniCards
             ? 'shadow-sm  shadow-secondary'
             : 'shadow-accent-content bg-white'
           : 'bg-base-100',
@@ -74,7 +74,7 @@
           'rounded-xl transition-all ease-in-out duration-300 hover:scale-110 max-h-24 min-h-24 relative hover:shadow-2xl hover:shadow-neutral',
           !isDark
             ? 'bg-base-100 text-base-content'
-            : darkerCards
+            : darkerMiniCards
             ? 'bg-neutral bg-opacity-95 text-neutral-content'
             : 'text-base-300 bg-base-content',
         ]"
@@ -106,16 +106,18 @@
   import { useRoute, useRouter } from "vue-router";
   import { useProjectStore } from "../../store/project.store";
   import { isDarkerCardsActive } from "../../utils/client.utils";
+  import { useUIStore } from "../../store/ui.store";
 
   const router = useRouter();
   const route = useRoute();
   const projectStore = useProjectStore();
+  const UIStore = useUIStore();
 
   const props = defineProps<{
     task: Task;
     isMicro: boolean;
     isDarkTheme: boolean;
-    darkerCards: boolean | null;
+    //darkerCards: boolean | null;
     viewList: boolean | null;
     // isDraggable: boolean;
     // col_name: string;
@@ -133,7 +135,7 @@
 
   const isDark = ref<boolean>();
 
-  const darkerCards = ref<boolean>();
+  const darkerMiniCards = ref<boolean>();
 
   watch(
     () => props.task,
@@ -146,23 +148,33 @@
     }
   );
 
+  // watch(
+  //   () => props.isDarkTheme,
+  //   (newValue, oldValue) => {
+  //     if (newValue != oldValue) {
+  //       isDark.value = newValue as boolean;
+  //     }
+  //   }
+  // );
+
   watch(
-    () => props.isDarkTheme,
+    () => UIStore.justUpdated,
     (newValue, oldValue) => {
       if (newValue != oldValue) {
-        isDark.value = newValue as boolean;
+        isDark.value = UIStore.darkTheme;
+        darkerMiniCards.value = UIStore.darkerMiniCard;
       }
     }
   );
 
-  watch(
-    () => props.darkerCards,
-    (newValue, oldValue) => {
-      if (newValue) {
-        darkerCards.value = newValue as boolean;
-      } else darkerCards.value = isDarkerCardsActive();
-    }
-  );
+  // watch(
+  //   () => UIStore.darkerMiniCard,
+  //   (newValue, oldValue) => {
+  //     if (newValue != oldValue) {
+  //       darkerMiniCards.value = newValue as boolean;
+  //     } //else darkerMiniCards.value = isDarkerCardsActive();
+  //   }
+  // );
 
   // const { x, y, style } = useDraggable(task_card, {
   //   preventDefault: true,
@@ -219,10 +231,12 @@
       progress.value = 100;
     }
     priority_color.value = taskUtils.calcPriorityColor(props.task.priority);
-    if (localStorage.getItem("darkTheme")) {
-      isDark.value = JSON.parse(localStorage.getItem("darkTheme") as string);
-      if (props.darkerCards) darkerCards.value = props.darkerCards;
-      else darkerCards.value = isDarkerCardsActive();
-    }
+    // if (localStorage.getItem("darkTheme")) {
+    //   isDark.value = JSON.parse(localStorage.getItem("darkTheme") as string);
+    //   if (props.darkerCards) darkerCards.value = props.darkerCards;
+    //   else darkerCards.value = isDarkerCardsActive();
+    // }
+    isDark.value = UIStore.darkTheme;
+    darkerMiniCards.value = UIStore.darkerMiniCard;
   });
 </script>
