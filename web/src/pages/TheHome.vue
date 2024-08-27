@@ -1,7 +1,7 @@
 <template lang="">
   <div
     :class="[
-      'w-full relative  bg-gradient-to-br ',
+      'w-full relative  bg-gradient-to-br font-raleway ',
       isDark ? 'from-base-100 to-neutral' : 'from-base-100 to-base-300',
     ]"
   >

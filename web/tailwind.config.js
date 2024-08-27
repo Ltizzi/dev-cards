@@ -2,7 +2,13 @@
 export default {
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        roboto: ["Roboto"],
+        raleway: ["Raleway"],
+        ubuntuMono: ["Ubuntu Mono"],
+      },
+    },
   },
   plugins: [require("daisyui")],
   daisyui: {

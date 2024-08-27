@@ -7,7 +7,12 @@
       class="menu bg-base-200 rounded-box before:ring-offset-purple-400 overflow-x-hidden overflow-y-auto mt-3 whitespace-nowrap flex-shrink-0 flex-nowrap h-5/6"
     >
       <li
-        class="font-extrabold text-base text-center py-3 sticky top-0 bg-gradient-to-br from-base-100 to-neutral z-50 whitespace-nowrap flex-shrink-0 w-52 rounded-xl"
+        :class="[
+          'font-extrabold  text-center py-3 sticky top-0 bg-gradient-to-br from-base-100 to-neutral z-50 whitespace-nowrap flex-shrink-0 w-52 rounded-xl',
+          state.isDark
+            ? 'from-base-100 to-neutral text-base'
+            : 'from-base-100 via-30% via-base-300 to-primary text-neutral',
+        ]"
       >
         {{ project.project_name }}
       </li>
@@ -232,6 +237,7 @@
   const state = reactive({
     selected: -10,
     addUserModal: false,
+    isDark: false,
   });
 
   watch(
@@ -282,17 +288,6 @@
 
   //NAVIGATION
 
-  // function goHome() {
-  //   // state.selected = -10;
-  //   router.push(`/project/info?id=${id.value}`);
-  //   setTimeout(() => (state.selected = -10), 100);
-  // }
-
-  // function goTask(id: number) {
-  //   // state.selected = id;
-  //   router.push(`/project/task?id=${id}`);
-  // }
-
   function goTo(path: string, task_id?: number) {
     let stateSelected: number;
     switch (path) {
@@ -326,29 +321,6 @@
     }
     setTimeout(() => (state.selected = stateSelected), 100);
   }
-
-  // function goScrum() {
-  //   // state.selected = -1;
-  //   router.push("/project/scrum");
-  //   setTimeout(() => (state.selected = -1), 100);
-  // }
-
-  // function goDesignated() {
-  //   //state.selected = -2;
-  //   router.push("/project/designated");
-  //   setTimeout(() => (state.selected = -2), 100);
-  // }
-
-  // function goAllTasks() {
-  //   // state.selected = -3;
-  //   router.push("/project/tasks");
-  //   setTimeout(() => (state.selected = -3), 100);
-  // }
-
-  // function goProjectSettings() {
-  //   router.push(`/project/settings?id=${project.value?.workspace_id}`);
-  //   setTimeout(() => (state.selected = -4), 100);
-  // }
 
   function showFindUserByMailModal() {
     state.addUserModal = true;
@@ -405,5 +377,6 @@
         user_designated_tasks.value = getProjectDesignatedTasks();
       }
     }
+    state.isDark = JSON.parse(localStorage.getItem("darkTheme") as string);
   });
 </script>
