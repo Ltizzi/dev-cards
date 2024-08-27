@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="text-center w-full">
+  <div class="text-center w-full min-h-screen">
     <h1 class="text-4xl mt-5 text-base-content">All Tasks View</h1>
     <!-- <div class="flex flex-row justify-between py-5">
       <TaskFilterInput @search="defineSearch" class="ml-0" />

@@ -2,14 +2,16 @@
   <div class="mt-5 h-screen">
     <h1 class="text-3xl text-center">Project Settings</h1>
     <div
-      class="flex flex-row border-2 border-secondary bg-gradient-to-br from-base-200 to-transparent h-5/6 my-4"
+      class="flex flex-row border-2 border-opacity-60 border-secondary bg-gradient-to-br from-base-200 to-transparent h-5/6 my-4"
     >
       <SettingsLateralMenu
         class="w-1/6"
         @menuOption="changeMenu"
         :isOwner="isOwner"
       />
-      <div class="divider lg:divider-horizontal divider-secondary"></div>
+      <div
+        class="divider lg:divider-horizontal divider-secondary opacity-60"
+      ></div>
 
       <div class="w-5/6 h-fit">
         <ProjectBasicControl

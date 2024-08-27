@@ -1,5 +1,7 @@
 <template lang="">
-  <div class="flex flex-col justify-center my-5 w-full ml-0 rounded-2xl">
+  <div
+    class="flex flex-col justify-start my-5 w-full ml-0 rounded-2xl min-h-screen"
+  >
     <div
       :class="[
         'w-full rounded-xl border-b-4 border-x-4 border-secondary  pb-2',

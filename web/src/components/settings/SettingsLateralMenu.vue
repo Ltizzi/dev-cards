@@ -2,9 +2,9 @@
   <ul
     class="menu rounded-box w-fit mr-10 bg-gradient-to-br from-base-200 to-transparent"
   >
-    <h2 class="menu-title">Project Settings</h2>
+    <h2 class="menu-title mt-10">Project Settings</h2>
     <li>
-      <ul>
+      <ul class="">
         <template v-for="(option, index) in options">
           <li
             :class="[

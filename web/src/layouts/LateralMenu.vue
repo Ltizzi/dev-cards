@@ -25,7 +25,7 @@
           <img :src="user.avatar" />
         </div>
       </div>
-      <div class="divider divider-primary"></div>
+      <div class="divider divider-primary opacity-75"></div>
 
       <ul
         class="flex flex-col justify-center w-11/12 gap-4 my-2 mx-auto bg-base-100 bg-opacity-40 rounded-md px-4 py-1.5"

@@ -3,7 +3,7 @@
     <!-- ref="task_card" :style="style" -->
     <div
       :class="[
-        'card w-72 shadow-lg hover:z-50',
+        'card w-72 shadow-lg hover:z-50 -ml-1',
         isDark ? 'shadow-accent-content' : 'shadow-accent-content',
       ]"
       v-if="!props.isMicro"

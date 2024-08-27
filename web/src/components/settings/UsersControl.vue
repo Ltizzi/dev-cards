@@ -36,20 +36,25 @@ import { UserLite } from '../../utils/types';
                 <p class="w-auto">{{ user.email }}</p>
               </td>
               <td>
-                <div class="w-auto flex justify-center">
+                <div
+                  :class="[
+                    'w-auto flex justify-center',
+                    isDark ? 'text-white' : 'text-primary',
+                  ]"
+                >
                   <font-awesome-icon
                     :icon="['fas', 'hammer']"
-                    class="text-lg text-white"
+                    class="text-lg"
                     v-if="checkIsMod(user.user_id)"
                   />
                   <font-awesome-icon
                     :icon="['fas', 'crown']"
-                    class="text-lg text-white"
+                    class="text-lg"
                     v-if="user.user_id == props.owner_id"
                   />
                   <font-awesome-icon
                     :icon="['fas', 'people-group']"
-                    class="text-lg text-white"
+                    class="text-lg"
                     v-if="checkIsCollaborator(user.user_id)"
                   />
                 </div>
@@ -122,6 +127,7 @@ import { UserLite } from '../../utils/types';
   import { UserLite } from "../../utils/types";
   import { EndpointType } from "../../utils/endpoints";
   import BaseDeleteModal from "../common/BaseDeleteModal.vue";
+  import { checkIsDark } from "../../utils/client.utils";
 
   const props = defineProps<{
     workspace_id: number;
@@ -130,6 +136,8 @@ import { UserLite } from '../../utils/types';
     coll_list: UserLite[];
     owner_id: number;
   }>();
+
+  const isDark = ref<boolean>();
 
   const apiCall = useApiCall();
 
@@ -221,5 +229,6 @@ import { UserLite } from '../../utils/types';
 
   onBeforeMount(() => {
     user_list.value = props.user_list;
+    isDark.value = checkIsDark();
   });
 </script>

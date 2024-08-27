@@ -1,5 +1,5 @@
 <template lang="">
-  <div>
+  <div class="min-h-screen">
     <h1 class="text-4xl mt-5 text-base-content text-center pb-0">
       Blocked Tasks View
     </h1>

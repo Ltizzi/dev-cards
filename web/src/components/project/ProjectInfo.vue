@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="flex flex-col justify-center w-full mx-5 bg-base-100" v-if="isLoaded">
+  <div class="flex flex-col justify-center w-full mx-5  min-h-screen" v-if="isLoaded">
     <div class="flex flex-row justify-center gap-5 align-middle">
       <h1 class="text-4xl text-center my-5 font-bold">
         {{ project.project_name }}

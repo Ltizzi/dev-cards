@@ -165,7 +165,10 @@
         :class="['mx-auto', isModOrOwner ? '' : 'mb-5']"
         :icon="true"
       />
-      <div class="divider divider-secondary my-2" v-if="isModOrOwner"></div>
+      <div
+        class="divider divider-secondary my-2 opacity-40"
+        v-if="isModOrOwner"
+      ></div>
 
       <div
         class="flex flex-row flex-wrap justify-evenly gap-2 mb-3"
