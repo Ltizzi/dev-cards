@@ -55,7 +55,7 @@
           </summary>
         </div>
       </li>
-      <li @click="goTo('blocked')">
+      <li @click="goTo('blocked')" v-if="isModOrOwner">
         <div
           :class="[
             'disabled hover:bg-accent ',
