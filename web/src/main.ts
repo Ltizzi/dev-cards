@@ -24,6 +24,7 @@ import {
   faCrown,
   faPeopleGroup,
   faCircleMinus,
+  faGear,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -43,7 +44,8 @@ library.add(
   faSquareCheck,
   faHammer,
   faCrown,
-  faPeopleGroup
+  faPeopleGroup,
+  faGear
 );
 
 const app = createApp(App);

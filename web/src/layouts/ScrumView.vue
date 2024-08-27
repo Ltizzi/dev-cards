@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <div class="min-h-full">
+    <div class="min-h-full max-h-fit">
       <div
         class="w-full grid border-2 border-t-0 border-l-0 border-r-0 border-opacity-40 border-spacing-10 border-dashed border-secondary grid-cols-5 text-xl font-semibold text-center text-base-content rounded-t-xl"
       >
@@ -63,7 +63,7 @@
       >
         <div
           :class="[
-            'w-80 border-r-2 border-opacity-20 border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% rounded-bl-xl min-h-full pb-12',
+            'w-80 border-r-2 border-opacity-20 border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% rounded-bl-xl min-h-full pb-12 overflow-y-auto overflow-x-hidden',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_pool"
@@ -76,7 +76,7 @@
         </div>
         <div
           :class="[
-            'w-80 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% pb-12',
+            'w-80 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% pb-12 overflow-y-auto overflow-x-hidden',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_priority"
@@ -89,7 +89,7 @@
         </div>
         <div
           :class="[
-            'w-80 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r from-0% via-transparent via-50% to-100% pb-12',
+            'w-80 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r from-0% via-transparent via-50% to-100% pb-12 overflow-y-auto overflow-x-hidden',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_progress"
@@ -102,7 +102,7 @@
         </div>
         <div
           :class="[
-            'w-80 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% pb-12',
+            'w-80 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% pb-12 overflow-y-auto overflow-x-hidden',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_testing"
@@ -115,7 +115,7 @@
         </div>
         <div
           :class="[
-            'w-80 bg-gradient-to-r border-opacity-50  border-spacing-10 border-dashed from-0% via-transparent via-50%  to-100% rounded-br-xl pb-12',
+            'w-80 bg-gradient-to-r border-opacity-50  border-spacing-10 border-dashed from-0% via-transparent via-50%  to-100% rounded-br-xl pb-12 overflow-y-auto overflow-x-hidden',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_completed"

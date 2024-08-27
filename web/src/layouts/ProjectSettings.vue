@@ -8,6 +8,8 @@
         class="w-1/6"
         @menuOption="changeMenu"
         :isOwner="isOwner"
+        :options="state.options"
+        :title="'Project Settings'"
       />
       <div
         class="divider lg:divider-horizontal divider-secondary opacity-60"
@@ -93,6 +95,23 @@
   const state = reactive({
     selected: "basic",
     ownerId: 0,
+    options: [
+      {
+        title: "Basic Settings",
+        path: "basic",
+        needOwner: false,
+      },
+      {
+        title: "Moderators",
+        path: "mods",
+        needOwner: true,
+      },
+      {
+        title: "Users Control",
+        path: "users_control",
+        needOwner: false,
+      },
+    ],
   });
 
   function changeMenu(option: MenuOptionUI) {

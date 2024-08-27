@@ -17,6 +17,7 @@ import AllTasksView from "./layouts/AllTasksView.vue";
 import ProjectSettings from "./layouts/ProjectSettings.vue";
 import { checkIsModOrOwner } from "./utils/auth.utils";
 import BlockedTasksView from "./layouts/BlockedTasksView.vue";
+import AppSettings from "./layouts/AppSettings.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -28,6 +29,7 @@ const router = createRouter({
       children: [
         { path: "", component: HomeLayout },
         { path: "/newproject", component: NewProject },
+        { path: "/appConfig", component: AppSettings },
         {
           path: "/project",
           component: TheProject,

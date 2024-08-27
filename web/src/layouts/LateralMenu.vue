@@ -1,63 +1,87 @@
 <template lang="">
   <div
-    class="w-20"
+    class="w-20 max-h-screen"
     v-if="isLogged"
     @mouseover="state.isHovering = true"
     @mouseleave="state.isHovering = false"
   >
-    <div class="flex flex-col justify-center py-5 px-0.5" v-if="isLoaded">
-      <div
-        :class="[
-          'avatar ',
-          state.selected == 0 && state.isHovering
-            ? 'border-l-4 border-accent -ml-1'
-            : 'border-l-0 border-base',
-          state.selected == 0 && !state.isHovering
-            ? 'border-r-4 border-accent mr-2'
-            : 'border-r-0 border-base',
-        ]"
-        v-if="isLogged"
-      >
+    <div class="relative h-full">
+      <div class="flex flex-col justify-center py-5 px-0.5" v-if="isLoaded">
         <div
-          class="w-16 h-16 rounded-full mx-auto hover:cursor-pointer hover:border-4 border-accent"
-          @click="goHome"
-        >
-          <img :src="user.avatar" />
-        </div>
-      </div>
-      <div class="divider divider-primary opacity-75"></div>
-
-      <ul
-        class="flex flex-col justify-center w-11/12 gap-4 my-2 mx-auto bg-base-100 bg-opacity-40 rounded-md px-4 py-1.5"
-      >
-        <li
-          v-for="project in projects"
-          v-if="isLoaded"
-          @click="goTo(project)"
-          :class="['-ml-3  px-1']"
+          :class="[
+            'avatar ',
+            state.selected == 0 && state.isHovering
+              ? 'border-l-4 border-accent -ml-1'
+              : 'border-l-0 border-base',
+            state.selected == 0 && !state.isHovering
+              ? 'border-r-4 border-accent mr-2'
+              : 'border-r-0 border-base',
+          ]"
+          v-if="isLogged"
         >
           <div
-            :class="[
-              'avatar -ml-2',
-              state.selected == project.workspace_id && state.isHovering
-                ? 'border-l-4 border-accent px-1. '
-                : 'border-l-4 border-l-transparent',
-              state.selected == project.workspace_id && !state.isHovering
-                ? 'border-r-4 border-accent'
-                : 'border-r-4 border-r-transparent',
-            ]"
+            class="w-16 h-16 rounded-full mx-auto hover:cursor-pointer hover:border-4 border-accent border-4 border-transparent duration-300 hover:border-accent hover:border-opacity-80"
+            @click="goHome"
+          >
+            <img :src="user.avatar" />
+          </div>
+        </div>
+        <div class="divider divider-primary opacity-75"></div>
+
+        <ul
+          class="flex flex-col justify-center w-11/12 gap-4 my-2 mx-auto bg-base-100 bg-opacity-40 rounded-md px-4 py-1.5"
+        >
+          <li
+            v-for="project in projects"
+            v-if="isLoaded"
+            @click="goTo(project)"
+            :class="['-ml-3  px-1']"
           >
             <div
-              class="w-16 h-16 rounded-full border-4 border-transparent mx-auto hover:cursor-pointer 0 transition-all hover:border-4 hover:border-accent p-3 hover:border-opacity-80 duration-300 ease-in-out"
+              :class="[
+                'avatar -ml-2',
+                state.selected == project.workspace_id && state.isHovering
+                  ? 'border-l-4 border-accent px-1. '
+                  : 'border-l-4 border-l-transparent',
+                state.selected == project.workspace_id && !state.isHovering
+                  ? 'border-r-4 border-accent'
+                  : 'border-r-4 border-r-transparent',
+              ]"
             >
-              <img
-                :src="project.project_avatar"
-                class="w-full h-full hover:scale-125 transition-all duration-200 ease-in-out"
-              />
+              <div
+                class="w-16 h-16 rounded-full border-4 border-transparent mx-auto hover:cursor-pointer 0 transition-all hover:border-4 hover:border-accent p-3 hover:border-opacity-80 duration-300 ease-in-out"
+              >
+                <img
+                  :src="project.project_avatar"
+                  class="w-full h-full hover:scale-125 transition-all duration-200 ease-in-out"
+                />
+              </div>
             </div>
-          </div>
-        </li>
-      </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="absolute bottom-3">
+        <div class="flex justify-center pl-1">
+          <button
+            :class="[
+              'bg-black bg-opacity-40 px-2 py-0.5 rounded-full mx-auto transition-all ease-in-out transform-cpu duration-300 hover:scale-110 border-4 border-transparent hover:cursor-pointer hover:border-4 hover:border-accent hover:border-opacity-80',
+              state.selected == -10 && state.isHovering
+                ? 'border-l-4 border-accent px-1. '
+                : 'border-l-4 border-l-transparent',
+              state.selected == -10 && !state.isHovering
+                ? 'border-r-4 border-accent'
+                : 'border-r-4 border-r-transparent',
+              ,
+            ]"
+            @click="goConfig"
+          >
+            <font-awesome-icon
+              class="size-11 mx-auto"
+              :icon="['fas', 'gear']"
+            />
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -163,6 +187,12 @@
     }, 200);
 
     router.push(`/project/info?id=${project.workspace_id}`);
+  }
+
+  function goConfig() {
+    state.selected = -10;
+    state.isHome = false;
+    router.push("/appConfig");
   }
 
   async function fetchProjects(userId: number) {

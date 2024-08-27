@@ -1,7 +1,7 @@
 <template lang="">
   <div
     :class="[
-      'flex flex-col justify-start my-5 w-full ml-0 rounded-2xl min-h-screen',
+      'flex flex-col justify-start my-10 w-full ml-0 rounded-2xl min-h-screen',
     ]"
   >
     <div

@@ -23,7 +23,7 @@
           />
         </div>
 
-        <ThemeSelector />
+        <ThemeSelector :dropdown="true" />
         <button
           class="btn btn-outline btn-secondary"
           @click="createProject"
