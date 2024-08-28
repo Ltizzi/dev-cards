@@ -40,7 +40,12 @@ public class UserController {
 
     @GetMapping("/byId")
     @ResponseBody
-    public ResponseEntity<UserDTO> getUserById(@RequestParam Long user_id) throws NotFoundException{
+    public ResponseEntity<UserDTO> getUserById(@RequestParam Long user_id,
+                                               @RequestParam Long ws_id,
+                                               @RequestHeader("Authorization")String token) throws NotFoundException, InvalidUserException {
+        if(!jwtUtils.checkUserIsInSameGroup(ws_id,user_id, token)){
+            throw new InvalidUserException("You and the other user should be members in the same workspace");
+        }
         return new ResponseEntity<>(userServ.getUserById(user_id), HttpStatus.OK);
     }
 
@@ -52,7 +57,12 @@ public class UserController {
 
     @PatchMapping("/update")
     @ResponseBody
-    public ResponseEntity<UserDTO> updateUser(@RequestParam Long user_id, @RequestBody UserDTO user) throws NotFoundException, InvalidUserException {
+    public ResponseEntity<UserDTO> updateUser(@RequestParam Long user_id,
+                                              @RequestBody UserDTO user,
+                                              @RequestHeader("Authorization")String token) throws NotFoundException, InvalidUserException {
+        if(!jwtUtils.checkUserIsSelf(user_id,token)){
+            throw new InvalidUserException("Can modify other user profiles");
+        }
         return new ResponseEntity<>(userServ.updateUser(user_id, user), HttpStatus.OK);
     }
 

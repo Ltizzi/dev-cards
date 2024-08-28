@@ -13,6 +13,7 @@ import com.ltizzi.dev_cards.model.utils.UserWorkspacesRoles;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 import com.ltizzi.dev_cards.repository.TaskRepository;
 import com.ltizzi.dev_cards.repository.UserRepository;
+import com.ltizzi.dev_cards.repository.WorkspaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -41,6 +42,9 @@ public class JwtUtils {
 
     @Autowired
     private TaskRepository taskRepo;
+
+    @Autowired
+    private WorkspaceRepository wsRepo;
 
     private final JwtEncoder encoder;
  //   @Autowired
@@ -175,22 +179,35 @@ public class JwtUtils {
     }
 
     public boolean checkIsCollaborator(Long ws_id, String token){
-//        List<UserWorkspacesRoles> usss =  getRoles(token).stream()
-//                .filter(uwr->uwr.getWorkspace_id().equals(ws_id) && uwr.getRole().equals(Role.ROLE_COLLABORATOR))
-//                .toList();
-//        System.out.println(ws_id.equals(usss.get(0).getWorkspace_id()));
-//        System.out.println(Role.ROLE_COLLABORATOR.equals(usss.get(0).getRole()));
-//        System.out.println(usss.toString());
-//        return (ws_id.equals(usss.get(0).getWorkspace_id()) && Role.ROLE_COLLABORATOR.equals(usss.get(0).getRole()));
         return getRoles(token).stream()
                 .filter(uwr->uwr.getWorkspace_id().equals(ws_id) && uwr.getRole().equals(Role.ROLE_COLLABORATOR))
                 .toList().size()>0;
+    }
+
+    public boolean checkUserIsSelf(Long user_id, String token) throws NotFoundException {
+        UserEntity user = getUserByToken(token);
+        return user.getUser_id().equals(user_id);
     }
 
     public boolean checkIsMember(Long ws_id, String token){
         return getRoles(token).stream()
                 .filter(uwr->uwr.getWorkspace_id().equals(ws_id))
                 .toList().size()>0;
+    }
+
+    public boolean checkUserIsInSameGroup(Long ws_id, Long user_id, String token) throws NotFoundException {
+        UserEntity user = getUserByToken(token);
+        WorkspaceEntity ws = wsRepo.findById(ws_id).orElseThrow(()->new NotFoundException("Workspace not found!"));
+        if(user.getUser_id().equals(user_id)){
+            return true;
+        }
+        return ws.getUsers().stream()
+                .filter(u->
+                        u.getUser_id().equals(user.getUser_id())
+                                || u.getUser_id().equals(user_id)
+                                || u.getUser_id().equals(ws.getOwner().getUser_id()))
+                .toList()
+                .size() == 2;
     }
 
     public boolean checkIsOwnerOrModerator(Long ws_id, String token){

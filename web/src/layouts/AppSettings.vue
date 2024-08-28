@@ -16,6 +16,7 @@
 
       <div class="w-5/6 h-full overflow-y-hidden">
         <ThemeControl v-show="state.selected == 'theme_setup'" />
+        <UserProfileSetup v-show="state.selected == 'user_profile'" />
       </div>
     </div>
   </div>
@@ -27,12 +28,13 @@
   import { MenuOptionUI } from "../utils/types";
   import ThemeControl from "../components/settings/ThemeControl.vue";
   import SettingsLateralMenu from "../components/settings/SettingsLateralMenu.vue";
+  import UserProfileSetup from "../components/settings/UserProfileSetup.vue";
 
   const UIStore = useUIStore();
   const userStore = useUserStore();
 
   const state = reactive({
-    selected: "theme_setup",
+    selected: "user_profile",
     options: [
       {
         title: "User Profile",

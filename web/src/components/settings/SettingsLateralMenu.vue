@@ -11,7 +11,7 @@
               state.selected == index
                 ? 'bg-primary bg-opacity-70 text-white rounded-lg '
                 : '',
-              'py-2 px-2 w-fit hover:cursor-pointer',
+              'py-2 px-2 w-fit hover:cursor-pointer text-xs',
             ]"
             @click="changeMenu(index)"
             v-if="checkVisible(option)"

@@ -57,10 +57,10 @@
     </div>
     <div
       :class="[
-        'card w-32 shadow-xl  hover:z-50',
+        'card w-32 shadow-md  hover:z-50',
         isDark
           ? darkerMiniCards
-            ? 'shadow-sm  shadow-secondary'
+            ? 'shadow-md  shadow-secondary'
             : 'shadow-accent-content bg-white'
           : 'bg-base-100',
         props.viewList ? 'mb-2' : '-mb-12',

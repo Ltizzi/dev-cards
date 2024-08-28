@@ -1,14 +1,14 @@
 <template lang="">
-  <div
-    class="h-full py-10 px-5 flex flex-col justify-start gap-10 overflow-y-scroll"
-  >
-    <h1 class="text-start font-semibold text-3xl">Theme setup</h1>
+  <div class="h-full py-10 px-5 flex flex-col justify-start gap-10">
+    <h1 class="text-start font-semibold text-2xl">Theme setup</h1>
     <div>
-      <h2 class="text-start text-2xl pb-5">Change Theme:</h2>
+      <h2 class="text-start text-lg font-semibold pb-5">Change Theme:</h2>
       <ThemeSelector :dropdown="false" />
     </div>
     <div>
-      <h2 class="text-start text-2xl pb-5">Change Task background color:</h2>
+      <h2 class="text-start text-lg font-semibold pb-5">
+        Change Task background color:
+      </h2>
       <div class="w-60">
         <BaseToggle
           @update="handleDarker"
@@ -19,7 +19,7 @@
       </div>
     </div>
     <div>
-      <h2 class="text-start text-2xl pb-5">
+      <h2 class="text-start text-lg font-semibold pb-5">
         Change Thumbnails background color:
       </h2>
       <div class="w-60">

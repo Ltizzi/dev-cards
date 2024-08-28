@@ -97,7 +97,7 @@
               v-for="task in user_designated_tasks"
               :class="[
                 'rounded-xl w-full flex flex-row justify-start hover:bg-accent',
-                state.selected === task.task_id
+                state.selectedTask === task.task_id
                   ? 'opacity-70 text-white bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent  font-semibold'
                   : '',
               ]"
@@ -135,7 +135,13 @@
           <ul class="before:ring-offset-purple-400">
             <li
               v-for="user in project.users"
-              class="text-white flex flex-row justify-start align-middle w-full"
+              :class="[
+                'text-white flex flex-row justify-start align-middle w-full hover:bg-accent',
+                state.selectedUser == user.user_id
+                  ? 'opacity-70 text-white bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent  font-semibold'
+                  : '',
+              ]"
+              @click="goTo('user', user.user_id)"
             >
               <div class="avatar">
                 <div class="w-6 rounded-full">
@@ -236,6 +242,8 @@
 
   const state = reactive({
     selected: -10,
+    selectedUser: 0,
+    selectedTask: 0,
     addUserModal: false,
     isDark: false,
   });
@@ -288,8 +296,19 @@
 
   //NAVIGATION
 
-  function goTo(path: string, task_id?: number) {
+  function goTo(path: string, obj_id?: number) {
     let stateSelected: number;
+    if (
+      path !== "task" ||
+      (path !== "user" && state.selectedTask) ||
+      state.selectedUser
+    ) {
+      state.selectedUser = 0;
+      state.selectedTask = 0;
+    }
+    if (path == "talk" || (path == "user" && state.selected < 0)) {
+      state.selected = 0;
+    }
     switch (path) {
       case "home":
         router.push(`/project/info?id=${id.value}`);
@@ -308,7 +327,7 @@
         stateSelected = -3;
         break;
       case "settings":
-        router.push(`/project/settings?id=${project.value?.workspace_id}`);
+        router.push(`/project/settings?id=${id.value}`);
         stateSelected = -4;
         break;
       case "blocked":
@@ -316,10 +335,23 @@
         stateSelected = -5;
         break;
       case "task":
-        router.push(`/project/task?id=${task_id}`);
+        router.push(`/project/task?id=${obj_id}`);
+        stateSelected = obj_id as number;
+        break;
+      case "user":
+        router.push(`/project/user?id=${obj_id}`);
+        stateSelected = obj_id as number;
         break;
     }
-    setTimeout(() => (state.selected = stateSelected), 100);
+    setTimeout(
+      () =>
+        path == "task" || path == "user"
+          ? path == "task"
+            ? (state.selectedTask = stateSelected)
+            : (state.selectedUser = stateSelected)
+          : (state.selected = stateSelected),
+      100
+    );
   }
 
   function showFindUserByMailModal() {

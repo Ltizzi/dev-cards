@@ -18,6 +18,7 @@ import ProjectSettings from "./layouts/ProjectSettings.vue";
 import { checkIsModOrOwner } from "./utils/auth.utils";
 import BlockedTasksView from "./layouts/BlockedTasksView.vue";
 import AppSettings from "./layouts/AppSettings.vue";
+import UserProfileView from "./layouts/UserProfileView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -39,6 +40,7 @@ const router = createRouter({
             { path: "scrum", component: ScrumView },
             { path: "designated", component: DesignatedView },
             { path: "tasks", component: AllTasksView },
+            { path: "user", component: UserProfileView },
             {
               path: "blocked",
               component: BlockedTasksView,
