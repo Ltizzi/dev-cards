@@ -83,6 +83,7 @@
     if (response.user && response.token) {
       saveToken(response.token);
       userStore.setSelf(response.user);
+      localStorage.setItem("user", JSON.stringify(response.user));
     }
   }
 

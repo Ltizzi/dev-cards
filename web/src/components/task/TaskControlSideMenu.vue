@@ -78,7 +78,7 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { onBeforeMount, reactive, ref, watch } from "vue";
+  import { onBeforeMount, onMounted, reactive, ref, watch } from "vue";
   import AddUserModal from "../ui/AddUserModal.vue";
   import RemoveUserModal from "../ui/RemoveUserModal.vue";
   import AddTagModal from "../ui/AddTagModal.vue";
@@ -92,6 +92,8 @@
   } from "../../utils/auth.utils";
   import { useProjectStore } from "../../store/project.store";
   import { useTaskStore } from "../../store/task.store";
+  import { useRoute } from "vue-router";
+  import { useUserStore } from "../../store/user.store";
 
   const props = defineProps<{ projectId: number; taskId: number }>();
 
@@ -110,6 +112,9 @@
 
   const projectStore = useProjectStore();
   const taskStore = useTaskStore();
+  const userStore = useUserStore();
+
+  const route = useRoute();
 
   const emit = defineEmits(["update"]);
 
@@ -176,24 +181,39 @@
     }
   );
 
+  function getTaskId() {
+    let id = 0;
+    if (route.query.id) {
+      id = props.taskId
+        ? props.taskId
+        : taskStore.currentTask.task_id
+        ? taskStore.currentTask.task_id
+        : +route.query.id;
+    }
+    return id;
+  }
+
   function prepareAuthorization() {
     const projectId = props.projectId
       ? props.projectId
       : projectStore.current.workspace_id;
-    const taskId = props.taskId ? props.taskId : taskStore.currentTask.task_id;
+    const taskId = getTaskId();
     isModOrOwner.value = checkIsModOrOwner(projectId);
     isDesignatedUser.value = checkIsDesignated(projectId, taskId as number);
-    canModify.value = checkIfUserisTaskOwner(taskId as number);
+    canModify.value = checkIfUserisTaskOwner(taskId as number, userStore.self);
   }
 
-  onBeforeMount(() => {
-    // const projectId = props.projectId
-    //   ? props.projectId
-    //   : projectStore.current.workspace_id;
-    // const taskId = props.taskId ? props.taskId : taskStore.currentTask.task_id;
-    // isModOrOwner.value = checkIsModOrOwner(projectId);
-    // isDesignatedUser.value = checkIsDesignated(projectId, taskId as number);
-    // canModify.value = checkIfUserisTaskOwner(taskId as number);
+  // onBeforeMount(() => {
+  //   // const projectId = props.projectId
+  //   //   ? props.projectId
+  //   //   : projectStore.current.workspace_id;
+  //   // const taskId = props.taskId ? props.taskId : taskStore.currentTask.task_id;
+  //   // isModOrOwner.value = checkIsModOrOwner(projectId);
+  //   // isDesignatedUser.value = checkIsDesignated(projectId, taskId as number);
+  //   // canModify.value = checkIfUserisTaskOwner(taskId as number);
+  //   prepareAuthorization();
+  // });
+  onMounted(() => {
     prepareAuthorization();
   });
 </script>

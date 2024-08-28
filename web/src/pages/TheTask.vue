@@ -3,6 +3,7 @@
     :class="[
       'flex flex-col justify-start my-5 w-full ml-0 rounded-2xl min-h-screen',
     ]"
+    v-if="isLoaded"
   >
     <div
       :class="[
@@ -277,7 +278,7 @@
 #MARK: SCRIPT SETUP
 -->
 <script setup lang="ts">
-  import { ref, onBeforeMount, watch } from "vue";
+  import { ref, onBeforeMount, onMounted, watch } from "vue";
   import {
     Effort,
     Priority,
@@ -338,9 +339,12 @@
 
   const canModify = ref<boolean>();
 
+  const isLoaded = ref<boolean>();
+
   // #MARK:asdas
 
   async function fetchTask(task_id: number) {
+    console.log("soy yo");
     const data = (await apiCall.get(EndpointType.TASK_GET_BY_ID, {
       params: { id: task_id },
     })) as Task;
@@ -348,6 +352,7 @@
   }
 
   async function updateTaskById() {
+    console.log("SOY RE YO");
     if (route.query.id) {
       const id = +route.query.id;
       card.value = await fetchTask(id);
@@ -509,7 +514,7 @@
         projectStore.current.workspace_id,
         card.value?.task_id as number
       ) ||
-      checkIfUserisTaskOwner(card.value?.task_id as number)
+      checkIfUserisTaskOwner(card.value?.task_id as number, userStore.self)
     );
   }
 
@@ -530,22 +535,28 @@
     }
   }
 
-  watch(
-    () => route.query.id,
-    async (newValue, oldValue) => {
-      const id = newValue;
-      if (id) {
-        const task = await fetchTask(+id);
-        if (task) {
-          card.value = task;
-          taskId.value = task.task_id;
-          canModify.value = checkUserCanModifyTask();
-          taskStore.setCurrentTask(task);
-          prepareTaskData(task);
-        }
-      }
-    }
-  );
+  const just_fetched = ref<boolean>();
+
+  // watch(
+  //   () => route.query.id,
+  //   async (newValue, oldValue) => {
+  //     const id = newValue;
+  //     if (newValue != oldValue && id && !just_fetched.value) {
+  //       const task = await fetchTask(+id);
+  //       just_fetched.value = true;
+  //       setTimeout(() => {
+  //         just_fetched.value = false;
+  //       }, 50);
+  //       if (task) {
+  //         card.value = task;
+  //         taskId.value = task.task_id;
+  //         canModify.value = checkUserCanModifyTask();
+  //         taskStore.setCurrentTask(task);
+  //         prepareTaskData(task);
+  //       }
+  //     }
+  //   }
+  // );
 
   watch(
     () => taskStore.currentTask,
@@ -558,24 +569,43 @@
     }
   );
 
-  onBeforeMount(async () => {
-    const task_id = route.query.id;
-    if (task_id) {
-      const data = await fetchTask(+task_id);
-
-      if (data) {
-        card.value = data;
-        taskId.value = data.task_id;
-        canModify.value = checkUserCanModifyTask();
-        taskStore.setCurrentTask(data);
-        prepareTaskData(data);
-      }
-    }
+  onBeforeMount(() => {
     if (localStorage.getItem("darkTheme")) {
       isDark.value = JSON.parse(localStorage.getItem("darkTheme") as string);
       darkerCard.value = JSON.parse(
         localStorage.getItem("darkerCards") as string
       );
+    }
+  });
+
+  onMounted(async () => {
+    const task_id = route.query.id;
+    if (taskStore.currentTask.task_id == +taskId) {
+      card.value = taskStore.currentTask;
+    }
+    // else if (localStorage.getItem("currentTask")) {
+    //   const task = JSON.parse(
+    //     localStorage.getItem("currentTask") as string
+    //   ) as Task;
+    //   if (task_id && task.task_id == +task_id) {
+    //     card.value = task;
+    //   }
+    // }
+    else {
+      if (task_id) {
+        const data = await fetchTask(+task_id);
+
+        if (data.task_id == +task_id) {
+          card.value = data;
+        }
+      }
+    }
+    if (card.value) {
+      taskId.value = card.value.task_id;
+      canModify.value = checkUserCanModifyTask();
+      taskStore.setCurrentTask(card.value);
+      prepareTaskData(card.value);
+      isLoaded.value = true;
     }
   });
 </script>

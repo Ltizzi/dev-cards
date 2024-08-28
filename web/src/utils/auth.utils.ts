@@ -94,8 +94,7 @@ function checkIsDesignated(workspace_id: number, task_id: number) {
   );
 }
 
-function checkIfUserisTaskOwner(task_id: number) {
-  const user = JSON.parse(localStorage.getItem("user") as string) as User;
+function checkIfUserisTaskOwner(task_id: number, user: User) {
   return (
     user.created_tasks.filter((t: TaskLite) => t.task_id == task_id).length > 0
   );

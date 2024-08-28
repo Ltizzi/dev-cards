@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="pt-5 min-h-screen">
+  <div class="pt-5 min-h-screen" v-if="isLoaded">
     <h1 class="text-center text-4xl">Scrum board</h1>
     <div class="flex flex-row py-5 justify-between">
       <TaskFilterInput @search="defineSearch" />
@@ -131,7 +131,7 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { onBeforeMount, ref, watch } from "vue";
+  import { onBeforeMount, onMounted, ref, watch } from "vue";
   import {
     Priority,
     Progress,
@@ -164,6 +164,8 @@
   const apiCall = useApiCall();
 
   const isDark = ref<boolean>();
+
+  const isLoaded = ref<boolean>();
 
   watch(
     () => projectStore.current.tasks,
@@ -366,11 +368,16 @@
 
   onBeforeMount(() => {
     isDark.value = checkThemeIsDark();
-    tasks.value = getTasks();
-    prepareTemplate(getTasks());
+
     isMicro.value = JSON.parse(
       localStorage.getItem("ui-card-btn-micro") as string
     );
+  });
+
+  onMounted(() => {
+    tasks.value = getTasks();
+    prepareTemplate(getTasks());
+    isLoaded.value = true;
   });
 </script>
 <style lang=""></style>

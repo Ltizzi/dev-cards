@@ -29,6 +29,7 @@ export const useTaskStore = defineStore("tasks", {
     },
 
     setCurrentTask(task: Task) {
+      localStorage.setItem("currentTask", JSON.stringify(task));
       this.currentTask = task;
     },
 

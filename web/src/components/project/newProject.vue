@@ -192,7 +192,8 @@
   onBeforeMount(() => {
     freshUser.value = userStore.checkIfUserIsNew();
     console.log(userStore.self);
-    user.value = JSON.parse(localStorage.getItem("user") as string);
+    // user.value = JSON.parse(localStorage.getItem("user") as string);
+    user.value = userStore.self;
     if (route.path == "/signup/project") isInSignUpProcess.value = true;
   });
 </script>
