@@ -1,6 +1,7 @@
 <template lang="">
   <div
     :class="[
+      'py-3',
       props.canModify ? 'hover:cursor-pointer ' : '',
       props.type == 'TaskType' ? 'min-w-28' : 'border-r-2  border-secondary',
     ]"

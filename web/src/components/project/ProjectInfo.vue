@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="flex flex-col justify-center w-full mx-5  min-h-screen" v-if="isLoaded">
+  <div class="flex flex-col justify-center w-full   min-h-screen" v-if="isLoaded">
     <div class="flex flex-row justify-center gap-5 align-middle">
       <h1 class="text-4xl text-center my-5 font-bold">
         {{ project.project_name }}
@@ -10,68 +10,72 @@
         </div>
       </div>
     </div>
-    <div class="my-5">
-      <!-- <h1 class="mb-2 text-xl font-bold">Description:</h1>
-      <p class="mx-10 text-lg">{{ project.description }}</p> -->
-      <BaseEditDescription
-      :description="project.description"
-      :id="project.workspace_id"
-      :isDark="isDark"
-      :type="'workspace'"
-      :canModify="canModify"
-      @update="updateProject"
-      />
-    </div>
-    <div class="my-5">
-      <h1 class="mb-2 text-xl font-bold">Created by:</h1>
-      <div class="flex flex-row gap-0 ml-20 mt-5">
-        <div class="avatar">
-          <div class="w-8 rounded-full">
-            <img :src="project.owner.avatar" />
-          </div>
-        </div>
-        <p class="mx-10 text-base my-auto">
-          {{ project.owner.username }}, at {{ dateUtils.generateDateTemplate(project.created_at) }}
-        </p>
-      </div>
-    </div>
-    <div class="my-5">
-      <h1 class="mb-2 text-xl font-bold">Moderators:</h1>
-      <p class="mx-10 text-lg flex flex-row flex-wrap gap-5" v-for="mod in project.moderators">
-        <div class="flex flex-row gap-0 ml-20 mt-5">
-            <div class="avatar">
-              <div class="w-8 rounded-full">
-                <img :src="mod.avatar" />
-              </div>
+
+    <div class="flex flex-col gap-5 justify-center items-center text-center mt-10 -ml-10">
+      <div >
+        <h1 class="mb-2 text-base font-bold">Created by:</h1>
+        <div class="flex flex-row gap-3  mt-5 items-center">
+          <div class="avatar">
+            <div class="w-6 rounded-full">
+              <img :src="project.owner.avatar" />
             </div>
-            <p class="mx-10 text-base my-auto">
-              {{ mod.username }}
-            </p>
           </div>
-      </p>
-    </div>
-    <div class="my-5">
-        <h1 class="mb-2 text-xl font-bold">Users:</h1>
-        <div class="flex flex-row flex-wrap gap-5">
-          <p class="mx-0 text-lg " v-for="user in project.users">
-            <div class="flex flex-row gap-4 ml-5 mt-5">
-                <div class="avatar">
-                  <div class="w-8 rounded-full">
-                    <img :src="user.avatar" />
-                  </div>
-                </div>
-                <p class="text-base my-auto">
-                  {{ user.username }}
-                </p>
-              </div>
+          <p class="text-sm my-auto">
+            {{ project.owner.username }}, at {{ dateUtils.generateDateTemplate(project.created_at) }}
           </p>
         </div>
-  
       </div>
-      <h1 class="text-3xl my-5">Tasks:</h1>
-      <NewTaskBtn />
+      <div>
+        <h1 class="mb-2 text-base font-bold">Moderators:</h1>
+        <p class="text-lg flex flex-row flex-wrap gap-5" v-for="mod in project.moderators">
+          <div class="flex flex-row gap-5 mt-2">
+              <div class="avatar">
+                <div class="w-6 rounded-full">
+                  <img :src="mod.avatar" />
+                </div>
+              </div>
+              <p class="text-sm my-auto">
+                {{ mod.username }}
+              </p>
+            </div>
+        </p>
+      </div>
+      <div>
+          <h1 class="mb-2 text-base font-bold">Users:</h1>
+          <div class="flex flex-row flex-wrap gap-5">
+            <p class=" text-lg " v-for="user in project.users">
+              <div class="flex flex-row gap-4 ml-5 ">
+                  <div class="avatar">
+                    <div class="w-6 rounded-full">
+                      <img :src="user.avatar" />
+                    </div>
+                  </div>
+                  <p class="text-sm my-auto">
+                    {{ user.username }}
+                  </p>
+                </div>
+            </p>
+          </div>
     
-      <TaskList :tasks="project.tasks" :isMicro="false" :isDraggable="false" :isDark="isDark"/>
+        </div>
+    </div>
+    
+      <div class="my-10  flex flex-col justify-center items-center">
+        <!-- <h1 class="mb-2 text-xl font-bold">Description:</h1>
+        <p class="mx-10 text-lg">{{ project.description }}</p> -->
+        <BaseEditDescription
+        :description="project.description"
+        :id="project.workspace_id"
+        :isDark="isDark"
+        :type="'workspace'"
+        :canModify="canModify"
+        @update="updateProject"
+        />
+      </div>
+      <!-- <h1 class="text-3xl my-5">Tasks:</h1> -->
+      <NewTaskBtn class="mx-auto"/>
+<!--     
+      <TaskList :tasks="project.tasks" :isMicro="false" :isDraggable="false" :isDark="isDark"/> -->
   </div>
 </template>
 

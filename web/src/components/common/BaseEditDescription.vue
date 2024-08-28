@@ -4,8 +4,16 @@
       class="flex flex-row gap-5 my-5"
       @mouseover="props.canModify ? (hovered = true) : (hovered = false)"
       @mouseleave="hovered = false"
+      v-if="props.type != 'workspace'"
     >
-      <p class="text-xl underline font-semibold pb-2">Description:</p>
+      <p
+        :class="[
+          'text-lg underline font-semibold pb-2',
+          props.type == 'workspace' ? 'text-center' : '',
+        ]"
+      >
+        Description:
+      </p>
       <font-awesome-icon
         :class="[
           'my-auto size-7 hover:cursor-pointer',
@@ -23,7 +31,7 @@
       @mouseover="props.canModify ? (hovered = true) : (hovered = false)"
       @mouseleave="hovered = false"
     >
-      <p class="indent-5 text-base whitespace-pre-line">
+      <p :class="['text-base whitespace-pre-line']">
         {{ props.description }}
       </p>
     </div>

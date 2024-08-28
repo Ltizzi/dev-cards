@@ -25,7 +25,7 @@
       Subtitle
       <input
         type="text"
-        :lass="[
+        :class="[
           'grow',
           props.isDark
             ? 'text-base-300 bg-base-content'

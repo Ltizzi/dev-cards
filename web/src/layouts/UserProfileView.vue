@@ -1,54 +1,62 @@
 <template lang="">
   <div class="min-h-screen flex items-center justify-center">
     <div
-      class="flex justify-center items-center text-lg mx-auto w-2/3 my-auto text-center bg-gradient-to-r from-transparent via-secondary py-20 rounded-xl shadow-lg shadow-accent to-primary min-h-96"
+      class="flex justify-center items-center text-lg mx-auto w-11/12 h-5/6 px-20 my-auto text-center bg-gradient-to-r from-transparent via-secondary py-28 rounded-xl shadow-lg shadow-accent to-primary"
       v-if="!failed"
     >
       <div
-        class="flex flex-col justify-center gap-5 bg-neutral bg-opacity-50 w-2/3 py-7 rounded-2xl"
+        class="flex flex-row flex-grow justify-center gap-5 bg-neutral bg-opacity-50 w-10/12 py-7 h-full rounded-2xl"
       >
-        <div class="avatar mx-auto">
-          <div class="w-40 rounded-xl">
-            <img :src="user.avatar ? user.avatar : default_avatar" />
-          </div>
-        </div>
-        <h1
-          :class="[
-            'font-bold text-2xl px-2 py-0.5 rounded-xl w-fit mx-auto',
-            !isDark ? 'text-white' : '',
-          ]"
+        <div
+          class="flex flex-col gap-5 justify-center w-2/5 min-h-96 items-end"
         >
-          {{ user.username }}
-        </h1>
-        <h2 class="italic text-info">
+          <div class="avatar">
+            <div class="w-44 rounded-full">
+              <img :src="user.avatar ? user.avatar : default_avatar" />
+            </div>
+          </div>
+          <h1
+            :class="[
+              'font-bold text-2xl px-2 py-0.5 rounded-xl w-fit ',
+              !isDark ? 'text-white' : '',
+            ]"
+          >
+            {{ user.username }}
+          </h1>
+          <h2 class="italic text-info">
+            <p
+              :class="[
+                'bg-neutral px-2 py-0.5 rounded-xl w-fit mx-auto',
+                !isDark ? 'text-white  bg-opacity-30' : 'bg-opacity-60',
+              ]"
+            >
+              {{ user.email }}
+            </p>
+          </h2>
+          <h2 v-if="user.githubProfile" class="text-info">
+            <a
+              :href="user.githubProfile"
+              :class="[
+                'hover:underline bg-neutral px-2 py-0.5 rounded-xl w-fit mx-auto',
+                !isDark ? 'text-white  bg-opacity-30' : 'bg-opacity-60',
+              ]"
+              target="_blank"
+              >{{ user.githubProfile }}</a
+            >
+          </h2>
+        </div>
+        <div
+          class="flex flex-col item-middle align-middle my-auto justify-center text-center w-3/5"
+        >
           <p
             :class="[
-              'bg-neutral px-2 py-0.5 rounded-xl w-fit mx-auto',
-              !isDark ? 'text-white  bg-opacity-30' : 'bg-opacity-60',
+              ' px-5 grow py-5 rounded-xl w-fit mx-auto ',
+              !isDark ? 'text-white' : '',
             ]"
           >
-            {{ user.email }}
+            {{ user.about }}
           </p>
-        </h2>
-        <h2 v-if="user.githubProfile" class="text-info">
-          <a
-            :href="user.githubProfile"
-            :class="[
-              'hover:underline bg-neutral px-2 py-0.5 rounded-xl w-fit mx-auto',
-              !isDark ? 'text-white  bg-opacity-30' : 'bg-opacity-60',
-            ]"
-            target="_blank"
-            >{{ user.githubProfile }}</a
-          >
-        </h2>
-        <p
-          :class="[
-            ' px-5 py-5 rounded-xl w-fit mx-auto',
-            !isDark ? 'text-white' : '',
-          ]"
-        >
-          {{ user.about }}
-        </p>
+        </div>
       </div>
     </div>
     <div role="alert" class="alert alert-error my-auto" v-else>

@@ -1,8 +1,8 @@
 <template lang="">
-  <div class="w-full flex flex-row">
+  <div class="w-full px-5 mx-auto flex flex-row">
     <div
       :class="[
-        'form-control w-4/5 flex flex-row gap-5',
+        'form-control w-full flex flex-row gap-7 items-center',
         !isDark
           ? 'bg-base-100 text-base-content'
           : props.darkerCard
@@ -13,10 +13,12 @@
       @mouseleave="hovered = false"
       v-if="!state.showEditable"
     >
-      <h1 class="cursor-pointer label flex flex-row justify-between gap-5">
+      <h1
+        class="cursor-pointer label flex flex-row justify-between gap-5 w-11/12"
+      >
         <span
           :class="[
-            'label-text text-lg',
+            'label-text -indent-1 text-base',
             !isDark
               ? 'bg-base-100 text-base-content'
               : props.darkerCard
@@ -26,7 +28,10 @@
           >{{ props.issue.sentence }}
         </span>
       </h1>
-      <div class="flex flex-row gap-1 my-auto" v-show="hovered">
+      <div
+        class="flex flex-row gap-1 my-auto justify-center items-center"
+        v-show="hovered"
+      >
         <font-awesome-icon
           :class="[
             'my-auto size-7 hover:cursor-pointer',

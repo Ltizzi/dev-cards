@@ -1,7 +1,7 @@
 <template lang="">
   <div
     :class="[
-      'flex flex-col justify-start my-10 w-full ml-0 rounded-2xl min-h-screen',
+      'flex flex-col justify-start my-5 w-full ml-0 rounded-2xl min-h-screen',
     ]"
   >
     <div
@@ -19,13 +19,13 @@
   
        -->
       <div class="flex flex-col text-center gap-0">
-        <div :class="['w-full h-5 rounded-t-lg', title_color]"></div>
+        <div :class="['w-full h-6  rounded-t-lg', title_color]"></div>
 
         <div
-          class="flex flex-row justify-stretch mb-0 border-b-4 border-secondary gap-0"
+          class="flex flex-row h-24 justify-stretch mb-0 border-b-4 border-secondary gap-0"
         >
           <h2
-            class="text-2xl ml-2 border-r-2 border-secondary px-2 py-4 my-auto min-w-44"
+            class="text-2xl ml-2 border-r-2 border-secondary px-2 py-7 my-auto min-w-44"
           >
             {{ card.workspace.project_name }}
           </h2>
@@ -41,7 +41,7 @@
             ></TaskTitle>
           </div>
 
-          <div class="my-auto w-1/12 border-l-2 border-secondary py-5 px-0.5">
+          <div class="my-auto w-1/12 border-l-2 border-secondary py-8 px-0.5">
             <p>by {{ card.owner.username }}</p>
           </div>
           <div
@@ -50,7 +50,7 @@
             <!-- MARK: TASK STATE
            -->
             <div
-              class="flex flex-row justify-start gap-1 h-7 border-b-2 border-secondary"
+              class="flex flex-row justify-start gap-1 h-12 items-center border-b-2 border-secondary"
             >
               <TaskPrioritySelectable
                 :priority="card.priority"
@@ -100,20 +100,13 @@
         <!-- 
         #MARK: TASK BODY
         -->
-        <div class="px-3 py-5 flex flex-col gap-2 justify-start">
+        <div class="px-7 pt-10 flex flex-col gap-5 justify-start">
           <!-- <h2 class="text-2xl text-start">{{ card.subtitle }}</h2> -->
-          <TaskSubtitle
-            :subtitle="card.subtitle"
-            :task_id="card.task_id"
-            :canModify="canModify"
-            :isDark="isDark"
-            :darkerCard="darkerCard"
-            @update="updateTask"
-          />
 
           <div
+            v-if="card.task_tags.length > 0"
             :class="[
-              'flex flex-row justify-between gap-2 w-2/4 py-5 h-16 my-auto',
+              'flex flex-row justify-between gap-2 w-2/4 py-5 h-20   my-auto',
               removeTagActive ? 'hover:cursor-not-allowed' : '',
             ]"
             @mouseover="card.task_tags.length > 0 ? (mouseOverTag = true) : ''"
@@ -150,9 +143,8 @@
               </button>
             </div>
           </div>
-
           <div
-            class="flex flex-row gap-2 py-2 align-middle"
+            class="flex flex-row gap-2 py-1 align-middle"
             v-if="card.dependencies.length > 0"
           >
             <font-awesome-icon
@@ -169,19 +161,29 @@
             </div>
           </div>
 
+          <TaskSubtitle
+            :subtitle="card.subtitle"
+            :task_id="card.task_id"
+            :canModify="canModify"
+            :isDark="isDark"
+            :darkerCard="darkerCard"
+            @update="updateTask"
+            class="ml-0"
+          />
+
           <div class="text-start" v-if="card.designated_to.length > 0">
-            <p class="text-xl py-5 underline">Designated to:</p>
+            <p class="text-lg font-semibold py-5 underline">Designated to:</p>
             <div class="flex flex-row justify-start gap-5 ml-5">
               <div class="w-auto" v-for="user of card.designated_to">
                 <div
-                  class="flex flex-row gap-2 align-middle justify-start text-lg font-semibold"
+                  class="flex flex-row gap-4 items-center align-middle justify-start text-lg font-semibold"
                 >
                   <div class="avatar">
-                    <div class="w-8 rounded-full">
+                    <div class="w-6 rounded-full">
                       <img :src="user.avatar" />
                     </div>
                   </div>
-                  <span> {{ user.username }}, </span>
+                  <span class="text-base"> {{ user.username }}, </span>
                 </div>
               </div>
             </div>
@@ -220,8 +222,8 @@
               "
               @mouseleave="showAddIssueBtn = false"
             >
-              <div class="flex flex-row justify-start gap-5 mt-3">
-                <p class="text-xl underline font-semibold pb-2">Issues:</p>
+              <div class="flex flex-row justify-start gap-5 mt-7">
+                <p class="text-lg underline font-semibold pb-5">Issues:</p>
                 <AddIssueBtn
                   @update="updateTask"
                   :task_id="card.task_id"
