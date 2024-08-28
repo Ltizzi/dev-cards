@@ -537,26 +537,28 @@
 
   const just_fetched = ref<boolean>();
 
-  // watch(
-  //   () => route.query.id,
-  //   async (newValue, oldValue) => {
-  //     const id = newValue;
-  //     if (newValue != oldValue && id && !just_fetched.value) {
-  //       const task = await fetchTask(+id);
-  //       just_fetched.value = true;
-  //       setTimeout(() => {
-  //         just_fetched.value = false;
-  //       }, 50);
-  //       if (task) {
-  //         card.value = task;
-  //         taskId.value = task.task_id;
-  //         canModify.value = checkUserCanModifyTask();
-  //         taskStore.setCurrentTask(task);
-  //         prepareTaskData(task);
-  //       }
-  //     }
-  //   }
-  // );
+  watch(
+    () => route.query.id,
+    async (newValue, oldValue) => {
+      const id = newValue;
+      if (newValue != oldValue && id && !just_fetched.value) {
+        isLoaded.value = false;
+        const task = await fetchTask(+id);
+        just_fetched.value = true;
+        setTimeout(() => {
+          just_fetched.value = false;
+        }, 50);
+        if (task) {
+          isLoaded.value = true;
+          card.value = task;
+          taskId.value = task.task_id;
+          canModify.value = checkUserCanModifyTask();
+          taskStore.setCurrentTask(task);
+          prepareTaskData(task);
+        }
+      }
+    }
+  );
 
   watch(
     () => taskStore.currentTask,

@@ -60,7 +60,7 @@
         </div>
     </div>
     
-      <div class="my-10  flex flex-col justify-center items-center">
+      <div class="my-10 mx-14  flex flex-col justify-center items-center">
         <!-- <h1 class="mb-2 text-xl font-bold">Description:</h1>
         <p class="mx-10 text-lg">{{ project.description }}</p> -->
         <BaseEditDescription

@@ -15,35 +15,37 @@
               <img :src="user.avatar ? user.avatar : default_avatar" />
             </div>
           </div>
-          <h1
-            :class="[
-              'font-bold text-2xl px-2 py-0.5 rounded-xl w-fit ',
-              !isDark ? 'text-white' : '',
-            ]"
-          >
-            {{ user.username }}
-          </h1>
-          <h2 class="italic text-info">
-            <p
+          <div class="text-start flex items-end flex-col gap-2">
+            <h1
               :class="[
-                'bg-neutral px-2 py-0.5 rounded-xl w-fit mx-auto',
-                !isDark ? 'text-white  bg-opacity-30' : 'bg-opacity-60',
+                'font-bold text-2xl px-2 py-0.5 rounded-xl w-fit mt-0 ',
+                !isDark ? 'text-white' : '',
               ]"
             >
-              {{ user.email }}
-            </p>
-          </h2>
-          <h2 v-if="user.githubProfile" class="text-info">
-            <a
-              :href="user.githubProfile"
-              :class="[
-                'hover:underline bg-neutral px-2 py-0.5 rounded-xl w-fit mx-auto',
-                !isDark ? 'text-white  bg-opacity-30' : 'bg-opacity-60',
-              ]"
-              target="_blank"
-              >{{ user.githubProfile }}</a
-            >
-          </h2>
+              {{ user.username }}
+            </h1>
+            <h2 class="italic text-info">
+              <p
+                :class="[
+                  'bg-neutral px-2 py-0.5 rounded-xl w-fit mx-auto',
+                  !isDark ? 'text-white  bg-opacity-30' : 'bg-opacity-60',
+                ]"
+              >
+                {{ user.email }}
+              </p>
+            </h2>
+            <h2 v-if="user.githubProfile" class="text-info">
+              <a
+                :href="user.githubProfile"
+                :class="[
+                  'hover:underline bg-neutral px-2 py-0.5 rounded-xl w-fit mx-auto',
+                  !isDark ? 'text-white  bg-opacity-30' : 'bg-opacity-60',
+                ]"
+                target="_blank"
+                >{{ user.githubProfile }}</a
+              >
+            </h2>
+          </div>
         </div>
         <div
           class="flex flex-col item-middle align-middle my-auto justify-center text-center w-3/5"
