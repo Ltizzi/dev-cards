@@ -72,6 +72,7 @@
         @update="updateProject"
         />
       </div>
+      <TagNavigationPanel :ws_id="project.workspace_id" :info="true" class="mx-16 pb-14"/>
       <!-- <h1 class="text-3xl my-5">Tasks:</h1> -->
       <NewTaskBtn class="mx-auto"/>
 <!--     
@@ -91,6 +92,7 @@
   import TaskList from "../task/TaskList.vue";
   import { dateUtils } from '../../utils/date.utils';
 import { checkIsModOrOwner } from "../../utils/auth.utils";
+import TagNavigationPanel from "../ui/TagNavigationPanel.vue";
 
   const projectStore = useProjectStore();
 
@@ -106,7 +108,7 @@ import { checkIsModOrOwner } from "../../utils/auth.utils";
 
   const canModify = ref<boolean>();
 
-  watch(()=> projectStore.current, (newValue, oldValue)=>{
+  watch(()=> projectStore.current.workspace_id, (newValue, oldValue)=>{
     if(newValue != oldValue){
       project.value = projectStore.current;
     }

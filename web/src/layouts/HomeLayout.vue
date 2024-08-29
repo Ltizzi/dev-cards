@@ -134,6 +134,6 @@
     isDark.value = UIStore.darkTheme;
     darkerCards.value = UIStore.darkerCard;
     darkerMiniCards.value = UIStore.darkerMiniCard;
-    //taskUtils.saveTagPool();
+    //taskUtils.saveTagPool(); //usado para crear tagpools para testear
   });
 </script>

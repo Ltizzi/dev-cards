@@ -80,9 +80,7 @@ function searchTasksByTag(tag: string, tasks: TaskLite[]): TaskLite[] {
     return tasks;
   }
   tag = tag.toLowerCase();
-  return tasks.filter((t: TaskLite) =>
-    t.task_tags.filter((tag_name: string) => tag_name.toLowerCase() === tag)
-  );
+  return tasks.filter((t: TaskLite) => t.task_tags.includes(tag));
 }
 
 function searchTasksByFilters(options: any[], tasks: TaskLite[]): TaskLite[] {
@@ -120,20 +118,53 @@ function getProjectUserDesignatedTasks(
 }
 
 const colors = [
-  "bg-slate-500",
-  "bg-red-500",
-  "bg-orange-500",
-  "bg-emerald-500",
-  "bg-teal-500",
-  "bg-sky-500",
-  "bg-indigo-500",
-  "bg-violet-500",
-  "bg-pink-500",
-  "bg-rose-600",
+  // "bg-slate-500",
+  // "bg-red-500",
+  // "bg-orange-500",
+  // "bg-emerald-500",
+  // "bg-teal-500",
+  // "bg-sky-500",
+  // "bg-indigo-500",
+  // "bg-violet-500",
+  // "bg-pink-500",
+  // "bg-rose-600",
+  "red",
+  "orange",
+  "purple",
+  "pink",
+  "indigo",
+  "fuchsia",
+  "cyan",
+  "sky",
+  "teal",
+  "emerald",
+  "amber",
 ]; //  "neutral","base-100",
 
+function getLastColor() {
+  return localStorage.getItem("last-color");
+}
+
 function getRandomColor() {
-  return colors[Math.floor(Math.random() * colors.length)];
+  let color = colors[Math.floor(Math.random() * colors.length)];
+
+  if (color != getLastColor()) {
+    localStorage.setItem("last-color", color);
+    return color;
+  } else return getRandomColor();
+}
+
+function createTagPool(ws_id: number) {
+  let tag_pools = [] as TagPool[];
+  if (localStorage.getItem("tags")) {
+    tag_pools = JSON.parse(localStorage.getItem("tags") as string);
+  }
+  const newTagPool: TagPool = {
+    workspace_id: ws_id,
+    tags: [],
+  };
+  tag_pools.push(newTagPool);
+  localStorage.setItem("tags", JSON.stringify(tag_pools));
 }
 
 function addTagToTagsPool(tag: string, ws_id: number) {
@@ -198,7 +229,8 @@ function getTagColor(ws_id: number, tag_name: string) {
 function getTags(ws_id: number) {
   const tagPools = JSON.parse(localStorage.getItem("tags") as string);
   const TagPool = getTagPoolById(tagPools, ws_id) as TagPool[];
-  return TagPool[0].tags;
+  if (TagPool[0]) return TagPool[0].tags;
+  else return [];
 }
 
 //Method and interface used to convert old tag pool format in the new Tag pool
@@ -264,5 +296,6 @@ export const taskUtils = {
   getRandomColor,
   getTagColor,
   getTags,
-  //saveTagPool,
+  saveTagPool,
+  createTagPool,
 };

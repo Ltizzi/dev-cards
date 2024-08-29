@@ -25,6 +25,7 @@ import {
   faPeopleGroup,
   faCircleMinus,
   faGear,
+  faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -45,7 +46,8 @@ library.add(
   faHammer,
   faCrown,
   faPeopleGroup,
-  faGear
+  faGear,
+  faMagnifyingGlass
 );
 
 const app = createApp(App);

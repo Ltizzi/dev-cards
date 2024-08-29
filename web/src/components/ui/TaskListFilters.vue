@@ -2,6 +2,33 @@
   <div class="flex flex-row justify-between py-5">
     <TaskFilterInput @search="defineSearch" class="ml-0" />
     <div class="flex flex-row gap-1 my-auto">
+      <div class="flex flex-row justify-center items-center my-auto gap-2 mr-2">
+        <div class="tooltip" data-tip="Show/Hidetags">
+          <button class="btn btn-outline btn-info" @click="handleTags">
+            Show Tags
+          </button>
+          <!-- <button
+            class="btn h-2 bg-info hover:bg-indigo-400"
+            @click="handleTags"
+          >
+            <font-awesome-icon
+              :icon="['fas', 'magnifying-glass']"
+              class="size-5"
+            />
+          </button> -->
+        </div>
+        <div class="tooltip" data-tip="Clear Search">
+          <button class="btn btn-outline btn-info" @click="clearSearch">
+            Clear Tag Search
+          </button>
+          <!-- <button
+            class="btn bg-error h-2 hover:bg-red-800"
+            @click="clearSearch"
+          >
+            <font-awesome-icon :icon="['fas', 'trash']" class="size-5" />
+          </button> -->
+        </div>
+      </div>
       <TaskPropFilters @selected="filterByOptions" />
       <ChangeCardSizeBtn @changeIconSize="changeIconSize" class="mr-16 mt-1" />
     </div>
@@ -36,7 +63,13 @@
     noResults: false,
   });
 
-  const emit = defineEmits(["changeSize", "filterTasks", "noResults"]);
+  const emit = defineEmits([
+    "changeSize",
+    "filterTasks",
+    "noResults",
+    "handleTags",
+    "clearSearch",
+  ]);
 
   watch(
     () => search.value,
@@ -65,6 +98,14 @@
       }
     }
   );
+
+  function handleTags() {
+    emit("handleTags");
+  }
+
+  function clearSearch() {
+    emit("clearSearch");
+  }
 
   function defineSearch(value: string) {
     search.value = value;
