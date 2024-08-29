@@ -72,7 +72,7 @@
         @update="updateProject"
         />
       </div>
-      <TagNavigationPanel :ws_id="project.workspace_id" :info="true" class="mx-16 pb-14"/>
+      <TagNavigationPanel :ws_id="project.workspace_id" :info="true" :show="true" class="mx-16 pb-14"/>
       <!-- <h1 class="text-3xl my-5">Tasks:</h1> -->
       <NewTaskBtn class="mx-auto"/>
 <!--     

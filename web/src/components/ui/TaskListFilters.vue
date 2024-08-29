@@ -5,7 +5,7 @@
       <div class="flex flex-row justify-center items-center my-auto gap-2 mr-2">
         <div class="tooltip" data-tip="Show/Hidetags">
           <button class="btn btn-outline btn-info" @click="handleTags">
-            Show Tags
+            {{ !state.showingTags ? "Show Tags" : "Hide Tags" }}
           </button>
           <!-- <button
             class="btn h-2 bg-info hover:bg-indigo-400"
@@ -18,7 +18,13 @@
           </button> -->
         </div>
         <div class="tooltip" data-tip="Clear Search">
-          <button class="btn btn-outline btn-info" @click="clearSearch">
+          <button
+            :class="[
+              'btn btn-outline btn-info',
+              props.tagSearch || state.tagSearch ? '' : 'btn-disabled',
+            ]"
+            @click="clearSearch"
+          >
             Clear Tag Search
           </button>
           <!-- <button
@@ -41,14 +47,18 @@
   import { TaskLite } from "../../utils/types";
   import { reactive, ref, watch } from "vue";
   import { taskUtils } from "../../utils/task.utils";
+  import { useRoute } from "vue-router";
 
   const props = defineProps<{
     tasks: TaskLite[];
+    tagSearch: boolean;
   }>();
 
   const filteredTasks = ref<TaskLite[]>();
 
   const search = ref<string>();
+
+  const route = useRoute();
 
   const state = reactive({
     selectedColors: [] as any[],
@@ -61,6 +71,8 @@
     lastSelected: "" as string,
     lastSearchResultsCount: 0,
     noResults: false,
+    showingTags: false,
+    tagSearch: false,
   });
 
   const emit = defineEmits([
@@ -70,6 +82,15 @@
     "handleTags",
     "clearSearch",
   ]);
+
+  watch(
+    () => route.query.tag,
+    (newValue, oldValue) => {
+      if (newValue) {
+        state.tagSearch = true;
+      } else state.tagSearch = false;
+    }
+  );
 
   watch(
     () => search.value,
@@ -100,6 +121,7 @@
   );
 
   function handleTags() {
+    state.showingTags = !state.showingTags;
     emit("handleTags");
   }
 

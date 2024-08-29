@@ -4,6 +4,7 @@
 
     <TaskListFilters
       :tasks="tasks"
+      :tagSearch="state.searchedByTag"
       @changeSize="changeIconSize"
       @filterTasks="setFilteredTasks"
       @noResults="noResults"
@@ -73,6 +74,7 @@
   const state = reactive({
     lastSearchResultsCount: 0,
     noResults: false,
+    searchedByTag: false,
   });
 
   watch(
@@ -91,6 +93,7 @@
     (newValue, oldValue) => {
       if (newValue) {
         console.log("tag:", newValue);
+        state.searchedByTag = true;
         filteredTasks.value = taskUtils.searchTasksByTag(
           newValue as string,
           tasks.value as TaskLite[]
@@ -124,6 +127,7 @@
       router.push(`/project/tasks?tag=${search_value}`);
     } else {
       router.push("/project/tasks");
+      state.searchedByTag = false;
       filteredTasks.value = [];
     }
   }
@@ -143,6 +147,7 @@
     const darkTHeme = JSON.parse(localStorage.getItem("darkTheme") as string);
     isDark.value = darkTHeme;
     if (route.query.tag) {
+      state.searchedByTag = true;
       filteredTasks.value = taskUtils.searchTasksByTag(
         route.query.tag as string,
         tasks.value as TaskLite[]

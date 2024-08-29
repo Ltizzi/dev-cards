@@ -19,8 +19,8 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { ref, onBeforeMount, watch } from "vue";
-  import { useRouter } from "vue-router";
+  import { ref, onBeforeMount, onMounted, watch } from "vue";
+  import { useRoute, useRouter } from "vue-router";
   import { UITag } from "../../utils/types";
   import { taskUtils } from "../../utils/task.utils";
 
@@ -29,6 +29,8 @@
   const emit = defineEmits(["update"]);
 
   const router = useRouter();
+
+  const route = useRoute();
 
   const tags = ref<UITag[]>();
   const showTags = ref<boolean>();
@@ -71,5 +73,9 @@
     if (!tags.value) taskUtils.createTagPool(props.ws_id);
 
     isLoaded.value = tags.value.length > 0;
+  });
+
+  onMounted(() => {
+    if (route.path == "/project/info") showTags.value = true;
   });
 </script>
