@@ -1,6 +1,6 @@
 <template lang="">
   <div class="h-screen w-5/6 mx-auto">
-    <h1 class="pt-5 text-3xl text-center">Project Settings</h1>
+    <h1 class="pt-5 text-3xl text-center">App Settings</h1>
     <div
       class="flex flex-row border-2 border-opacity-60 border-secondary bg-gradient-to-br from-base-200 to-transparent h-5/6 my-4"
     >

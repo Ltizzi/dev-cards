@@ -48,7 +48,7 @@
         </button>
       </div>
     </div>
-    <ProjectList />
+    <ProjectList v-if="isLoggedIn" />
     <DesignatedView
       class="ml-10"
       :isDark="isDark"
