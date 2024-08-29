@@ -26,7 +26,7 @@
   const props = defineProps<{
     tasks: Task[];
     isMicro: boolean;
-    isDark: boolean | null;
+    isDark?: boolean | null;
     //darkerCards: boolean | null;
     viewList: boolean;
     // isDraggable: boolean;

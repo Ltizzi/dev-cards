@@ -1,57 +1,71 @@
 <template lang="">
-  <div class="flex flex-row justify-between py-5">
-    <TaskFilterInput @search="defineSearch" class="ml-0" />
-    <div class="flex flex-row gap-1 my-auto">
-      <div class="flex flex-row justify-center items-center my-auto gap-2 mr-2">
-        <div class="tooltip" data-tip="Show/Hidetags">
-          <button class="btn btn-outline btn-info" @click="handleTags">
-            {{ !state.showingTags ? "Show Tags" : "Hide Tags" }}
-          </button>
-          <!-- <button
-            class="btn h-2 bg-info hover:bg-indigo-400"
-            @click="handleTags"
-          >
-            <font-awesome-icon
-              :icon="['fas', 'magnifying-glass']"
-              class="size-5"
-            />
-          </button> -->
+  <div class="flex flex-col justify-center">
+    <div class="flex flex-row justify-between py-5">
+      <TaskFilterInput @search="defineSearch" class="ml-0" />
+      <div class="flex flex-row gap-1 my-auto">
+        <div
+          class="flex flex-row justify-center items-center my-auto gap-2 mr-2"
+        >
+          <div class="tooltip" data-tip="Show/Hidetags">
+            <button class="btn btn-outline btn-info" @click="handleTags">
+              {{ !state.showingTags ? "Show Tags" : "Hide Tags" }}
+            </button>
+            <!-- <button
+              class="btn h-2 bg-info hover:bg-indigo-400"
+              @click="handleTags"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'magnifying-glass']"
+                class="size-5"
+              />
+            </button> -->
+          </div>
+          <div class="tooltip" data-tip="Clear Search">
+            <button
+              :class="[
+                'btn btn-outline btn-info',
+                props.tagSearch || state.tagSearch ? '' : 'btn-disabled',
+              ]"
+              @click="clearSearch"
+            >
+              Clear Tag Search
+            </button>
+            <!-- <button
+              class="btn bg-error h-2 hover:bg-red-800"
+              @click="clearSearch"
+            >
+              <font-awesome-icon :icon="['fas', 'trash']" class="size-5" />
+            </button> -->
+          </div>
         </div>
-        <div class="tooltip" data-tip="Clear Search">
-          <button
-            :class="[
-              'btn btn-outline btn-info',
-              props.tagSearch || state.tagSearch ? '' : 'btn-disabled',
-            ]"
-            @click="clearSearch"
-          >
-            Clear Tag Search
-          </button>
-          <!-- <button
-            class="btn bg-error h-2 hover:bg-red-800"
-            @click="clearSearch"
-          >
-            <font-awesome-icon :icon="['fas', 'trash']" class="size-5" />
-          </button> -->
-        </div>
+        <TaskPropFilters @selected="filterByOptions" />
+        <ChangeCardSizeBtn
+          @changeIconSize="changeIconSize"
+          class="mr-16 mt-1"
+        />
       </div>
-      <TaskPropFilters @selected="filterByOptions" />
-      <ChangeCardSizeBtn @changeIconSize="changeIconSize" class="mr-16 mt-1" />
     </div>
+    <TagNavigationPanel
+      :ws_id="props.ws_id"
+      :show="state.showingTags"
+      @update="searchTasks"
+    />
   </div>
 </template>
 <script setup lang="ts">
   import TaskFilterInput from "./TaskFilterInput.vue";
   import TaskPropFilters from "./TaskPropFilters.vue";
   import ChangeCardSizeBtn from "./ChangeCardSizeBtn.vue";
-  import { TaskLite } from "../../utils/types";
-  import { reactive, ref, watch } from "vue";
+  import TagNavigationPanel from "./TagNavigationPanel.vue";
+  import { TaskLite, UITag } from "../../utils/types";
+  import { onBeforeMount, reactive, ref, watch } from "vue";
   import { taskUtils } from "../../utils/task.utils";
-  import { useRoute } from "vue-router";
+  import { useRoute, useRouter } from "vue-router";
 
   const props = defineProps<{
     tasks: TaskLite[];
     tagSearch: boolean;
+    ws_id: number;
   }>();
 
   const filteredTasks = ref<TaskLite[]>();
@@ -59,6 +73,7 @@
   const search = ref<string>();
 
   const route = useRoute();
+  const router = useRouter();
 
   const state = reactive({
     selectedColors: [] as any[],
@@ -67,6 +82,7 @@
     selectedPriority: [] as any[],
     selectedTypes: [] as any[],
     selectedEffort: [] as any[],
+    selectedTags: [] as any[],
     selectedValues: [] as any[],
     lastSelected: "" as string,
     lastSearchResultsCount: 0,
@@ -93,10 +109,43 @@
   );
 
   watch(
+    () => route.query.tag,
+    (newValue, oldValue) => {
+      if (newValue) {
+        console.log("tag:", newValue);
+        state.tagSearch = true;
+        newValue = newValue as string;
+        const tags = newValue.split(" ");
+        console.log(tags);
+        //if (tags.length == 1)
+        // filteredTasks.value = fetchTasks(
+        //   newValue as string,
+        //   props.tasks as TaskLite[]
+        // );
+        //filterByOptions(tags, "tag");
+        // else {
+        //   tags.forEach((tag: string) => {
+        //     filteredTasks.value = filteredTasks.value?.concat(
+        //       fetchTasks(tag, props.tasks as TaskLite[])
+        //     );
+        //   });
+        // }
+        filterByOptions(tags, "tag");
+        if (filteredTasks.value) emit("filterTasks", filteredTasks.value);
+        // filteredByTags.value = filteredTasks.value;
+        // console.log(filteredByTags.value);
+      } else state.tagSearch = false;
+    }
+  );
+
+  watch(
     () => search.value,
     (newValue, oldValue) => {
       let tasksToFilter =
-        filteredTasks.value && filteredTasks.value?.length > 0 && newValue != ""
+        filteredTasks.value &&
+        filteredTasks.value?.length > 0 &&
+        newValue != "" &&
+        newValue != oldValue
           ? filteredTasks.value
           : props.tasks;
       filteredTasks.value = taskUtils.searchTasks(
@@ -126,7 +175,8 @@
   }
 
   function clearSearch() {
-    emit("clearSearch");
+    //    emit("clearSearch");
+    searchTasks(null);
   }
 
   function defineSearch(value: string) {
@@ -134,6 +184,38 @@
   }
 
   function filterByOptions(opts: any[], type: string) {
+    setSelectedOptions(opts, type);
+    if (
+      filteredTasks.value &&
+      filteredTasks.value.length > 0 &&
+      type == state.lastSelected &&
+      !search.value
+    ) {
+      //suma tasks del mismo tipo de filtro si no hay search (input de texto)
+      filterTasks(opts, type, props.tasks, true);
+    } else if (filteredTasks.value && filteredTasks.value.length > 0) {
+      //filtra a lo ya filtrado
+      filterTasks(opts, type, filteredTasks.value);
+    } else {
+      filterTasks(opts, type, props.tasks);
+    }
+    if (state.selectedValues.length > 0) state.noResults = checkNoResults();
+    state.lastSelected = type;
+    state.lastSearchResultsCount = filteredTasks.value
+      ? filteredTasks.value.length
+      : 0;
+    state.selectedValues = [];
+    if (state.lastSearchResultsCount == 0 && search.value) {
+      filteredTasks.value = taskUtils.searchTasks(
+        search.value,
+        props.tasks as TaskLite[]
+      );
+    }
+    if (filteredTasks.value) emit("filterTasks", filteredTasks.value);
+    // else emit("noResults");
+  }
+
+  function setSelectedOptions(opts: any[], type: string) {
     state.selectedValues = opts;
     switch (type.toLowerCase()) {
       case "color":
@@ -155,43 +237,85 @@
       case "effort":
         state.selectedEffort = opts;
         break;
+      case "tag":
+        state.selectedTags = opts;
+        break;
     }
     if (opts.length == 0) {
       prepareCheckedValues();
     }
-    if (
-      filteredTasks.value &&
-      filteredTasks.value.length > 0 &&
-      type == state.lastSelected &&
-      !search.value
-    ) {
+  }
+
+  //método q llama a taskUtils para filtrar segun sea por tags o por filtros comunes
+  function filterTasks(
+    opts: any[],
+    type: string,
+    list: TaskLite[],
+    sameCategory?: boolean
+  ) {
+    console.log("OPTS: " + opts);
+    if (type == "tag") {
+      filteredTasks.value = fetchTasks(opts[0], list);
+
+      if (opts.length > 1) {
+        let listToFilter = sameCategory ? props.tasks : filteredTasks.value;
+        for (let i = 1; i < opts.length; i++) {
+          filteredTasks.value = filteredTasks.value?.concat(
+            fetchTasks(opts[i], listToFilter)
+          );
+        }
+      }
+    } else
       filteredTasks.value = taskUtils.searchTasksByFilters(
         state.selectedValues,
-        props.tasks as TaskLite[]
+        list as TaskLite[]
       );
-    } else if (filteredTasks.value && filteredTasks.value.length > 0) {
-      filteredTasks.value = taskUtils.searchTasksByFilters(
-        state.selectedValues,
-        filteredTasks.value as TaskLite[]
-      );
+    filteredTasks.value = eraseDuplicates(filteredTasks.value);
+  }
+
+  function eraseDuplicates(arr: TaskLite[]) {
+    return Array.from(new Set(arr));
+  }
+
+  //método q filtra tasks de una lista a partir de un tag llamando a método de taskutils
+  function fetchTasks(value: string, tasks_list: TaskLite[]) {
+    return taskUtils.searchTasksByTag(
+      value as string,
+      tasks_list as TaskLite[]
+    );
+  }
+
+  function searchTasks(tag: UITag | null) {
+    //este método NO busca/filtra tasks por tags, solo agrega tags a la ruta de la web, el filtro viene después
+    if (tag) {
+      const search_value = tag.name;
+      if (!route.query.tag) router.push(`/project/tasks?tag=${search_value}`);
+      else {
+        if (!route.fullPath.includes(tag.name))
+          router.push(`${route.fullPath}+${search_value}`);
+        else {
+          let queryTags = route.query.tag as string;
+          const tags = queryTags.split(" ");
+          console.log(tags);
+          let filtered_tags = tags
+            .filter((t: string) => t.toLowerCase() != tag.name.toLowerCase())
+            .toString()
+            .replace(",", "+");
+          if (filtered_tags.length > 0)
+            router.push(`/project/tasks?tag=${filtered_tags}`);
+          else {
+            router.push("/project/tasks");
+            filterByOptions([], "");
+          }
+        }
+      }
     } else {
-      filteredTasks.value = taskUtils.searchTasksByFilters(
-        state.selectedValues,
-        props.tasks as TaskLite[]
-      );
+      router.push("/project/tasks");
+      state.tagSearch = false;
+      filteredTasks.value = props.tasks;
+      state.noResults = checkNoResults();
+      emit("filterTasks", filteredTasks.value);
     }
-    if (state.selectedValues.length > 0) state.noResults = checkNoResults();
-    state.lastSelected = type;
-    state.lastSearchResultsCount = filteredTasks.value.length;
-    state.selectedValues = [];
-    if (state.lastSearchResultsCount == 0 && search.value) {
-      filteredTasks.value = taskUtils.searchTasks(
-        search.value,
-        props.tasks as TaskLite[]
-      );
-    }
-    if (filteredTasks.value) emit("filterTasks", filteredTasks.value);
-    // else emit("noResults");
   }
 
   function changeIconSize() {
@@ -205,7 +329,8 @@
       state.selectedPriority,
       state.selectedProgress,
       state.selectedStatus,
-      state.selectedTypes
+      state.selectedTypes,
+      state.selectedTags
     );
   }
 
@@ -215,5 +340,17 @@
       filteredTasks.value?.length == state.lastSearchResultsCount
     );
   }
+
+  onBeforeMount(() => {
+    if (route.query.tag) {
+      state.tagSearch = true;
+      filteredTasks.value = taskUtils.searchTasksByTag(
+        route.query.tag as string,
+        props.tasks as TaskLite[]
+      );
+      if (filteredTasks.value) emit("filterTasks", filteredTasks.value);
+      // filteredByTags.value = filteredTasks.value;
+    }
+  });
 </script>
 <style lang=""></style>

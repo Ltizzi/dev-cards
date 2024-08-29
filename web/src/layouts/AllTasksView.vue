@@ -3,6 +3,7 @@
     <h1 class="text-4xl mt-5 text-base-content">All Tasks View</h1>
 
     <TaskListFilters
+      :ws_id="projectStore.current.workspace_id"
       :tasks="tasks"
       :tagSearch="state.searchedByTag"
       @changeSize="changeIconSize"
@@ -11,11 +12,11 @@
       @handleTags="handleTags"
       @clearSearch="searchTasks(null)"
     />
-    <TagNavigationPanel
+    <!-- <TagNavigationPanel
       :ws_id="projectStore.current.workspace_id"
       :show="showTags"
       @update="searchTasks"
-    />
+    /> -->
     <TaskList
       :isMicro="isMicro"
       :viewList="true"
@@ -53,7 +54,7 @@
   import TaskList from "../components/task/TaskList.vue";
   import { useProjectStore } from "../store/project.store";
   import TaskListFilters from "../components/ui/TaskListFilters.vue";
-  import TagNavigationPanel from "../components/ui/TagNavigationPanel.vue";
+  // import TagNavigationPanel from "../components/ui/TagNavigationPanel.vue";
   import { useRoute, useRouter } from "vue-router";
   import { taskUtils } from "../utils/task.utils";
 
@@ -62,6 +63,8 @@
   const tasks = ref<TaskLite[]>();
 
   const filteredTasks = ref<TaskLite[]>();
+
+  const filteredByTags = ref<TaskLite[]>();
 
   const isMicro = ref<boolean>(true);
   const isDark = ref<boolean>();
@@ -88,20 +91,39 @@
     }
   );
 
-  watch(
-    () => route.query.tag,
-    (newValue, oldValue) => {
-      if (newValue) {
-        console.log("tag:", newValue);
-        state.searchedByTag = true;
-        filteredTasks.value = taskUtils.searchTasksByTag(
-          newValue as string,
-          tasks.value as TaskLite[]
-        );
-        console.log(filteredTasks.value);
-      }
-    }
-  );
+  // watch(
+  //   () => route.query.tag,
+  //   (newValue, oldValue) => {
+  //     if (newValue) {
+  //       console.log("tag:", newValue);
+  //       state.searchedByTag = true;
+  //       newValue = newValue as string;
+  //       const tags = newValue.split(" ");
+  //       console.log(tags);
+  //       if (tags.length == 1)
+  //         filteredTasks.value = fetchTasks(
+  //           newValue as string,
+  //           tasks.value as TaskLite[]
+  //         );
+  //       else {
+  //         tags.forEach((tag: string) => {
+  //           filteredTasks.value = filteredTasks.value?.concat(
+  //             fetchTasks(tag, tasks.value as TaskLite[])
+  //           );
+  //         });
+  //       }
+  //       filteredByTags.value = filteredTasks.value;
+  //       console.log(filteredByTags.value);
+  //     }
+  //   }
+  // );
+
+  // function fetchTasks(value: string, tasks_list: TaskLite[]) {
+  //   return taskUtils.searchTasksByTag(
+  //     value as string,
+  //     tasks_list as TaskLite[]
+  //   );
+  // }
 
   function handleTags() {
     showTags.value = !showTags.value;
@@ -121,16 +143,17 @@
     }
   }
 
-  function searchTasks(tag: UITag) {
-    if (tag) {
-      const search_value = tag.name;
-      router.push(`/project/tasks?tag=${search_value}`);
-    } else {
-      router.push("/project/tasks");
-      state.searchedByTag = false;
-      filteredTasks.value = [];
-    }
-  }
+  // function searchTasks(tag: UITag) {
+  //   if (tag) {
+  //     const search_value = tag.name;
+  //     if (!route.query.tag) router.push(`/project/tasks?tag=${search_value}`);
+  //     else router.push(`${route.fullPath}+${search_value}`);
+  //   } else {
+  //     router.push("/project/tasks");
+  //     state.searchedByTag = false;
+  //     filteredTasks.value = [];
+  //   }
+  // }
 
   function changeIconSize() {
     isMicro.value = !isMicro.value;
@@ -146,13 +169,14 @@
     tasks.value = projectStore.current.tasks;
     const darkTHeme = JSON.parse(localStorage.getItem("darkTheme") as string);
     isDark.value = darkTHeme;
-    if (route.query.tag) {
-      state.searchedByTag = true;
-      filteredTasks.value = taskUtils.searchTasksByTag(
-        route.query.tag as string,
-        tasks.value as TaskLite[]
-      );
-    }
+    // if (route.query.tag) {
+    //   state.searchedByTag = true;
+    //   filteredTasks.value = taskUtils.searchTasksByTag(
+    //     route.query.tag as string,
+    //     tasks.value as TaskLite[]
+    //   );
+    //   filteredByTags.value = filteredTasks.value;
+    // }
   });
 </script>
 <style lang=""></style>

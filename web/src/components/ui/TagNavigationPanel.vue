@@ -24,7 +24,7 @@
   import { UITag } from "../../utils/types";
   import { taskUtils } from "../../utils/task.utils";
 
-  const props = defineProps<{ ws_id: number; info: boolean; show: boolean }>();
+  const props = defineProps<{ ws_id: number; info?: boolean; show: boolean }>();
 
   const emit = defineEmits(["update"]);
 
