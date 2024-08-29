@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="flex flex-col justify-center w-full   min-h-screen" v-if="isLoaded">
+  <div class="flex flex-col justify-center w-full min-h-screen" v-if="isLoaded">
     <div class="flex flex-row justify-center gap-5 align-middle">
       <h1 class="text-4xl text-center my-5 font-bold">
         {{ project.project_name }}
@@ -11,40 +11,46 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-5 justify-center items-center text-center mt-10 -ml-10">
-      <div >
+    <div
+      class="flex flex-col gap-5 justify-center items-center text-center mt-10 -ml-10"
+    >
+      <div>
         <h1 class="mb-2 text-base font-bold">Created by:</h1>
-        <div class="flex flex-row gap-3  mt-5 items-center">
-          <div class="avatar">
-            <div class="w-6 rounded-full">
-              <img :src="project.owner.avatar" />
-            </div>
-          </div>
-          <p class="text-sm my-auto">
-            {{ project.owner.username }}, at {{ dateUtils.generateDateTemplate(project.created_at) }}
+
+        <BaseUserAvatarItem
+          :avatar="project.owner.avatar"
+          :username="project.owner.username"
+          :id="project.owner.user_id"
+          :createdAt="project.created_at"
+        />
+      </div>
+      <div>
+        <h1 class="mb-2 text-base font-bold">Moderators:</h1>
+        <div class="flex flex-row flex-wrap gap-5">
+          <p class="text-lg" v-for="mod in project.moderators">
+            <!-- <div class="flex flex-row gap-5 mt-2">
+                <div class="avatar">
+                  <div class="w-6 rounded-full">
+                    <img :src="mod.avatar" />
+                  </div>
+                </div>
+                <p class="text-sm my-auto">
+                  {{ mod.username }}
+                </p>
+              </div> -->
+            <BaseUserAvatarItem
+              :avatar="mod.avatar"
+              :username="mod.username"
+              :id="mod.user_id"
+            />
           </p>
         </div>
       </div>
       <div>
-        <h1 class="mb-2 text-base font-bold">Moderators:</h1>
-        <p class="text-lg flex flex-row flex-wrap gap-5" v-for="mod in project.moderators">
-          <div class="flex flex-row gap-5 mt-2">
-              <div class="avatar">
-                <div class="w-6 rounded-full">
-                  <img :src="mod.avatar" />
-                </div>
-              </div>
-              <p class="text-sm my-auto">
-                {{ mod.username }}
-              </p>
-            </div>
-        </p>
-      </div>
-      <div>
-          <h1 class="mb-2 text-base font-bold">Users:</h1>
-          <div class="flex flex-row flex-wrap gap-5">
-            <p class=" text-lg " v-for="user in project.users">
-              <div class="flex flex-row gap-4 ml-5 ">
+        <h1 class="mb-2 text-base font-bold">Users:</h1>
+        <div class="flex flex-row flex-wrap gap-5">
+          <p class="text-lg" v-for="user in project.users">
+            <!-- <div class="flex flex-row gap-4 ml-5 ">
                   <div class="avatar">
                     <div class="w-6 rounded-full">
                       <img :src="user.avatar" />
@@ -53,29 +59,38 @@
                   <p class="text-sm my-auto">
                     {{ user.username }}
                   </p>
-                </div>
-            </p>
-          </div>
-    
+                </div> -->
+            <BaseUserAvatarItem
+              :avatar="user.avatar"
+              :username="user.username"
+              :id="user.user_id"
+            />
+          </p>
         </div>
+      </div>
     </div>
-    
-      <div class="my-10 mx-14  flex flex-col justify-center items-center">
-        <!-- <h1 class="mb-2 text-xl font-bold">Description:</h1>
+
+    <div class="my-10 mx-14 flex flex-col justify-center items-center">
+      <!-- <h1 class="mb-2 text-xl font-bold">Description:</h1>
         <p class="mx-10 text-lg">{{ project.description }}</p> -->
-        <BaseEditDescription
+      <BaseEditDescription
         :description="project.description"
         :id="project.workspace_id"
         :isDark="isDark"
         :type="'workspace'"
         :canModify="canModify"
         @update="updateProject"
-        />
-      </div>
-      <TagNavigationPanel :ws_id="project.workspace_id" :info="true" :show="true" class="mx-16 pb-14"/>
-      <!-- <h1 class="text-3xl my-5">Tasks:</h1> -->
-      <NewTaskBtn class="mx-auto"/>
-<!--     
+      />
+    </div>
+    <TagNavigationPanel
+      :ws_id="project.workspace_id"
+      :info="true"
+      :show="true"
+      class="mx-16 pb-14"
+    />
+    <!-- <h1 class="text-3xl my-5">Tasks:</h1> -->
+    <NewTaskBtn class="mx-auto" />
+    <!--     
       <TaskList :tasks="project.tasks" :isMicro="false" :isDraggable="false" :isDark="isDark"/> -->
   </div>
 </template>
@@ -90,9 +105,10 @@
   import BaseEditDescription from "../common/BaseEditDescription.vue";
   import NewTaskBtn from "../task/NewTaskBtn.vue";
   import TaskList from "../task/TaskList.vue";
-  import { dateUtils } from '../../utils/date.utils';
-import { checkIsModOrOwner } from "../../utils/auth.utils";
-import TagNavigationPanel from "../ui/TagNavigationPanel.vue";
+  import { dateUtils } from "../../utils/date.utils";
+  import { checkIsModOrOwner } from "../../utils/auth.utils";
+  import TagNavigationPanel from "../ui/TagNavigationPanel.vue";
+  import BaseUserAvatarItem from "../common/BaseUserAvatarItem.vue";
 
   const projectStore = useProjectStore();
 
@@ -108,18 +124,19 @@ import TagNavigationPanel from "../ui/TagNavigationPanel.vue";
 
   const canModify = ref<boolean>();
 
-  watch(()=> projectStore.current.workspace_id, (newValue, oldValue)=>{
-    if(newValue != oldValue){
-      project.value = projectStore.current;
+  watch(
+    () => projectStore.current.workspace_id,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        project.value = projectStore.current;
+      }
     }
-    
-  })
+  );
 
-  async function updateProject(workspace: Workspace){
+  async function updateProject(workspace: Workspace) {
     projectStore.setCurrent(workspace);
     project.value = projectStore.current;
   }
-
 
   onBeforeMount(async () => {
     if (projectStore.current.workspace_id) {
@@ -139,8 +156,8 @@ import TagNavigationPanel from "../ui/TagNavigationPanel.vue";
     }
 
     canModify.value = checkIsModOrOwner(project.value?.workspace_id as number);
-    if(localStorage.getItem("darkTheme")){
-      isDark.value = JSON.parse(localStorage.getItem("darkTheme")as string);
+    if (localStorage.getItem("darkTheme")) {
+      isDark.value = JSON.parse(localStorage.getItem("darkTheme") as string);
     }
   });
 </script>

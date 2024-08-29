@@ -8,8 +8,14 @@
         v-for="user in user_list"
         @click="addMod(user.user_id)"
       >
-        <img :src="user.avatar" class="avatar size-7 rounded-full" />
-        <p>{{ user.username }} ,</p>
+        <!-- <img :src="user.avatar" class="avatar size-7 rounded-full" />
+        <p>{{ user.username }} ,</p> -->
+        <BaseUserAvatarItem
+          :avatar="user.avatar"
+          :username="user.username"
+          :id="user.user_id"
+          :disableLink="true"
+        />
       </li>
     </ul>
     <h3 class="text-xl pt-3">Moderators list:</h3>
@@ -19,8 +25,14 @@
         v-for="user in mod_list"
         @click="removeMod(user.user_id)"
       >
-        <img :src="user.avatar" class="avatar size-7 rounded-full" />
-        <p>{{ user.username }} ,</p>
+        <!-- <img :src="user.avatar" class="avatar size-7 rounded-full" />
+        <p>{{ user.username }} ,</p> -->
+        <BaseUserAvatarItem
+          :avatar="user.avatar"
+          :username="user.username"
+          :id="user.user_id"
+          :disableLink="true"
+        />
       </li>
     </ul>
 
@@ -39,6 +51,7 @@
   import { UserLite } from "../../utils/types";
   import { EndpointType } from "../../utils/endpoints";
   import BaseDeleteModal from "../common/BaseDeleteModal.vue";
+  import BaseUserAvatarItem from "../common/BaseUserAvatarItem.vue";
 
   const props = defineProps<{
     workspace_id: number;
