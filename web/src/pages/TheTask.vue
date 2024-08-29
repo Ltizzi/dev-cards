@@ -330,7 +330,7 @@
   const removeTagActive = ref<boolean>();
 
   const route = useRoute();
-  //const router = useRouter();
+  const router = useRouter();
 
   const apiCall = useApiCall();
 
@@ -513,6 +513,10 @@
       taskUtils.addTagToTagsPool(name, ws_id);
       getColor(name);
     }
+  }
+
+  function goToTag(tag: string) {
+    router.push(`/project/tasks?tag=${tag}`);
   }
 
   function prepareTaskData(data: Task) {

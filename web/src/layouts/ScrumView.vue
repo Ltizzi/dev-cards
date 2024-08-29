@@ -1,20 +1,22 @@
 <template lang="">
-  <div class="pt-5 min-h-screen" v-if="isLoaded">
-    <h1 class="text-center text-4xl">Scrum board</h1>
-    <div class="flex flex-row py-5 justify-between">
-      <TaskFilterInput @search="defineSearch" />
-      <div class="flex flex-row justify-between gap-5">
-        <NewTaskBtn @update="updateProject" />
-        <!-- <button class="btn btn-outline btn-secondary" @click="changeIconSize">
-          Change card size
-        </button> -->
-        <ChangeCardSizeBtn @changeIconSize="changeIconSize" />
+  <div class="pt-5 min-h-screen h-screen flex flex-col pb-10" v-if="isLoaded">
+    <div class="h-1/6">
+      <h1 class="text-center text-4xl">Scrum board</h1>
+      <div class="flex flex-row py-5 justify-between">
+        <TaskFilterInput @search="defineSearch" />
+        <div class="flex flex-row justify-between gap-5">
+          <NewTaskBtn @update="updateProject" />
+          <!-- <button class="btn btn-outline btn-secondary" @click="changeIconSize">
+            Change card size
+          </button> -->
+          <ChangeCardSizeBtn @changeIconSize="changeIconSize" />
+        </div>
       </div>
     </div>
 
-    <div class="min-h-full max-h-fit">
+    <div class="h-5/6 overflow-hidden flex-1">
       <div
-        class="w-full grid border-2 border-t-0 border-l-0 border-r-0 border-opacity-40 border-spacing-10 border-dashed border-secondary grid-cols-5 text-xl font-semibold text-center text-base-content rounded-t-xl"
+        class="w-full grid border-2 border-t-0 border-l-0 border-r-0 border-opacity-40 border-spacing-10 border-dashed border-secondary grid-cols-5 text-xl font-semibold text-center text-base-content rounded-t-xl flex-1"
       >
         <div
           :class="[
@@ -58,12 +60,12 @@
         </div>
       </div>
       <div
-        class="w-full grid grid-cols-5 border-opacity-30 border-spacing-10 border-dashed border-x-0 border-b-0 border-secondary rounded-b-xl shadow-lg shadow-slate-900 relative min-h-full"
+        class="w-full grid grid-cols-5 border-opacity-30 border-spacing-10 border-dashed border-x-0 border-b-0 border-secondary rounded-b-xl shadow-lg shadow-slate-900 h-full relative"
         ref="cols"
       >
         <div
           :class="[
-            'w-80 border-r-2 border-opacity-20 border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% rounded-bl-xl min-h-full pb-12 overflow-y-auto overflow-x-hidden',
+            'w-80 border-r-2 border-opacity-20 border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% rounded-bl-xl    overflow-x-hidden max-h-fit h-full',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_pool"
@@ -71,12 +73,12 @@
         >
           <TaskList :tasks="pool" :isMicro="isMicro" />
           <!--           :isDraggable="true"
-          :col_name="'pool'"
-          @dropped="dropped" -->
+              :col_name="'pool'"
+              @dropped="dropped" -->
         </div>
         <div
           :class="[
-            'w-80 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% pb-12 overflow-y-auto overflow-x-hidden',
+            'w-80 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% overflow-x-hidden overflow-y-auto max-h-full',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_priority"
@@ -84,12 +86,12 @@
         >
           <TaskList :tasks="top_priority" :isMicro="isMicro" />
           <!--      :isDraggable="true"
-          :col_name="'priority'"
-          @dropped="dropped" -->
+              :col_name="'priority'"
+              @dropped="dropped" -->
         </div>
         <div
           :class="[
-            'w-80 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r from-0% via-transparent via-50% to-100% pb-12 overflow-y-auto overflow-x-hidden',
+            'w-80 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r from-0% via-transparent via-50% to-100% overflow-x-hidden overflow-y-auto max-h-full',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_progress"
@@ -97,12 +99,12 @@
         >
           <TaskList :tasks="in_progress" :isMicro="isMicro" />
           <!--       :isDraggable="true"
-          :col_name="'progress'"
-          @dropped="dropped" -->
+              :col_name="'progress'"
+              @dropped="dropped" -->
         </div>
         <div
           :class="[
-            'w-80 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% pb-12 overflow-y-auto overflow-x-hidden',
+            'w-80 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100%  overflow-x-hidden overflow-y-auto max-h-full',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_testing"
@@ -110,12 +112,12 @@
         >
           <TaskList :tasks="testing" :isMicro="isMicro" />
           <!--     :isDraggable="true"
-          :col_name="'testing'"
-          @dropped="dropped" -->
+              :col_name="'testing'"
+              @dropped="dropped" -->
         </div>
         <div
           :class="[
-            'w-80 bg-gradient-to-r border-opacity-50  border-spacing-10 border-dashed from-0% via-transparent via-50%  to-100% rounded-br-xl pb-12 overflow-y-auto overflow-x-hidden',
+            'w-80 bg-gradient-to-r border-opacity-50  border-spacing-10 border-dashed from-0% via-transparent via-50%  to-100% rounded-br-xl  overflow-x-hidden overflow-y-auto max-h-full',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_completed"
@@ -123,8 +125,8 @@
         >
           <TaskList :tasks="completed" :isMicro="isMicro" />
           <!--         :isDraggable="true"
-          :col_name="'completed'"
-          @dropped="dropped" -->
+              :col_name="'completed'"
+              @dropped="dropped" -->
         </div>
       </div>
     </div>
