@@ -89,7 +89,7 @@
   import { useTaskStore } from "../../store/task.store";
   import BaseModal from "../common/BaseModal.vue";
   import { EndpointType } from "../../utils/endpoints";
-  import { Task } from "../../utils/types";
+  import { Task, UITag } from "../../utils/types";
   import { taskUtils } from "../../utils/task.utils";
 
   const props = defineProps<{ showModal: boolean }>();
@@ -127,8 +127,17 @@
     tags.value = [];
   }
 
+  function checkTag(name: string) {
+    return taskUtils.getTagColor(
+      taskStore.currentTask.workspace.workspace_id,
+      name
+    );
+  }
+
   async function saveTag(newTag: string) {
     awaitingResponse.value = true;
+    //const alreadyCreatedTag = checkTag(newTag) as UITag[];
+    //console.log("ALREADY TAG: ", alreadyCreatedTag);
     // tags.value.forEach(async (newTag: string) => {
     const response = (await apiCall.patch(
       EndpointType.TASK_ADD_TAG,
@@ -142,10 +151,11 @@
     )) as Task;
     awaitingResponse.value = false;
     if (response.task_id) {
-      taskUtils.addTagToTagsPool(
-        tag.value as string,
-        taskStore.currentTask.workspace.workspace_id
-      );
+      // if (!alreadyCreatedTag[0])
+      //   taskUtils.addTagToTagsPool(
+      //     tag.value as string,
+      //     taskStore.currentTask.workspace.workspace_id
+      //   );
       success.value = true;
       tag.value = "";
       taskStore.setCurrentTask(response);
