@@ -269,7 +269,12 @@ export interface DropdownCheckboxOption {
   check: boolean;
 }
 
+export interface UITag {
+  name: string;
+  color: string;
+}
+
 export interface TagPool {
   workspace_id: number;
-  tags: string[];
+  tags: UITag[];
 }

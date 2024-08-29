@@ -115,16 +115,18 @@
             @keydown.esc="removeTagActive ? (removeTagActive = false) : ''"
           >
             <div class="flex flex-row justify-start w-full gap-1 my-auto">
-              <p
-                :class="[
-                  'rounded-lg bg-secondary text-white capitalize px-3 transition-all ease-in-out duration-300 hover:scale-110',
-                  removeTagActive ? 'hover:bg-error' : '',
-                ]"
-                v-for="tag in card.task_tags"
-                @click="removeTagActive ? removeTag(tag) : goToTag(tag)"
-              >
-                {{ tag }}
-              </p>
+              <div v-for="tag in card.task_tags">
+                <p
+                  :class="[
+                    'rounded-lg  text-white text-sm font-semibold py-0.5   capitalize px-3 transition-all ease-in-out duration-300 hover:scale-110 hover:cursor-pointer',
+                    removeTagActive ? 'hover:bg-error' : '',
+                    `${getColor(tag)}`,
+                  ]"
+                  @click="removeTagActive ? removeTag(tag) : goToTag(tag)"
+                >
+                  {{ tag }}
+                </p>
+              </div>
             </div>
             <div class="tooltip" data-tip="Click to remove tags!">
               <button
@@ -287,6 +289,7 @@
     TagPool,
     Task,
     TaskType,
+    UITag,
   } from "../utils/types";
   import { useTaskStore } from "../store/task.store";
   import { useApiCall } from "../composables/useAPICall";
@@ -492,12 +495,23 @@
       tags = tags.map((tp: TagPool) => {
         if (tp.workspace_id === card.value?.workspace.workspace_id) {
           tp.tags = tp.tags.filter(
-            (t: string) => t.toLowerCase() !== tag.toLowerCase()
+            (t: UITag) => t.name.toLowerCase() !== tag.toLowerCase()
           );
         }
         return tp;
       });
       localStorage.setItem("tags", JSON.stringify(tags));
+    }
+  }
+
+  function getColor(name: string) {
+    const ws_id = projectStore.current.workspace_id;
+    const tags: UITag[] = taskUtils.getTagColor(ws_id, name);
+    if (tags.length > 0) {
+      return tags[0].color;
+    } else {
+      taskUtils.addTagToTagsPool(name, ws_id);
+      getColor(name);
     }
   }
 

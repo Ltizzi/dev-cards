@@ -225,13 +225,10 @@
         user.value = userStore.self;
       }
 
-      // const response = (await apiCall.get(EndpointType.USER_MEMBER, {
-      //   params: { user_id: user.value.user_id },
-      // })) as Array<Workspace>;
       const projs = await fetchProjects(user.value?.user_id as number);
       projects.value = sortProjects(projs);
-      console.log("PROYSSS");
-      console.log(projects.value);
+      projectStore.setMemberOf(projs);
+
       isLogged.value = true;
       isLoaded.value = true;
     }

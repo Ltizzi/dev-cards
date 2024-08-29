@@ -48,6 +48,7 @@
         </button>
       </div>
     </div>
+    <ProjectList />
     <DesignatedView
       class="ml-10"
       :isDark="isDark"
@@ -65,6 +66,8 @@
   import { useUIStore } from "../store/ui.store";
   import ThemeSelector from "../components/settings/ThemeSelector.vue";
   import BaseToggle from "../components/common/BaseToggle.vue";
+  import ProjectList from "../components/project/ProjectList.vue";
+  import { taskUtils } from "../utils/task.utils";
 
   const router = useRouter();
 
@@ -131,5 +134,6 @@
     isDark.value = UIStore.darkTheme;
     darkerCards.value = UIStore.darkerCard;
     darkerMiniCards.value = UIStore.darkerMiniCard;
+    //taskUtils.saveTagPool();
   });
 </script>

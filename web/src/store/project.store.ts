@@ -12,7 +12,7 @@ export const useProjectStore = defineStore("projects", {
     owned: [] as Array<Workspace>,
     localList: [] as Array<Workspace>,
     local: {} as Workspace,
-    member: [] as Array<Workspace>,
+    memberOf: [] as Array<Workspace>,
     current: {} as Workspace,
     currentName: "" as string,
     currentAvatar: "" as string,
@@ -35,17 +35,19 @@ export const useProjectStore = defineStore("projects", {
         this.justCreated = false;
       }, 1000 * 60);
     },
-    setMember(list: Array<Workspace>) {
-      this.member = list;
+    setMemberOf(list: Array<Workspace>) {
+      this.memberOf = list;
     },
     setCurrent(project: Workspace) {
-      this.current = project;
-      this.currentName = project.project_name;
-      this.currentAvatar = project.avatar;
-      localStorage.setItem(
-        "current_workspace_id",
-        project.workspace_id.toString()
-      );
+      if (project) {
+        this.current = project;
+        this.currentName = project.project_name;
+        this.currentAvatar = project.avatar;
+        localStorage.setItem(
+          "current_workspace_id",
+          project.workspace_id.toString()
+        );
+      }
     },
     async fetchProjectById(id: number) {
       const response = (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {

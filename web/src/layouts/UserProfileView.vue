@@ -8,7 +8,7 @@
         class="flex flex-row flex-grow justify-center gap-5 bg-neutral bg-opacity-50 w-10/12 py-7 h-full rounded-2xl"
       >
         <div
-          class="flex flex-col gap-5 justify-center w-2/5 min-h-96 items-end"
+          class="flex flex-col gap-5 justify-center w-1/5 min-h-96 items-end"
         >
           <div class="avatar">
             <div class="w-44 rounded-full">
@@ -34,11 +34,11 @@
                 {{ user.email }}
               </p>
             </h2>
-            <h2 v-if="user.githubProfile" class="text-info">
+            <h2 v-if="user.githubProfile" class="link-info">
               <a
                 :href="user.githubProfile"
                 :class="[
-                  'hover:underline bg-neutral px-2 py-0.5 rounded-xl w-fit mx-auto',
+                  'hover:underline  bg-neutral px-2 py-0.5 rounded-xl w-fit mx-auto',
                   !isDark ? 'text-white  bg-opacity-30' : 'bg-opacity-60',
                 ]"
                 target="_blank"
@@ -48,11 +48,11 @@
           </div>
         </div>
         <div
-          class="flex flex-col item-middle align-middle my-auto justify-center text-center w-3/5"
+          class="flex flex-col item-middle align-middle my-auto justify-center text-center w-4/5"
         >
           <p
             :class="[
-              ' px-5 grow py-5 rounded-xl w-fit mx-auto ',
+              ' px-10 grow py-5 text-justify text-base rounded-xl w-fit mx-auto whitespace-pre-line ',
               !isDark ? 'text-white' : '',
             ]"
           >

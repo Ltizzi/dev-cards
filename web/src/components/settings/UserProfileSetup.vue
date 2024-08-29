@@ -10,7 +10,7 @@
           <input
             type="text"
             class="grow"
-            :placeholder="user.username"
+            placeholder="Edit your username"
             v-model="username"
           />
         </label>
@@ -21,7 +21,7 @@
           <input
             type="text"
             class="grow"
-            :placeholder="user.email"
+            placeholder="Edit your e-mail"
             v-model="email"
           />
         </label>
@@ -43,7 +43,7 @@
       <input
         type="text"
         class="grow"
-        :placeholder="user.avatar"
+        placeholder="Link a new avatar url"
         v-model="newImg"
       />
     </label>
@@ -54,7 +54,7 @@
       <input
         type="text"
         class="grow"
-        :placeholder="user.githubProfile"
+        placeholder="Write your github profile url"
         v-model="github"
       />
     </label>
@@ -63,7 +63,7 @@
       <textarea
         class="textarea textarea-primary textarea-sm"
         rows="4"
-        :placeholder="user.about ? user.about : 'About you'"
+        placeholder="Write a few lines about you"
         v-model="about"
       ></textarea>
     </div>
@@ -140,6 +140,13 @@
     cleanFields();
   }
 
+  function setPropsInFields() {
+    username.value = user.value?.username;
+    email.value = user.value?.email;
+    about.value = user.value?.about;
+    github.value = user.value?.githubProfile;
+  }
+
   function cleanFields() {
     username.value = "";
     email.value = "";
@@ -150,5 +157,6 @@
 
   onBeforeMount(() => {
     user.value = userStore.self;
+    setPropsInFields();
   });
 </script>
