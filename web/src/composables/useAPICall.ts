@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { EndpointType } from "../utils/endpoints";
 
-export const URL = "https://dev-cards.sliplane.app"; //"http://localhost:8080";
+export const URL = "http://localhost:8080"; //("https://dev-cards.sliplane.app");
 
 const apiCaller = axios.create({
   baseURL: URL,
