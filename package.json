@@ -1,6 +1,6 @@
 {
   "name": "dev-cards",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "dev card tools for manage tasks, design and development process",
   "main": "test.js",
   "directories": {
