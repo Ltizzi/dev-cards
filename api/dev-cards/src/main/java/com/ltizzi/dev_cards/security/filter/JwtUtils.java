@@ -203,9 +203,9 @@ public class JwtUtils {
         }
         return ws.getUsers().stream()
                 .filter(u->
-                        u.getUser_id().equals(user.getUser_id())
-                                || u.getUser_id().equals(user_id)
-                                || u.getUser_id().equals(ws.getOwner().getUser_id()))
+                        u.getUser_id().equals(user.getUser_id()))
+//                                || u.getUser_id().equals(user_id)
+//                                || u.getUser_id().equals(ws.getOwner().getUser_id()))
                 .toList()
                 .size() > 1;
     }
