@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
         newUser.setRoles(roles);
         UserDTO registerUser =userMapper.toUserDTO(userRepo.save(newUser));
 
-        
+
         wsServ.addUserByEmail(2L, registerUser.getEmail());//TESTING, ALL USERS ADDED TO WS ID 1
 
         List<UserWorkspacesRoles> user_roles  = new ArrayList<>();
