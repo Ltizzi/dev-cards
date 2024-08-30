@@ -20,6 +20,7 @@ import com.ltizzi.dev_cards.model.workspace.WorkspaceMapper;
 import com.ltizzi.dev_cards.repository.UserRepository;
 import com.ltizzi.dev_cards.security.filter.JwtUtils;
 import com.ltizzi.dev_cards.service.UserService;
+import com.ltizzi.dev_cards.service.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -59,6 +60,9 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    private WorkspaceService wsServ;
+
+    @Autowired
     private JwtUtils jwtUtils;
 
 
@@ -80,7 +84,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public LoginResponse registerUser(UserRegistration credentials) throws InvalidUserException {
+    public LoginResponse registerUser(UserRegistration credentials) throws InvalidUserException, NotFoundException {
         if(!userRepo.findByEmail(credentials.getEmail()).isEmpty()){
             throw new InvalidUserException("Email already in use");
         }
@@ -97,6 +101,9 @@ public class UserServiceImpl implements UserService {
         roles.add(Role.ROLE_USER);
         newUser.setRoles(roles);
         UserDTO registerUser =userMapper.toUserDTO(userRepo.save(newUser));
+
+        wsServ.addUserToWorkspace(1L, registerUser.getUser_id()); //TESTING, ALL USERS ADDED TO WS ID 1
+
         List<UserWorkspacesRoles> user_roles  = new ArrayList<>();
         String token = jwtUtils.generateToken(authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(newUser.getUsername(), credentials.getPassword())),
