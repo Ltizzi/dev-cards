@@ -201,6 +201,15 @@ public class JwtUtils {
         if(user.getUser_id().equals(user_id)){
             return true;
         }
+//        return ws.getUsers().stream()
+//                .filter(u->
+//                        u.getUser_id()
+//                                .equals(user_id))
+//                .toList()
+//                .size()>0
+//                && ws.getUsers().stream()
+//                .filter(u-> u.getUser_id().equals(user.getUser_id())).toList().size()>0;
+
         return ws.getUsers().stream()
                 .filter(u->
                         u.getUser_id().equals(user.getUser_id()))
