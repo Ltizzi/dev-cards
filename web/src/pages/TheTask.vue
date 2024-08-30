@@ -506,8 +506,8 @@
 
   function getColor(name: string) {
     const ws_id = projectStore.current.workspace_id;
-    const tags: UITag[] = taskUtils.getTagColor(ws_id, name);
-    if (tags.length > 0) {
+    const tags: UITag[] | undefined = taskUtils.getTagColor(ws_id, name);
+    if (tags && tags.length > 0) {
       return tags[0].color;
     } else {
       taskUtils.addTagToTagsPool(name, ws_id);

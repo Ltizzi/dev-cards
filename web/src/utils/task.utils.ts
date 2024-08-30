@@ -142,7 +142,9 @@ const colors = [
 ]; //  "neutral","base-100",
 
 function getLastColor() {
-  return localStorage.getItem("last-color");
+  return localStorage.getItem("last-color")
+    ? localStorage.getItem("last-color")
+    : "";
 }
 
 function getRandomColor() {
@@ -219,11 +221,13 @@ function addNewTagPool(
 }
 
 function getTagColor(ws_id: number, tag_name: string) {
-  const tagPools = JSON.parse(localStorage.getItem("tags") as string);
-  const tagPool = getTagPoolById(tagPools, ws_id) as TagPool[];
-  return tagPool[0].tags.filter(
-    (tag: UITag) => tag.name.toLowerCase() === tag_name.toLowerCase()
-  );
+  if (localStorage.getItem("tags")) {
+    const tagPools = JSON.parse(localStorage.getItem("tags") as string);
+    const tagPool = getTagPoolById(tagPools, ws_id) as TagPool[];
+    return tagPool[0].tags.filter(
+      (tag: UITag) => tag.name.toLowerCase() === tag_name.toLowerCase()
+    );
+  }
 }
 
 function getTags(ws_id: number) {
