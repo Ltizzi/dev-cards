@@ -53,8 +53,6 @@ library.add(
 const app = createApp(App);
 const pinia = createPinia();
 
-export const API_URL = "https://dev-cards.sliplane.app/"; //http://localhost:8080";
-
 app.use(router);
 app.use(pinia);
 
