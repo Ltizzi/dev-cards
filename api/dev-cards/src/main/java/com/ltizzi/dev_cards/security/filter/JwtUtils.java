@@ -207,7 +207,7 @@ public class JwtUtils {
                                 || u.getUser_id().equals(user_id)
                                 || u.getUser_id().equals(ws.getOwner().getUser_id()))
                 .toList()
-                .size() == 2;
+                .size() > 1;
     }
 
     public boolean checkIsOwnerOrModerator(Long ws_id, String token){
