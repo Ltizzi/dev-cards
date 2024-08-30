@@ -49,7 +49,7 @@ public class TaskEntity {
     @NotBlank(message = "subtitle can't be blank")
     private String subtitle;
 
-    @Column(columnDefinition = "TEXT", length = 5000)
+    @Column(columnDefinition = "TEXT", length = 10000)
     private String description;
 
     @Enumerated(EnumType.STRING)

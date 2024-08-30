@@ -1,9 +1,6 @@
 package com.ltizzi.dev_cards.model.task.utils;
 
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +17,8 @@ public class ProgressItem {
 
 
     private Long issue_id;
+
+    @Column(length = 1000)
     private String sentence;
     private boolean isCompleted;
 

@@ -242,8 +242,8 @@
 
   const state = reactive({
     selected: -10,
-    selectedUser: 0,
-    selectedTask: 0,
+    selectedUser: 0 as number,
+    selectedTask: 0 as number,
     addUserModal: false,
     isDark: false,
   });
@@ -299,8 +299,7 @@
   function goTo(path: string, obj_id?: number) {
     let stateSelected: number;
     if (
-      path !== "task" ||
-      (path !== "user" && state.selectedTask) ||
+      (path !== "task" && path != "user" && state.selectedTask) ||
       state.selectedUser
     ) {
       state.selectedUser = 0;

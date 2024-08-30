@@ -17,7 +17,7 @@ out/
 public_key.pem
 private_key.pem
 
-
+.env
 ### IntelliJ IDEA ###
 .idea
 *.iws

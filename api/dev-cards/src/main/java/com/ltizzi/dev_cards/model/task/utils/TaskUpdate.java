@@ -32,6 +32,7 @@ public class TaskUpdate {
     private List<Long> editors_id = new ArrayList<>();
     private List<String> editors_usernames = new ArrayList<>();
 
+    @Column(length = 2000)
     private String description;
 
     private List<String> old_descriptions = new ArrayList<>();

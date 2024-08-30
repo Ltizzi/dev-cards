@@ -1,0 +1,29 @@
+services:
+  # db:
+  #   image: postgres:15-alpine
+  #   container_name: dev-cards-db
+  #   environment:
+  #     POSTGRES_DB: dev-cards
+  #     POSTGRES_USER: ${DB_USER}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
+  #   volumes:
+  #     - db_data:/var/lib/postgresql/data
+  #     - ./dev-cards.sql:/docker-entrypoint-initdb.d/dev-cards.sql
+  #   ports:
+  #     - "5432:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dev-cards-app
+    environment:
+      SPRING_DATASOURCE_URL: ${DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    # depends_on:
+    #   - db
+    ports:
+      - "8080:8080"
+# volumes:
+#   db_data:
