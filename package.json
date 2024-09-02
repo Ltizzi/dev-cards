@@ -9,7 +9,7 @@
   "scripts": {
     "web": "npm run dev --prefix web",
     "build-web": "npm run build --prefix web",
-    "api": "java -jar ./api/dev-cards/out/artifacts/dev_cards_jar/dev-cards.jar"
+    "api": "java -jar ./api/dev-cards/target/dev-cards-0.0.1-SNAPSHOT.jar"
   },
   "author": "ltizzi",
   "license": "ISC"
