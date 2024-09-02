@@ -225,8 +225,16 @@
               "
               @mouseleave="showAddIssueBtn = false"
             >
-              <div class="flex flex-row justify-start gap-5 mt-7">
-                <p class="text-lg underline font-semibold pb-5">Issues:</p>
+              <div
+                class="flex flex-row justify-start gap-5 mt-7 min-h-9 h-auto"
+              >
+                <p
+                  class="text-lg underline font-semibold pb-5"
+                  v-if="card.progressItems.length > 0"
+                >
+                  Issues:
+                </p>
+                <p v-else>Add Issue</p>
                 <AddIssueBtn
                   @update="updateTask"
                   :task_id="card.task_id"
@@ -254,6 +262,7 @@
           -->
           <div
             class="flex flex-col justify-start border-t-2 border-secondary pt-4"
+            v-show="card.updates.length > 0"
           >
             <div v-for="update in card.updates" class="flex flex-col gap-2">
               <div class="flex flex-col text-start gap-1">
