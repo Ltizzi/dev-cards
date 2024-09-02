@@ -178,7 +178,7 @@
             <p class="text-lg font-semibold py-5 underline">Designated to:</p>
             <div class="flex flex-row justify-start gap-5 ml-5">
               <div class="w-auto" v-for="user of card.designated_to">
-                <div
+                <!-- <div
                   class="flex flex-row gap-4 items-center align-middle justify-start text-lg font-semibold"
                 >
                   <div class="avatar">
@@ -187,7 +187,12 @@
                     </div>
                   </div>
                   <span class="text-base"> {{ user.username }}, </span>
-                </div>
+                </div> -->
+                <BaseUserAvatarItem
+                  :avatar="user.avatar"
+                  :username="user.username"
+                  :id="user.user_id"
+                />
               </div>
             </div>
           </div>
@@ -315,6 +320,7 @@
   //import TaskDescription from "../components/task/TaskDescription.vue";
   import TaskIssue from "../components/task/TaskIssue.vue";
   import AddIssueBtn from "../components/ui/AddIssueBtn.vue";
+  import BaseUserAvatarItem from "../components/common/BaseUserAvatarItem.vue";
   import { useProjectStore } from "../store/project.store";
   import {
     checkIfUserisTaskOwner,
