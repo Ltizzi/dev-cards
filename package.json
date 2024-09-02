@@ -1,8 +1,6 @@
 {
   "name": "dev-cards",
-
   "version": "0.1.0",
-
   "description": "dev card tools for manage tasks, design and development process",
   "main": "test.js",
   "directories": {
@@ -11,6 +9,7 @@
   "scripts": {
     "web": "npm run dev --prefix web",
     "build-web": "npm run build --prefix web",
+    "install-web": "npm install --prefix web",
     "api": "java -jar ./api/dev-cards/target/dev-cards-0.0.1-SNAPSHOT.jar"
   },
   "author": "ltizzi",
