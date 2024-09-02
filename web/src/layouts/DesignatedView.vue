@@ -1,5 +1,8 @@
 <template lang="">
-  <div class="mt-10" v-if="isLoaded">
+  <div
+    :class="['mt-10', checkInsideProject() ? 'min-h-screen' : '']"
+    v-if="isLoaded"
+  >
     <div
       v-if="no_tasks"
       class="text-center mt-2/4 min-h-screen align-middle my-56"
@@ -8,27 +11,36 @@
         {{
           props.isLoggedIn
             ? "You dont have any current designated tasks"
+            : checkInsideProject()
+            ? "No Tasks avaible"
             : "No tasks in local enviroment. You need to log in to see remote tasks or load local workspace data."
         }}
       </h1>
     </div>
     <div v-else class="flex flex-col gap-5 justify-center">
-      <h1 class="text-2xl font-semibold text-base-content">Active tasks:</h1>
-      <TaskList
-        :tasks="active_tasks"
-        :isMicro="false"
-        :isDark="props.isDark"
-        :darkerCards="props.darkerCards"
-        :viewList="true"
-      />
-      <h1 class="text-2xl font-semibold text-base-content">Completed tasks:</h1>
-      <TaskList
-        :tasks="completed_tasks"
-        :isMicro="false"
-        :isDark="props.isDark"
-        :darkerCards="props.darkerCards"
-        :viewList="true"
-      />
+      <div v-show="active_tasks.length > 0">
+        <h1 class="text-2xl font-semibold text-base-content">Active tasks:</h1>
+        <TaskList
+          :tasks="active_tasks"
+          :isMicro="false"
+          :isDark="props.isDark"
+          :darkerCards="props.darkerCards"
+          :viewList="true"
+        />
+      </div>
+
+      <div v-show="completed_tasks.length > 0">
+        <h1 class="text-2xl font-semibold text-base-content">
+          Completed tasks:
+        </h1>
+        <TaskList
+          :tasks="completed_tasks"
+          :isMicro="false"
+          :isDark="props.isDark"
+          :darkerCards="props.darkerCards"
+          :viewList="true"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -100,7 +112,7 @@
   }
 
   function checkInsideProject(): boolean {
-    console.log(route.path);
+    //console.log(route.path);
     return route.path.includes("project");
   }
 
@@ -168,6 +180,8 @@
     if (userStore.self && userStore.self.designated_tasks) {
       prepareTasks();
       if (userStore.self.designated_tasks.length == 0) no_tasks.value = true;
+      if (active_tasks.value.length == 0 && completed_tasks.value == 0)
+        no_tasks.value = true;
     } else {
       no_tasks.value = true;
     }

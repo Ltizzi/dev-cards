@@ -178,7 +178,7 @@
             <p class="text-lg font-semibold py-5 underline">Designated to:</p>
             <div class="flex flex-row justify-start gap-5 ml-5">
               <div class="w-auto" v-for="user of card.designated_to">
-                <div
+                <!-- <div
                   class="flex flex-row gap-4 items-center align-middle justify-start text-lg font-semibold"
                 >
                   <div class="avatar">
@@ -187,7 +187,12 @@
                     </div>
                   </div>
                   <span class="text-base"> {{ user.username }}, </span>
-                </div>
+                </div> -->
+                <BaseUserAvatarItem
+                  :avatar="user.avatar"
+                  :username="user.username"
+                  :id="user.user_id"
+                />
               </div>
             </div>
           </div>
@@ -225,8 +230,16 @@
               "
               @mouseleave="showAddIssueBtn = false"
             >
-              <div class="flex flex-row justify-start gap-5 mt-7">
-                <p class="text-lg underline font-semibold pb-5">Issues:</p>
+              <div
+                class="flex flex-row justify-start gap-5 mt-7 min-h-9 h-auto"
+              >
+                <p
+                  class="text-lg underline font-semibold pb-5"
+                  v-if="card.progressItems.length > 0"
+                >
+                  Issues:
+                </p>
+                <p v-else>Add Issue</p>
                 <AddIssueBtn
                   @update="updateTask"
                   :task_id="card.task_id"
@@ -254,6 +267,7 @@
           -->
           <div
             class="flex flex-col justify-start border-t-2 border-secondary pt-4"
+            v-show="card.updates.length > 0"
           >
             <div v-for="update in card.updates" class="flex flex-col gap-2">
               <div class="flex flex-col text-start gap-1">
@@ -306,6 +320,7 @@
   //import TaskDescription from "../components/task/TaskDescription.vue";
   import TaskIssue from "../components/task/TaskIssue.vue";
   import AddIssueBtn from "../components/ui/AddIssueBtn.vue";
+  import BaseUserAvatarItem from "../components/common/BaseUserAvatarItem.vue";
   import { useProjectStore } from "../store/project.store";
   import {
     checkIfUserisTaskOwner,
