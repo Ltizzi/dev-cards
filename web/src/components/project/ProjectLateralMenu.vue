@@ -445,7 +445,7 @@
     state.isMobile = UIStore.isMobile;
     state.showMenuBtn = state.isMobile;
     state.showMenu = !state.isMobile;
-    state.showHideBtn = state.showMenu;
+    state.showHideBtn = state.showMenu && state.isMobile;
     if (route.query.id) id.value = +route.query.id;
     project.value = projectStore.current;
     if (project.value.workspace_id) {
