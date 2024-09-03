@@ -1,5 +1,7 @@
 <template lang="">
-  <div class="h-full py-10 px-5 flex flex-col justify-start gap-10">
+  <div
+    class="h-full py-10 px-5 flex flex-col justify-start gap-10 overflow-y-auto"
+  >
     <h1 class="text-start font-semibold text-2xl">Theme setup</h1>
     <div>
       <h2 class="text-start text-lg font-semibold pb-5">Change Theme:</h2>

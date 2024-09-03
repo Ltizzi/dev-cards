@@ -23,10 +23,10 @@
         <div :class="['w-full h-6  rounded-t-lg', title_color]"></div>
 
         <div
-          class="flex flex-row h-24 justify-stretch mb-0 border-b-4 border-secondary gap-0"
+          class="flex flex-row lg:flex-nowrap flex-wrap lg:h-24 h-auto justify-stretch mb-0 border-b-4 border-secondary gap-0"
         >
           <h2
-            class="text-2xl ml-2 border-r-2 border-secondary px-2 py-7 my-auto min-w-44"
+            class="lg:text-2xl text-xl ml-2 border-r-2 border-secondary px-2 py-7 my-auto lg:min-w-44 w-auto"
           >
             {{ card.workspace.project_name }}
           </h2>
@@ -42,7 +42,9 @@
             ></TaskTitle>
           </div>
 
-          <div class="my-auto w-1/12 border-l-2 border-secondary py-8 px-0.5">
+          <div
+            class="my-auto w-1/12 border-l-2 border-secondary py-8 lg:px-0.5 px-5"
+          >
             <p>by {{ card.owner.username }}</p>
           </div>
           <div
@@ -51,7 +53,7 @@
             <!-- MARK: TASK STATE
            -->
             <div
-              class="flex flex-row justify-start gap-1 h-12 items-center border-b-2 border-secondary"
+              class="flex flex-row justify-start gap-1 lg:h-12 items-center lg:border-b-2 border-secondary"
             >
               <TaskPrioritySelectable
                 :priority="card.priority"
@@ -107,7 +109,7 @@
           <div
             v-if="card.task_tags.length > 0"
             :class="[
-              'flex flex-row justify-between gap-2 w-2/4 py-5 h-20   my-auto',
+              'flex flex-row justify-between gap-2 lg:w-2/4 py-5 h-20   my-auto',
               removeTagActive ? 'hover:cursor-not-allowed' : '',
             ]"
             @mouseover="card.task_tags.length > 0 ? (mouseOverTag = true) : ''"
@@ -156,7 +158,9 @@
             />
             <div v-for="task in card.dependencies" class="flex flex-row">
               <router-link :to="`/project/task?id=${task.task_id}`">
-                <p class="text-secondary font-bold text-lg italic underline">
+                <p
+                  class="text-secondary font-bold lg:text-lg text-base italic underline"
+                >
                   {{ task.title }}
                 </p>
               </router-link>
@@ -175,7 +179,9 @@
           />
 
           <div class="text-start" v-if="card.designated_to.length > 0">
-            <p class="text-lg font-semibold py-5 underline">Designated to:</p>
+            <p class="lg:text-lg text-sm font-semibold py-5 underline">
+              Designated to:
+            </p>
             <div class="flex flex-row justify-start gap-5 ml-5">
               <div class="w-auto" v-for="user of card.designated_to">
                 <!-- <div

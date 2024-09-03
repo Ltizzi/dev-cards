@@ -1,10 +1,12 @@
 <template lang="">
-  <div class="h-full py-10 px-5 flex flex-col justify-start gap-10">
+  <div
+    class="h-full overflow-y-auto overflow-x-hidden py-10 px-5 flex flex-col justify-start gap-10"
+  >
     <h1 class="text-start font-semibold text-2xl">Edit User Profile</h1>
-    <div class="w-full flex flex-row justify-center gap-5">
-      <div class="w-1/2 flex flex-col gap-7">
+    <div class="w-full flex lg:flex-row flex-col justify-center gap-5">
+      <div class="lg:w-1/2 flex flex-col gap-7">
         <label
-          class="input input-bordered input-primary input-sm flex items-center gap-2"
+          class="input input-bordered input-primary lg:input-sm input-md flex items-center gap-2"
         >
           Username:
           <input
@@ -15,7 +17,7 @@
           />
         </label>
         <label
-          class="input input-bordered input-primary input-sm flex items-center gap-2"
+          class="input input-bordered input-primary lg:input-sm input-md flex items-center gap-2"
         >
           Email:
           <input
@@ -27,7 +29,7 @@
         </label>
       </div>
 
-      <div class="w-1/2 flex justify-center">
+      <div class="lg:w-1/2 flex justify-center">
         <div class="avatar">
           <div class="w-24 rounded-full">
             <img :src="newImg ? newImg : user.avatar" />
@@ -37,7 +39,7 @@
     </div>
 
     <label
-      class="input input-bordered input-primary input-sm flex items-center gap-2"
+      class="input input-bordered input-primary lg:input-sm input-md flex items-center gap-2"
     >
       Avatar:
       <input
@@ -48,7 +50,7 @@
       />
     </label>
     <label
-      class="input input-bordered input-primary input-sm flex items-center gap-2"
+      class="input input-bordered input-primary lg:input-sm input-md text-xs flex items-center gap-2"
     >
       Github Profile:
       <input
@@ -59,9 +61,9 @@
       />
     </label>
     <div class="flex flex-col">
-      <label>About you:</label>
+      <label class="text-sm lg:text-base">About you:</label>
       <textarea
-        class="textarea textarea-primary textarea-sm"
+        class="textarea textarea-primary lg:textarea-sm"
         rows="4"
         placeholder="Write a few lines about you"
         v-model="about"

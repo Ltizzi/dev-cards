@@ -7,16 +7,18 @@
     <div
       class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2 text-base-content w-full"
     >
-      <h1 class="2xltext-3xl text-center text-xl font-bold">New Task</h1>
-      <div class="flex flex-row justify-evenly gap-3 py-3">
+      <h1 class="2xl:text-3xl text-center text-xl font-bold">New Task</h1>
+      <div
+        class="flex flex-row justify-evenly gap-3 gap-y-5 lg:gap-y-0 py-3 flex-wrap lg:flex-nowrap"
+      >
         <label
-          class="input input-bordered input-primary w-1/2 flex items-center gap-2"
+          class="input input-bordered input-primary lg:w-1/2 w-4/5 flex items-center gap-2"
         >
           Title
           <input type="text" class="grow" placeholder="Title" v-model="title" />
         </label>
         <label
-          class="input input-bordered input-primary w-1/2 flex items-center gap-2"
+          class="input input-bordered input-primary lg:w-1/2 w-4/5 flex items-center gap-2"
         >
           Subtitle
           <input
@@ -28,23 +30,35 @@
         </label>
       </div>
       <div class="flex flex-row flex-wrap justify-evenly gap-5 py-3">
-        <select class="select select-primary w-80 max-w-xs" v-model="color">
+        <select
+          class="select select-primary select-sm lg:w-80 w-4/5 lg:max-w-xs"
+          v-model="color"
+        >
           <option disabled selected>Pick a color</option>
           <option v-for="color in ColorEnumArray" class="flex items-center">
             {{ color }}
           </option>
         </select>
 
-        <select class="select select-primary w-80 max-w-xs" v-model="priority">
+        <select
+          class="select select-primary select-sm lg:w-80 w-4/5 lg:max-w-xs"
+          v-model="priority"
+        >
           <option disabled selected>Choose Priority</option>
           <option v-for="priority in PriorityEnumArray">{{ priority }}</option>
         </select>
-        <select class="select select-primary w-80 max-w-xs" v-model="effort">
+        <select
+          class="select select-primary select-sm lg:w-80 w-4/5 lg:max-w-xs"
+          v-model="effort"
+        >
           <option disabled selected>Choose Effort</option>
           <option v-for="effort in EffortEnumArray">{{ effort }}</option>
         </select>
 
-        <select class="select select-primary w-80 max-w-xs" v-model="task_type">
+        <select
+          class="select select-primary select-sm lg:w-80 w-4/5 lg:max-w-xs"
+          v-model="task_type"
+        >
           <option disabled selected>Choose Task type</option>
           <option v-for="taskType in TaskTypeEnumArray">{{ taskType }}</option>
         </select>
@@ -52,7 +66,7 @@
       <!--       v-if="color != 'Pick a color'" -->
       <div
         :class="[
-          'w-full h-2 rounded-xl pt-2',
+          'lg:w-full w-4/5 mx-auto h-2 rounded-xl pt-2',
           color != 'Pick a color' ? getColor(color) : '',
         ]"
       ></div>
@@ -68,7 +82,7 @@
 
         <div class="flex flex-row justify-evenly gap-5">
           <label
-            class="input input-bordered input-primary flex w-11/12 items-center gap-2"
+            class="input input-bordered select-sm input-primary flex w-11/12 items-center gap-2"
           >
             Add Issue
             <input
@@ -78,13 +92,16 @@
               v-model="issue"
             />
           </label>
-          <button class="btn btn-outline btn-info w-1/12" @click="addIssue">
+          <button
+            class="btn btn-outline btn-sm btn-info w-1/12"
+            @click="addIssue"
+          >
             Add
           </button>
         </div>
       </div>
       <textarea
-        class="textarea textarea-primary"
+        class="textarea textarea-primary lg:textarea-lg textarea-xs"
         placeholder="Description"
         rows="5"
         v-model="description"

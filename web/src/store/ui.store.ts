@@ -42,7 +42,7 @@ export const useUIStore = defineStore("uiStore", {
       }, 10);
     },
     setIsMobile(value: boolean) {
-      this.isMobile = value;
+      this.isMobile = window.innerWidth < 1024;
     },
   },
 });

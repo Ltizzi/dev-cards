@@ -3,7 +3,7 @@
     <h1 class="text-3xl text-start font-bold mb-14">Workspace details</h1>
 
     <label
-      class="input input-bordered input-primary flex items-center gap-2 w-4/6 my-auto max-w-3xl"
+      class="input input-bordered input-primary lg:input-md input-sm lg:text-base text-xs flex items-center gap-2 lg:w-4/6 my-auto max-w-3xl"
     >
       Project name:
       <input
@@ -16,12 +16,15 @@
         class="bg-primary pt-1 hover:scale-105 hover:bg-secondary transition-all ease-in-out duration-150 px-1.5 rounded-xl shadow-md shadow-base-300"
         @click="changeName"
       >
-        <font-awesome-icon class="text-2xl" :icon="['fas', 'square-check']" />
+        <font-awesome-icon
+          class="lg:text-2xl text-base"
+          :icon="['fas', 'square-check']"
+        />
       </button>
     </label>
-    <div class="flex flex-row justify-between h-auto gap-40 w-full">
+    <div class="flex lg:flex-row flex-col justify-between h-auto gap-40 w-full">
       <label
-        class="input input-bordered input-primary flex items-center gap-2 w-4/6 my-auto max-w-3xl"
+        class="input input-bordered input-primary lg:input-md input-sm lg:text-base text-xs flex items-center gap-2 lg:w-4/6 my-auto max-w-3xl"
       >
         Avatar URL:
         <input
@@ -34,7 +37,10 @@
           class="bg-primary pt-1 hover:scale-105 hover:bg-secondary transition-all ease-in-out duration-150 px-1.5 rounded-xl shadow-md shadow-base-300"
           @click="changeAvatar"
         >
-          <font-awesome-icon class="text-2xl" :icon="['fas', 'square-check']" />
+          <font-awesome-icon
+            class="lg:text-2xl text-base"
+            :icon="['fas', 'square-check']"
+          />
         </button>
       </label>
       <div class="avatar w-2/6 -mt-36" v-if="avatarUrl">
