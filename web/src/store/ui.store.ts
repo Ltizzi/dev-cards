@@ -8,6 +8,7 @@ export const useUIStore = defineStore("uiStore", {
     darkerCard: false,
     darkerMiniCard: false,
     justUpdated: false,
+    isMobile: false,
   }),
   actions: {
     setTheme(theme: string) {
@@ -39,6 +40,9 @@ export const useUIStore = defineStore("uiStore", {
       setTimeout(() => {
         this.justUpdated = false;
       }, 10);
+    },
+    setIsMobile(value: boolean) {
+      this.isMobile = value;
     },
   },
 });

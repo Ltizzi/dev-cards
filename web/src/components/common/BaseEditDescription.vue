@@ -31,7 +31,7 @@
       @mouseover="props.canModify ? (hovered = true) : (hovered = false)"
       @mouseleave="hovered = false"
     >
-      <p :class="['text-base whitespace-pre-line']">
+      <p :class="['text-base text-justify whitespace-pre-line lg:mx-0 mx-2']">
         {{ props.description }}
       </p>
     </div>

@@ -1,6 +1,6 @@
 <template lang="">
-  <div class="text-center w-full min-h-screen">
-    <h1 class="text-4xl mt-5 text-base-content">All Tasks View</h1>
+  <div class="text-center min-h-screen h-full overflow-x-hidden">
+    <h1 class="text-4xl mt-7 lg:mt-5 text-base-content">All Tasks View</h1>
 
     <TaskListFilters
       :ws_id="projectStore.current.workspace_id"

@@ -1,7 +1,7 @@
 <template lang="">
   <div
     :class="[
-      'flex  flex-wrap justify-start gap-3 my-5 flex-row ml-5 w-full pb-24',
+      'flex  flex-wrap  justify-start gap-3 my-5 flex-row lg:ml-5 ml-6   w-full pb-24 overflow-y-auto',
     ]"
   >
     <div v-for="task in props.tasks">
