@@ -1,7 +1,9 @@
 <template lang="">
   <div>
     <label
-      :class="['input input-bordered flex items-center gap-2 input-secondary ']"
+      :class="[
+        'input input-bordered flex items-center gap-2 input-secondary lg:text-base text-sm ',
+      ]"
     >
       <!-- bg-gradient-to-r from-0% via-transparent via-50%  to-100%',
         isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300' -->

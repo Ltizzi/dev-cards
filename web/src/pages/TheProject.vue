@@ -1,8 +1,14 @@
 <template lang="">
-  <div class="flex flex-row justify-center w-screen" v-if="isLoaded">
-    <ProjectLateralMenu class="h-screen left-4 fixed" @update="updateProject" />
+  <div
+    class="flex flex-row justify-center w-screen min-h-screen max-h-screen lg:mx-5"
+    v-if="isLoaded"
+  >
+    <ProjectLateralMenu
+      class="h-screen left-10 fixed"
+      @update="updateProject"
+    />
 
-    <div class="ml-52 w-10/12">
+    <div class="lg:ml-5 lg:w-10/12 w-full mx-5 lg:mx-0">
       <router-view></router-view>
     </div>
   </div>
@@ -18,22 +24,23 @@
   import { useUserStore } from "../store/user.store";
   import { saveToken } from "../utils/auth.utils";
   import { taskUtils } from "../utils/task.utils";
-
-  const project = ref<Workspace>();
-
-  const apiCall = useApiCall();
-
-  const isLoaded = ref<boolean>(false);
+  import { useUIStore } from "../store/ui.store";
 
   const route = useRoute();
 
   const projectStore = useProjectStore();
-
+  const UIStore = useUIStore();
   const userStore = useUserStore();
 
-  const moderators = ref<UserLite[]>();
+  const apiCall = useApiCall();
 
+  const project = ref<Workspace>();
+  const moderators = ref<UserLite[]>();
   const designatedTaskNumber = ref<number>();
+
+  const isMobile = ref<boolean>();
+  const showMenu = ref<boolean>();
+  const isLoaded = ref<boolean>(false);
 
   watch(
     () => projectStore.justUpdated,
@@ -88,6 +95,8 @@
   }
 
   onBeforeMount(async () => {
+    isMobile.value = UIStore.isMobile;
+    showMenu.value = !isMobile.value;
     if (projectStore.current.workspace_id) {
       project.value = projectStore.current;
       moderators.value = project.value.moderators;

@@ -26,6 +26,8 @@ import {
   faCircleMinus,
   faGear,
   faMagnifyingGlass,
+  faBars,
+  faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -47,7 +49,9 @@ library.add(
   faCrown,
   faPeopleGroup,
   faGear,
-  faMagnifyingGlass
+  faMagnifyingGlass,
+  faBars,
+  faEyeSlash
 );
 
 const app = createApp(App);

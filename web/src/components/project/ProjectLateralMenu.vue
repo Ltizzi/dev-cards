@@ -1,14 +1,17 @@
 <template lang="">
   <div
-    class="w-56 bg-base-200 flex flex-col flex-nowrap h-screen"
-    v-if="isLoaded"
+    :class="[
+      'w-56 bg-base-200 flex flex-col flex-nowrap h-screen',
+      state.isMobile ? 'fixed left-5 z-20' : '',
+    ]"
+    v-if="isLoaded && state.showMenu"
   >
     <ul
       class="menu bg-base-200 rounded-box before:ring-offset-purple-400 overflow-x-hidden overflow-y-auto mt-3 whitespace-nowrap flex-shrink-0 flex-nowrap h-5/6"
     >
       <li
         :class="[
-          'font-extrabold  text-center py-3 sticky top-0 bg-gradient-to-br from-base-100 to-neutral z-50 whitespace-nowrap flex-shrink-0 w-52 rounded-xl',
+          'font-extrabold  text-center py-3 sticky top-0 bg-gradient-to-br from-base-100 to-neutral my-3 whitespace-nowrap flex-shrink-0 w-52 rounded-xl',
           state.isDark
             ? 'from-base-100 to-neutral text-base'
             : 'from-base-100 via-30% via-base-300 to-primary text-neutral',
@@ -170,7 +173,7 @@
       </li>
     </ul>
     <div
-      class="flex flex-col justify-center gap-0.5 w-56 bg-gradient-to-br from-base-100 to-base-300 bottom-0 z-30"
+      class="flex flex-col justify-center gap-0.5 w-56 bg-gradient-to-br from-base-100 to-base-300 bottom-0 z-10"
     >
       <NewTaskBtn
         :class="['mx-auto', isModOrOwner ? '' : 'mb-5']"
@@ -206,6 +209,20 @@
       @update="updateProject"
     />
   </div>
+  <button
+    class="btn btn-square btn-outline absolute top-2 left-16 bg-base-300 z-50"
+    v-show="state.showMenuBtn"
+    @click="showMenu"
+  >
+    <font-awesome-icon :icon="['fas', 'bars']" />
+  </button>
+  <button
+    class="btn btn-square btn-outline absolute top-5 ml-5 bg-base-300 z-50"
+    v-show="state.showHideBtn"
+    @click="hideMenu"
+  >
+    <font-awesome-icon :icon="['fas', 'eye-slash']" />
+  </button>
 </template>
 <script setup lang="ts">
   import { useRoute, useRouter } from "vue-router";
@@ -219,6 +236,9 @@
   import { checkIsModOrOwner } from "../../utils/auth.utils";
   import AddUserByEmailModal from "../ui/AddUserByEmailModal.vue";
   import NewTaskBtn from "../task/NewTaskBtn.vue";
+  import { useUIStore } from "../../store/ui.store";
+
+  const props = defineProps<{ isMobile: boolean }>();
 
   const route = useRoute();
   const router = useRouter();
@@ -229,6 +249,7 @@
 
   const projectStore = useProjectStore();
   const userStore = useUserStore();
+  const UIStore = useUIStore();
 
   const apiCall = useApiCall();
 
@@ -246,7 +267,23 @@
     selectedTask: 0 as number,
     addUserModal: false,
     isDark: false,
+    isMobile: false,
+    showMenu: true,
+    showHideBtn: false,
+    showMenuBtn: false,
   });
+
+  watch(
+    () => UIStore.isMobile,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        //showMenu.value = !isMobile.value;
+        state.isMobile = UIStore.isMobile;
+        state.showMenu = !newValue;
+        state.showMenuBtn = newValue;
+      }
+    }
+  );
 
   watch(
     () => route.query.id,
@@ -351,6 +388,18 @@
           : (state.selected = stateSelected),
       100
     );
+  }
+
+  function showMenu() {
+    state.showMenu = true;
+    state.showHideBtn = true;
+    state.showMenuBtn = false;
+  }
+
+  function hideMenu() {
+    state.showMenu = false;
+    state.showHideBtn = false;
+    state.showMenuBtn = true;
   }
 
   function showFindUserByMailModal() {
