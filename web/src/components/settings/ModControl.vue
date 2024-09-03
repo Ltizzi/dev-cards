@@ -1,8 +1,10 @@
 <template lang="">
   <div class="my-14 flex flex-col gap-5 justify-center">
-    <h2 class="text-3xl text-start font-bold mb-14">Add/Remove Mods</h2>
+    <h2 class="lg:text-3xl text-xl text-start font-bold mb-14">
+      Add/Remove Mods
+    </h2>
     <h3 class="text-xl pt-3">User List:</h3>
-    <ul class="py-3 flex flex-row justify-start gap-5">
+    <ul class="py-3 flex flex-row flex-wrap justify-start gap-5">
       <li
         class="flex flex-row gap-2 hover:cursor-pointer"
         v-for="user in user_list"

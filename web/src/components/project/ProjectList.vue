@@ -2,7 +2,7 @@
   <div class="flex flex-col justify-start mx-10 mt-10">
     <h1 class="text-2xl font-semibold">Projects:</h1>
     <div
-      class="flex flex-row justify-start flex-wrap gap-5 pt-10 pb-5 mx-5"
+      class="flex flex-row lg:justify-start justify-center flex-wrap gap-5 pt-10 pb-5 mx-5"
       v-if="workspaces && workspaces.length > 0"
     >
       <ProjectCard v-for="ws in workspaces" :ws="ws" />

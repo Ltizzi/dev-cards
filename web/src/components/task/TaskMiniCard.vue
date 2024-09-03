@@ -1,9 +1,9 @@
 <template lang="">
-  <div>
+  <div class="overflow-visible">
     <!-- ref="task_card" :style="style" -->
     <div
       :class="[
-        'card w-72 shadow-lg hover:z-50 -ml-1',
+        'card w-72 shadow-lg hover:z-40 -ml-1',
         isDark
           ? darkerMiniCards
             ? 'shadow-md  shadow-secondary'
@@ -57,7 +57,7 @@
     </div>
     <div
       :class="[
-        'card w-32 shadow-md  hover:z-50',
+        'card w-32 shadow-md  hover:z-40',
         isDark
           ? darkerMiniCards
             ? 'shadow-md  shadow-secondary'

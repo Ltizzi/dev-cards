@@ -1,21 +1,23 @@
 <template lang="">
-  <div class="min-h-screen flex items-center justify-center">
+  <div class="min-h-screen w-full h-full flex items-center justify-center">
     <div
-      class="flex justify-center items-center text-lg mx-auto w-11/12 h-5/6 px-20 my-auto text-center bg-gradient-to-r from-transparent via-secondary py-28 rounded-xl shadow-lg shadow-accent to-primary"
+      class="flex justify-center items-center text-lg mx-auto lg:w-11/12 h-fit lg:px-20 px-5 w-96 my-auto text-center bg-gradient-to-r from-transparent via-secondary lg:py-28 py-5 rounded-xl shadow-lg shadow-accent to-primary"
       v-if="!failed"
     >
       <div
-        class="flex flex-row flex-grow justify-center gap-5 bg-neutral bg-opacity-50 w-10/12 py-7 h-full rounded-2xl"
+        class="flex lg:flex-row flex-col flex-grow justify-center gap-5 bg-neutral bg-opacity-50 lg:w-10/12 w-full py-7 h-fit rounded-2xl"
       >
         <div
-          class="flex flex-col gap-5 justify-center w-1/5 min-h-96 items-end"
+          class="flex flex-col gap-5 justify-center lg:w-1/5 w-full lg:min-h-96 lg:items-end items-center"
         >
           <div class="avatar">
-            <div class="w-44 rounded-full">
+            <div class="lg:w-44 w-36 rounded-full">
               <img :src="user.avatar ? user.avatar : default_avatar" />
             </div>
           </div>
-          <div class="text-start flex items-end flex-col gap-2">
+          <div
+            class="lg:text-start flex lg:items-end items-center text-center flex-col gap-2"
+          >
             <h1
               :class="[
                 'font-bold text-2xl px-2 py-0.5 rounded-xl w-fit mt-0 ',
@@ -48,11 +50,11 @@
           </div>
         </div>
         <div
-          class="flex flex-col item-middle align-middle my-auto justify-center text-center w-4/5"
+          class="flex flex-col item-middle align-middle h-full my-auto justify-center text-center lg:w-4/5"
         >
           <p
             :class="[
-              ' px-10 grow py-5 text-justify text-base rounded-xl w-fit mx-auto whitespace-pre-line ',
+              ' lg:px-10 lg:ml-0 -ml-5 px-7 grow py-5 text-justify text-base rounded-xl w-fit mx-auto whitespace-pre-line ',
               !isDark ? 'text-white' : '',
             ]"
           >

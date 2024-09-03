@@ -1,7 +1,7 @@
 <template lang="">
   <div
     :class="[
-      'w-full px-2 flex flex-col justify-center my-auto border-secondary  max-h-5',
+      'lg:w-full w-96 items-center lg:ml-0 ml-5 px-2 flex flex-col justify-center my-auto border-secondary  lg:max-h-5 py-1.5 lg:py-0',
       props.canModify ? 'hover:cursor-pointer' : '',
     ]"
     @click="changeElement()"

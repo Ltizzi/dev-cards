@@ -19,10 +19,12 @@
     </div>
     <div v-else class="flex flex-col gap-5 justify-center">
       <div v-show="active_tasks.length > 0">
-        <h1 class="text-2xl font-semibold text-base-content">Active tasks:</h1>
+        <h1 class="text-2xl lg:ml-0 ml-5 font-semibold text-base-content">
+          Active tasks:
+        </h1>
         <TaskList
           :tasks="active_tasks"
-          :isMicro="false"
+          :isMicro="isMobile"
           :isDark="props.isDark"
           :darkerCards="props.darkerCards"
           :viewList="true"
@@ -30,12 +32,12 @@
       </div>
 
       <div v-show="completed_tasks.length > 0">
-        <h1 class="text-2xl font-semibold text-base-content">
+        <h1 class="text-2xl lg:ml-0 ml-5 font-semibold text-base-content">
           Completed tasks:
         </h1>
         <TaskList
           :tasks="completed_tasks"
-          :isMicro="false"
+          :isMicro="isMobile"
           :isDark="props.isDark"
           :darkerCards="props.darkerCards"
           :viewList="true"
@@ -51,6 +53,7 @@
   import { useUserStore } from "../store/user.store";
   import { useRoute } from "vue-router";
   import { useProjectStore } from "../store/project.store";
+  import { useUIStore } from "../store/ui.store";
 
   const props = defineProps<{
     isDark: boolean;
@@ -67,8 +70,10 @@
 
   const userStore = useUserStore();
   const projectStore = useProjectStore();
+  const UIStore = useUIStore();
 
   const isLoaded = ref<boolean>();
+  const isMobile = ref<boolean>();
 
   interface FilteredTasks {
     active: TaskLite[];
@@ -105,6 +110,16 @@
   //     }
   //   }
   // );
+
+  watch(
+    () => UIStore.isMobile,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        console.log("HIJO DE MIL");
+        isMobile.value = UIStore.isMobile;
+      }
+    }
+  );
 
   function cleanTasks() {
     active_tasks.value = [];
@@ -185,6 +200,8 @@
     } else {
       no_tasks.value = true;
     }
+    UIStore.setIsMobile(true);
+    isMobile.value = UIStore.isMobile;
     isLoaded.value = true;
   });
 </script>

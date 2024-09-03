@@ -6,7 +6,9 @@
       @mouseover="props.canModify ? (hovered = true) : (hovered = false)"
       @mouseleave="hovered = false"
     >
-      <h2 class="text-2xl text-start">{{ props.subtitle }}</h2>
+      <h2 class="lg:text-2xl text-lg font-semibold text-start">
+        {{ props.subtitle }}
+      </h2>
       <font-awesome-icon
         :class="[
           'my-auto size-7 hover:cursor-pointer',

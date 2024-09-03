@@ -2,7 +2,7 @@
   <div
     :class="[
       'w-56 bg-base-200 flex flex-col flex-nowrap h-screen',
-      state.isMobile ? 'fixed left-5 z-20' : '',
+      state.isMobile ? 'fixed left-7 z-10' : '-ml-20',
     ]"
     v-if="isLoaded && state.showMenu"
   >
@@ -279,8 +279,8 @@
       if (newValue != oldValue) {
         //showMenu.value = !isMobile.value;
         state.isMobile = UIStore.isMobile;
-        state.showMenu = !newValue;
-        state.showMenuBtn = newValue;
+        state.showMenu = !state.isMobile;
+        state.showMenuBtn = state.isMobile;
       }
     }
   );
@@ -427,6 +427,7 @@
         userTasks.push(task);
       }
     });
+
     return userTasks;
   }
 
@@ -441,6 +442,10 @@
   }
 
   onBeforeMount(async () => {
+    state.isMobile = UIStore.isMobile;
+    state.showMenuBtn = state.isMobile;
+    state.showMenu = !state.isMobile;
+    state.showHideBtn = state.showMenu;
     if (route.query.id) id.value = +route.query.id;
     project.value = projectStore.current;
     if (project.value.workspace_id) {

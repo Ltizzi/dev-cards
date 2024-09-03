@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      ' border-r-2 py-3 min-w-32 border-secondary',
+      ' border-r-2 lg:border-t-0 border-t-2 lg:border-b-0 border-b-2 py-3 min-w-32 border-secondary',
       props.canModify ? 'hover:cursor-pointer' : '',
     ]"
   >

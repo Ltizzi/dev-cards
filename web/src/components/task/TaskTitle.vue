@@ -6,12 +6,12 @@
       @mouseover="props.canModify ? (hovered = true) : (hovered = false)"
       @mouseleave="hovered = false"
     >
-      <h1 class="text-3xl py-2 font-bold" ref="card_title">
+      <h1 class="lg:text-3xl text-lg py-2 font-bold" ref="card_title">
         {{ props.title }}
       </h1>
       <font-awesome-icon
         :class="[
-          'absolute right-10 top-3 size-7 hover:cursor-pointer',
+          'absolute lg:right-10 right-0 top-3 size-7 hover:cursor-pointer',
           hovered ? 'animate-pulse duration-150 text-secondary' : '',
         ]"
         :icon="['fas', 'pen-to-square']"
