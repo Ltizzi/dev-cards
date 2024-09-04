@@ -4,7 +4,7 @@
       tabindex="0"
       role="button"
       :class="[
-        'btn btn-info  m-1 lg:text-sm text-xs',
+        'btn btn-info  m-1 xl:text-sm text-xs',
         selected_options.length == 0 ? 'btn-outline' : '',
       ]"
     >

@@ -5,9 +5,11 @@
   >
     <div class="h-1/6">
       <h1 class="text-center text-4xl">Scrum board</h1>
-      <div class="flex flex-row py-5 justify-between">
+      <div
+        class="flex flex-row py-5 xl:justify-between justify-between lg:justify-around"
+      >
         <TaskFilterInput @search="defineSearch" />
-        <div class="flex flex-row justify-between gap-5">
+        <div class="flex flex-row justify-between xl:gap-5 gap-1">
           <NewTaskBtn @update="updateProject" />
           <!-- <button class="btn btn-outline btn-secondary" @click="changeIconSize">
             Change card size
@@ -17,13 +19,15 @@
       </div>
     </div>
 
-    <div class="h-5/6 overflow-y-hidden overflow-x-auto w-full lg:flex-1">
+    <div
+      class="h-5/6 overflow-y-hidden overflow-x-auto w-full lg:flex-1 xl:ml-0 lg:-ml-6"
+    >
       <div
         class="w-full grid border-2 border-t-0 border-l-0 border-r-0 border-opacity-40 border-spacing-10 border-dashed border-secondary grid-cols-5 text-xl font-semibold text-center text-base-content rounded-t-xl flex-1"
       >
         <div
           :class="[
-            'lg:w-80 w-auto py-3 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r from-0% via-transparent via-50%   to-100% rounded-tl-xl',
+            'xl:w-80 w-auto py-3 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r from-0% via-transparent via-50%   to-100% rounded-tl-xl',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
         >
@@ -31,7 +35,7 @@
         </div>
         <div
           :class="[
-            'lg:w-80 w-auto py-3 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100%',
+            'xl:w-80 w-auto py-3 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100%',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
         >
@@ -39,7 +43,7 @@
         </div>
         <div
           :class="[
-            'lg:w-80 w-auto py-3 border-spacing-10 border-opacity-20  border-dashed border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100%',
+            'xl:w-80 w-auto py-3 border-spacing-10 border-opacity-20  border-dashed border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100%',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
         >
@@ -47,7 +51,7 @@
         </div>
         <div
           :class="[
-            'lg:w-80 w-autopy-3 border-spacing-10 border-opacity-20  border-dashed border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100% ',
+            'xl:w-80 w-autopy-3 border-spacing-10 border-opacity-20  border-dashed border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100% ',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
         >
@@ -55,7 +59,7 @@
         </div>
         <div
           :class="[
-            'lg:w-80 w-auto py-3 bg-gradient-to-r rounded-tr-xl  from-0% via-transparent via-50%  to-100%',
+            'xl:w-80 w-auto py-3 bg-gradient-to-r rounded-tr-xl  from-0% via-transparent via-50%  to-100%',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
         >
@@ -68,7 +72,7 @@
       >
         <div
           :class="[
-            'lg:w-80 w-auto border-r-2 border-opacity-20 border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% rounded-bl-xl    overflow-x-hidden max-h-fit h-full',
+            'xl:w-80 w-auto border-r-2 border-opacity-20 border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% rounded-bl-xl    overflow-x-hidden max-h-fit h-full',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_pool"
@@ -81,7 +85,7 @@
         </div>
         <div
           :class="[
-            'lg:w-80 w-auto border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% overflow-x-hidden overflow-y-auto max-h-full',
+            'xl:w-80 w-auto border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% overflow-x-hidden overflow-y-auto max-h-full',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_priority"
@@ -94,7 +98,7 @@
         </div>
         <div
           :class="[
-            'lg:w-80 w-auto border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r from-0% via-transparent via-50% to-100% overflow-x-hidden overflow-y-auto max-h-full',
+            'xl:w-80 w-auto border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r from-0% via-transparent via-50% to-100% overflow-x-hidden overflow-y-auto max-h-full',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_progress"
@@ -107,7 +111,7 @@
         </div>
         <div
           :class="[
-            'lg:w-80 w-autoborder-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100%  overflow-x-hidden overflow-y-auto max-h-full',
+            'xl:w-80 w-autoborder-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100%  overflow-x-hidden overflow-y-auto max-h-full',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_testing"
@@ -120,7 +124,7 @@
         </div>
         <div
           :class="[
-            'lg:w-80 w-auto bg-gradient-to-r border-opacity-50  border-spacing-10 border-dashed from-0% via-transparent via-50%  to-100% rounded-br-xl  overflow-x-hidden overflow-y-auto max-h-full',
+            'xl:w-80 w-auto bg-gradient-to-r border-opacity-50  border-spacing-10 border-dashed from-0% via-transparent via-50%  to-100% rounded-br-xl  overflow-x-hidden overflow-y-auto max-h-full',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_completed"

@@ -3,7 +3,7 @@
     <div class="tooltip tooltip-primary" data-tip="Create new task">
       <button
         :class="[
-          'btn  btn-secondary',
+          'btn  btn-secondary ',
           props.icon
             ? 'text-neutral-content  hover:scale-105 transition-all duration-150 ease-in-out w-48'
             : 'btn-outline',
@@ -15,7 +15,7 @@
           class="size-7"
           v-if="props.icon"
         />
-        <div v-else>Create Task</div>
+        <div v-else class="text-xs xl:text-sm">Create Task</div>
       </button>
     </div>
 

@@ -1,7 +1,7 @@
 <template lang="">
   <div class="flex flex-col justify-center w-full" v-if="isLoaded">
     <div
-      class="flex flex-row lg:flex-nowrap flex-wrap justify-between max-w-full lg:ml-24 ml-5 pt-10 max-h-40 lg:pb-0 pb-20"
+      class="flex flex-row lg:flex-nowrap flex-wrap justify-between max-w-full lg:ml-24 ml-5 pt-10 max-h-40 lg:pb-12 2xl:pb-0 pb-20"
     >
       <div class="w-full">
         <h1 class="text-2xl">Home page</h1>

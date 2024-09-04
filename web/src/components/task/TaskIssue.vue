@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="w-full px-5 mx-auto flex flex-row">
+  <div class="w-full lg:px-5 mx-auto flex flex-row">
     <div
       :class="[
         'form-control w-full flex flex-row gap-7 items-center',
@@ -14,7 +14,7 @@
       v-if="!state.showEditable"
     >
       <h1
-        class="cursor-pointer label flex flex-row justify-between gap-5 w-11/12"
+        class="cursor-pointer label flex flex-row justify-between gap-5 lg:w-11/12 w-4/5"
       >
         <span
           :class="[
@@ -29,12 +29,12 @@
         </span>
       </h1>
       <div
-        class="flex flex-row gap-1 my-auto justify-center items-center"
+        class="flex lg:flex-row flex-col items-center gap-0 my-auto justify-center mx-auto"
         v-show="hovered"
       >
         <font-awesome-icon
           :class="[
-            'my-auto size-7 hover:cursor-pointer',
+            'my-auto size-6 hover:cursor-pointer',
             hovered ? 'animate-pulse duration-150 text-secondary' : '',
           ]"
           :icon="['fas', 'pen-to-square']"
@@ -45,15 +45,16 @@
           :id="props.issue.issue_id"
           :type="'issue'"
           @delete="deleteIssue"
+          class="-ml-4 lg:ml-0"
         />
       </div>
     </div>
-    <div v-else class="flex flex-row gap-3 w-4/5" ref="issueElement">
+    <div v-else class="flex flex-row gap-10 w-full" ref="issueElement">
       <input
         type="text"
         :placeholder="props.issue.sentence"
         :class="[
-          'input input-bordered input-secondary w-full',
+          'input input-bordered input-secondary w-4/5',
           isDark
             ? 'text-base-300 bg-base-content'
             : 'bg-base-100 text-base-content',
@@ -62,7 +63,7 @@
         @keydown.enter="updateIssue"
       />
     </div>
-    <div>
+    <div class="flex flex-col justify-center items-center">
       <input
         type="checkbox"
         :checked="props.issue.isCompleted"

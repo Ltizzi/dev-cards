@@ -1,11 +1,11 @@
 <template lang="">
   <div
-    class="flex flex-row justify-center w-auto overflow-x-auto max-h-auto lg:overflow-x-hidden lg:w-screen min-h-screen max-h-screen lg:mx-5"
+    class="flex flex-row justify-end w-auto overflow-x-auto lg:overflow-x-hidden lg:w-screen min-h-screen max-h-screen lg:mx-5"
     v-if="isLoaded"
   >
     <ProjectLateralMenu class="h-screen fixed" @update="updateProject" />
 
-    <div class="lg:ml-5 lg:w-10/12 w-auto mx-5 lg:mx-0">
+    <div class="lg:ml-0 2xl:w-10/12 lg:w-9/12 w-auto mx-5 lg:mx-0 2xl:mx-9">
       <router-view></router-view>
     </div>
   </div>

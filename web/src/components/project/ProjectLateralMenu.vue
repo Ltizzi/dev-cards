@@ -2,7 +2,7 @@
   <div
     :class="[
       'w-56 bg-base-200 flex flex-col flex-nowrap h-screen',
-      state.isMobile ? 'fixed left-7 z-10' : '-ml-20',
+      state.isMobile ? 'fixed left-7 z-10' : 'fixed left-28 -ml-20',
     ]"
     v-if="isLoaded && state.showMenu"
   >
@@ -217,7 +217,7 @@
     <font-awesome-icon :icon="['fas', 'bars']" />
   </button>
   <button
-    class="btn btn-square btn-outline absolute top-5 ml-5 bg-base-300 z-50"
+    class="btn btn-square btn-outline absolute top-5 left-1/2 ml-5 bg-base-300 z-50"
     v-show="state.showHideBtn"
     @click="hideMenu"
   >

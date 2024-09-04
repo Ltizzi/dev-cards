@@ -3,7 +3,9 @@
     class="flex flex-col justify-center w-full min-h-screen max-h-screen overflow-auto"
     v-if="isLoaded"
   >
-    <div class="flex flex-row justify-center gap-5 align-middle lg:mt-0 mt-64">
+    <div
+      class="flex flex-row justify-center gap-5 align-middle lg:mt-14 2xl:mt-0 mt-64"
+    >
       <h1 class="text-4xl text-center my-5 font-bold">
         {{ project.project_name }}
       </h1>
@@ -51,7 +53,9 @@
       </div>
       <div>
         <h1 class="mb-2 text-base font-bold">Users:</h1>
-        <div class="flex flex-row flex-wrap gap-5 justify-center">
+        <div
+          class="flex flex-row flex-wrap gap-5 justify-center lg:mx-7 xl:mx-0"
+        >
           <p class="text-lg" v-for="user in project.users">
             <!-- <div class="flex flex-row gap-4 ml-5 ">
                   <div class="avatar">
@@ -73,7 +77,9 @@
       </div>
     </div>
 
-    <div class="my-10 lg:mx-14 flex flex-col justify-center items-center">
+    <div
+      class="my-10 xl:mx-14 lg:mx-7 flex flex-col justify-center items-center"
+    >
       <!-- <h1 class="mb-2 text-xl font-bold">Description:</h1>
         <p class="mx-10 text-lg">{{ project.description }}</p> -->
       <BaseEditDescription
@@ -89,7 +95,7 @@
       :ws_id="project.workspace_id"
       :info="true"
       :show="true"
-      class="lg:mx-16 pb-14"
+      class="xl:mx-16 pb-14"
     />
     <!-- <h1 class="text-3xl my-5">Tasks:</h1> -->
     <NewTaskBtn class="mx-auto" />
