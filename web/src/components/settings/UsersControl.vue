@@ -8,10 +8,12 @@ import { UserLite } from '../../utils/types';
           <!-- head -->
           <thead>
             <tr>
-              <th>Avatar</th>
-              <th class="text-center">Id</th>
+              <th v-if="!isMobile && checkWindowWidth()">Avatar</th>
+              <th class="text-center" v-if="!isMobile && checkWindowWidth()">
+                Id
+              </th>
               <th>Userame</th>
-              <th>Email</th>
+              <th v-if="!isMobile && checkWindowWidth()">Email</th>
               <th class="text-center">Role</th>
               <th class="text-center">Collaborator Control</th>
               <th class="text-center">Remove</th>
@@ -19,20 +21,20 @@ import { UserLite } from '../../utils/types';
           </thead>
           <tbody>
             <tr v-for="user in user_list">
-              <th>
+              <th v-if="!isMobile && checkWindowWidth()">
                 <div class="avatar">
                   <div class="w-8 rounded-full border-primary border-2">
                     <img :src="user.avatar" />
                   </div>
                 </div>
               </th>
-              <td>
+              <td v-if="!isMobile && checkWindowWidth()">
                 <p class="text-center w-auto">{{ user.user_id }}</p>
               </td>
               <td>
                 <p class="w-auto">{{ user.username }}</p>
               </td>
-              <td>
+              <td v-if="!isMobile && checkWindowWidth()">
                 <p class="w-auto">{{ user.email }}</p>
               </td>
               <td>
@@ -128,6 +130,7 @@ import { UserLite } from '../../utils/types';
   import { EndpointType } from "../../utils/endpoints";
   import BaseDeleteModal from "../common/BaseDeleteModal.vue";
   import { checkIsDark } from "../../utils/client.utils";
+  import { useUIStore } from "../../store/ui.store";
 
   const props = defineProps<{
     workspace_id: number;
@@ -138,8 +141,10 @@ import { UserLite } from '../../utils/types';
   }>();
 
   const isDark = ref<boolean>();
+  const isMobile = ref<boolean>();
 
   const apiCall = useApiCall();
+  const UIStore = useUIStore();
 
   const emit = defineEmits(["update"]);
 
@@ -166,6 +171,10 @@ import { UserLite } from '../../utils/types';
         showModal.value = false;
       }, 1000);
     }
+  }
+
+  function checkWindowWidth() {
+    return window.innerWidth > 1600;
   }
 
   function openModal(id: number) {
@@ -227,7 +236,17 @@ import { UserLite } from '../../utils/types';
     }
   );
 
+  watch(
+    () => UIStore.isMobile,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        isMobile.value = UIStore.isMobile;
+      }
+    }
+  );
+
   onBeforeMount(() => {
+    isMobile.value = UIStore.isMobile;
     user_list.value = props.user_list;
     isDark.value = checkIsDark();
   });

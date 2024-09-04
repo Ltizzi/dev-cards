@@ -12,7 +12,7 @@
         >
           <div class="tooltip" data-tip="Show/Hidetags">
             <button
-              class="btn btn-outline btn-info xl:text-sm text-xs"
+              class="btn btn-outline btn-info 2xl:text-sm text-xs"
               @click="handleTags"
             >
               {{ !state.showingTags ? "Show Tags" : "Hide Tags" }}
@@ -30,7 +30,7 @@
           <div class="tooltip" data-tip="Clear Search">
             <button
               :class="[
-                'btn btn-outline btn-info xl:text-sm text-xs',
+                'btn btn-outline btn-info 2xl:text-sm text-xs',
                 props.tagSearch || state.tagSearch ? '' : 'btn-disabled',
               ]"
               @click="clearSearch"
@@ -48,7 +48,7 @@
         <TaskPropFilters @selected="filterByOptions" />
         <ChangeCardSizeBtn
           @changeIconSize="changeIconSize"
-          class="mr-16 mt-1 xl:text-sm text-xs"
+          class="mr-16 mt-1 2xl:text-sm text-xs"
         />
       </div>
     </div>

@@ -1,8 +1,8 @@
 <template lang="">
-  <div class="mt-5 h-screen">
+  <div class="mt-5 xl:ml-2 lg:-ml-6 mx-auto h-screen">
     <h1 class="text-3xl text-center">Project Settings</h1>
     <div
-      class="flex flex-row border-2 border-opacity-60 border-secondary bg-gradient-to-br from-base-200 to-transparent h-5/6 my-4"
+      class="flex flex-row border-2 border-opacity-60 border-secondary bg-gradient-to-br from-base-200 to-transparent h-5/6 my-4 xl:w-full lg:w-11/12"
     >
       <SettingsLateralMenu
         class="w-1/6"

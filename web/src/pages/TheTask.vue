@@ -1,7 +1,7 @@
 <template lang="">
   <div
     :class="[
-      'flex flex-col justify-start my-5 w-full ml-7 rounded-2xl min-h-screen lg:-ml-8',
+      'flex flex-col justify-start my-5 w-full ml-7 rounded-2xl min-h-screen lg:-ml-8 xl:ml-0',
     ]"
     v-if="isLoaded"
   >
@@ -23,17 +23,17 @@
         <div :class="['w-full h-6  rounded-t-lg', title_color]"></div>
 
         <div
-          class="flex flex-row xl:flex-nowrap flex-wrap xl:h-24 h-auto justify-stretch mb-0 border-b-4 w-full border-secondary gap-0"
+          class="flex flex-row 2xl:flex-nowrap flex-wrap 2xl:h-24 h-auto justify-stretch mb-0 border-b-4 w-full border-secondary gap-0"
         >
           <div class="w-full flex flex-row">
             <h2
-              class="xl:text-2xl text-xl ml-2 border-r-2 border-secondary px-2 py-7 my-auto lg:min-w-44 lg:w-1/6 w-3/12 max-w-xl"
+              class="2xl:text-2xl text-xl ml-2 border-r-2 border-secondary px-2 py-7 my-auto lg:min-w-44 lg:w-1/6 w-3/12 max-w-xl"
             >
               {{ card.workspace.project_name }}
             </h2>
 
             <div
-              class="rounded-t-lg my-auto xl:w-6/12 w-4/6 max-w-7xl min-w-64 text-center"
+              class="rounded-t-lg my-auto 2xl:w-6/12 w-4/6 max-w-7xl min-w-64 text-center"
             >
               <TaskTitle
                 :title="card.title"
@@ -53,12 +53,12 @@
           </div>
 
           <div
-            class="flex xl:w-4/12 lg:max-w-5xl w-full md:max-w-4xl sm:max-w-3xl max-w-xl flex-col justify-center gap-3 border-l-2 border-secondary"
+            class="flex 2xl:w-4/12 xl:max-w-full lg:max-w-5xl w-full md:max-w-4xl sm:max-w-3xl max-w-xl flex-col justify-center gap-3 border-l-2 border-secondary"
           >
             <!-- MARK: TASK STATE
            -->
             <div
-              class="flex flex-row justify-start gap-1 xl:h-12 items-center xl:border-b-2 border-secondary"
+              class="flex flex-row justify-start w-full gap-1 xl:h-12 items-center 2xl:border-b-2 border-secondary"
             >
               <TaskPrioritySelectable
                 :priority="card.priority"

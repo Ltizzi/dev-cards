@@ -5,18 +5,18 @@
       v-if="!failed"
     >
       <div
-        class="flex lg:flex-row flex-col flex-grow justify-center gap-5 bg-neutral bg-opacity-50 lg:w-10/12 w-full py-7 h-fit rounded-2xl"
+        class="flex xl:flex-row flex-col flex-grow justify-center gap-5 bg-neutral bg-opacity-50 lg:w-10/12 w-full py-7 h-fit rounded-2xl"
       >
         <div
-          class="flex flex-col gap-5 justify-center lg:w-1/5 w-full lg:min-h-96 lg:items-end items-center"
+          class="flex flex-col gap-5 justify-center xl:w-1/5 w-full xl:min-h-96 xl:items-end items-center"
         >
           <div class="avatar">
-            <div class="lg:w-44 w-36 rounded-full">
+            <div class="xl:w-44 w-36 rounded-full">
               <img :src="user.avatar ? user.avatar : default_avatar" />
             </div>
           </div>
           <div
-            class="lg:text-start flex lg:items-end items-center text-center flex-col gap-2"
+            class="xl:text-start flex xl:items-end items-center text-center flex-col gap-2"
           >
             <h1
               :class="[
@@ -50,7 +50,7 @@
           </div>
         </div>
         <div
-          class="flex flex-col item-middle align-middle h-full my-auto justify-center text-center lg:w-4/5"
+          class="flex flex-col item-middle align-middle h-full my-auto justify-center text-center xl:w-4/5"
         >
           <p
             :class="[
