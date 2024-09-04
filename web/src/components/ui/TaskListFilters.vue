@@ -1,7 +1,7 @@
 <template lang="">
   <div class="flex flex-col justify-center">
     <div
-      class="flex flex-row lg:flex-nowrap flex-wrap lg:mx-0 mx-7 justify-between py-5"
+      class="flex flex-row xl:flex-nowrap flex-wrap lg:mx-0 mx-7 xl:gap-y-0 gap-y-5 justify-between py-5"
     >
       <TaskFilterInput @search="defineSearch" class="ml-0" />
       <div
@@ -12,7 +12,7 @@
         >
           <div class="tooltip" data-tip="Show/Hidetags">
             <button
-              class="btn btn-outline btn-info lg:text-sm text-xs"
+              class="btn btn-outline btn-info xl:text-sm text-xs"
               @click="handleTags"
             >
               {{ !state.showingTags ? "Show Tags" : "Hide Tags" }}
@@ -30,7 +30,7 @@
           <div class="tooltip" data-tip="Clear Search">
             <button
               :class="[
-                'btn btn-outline btn-info lg:text-sm text-xs',
+                'btn btn-outline btn-info xl:text-sm text-xs',
                 props.tagSearch || state.tagSearch ? '' : 'btn-disabled',
               ]"
               @click="clearSearch"
@@ -48,7 +48,7 @@
         <TaskPropFilters @selected="filterByOptions" />
         <ChangeCardSizeBtn
           @changeIconSize="changeIconSize"
-          class="mr-16 mt-1 lg:text-sm text-xs"
+          class="mr-16 mt-1 xl:text-sm text-xs"
         />
       </div>
     </div>

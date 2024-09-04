@@ -2,7 +2,7 @@
   <div>
     <label
       :class="[
-        'input input-bordered flex items-center gap-2 input-secondary lg:text-base text-sm ',
+        'input input-bordered flex items-center gap-2 input-secondary xl:text-base text-sm ',
       ]"
     >
       <!-- bg-gradient-to-r from-0% via-transparent via-50%  to-100%',
