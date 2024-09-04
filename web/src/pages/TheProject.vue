@@ -5,7 +5,9 @@
   >
     <ProjectLateralMenu class="h-screen fixed" @update="updateProject" />
 
-    <div class="lg:ml-0 2xl:w-10/12 lg:w-9/12 w-auto mx-5 lg:mx-0 2xl:mx-9">
+    <div
+      class="lg:ml-0 2xl:w-10/12 xl:w-10/12 lg:w-9/12 w-auto mx-5 lg:mx-0 2xl:mx-9"
+    >
       <router-view></router-view>
     </div>
   </div>

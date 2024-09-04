@@ -41,12 +41,12 @@
     </div>
     <div
       v-else
-      class="flex flex-col mx-10 w-full -ml-0.5"
+      class="flex flex-col mx-10 w-11/12 -ml-0.5"
       ref="descriptionComponent"
     >
       <textarea
         :class="[
-          'textarea textarea-secondary lg:textarea-lg textarea-md  my-5',
+          'textarea textarea-secondary  my-5',
           props.isDark
             ? 'text-base-300 bg-base-content'
             : 'bg-base-100 text-base-content',
@@ -55,7 +55,7 @@
         v-model="description"
         @keydown.esc="state.showEditable = false"
         rows="5"
-        :cols="state.isMobile ? 25 : 130"
+        :cols="calcCols()"
       ></textarea>
       <button class="btn btn-secondary text-white" @click="updateDescription">
         Update
@@ -123,6 +123,18 @@
         state.recentChange = false;
       }, 50);
     }
+  }
+
+  function calcCols() {
+    return state.isMobile
+      ? window.innerWidth < 768
+        ? 30
+        : 60
+      : window.innerWidth < 1440
+      ? 60
+      : window.innerWidth < 1920
+      ? 130
+      : 160;
   }
 
   async function updateDescription() {

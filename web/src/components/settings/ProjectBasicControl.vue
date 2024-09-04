@@ -52,14 +52,16 @@
       </div>
     </div>
 
-    <BaseEditDescription
-      :description="project.description"
-      :id="project.workspace_id"
-      :isDark="isDark"
-      :type="workspace"
-      :canModify="true"
-      @update="updateProject"
-    />
+    <div class="w-11/12">
+      <BaseEditDescription
+        :description="project.description"
+        :id="project.workspace_id"
+        :isDark="isDark"
+        :type="workspace"
+        :canModify="true"
+        @update="updateProject"
+      />
+    </div>
   </div>
 </template>
 <script setup lang="ts">

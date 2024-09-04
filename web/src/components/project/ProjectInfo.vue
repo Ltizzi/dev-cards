@@ -1,10 +1,10 @@
 <template lang="">
   <div
-    class="flex flex-col justify-center w-full min-h-screen max-h-screen overflow-auto"
+    class="flex flex-col justify-center w-full min-h-screen max-h-screen overflow-auto xl:ml-0 lg:-ml-7"
     v-if="isLoaded"
   >
     <div
-      class="flex flex-row justify-center gap-5 align-middle lg:mt-14 2xl:mt-0 mt-64"
+      class="flex flex-row justify-center gap-5 align-middle lg:mt-7 xl:mt-0 2xl:mt-0 mt-32"
     >
       <h1 class="text-4xl text-center my-5 font-bold">
         {{ project.project_name }}
@@ -78,7 +78,7 @@
     </div>
 
     <div
-      class="my-10 xl:mx-14 lg:mx-7 flex flex-col justify-center items-center"
+      class="my-10 xl:mx-7 lg:mx-14 flex flex-col justify-center items-center"
     >
       <!-- <h1 class="mb-2 text-xl font-bold">Description:</h1>
         <p class="mx-10 text-lg">{{ project.description }}</p> -->

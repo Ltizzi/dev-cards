@@ -1,5 +1,7 @@
 <template lang="">
-  <div class="text-center min-h-screen h-full overflow-x-hidden">
+  <div
+    class="text-center min-h-screen h-full overflow-x-hidden 2xl:ml-0 xl:ml-6"
+  >
     <h1 class="text-4xl mt-7 lg:mt-5 text-base-content">All Tasks View</h1>
 
     <TaskListFilters
