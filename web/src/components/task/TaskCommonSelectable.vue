@@ -6,6 +6,7 @@
       props.type == 'TaskType'
         ? 'min-w-28 border-secondary'
         : 'border-r-2  border-secondary',
+      props.selected == TaskType.DOCUMENTATION ? 'text-xs' : '',
     ]"
   >
     <h3
