@@ -25,7 +25,7 @@
         <div
           class="flex flex-row 2xl:flex-nowrap flex-wrap 2xl:h-24 h-auto justify-stretch mb-0 border-b-4 w-full border-secondary gap-0"
         >
-          <div class="w-full flex flex-row">
+          <div class="w-full flex flex-row justify-center">
             <h2
               class="2xl:text-2xl text-xl ml-2 border-r-2 border-secondary px-2 py-7 my-auto lg:min-w-44 lg:w-1/6 w-3/12 max-w-xl"
             >
@@ -33,7 +33,7 @@
             </h2>
 
             <div
-              class="rounded-t-lg my-auto 2xl:w-6/12 w-4/6 max-w-7xl min-w-64 text-center"
+              class="rounded-t-lg my-auto 2xl:w-10/12 w-4/6 max-w-7xl min-w-64 text-center"
             >
               <TaskTitle
                 :title="card.title"
@@ -46,7 +46,7 @@
             </div>
 
             <div
-              class="my-auto w-3/12 max-w-32 border-l-2 border-secondary py-8 xl:px-0.5 px-5"
+              class="my-auto 2xl:w-1/6 w-3/12 max-w-32 border-l-2 border-secondary py-8 xl:px-0.5 px-5"
             >
               <p>by {{ card.owner.username }}</p>
             </div>
