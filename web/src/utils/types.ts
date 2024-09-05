@@ -144,6 +144,7 @@ export interface Task {
   task_type: TaskType;
   progressItems: Array<ProgressItem>;
   dependencies?: Array<TaskLite>;
+  child_tasks?: Array<TaskLite>;
   task_tags?: Array<string>;
   updates?: Array<TaskUpdate>;
   blocked_by?: UserLite;
