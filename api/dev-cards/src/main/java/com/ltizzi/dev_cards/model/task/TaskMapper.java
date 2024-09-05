@@ -42,6 +42,7 @@ public class TaskMapper {
         dto.setWorkspace(wsMapper.toWorkspaceLiteDTO(task.getWorkspace()));
         dto.setProgressItems(task.getProgressItems());
         dto.setDependencies(toArrayTaskLiteDTO(task.getDependencies()));
+        dto.setChild_tasks(toArrayTaskLiteDTO(task.getChild_tasks()));
         dto.setTask_tags(task.getTask_tags());
         dto.setUpdates(task.getUpdates());
         if(task.getBlocked_by() != null){
@@ -87,7 +88,7 @@ public class TaskMapper {
 
         task.setProgressItems(dto.getProgressItems());
         task.setDependencies(toArrayTaskEntityFromLiteDTO(dto.getDependencies()));
-
+        task.setChild_tasks(toArrayTaskEntityFromLiteDTO(dto.getChild_tasks()));
         task.setTask_tags(dto.getTask_tags());
         task.setUpdates(dto.getUpdates());
         if(dto.getBlocked_by()!= null) {
