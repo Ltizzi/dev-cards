@@ -79,10 +79,18 @@ public class TaskEntity {
     @CollectionTable(
             name = "tasks_dependencies",
             joinColumns = @JoinColumn(name = "task_entity_task_id"),
-            uniqueConstraints = {}
+            foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT)
+//            ,uniqueConstraints = {}
     )
     @Column(name = "dependencies_task_id")
     private List<TaskEntity> dependencies = new ArrayList<>();
+
+
+    @ElementCollection
+    @CollectionTable(name = "tasks_child_tasks", joinColumns = @JoinColumn(name = "task_entity_task_id"),
+    foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+    @Column(name="child_tasks_task_id")
+    private List<TaskEntity> child_tasks = new ArrayList<>();
 
     @ElementCollection
     private List<String> task_tags = new ArrayList<>();
@@ -141,6 +149,20 @@ public class TaskEntity {
             dependencies.remove(dependency);
         }
         else throw new InvalidTaskException("Failed: task isn't on dependencies list");
+    }
+
+    public void addChildDependency(TaskEntity child_task) throws InvalidTaskException{
+        if(!child_tasks.contains(child_task)){
+            child_tasks.add(child_task);
+        }
+        else throw new InvalidTaskException("Child task already added");
+    }
+
+    public void removeChildDependency(TaskEntity child_task) throws InvalidTaskException{
+        if(child_tasks.contains(child_task)){
+            child_tasks.remove(child_task);
+        }
+        else throw new InvalidTaskException("Failed: can remove child task because target task isn't a child task");
     }
 
     public void assignUser(UserEntity user) throws InvalidUserException, InvalidTaskException {

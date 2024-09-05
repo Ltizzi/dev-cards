@@ -125,6 +125,9 @@ public class TaskServiceImpl implements TaskService {
         }
         TaskEntity child_task = tasks.getChild();
         child_task.addDependency(tasks.getParent());
+        TaskEntity parent_task = tasks.getParent();
+        parent_task.addChildDependency(child_task);
+        taskRepo.save(parent_task);
         return taskMapper.toTaskDTO(taskRepo.save(child_task));
     }
 
@@ -139,6 +142,9 @@ public class TaskServiceImpl implements TaskService {
         }
         TaskEntity child_task = tasks.getChild();
         child_task.removeDependency(tasks.getParent());
+        TaskEntity parent_task = tasks.getParent();
+        parent_task.removeChildDependency(child_task);
+        taskRepo.save(parent_task);
         return taskMapper.toTaskDTO(taskRepo.save(child_task));
     }
 
