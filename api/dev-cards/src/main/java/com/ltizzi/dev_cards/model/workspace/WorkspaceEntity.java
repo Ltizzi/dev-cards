@@ -1,5 +1,6 @@
 package com.ltizzi.dev_cards.model.workspace;
 
+import com.ltizzi.dev_cards.model.customConfiguration.CustomConfiguration;
 import com.ltizzi.dev_cards.model.task.TaskEntity;
 import com.ltizzi.dev_cards.model.user.UserEntity;
 import jakarta.persistence.*;
@@ -46,6 +47,9 @@ public class WorkspaceEntity {
     @ManyToOne
     @JoinColumn(name="user_id", referencedColumnName = "user_id")
     private UserEntity owner;
+
+    @OneToOne(mappedBy = "workspace", cascade = CascadeType.ALL)
+    private CustomConfiguration customConfiguration;
 
 
     @OneToMany(mappedBy = "workspace", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY, orphanRemoval = true)

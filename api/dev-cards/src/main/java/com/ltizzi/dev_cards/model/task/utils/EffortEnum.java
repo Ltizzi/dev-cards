@@ -5,7 +5,7 @@ package com.ltizzi.dev_cards.model.task.utils;
  */
 
 
-public enum EffortEnum {
+public enum EffortEnum  {
     LOW,
     MEDIUM,
     HIGH

@@ -119,6 +119,8 @@ export enum TaskType {
   BUG = "BUG",
   TESTING = "TESTING",
   MARKETING = "MARKETING",
+  MANAGEMENT = "MANAGEMENT",
+  REQUEST = "REQUEST",
 }
 
 export const TaskTypeEnumArray = [
@@ -128,6 +130,8 @@ export const TaskTypeEnumArray = [
   TaskType.BUG,
   TaskType.TESTING,
   TaskType.MARKETING,
+  TaskType.MANAGEMENT,
+  TaskType.REQUEST,
 ];
 
 export interface Task {

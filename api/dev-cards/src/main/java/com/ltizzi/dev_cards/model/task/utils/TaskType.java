@@ -12,4 +12,6 @@ public enum TaskType {
     BUG,
     TESTING,
     MARKETING,
+    MANAGEMENT,
+    REQUEST
 }
