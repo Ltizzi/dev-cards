@@ -280,8 +280,10 @@ export interface UITag {
 }
 
 export interface TagPool {
-  workspace_id: number;
+  workspace_id?: number;
+  tag_pool_id?: number; //TODO: Sacar el ? una vez q esté implementado
   tags: UITag[];
+  specialTags: SpecialTag[];
 }
 
 export interface Configuration {

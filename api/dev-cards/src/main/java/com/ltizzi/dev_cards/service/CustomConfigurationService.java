@@ -4,10 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ltizzi.dev_cards.exception.InvalidConfigurationException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.customConfiguration.ConfigurationDTO;
-import com.ltizzi.dev_cards.model.customConfiguration.CustomConfiguration;
 import com.ltizzi.dev_cards.model.customConfiguration.utils.CustomGlosary;
 import com.ltizzi.dev_cards.model.customConfiguration.utils.SpecialTag;
+import com.ltizzi.dev_cards.model.customConfiguration.utils.TagPool;
+import com.ltizzi.dev_cards.model.customConfiguration.utils.UITag;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
+
 
 import java.util.List;
 
@@ -34,10 +36,17 @@ public interface CustomConfigurationService {
 
     public List<CustomGlosary> updateGlosary(Long config_id, Long id, CustomGlosary glosary) throws NotFoundException, InvalidConfigurationException;
 
-    public CustomConfiguration addSpecialTag(Long config_id, SpecialTag tag) throws NotFoundException, InvalidConfigurationException;
+    public TagPool addSpecialTag(Long config_id, SpecialTag tag) throws NotFoundException, InvalidConfigurationException;
 
-    public CustomConfiguration removeSpecialTag(Long config_id, Long id) throws  NotFoundException;
+    public TagPool removeSpecialTag(Long config_id, Long id) throws  NotFoundException;
 
-    public CustomConfiguration updateSpecialTag(Long config_id, Long id, SpecialTag tag) throws NotFoundException, InvalidConfigurationException;
+    public TagPool updateSpecialTag(Long config_id, Long id, SpecialTag tag) throws NotFoundException, InvalidConfigurationException;
+
+    public TagPool addTagToPool(Long config_id, UITag tag) throws  NotFoundException, InvalidConfigurationException;
+
+    public TagPool removeTagFromPool(Long config_id, UITag tag) throws  NotFoundException, InvalidConfigurationException;
+
+    public TagPool updateTagFromPool(Long config_id, UITag tag) throws NotFoundException, InvalidConfigurationException;
+
 
 }

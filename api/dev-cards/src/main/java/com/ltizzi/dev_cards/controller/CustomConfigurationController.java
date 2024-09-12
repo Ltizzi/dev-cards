@@ -8,6 +8,7 @@ import com.ltizzi.dev_cards.model.customConfiguration.ConfigurationDTO;
 import com.ltizzi.dev_cards.model.customConfiguration.CustomConfiguration;
 import com.ltizzi.dev_cards.model.customConfiguration.utils.CustomGlosary;
 import com.ltizzi.dev_cards.model.customConfiguration.utils.SpecialTag;
+import com.ltizzi.dev_cards.model.customConfiguration.utils.TagPool;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.security.filter.JwtUtils;
 import com.ltizzi.dev_cards.service.CustomConfigurationService;
@@ -141,10 +142,10 @@ public class CustomConfigurationController {
 
     @PostMapping("/addTag")
     @ResponseBody
-    public ResponseEntity<CustomConfiguration> addSpecialTag(@RequestParam  Long ws_id,
-                                                             @RequestParam Long config_id,
-                                                             @RequestBody SpecialTag tag,
-                                                             @RequestHeader("Authorization")String token) throws NotAllowedException, NotFoundException, InvalidConfigurationException {
+    public ResponseEntity<TagPool> addSpecialTag(@RequestParam  Long ws_id,
+                                                 @RequestParam Long config_id,
+                                                 @RequestBody SpecialTag tag,
+                                                 @RequestHeader("Authorization")String token) throws NotAllowedException, NotFoundException, InvalidConfigurationException {
         if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
             throw  new NotAllowedException("User can't modify workspace's configuration.");
         }
@@ -155,7 +156,7 @@ public class CustomConfigurationController {
 
     @DeleteMapping("/deleteTag")
     @ResponseBody
-    public ResponseEntity<CustomConfiguration> removeSpecialTag(@RequestParam Long ws_id,
+    public ResponseEntity<TagPool> removeSpecialTag(@RequestParam Long ws_id,
                                                                 @RequestParam Long config_id,
                                                                 @RequestParam Long id,
                                                                 @RequestHeader("Authorization")String token) throws NotAllowedException, NotFoundException {
@@ -169,7 +170,7 @@ public class CustomConfigurationController {
 
     @PatchMapping("/updateTag")
     @ResponseBody
-    public ResponseEntity<CustomConfiguration> updateSpecialTag(@RequestParam Long ws_id,
+    public ResponseEntity<TagPool> updateSpecialTag(@RequestParam Long ws_id,
                                                                 @RequestParam Long config_id,
                                                                 @RequestParam Long id,
                                                                 @RequestBody SpecialTag tag,
