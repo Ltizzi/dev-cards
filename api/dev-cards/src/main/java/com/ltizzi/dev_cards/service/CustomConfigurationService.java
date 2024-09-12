@@ -3,6 +3,7 @@ package com.ltizzi.dev_cards.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ltizzi.dev_cards.exception.InvalidConfigurationException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
+import com.ltizzi.dev_cards.model.customConfiguration.ConfigurationDTO;
 import com.ltizzi.dev_cards.model.customConfiguration.CustomConfiguration;
 import com.ltizzi.dev_cards.model.customConfiguration.utils.CustomGlosary;
 import com.ltizzi.dev_cards.model.customConfiguration.utils.SpecialTag;
@@ -17,13 +18,13 @@ import java.util.List;
 
 public interface CustomConfigurationService {
 
-    public CustomConfiguration getConfigurationById(Long id) throws NotFoundException;
+    public ConfigurationDTO getConfigurationById(Long id) throws NotFoundException;
 
-    public CustomConfiguration getConfigurationByWorkspaceId(Long ws_id) throws  NotFoundException;
+    public ConfigurationDTO getConfigurationByWorkspaceId(Long ws_id) throws  NotFoundException;
 
-    public CustomConfiguration saveConfiguration(CustomConfiguration configuration) throws  InvalidConfigurationException;
+    public ConfigurationDTO saveConfiguration(ConfigurationDTO configuration) throws  InvalidConfigurationException;
 
-    public CustomConfiguration updateConfiguration(Long id, CustomConfiguration configuration) throws NotFoundException, InvalidConfigurationException;
+    public ConfigurationDTO updateConfiguration(Long id, ConfigurationDTO configuration) throws NotFoundException, InvalidConfigurationException;
 
     public APIResponse removeConfigurationById(Long id) throws NotFoundException;
 

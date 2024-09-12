@@ -3,6 +3,8 @@ package com.ltizzi.dev_cards.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ltizzi.dev_cards.exception.InvalidConfigurationException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
+import com.ltizzi.dev_cards.model.customConfiguration.ConfigurationDTO;
+import com.ltizzi.dev_cards.model.customConfiguration.ConfigurationMapper;
 import com.ltizzi.dev_cards.model.customConfiguration.CustomConfiguration;
 import com.ltizzi.dev_cards.model.customConfiguration.utils.CustomGlosary;
 import com.ltizzi.dev_cards.model.customConfiguration.utils.SpecialTag;
@@ -24,26 +26,33 @@ public class CustomConfigurationServiceImpl implements CustomConfigurationServic
     @Autowired
     private CustomConfigurationRepository configRepo;
 
+    @Autowired
+    private ConfigurationMapper configMapper;
+
     @Override
-    public CustomConfiguration getConfigurationById(Long id) throws NotFoundException {
+    public ConfigurationDTO getConfigurationById(Long id) throws NotFoundException {
+        return configMapper.toConfigDTO(configRepo.findById(id).orElseThrow(()->new NotFoundException("Configuration not found")));
+    }
+
+    private CustomConfiguration getConfigById(Long id) throws  NotFoundException{
         return configRepo.findById(id).orElseThrow(()->new NotFoundException("Configuration not found"));
     }
 
     @Override
-    public CustomConfiguration getConfigurationByWorkspaceId(Long ws_id) throws NotFoundException {
-        return configRepo.findConfigurationByWorkspaceId(ws_id);
+    public ConfigurationDTO getConfigurationByWorkspaceId(Long ws_id) throws NotFoundException {
+        return configMapper.toConfigDTO(configRepo.findConfigurationByWorkspaceId(ws_id));
     }
 
     @Override
-    public CustomConfiguration saveConfiguration(CustomConfiguration configuration) throws InvalidConfigurationException {
-        return configRepo.save(configuration);
+    public ConfigurationDTO saveConfiguration(ConfigurationDTO configuration) throws InvalidConfigurationException {
+        return configMapper.toConfigDTO(configRepo.save(configMapper.toConfigEntity(configuration)));
     }
 
     @Override
-    public CustomConfiguration updateConfiguration(Long id, CustomConfiguration configuration) throws NotFoundException, InvalidConfigurationException {
-        CustomConfiguration cg = getConfigurationById(id);
+    public ConfigurationDTO updateConfiguration(Long id, ConfigurationDTO configuration) throws NotFoundException, InvalidConfigurationException {
+        CustomConfiguration cg = getConfigById(id);
         if(cg.getConfig_id().equals(configuration.getConfig_id())){
-            return configRepo.save(configuration);
+            return configMapper.toConfigDTO(configRepo.save(configMapper.toConfigEntity(configuration)));
         }
         else {
             throw new InvalidConfigurationException("Something went wrong");
@@ -52,7 +61,7 @@ public class CustomConfigurationServiceImpl implements CustomConfigurationServic
 
     @Override
     public APIResponse removeConfigurationById(Long id) throws NotFoundException {
-        CustomConfiguration cg = getConfigurationById(id);
+        CustomConfiguration cg = getConfigById(id);
         APIResponse response = new APIResponse();
         response.setHttp_method("DELETE");
         if(!cg.equals(null)){
@@ -67,42 +76,42 @@ public class CustomConfigurationServiceImpl implements CustomConfigurationServic
 
     @Override
     public List<CustomGlosary> addCustomGlosary(Long config_id, CustomGlosary glosary) throws NotFoundException, InvalidConfigurationException, JsonProcessingException {
-        CustomConfiguration cg = getConfigurationById(config_id);
+        CustomConfiguration cg = getConfigById(config_id);
         cg.addGlosary(glosary);
         return configRepo.save(cg).getCustomGlosaries();
     }
 
     @Override
     public List<CustomGlosary> removeCustomGlosary(Long config_id, CustomGlosary glosary) throws NotFoundException {
-        CustomConfiguration cg = getConfigurationById(config_id);
+        CustomConfiguration cg = getConfigById(config_id);
         cg.removeGlosary(glosary);
         return configRepo.save(cg).getCustomGlosaries();
     }
 
     @Override
     public List<CustomGlosary> updateGlosary(Long config_id, Long id, CustomGlosary glosary) throws NotFoundException, InvalidConfigurationException {
-        CustomConfiguration cg = getConfigurationById(config_id);
+        CustomConfiguration cg = getConfigById(config_id);
         cg.updateGlosary(id, glosary);
         return configRepo.save(cg).getCustomGlosaries();
     }
 
     @Override
     public CustomConfiguration addSpecialTag(Long config_id, SpecialTag tag) throws NotFoundException, InvalidConfigurationException {
-        CustomConfiguration cg = getConfigurationById(config_id);
+        CustomConfiguration cg = getConfigById(config_id);
         cg.addSpecialTag(tag);
         return configRepo.save(cg);
     }
 
     @Override
     public CustomConfiguration removeSpecialTag(Long config_id, Long id) throws NotFoundException {
-        CustomConfiguration cg = getConfigurationById(config_id);
+        CustomConfiguration cg = getConfigById(config_id);
         cg.removeSpecialTag(id);
         return configRepo.save(cg);
     }
 
     @Override
     public CustomConfiguration updateSpecialTag(Long config_id, Long id, SpecialTag tag) throws NotFoundException, InvalidConfigurationException {
-        CustomConfiguration cg = getConfigurationById(config_id);
+        CustomConfiguration cg = getConfigById(config_id);
         cg.updateSpecialTag(id, tag);
         return configRepo.save(cg);
     }

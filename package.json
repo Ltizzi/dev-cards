@@ -10,7 +10,8 @@
     "web": "npm run dev --prefix web",
     "build-web": "npm run build --prefix web",
     "install-web": "npm install --prefix web",
-    "api": "java -jar ./api/dev-cards/target/dev-cards-0.0.1-SNAPSHOT.jar"
+    "api": "java -jar ./api/dev-cards/target/dev-cards-0.0.1-SNAPSHOT.jar",
+    "build-api": "cd api/dev-cards && mvnw clean install -DskipTests"
   },
   "author": "ltizzi",
   "license": "ISC"
