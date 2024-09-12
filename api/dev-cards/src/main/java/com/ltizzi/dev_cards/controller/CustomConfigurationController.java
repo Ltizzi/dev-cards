@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ltizzi.dev_cards.exception.InvalidConfigurationException;
 import com.ltizzi.dev_cards.exception.NotAllowedException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
+import com.ltizzi.dev_cards.model.customConfiguration.ConfigurationDTO;
 import com.ltizzi.dev_cards.model.customConfiguration.CustomConfiguration;
 import com.ltizzi.dev_cards.model.customConfiguration.utils.CustomGlosary;
 import com.ltizzi.dev_cards.model.customConfiguration.utils.SpecialTag;
@@ -32,9 +33,9 @@ public class CustomConfigurationController {
 
     @GetMapping("/byId")
     @ResponseBody
-    public ResponseEntity<CustomConfiguration> getConfigById(@RequestParam Long id,
-                                                             @RequestParam Long ws_id,
-                                                             @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
+    public ResponseEntity<ConfigurationDTO> getConfigById(@RequestParam Long id,
+                                                            @RequestParam Long ws_id,
+                                                            @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
             throw  new NotAllowedException("User can't access workspace configuration");
         }
@@ -45,7 +46,7 @@ public class CustomConfigurationController {
 
     @GetMapping("/byWorkspaceId")
     @ResponseBody
-    public ResponseEntity<CustomConfiguration> getConfigByWsId(@RequestParam Long ws_id,
+    public ResponseEntity<ConfigurationDTO> getConfigByWsId(@RequestParam Long ws_id,
                                                                @RequestHeader("Authorization")String token) throws NotAllowedException, NotFoundException {
         if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
             throw new NotAllowedException("User can't access workspace configuration");
@@ -57,8 +58,8 @@ public class CustomConfigurationController {
 
     @PostMapping("/save")
     @ResponseBody
-    public ResponseEntity<CustomConfiguration> saveConfig(@RequestParam Long ws_id,
-                                                          @RequestBody CustomConfiguration config,
+    public ResponseEntity<ConfigurationDTO> saveConfig(@RequestParam Long ws_id,
+                                                          @RequestBody ConfigurationDTO config,
                                                           @RequestHeader("Authorization")String token) throws NotAllowedException, InvalidConfigurationException {
         if(!jwtUtils.checkIsOwner(ws_id, token)){
             throw new NotAllowedException("User can't access or modify workspace's configuration");
@@ -70,9 +71,9 @@ public class CustomConfigurationController {
 
     @PatchMapping("/update")
     @ResponseBody
-    public ResponseEntity<CustomConfiguration> updateConfig(@RequestParam Long ws_id,
+    public ResponseEntity<ConfigurationDTO> updateConfig(@RequestParam Long ws_id,
                                                             @RequestParam Long config_id,
-                                                            @RequestBody CustomConfiguration config,
+                                                            @RequestBody ConfigurationDTO config,
                                                             @RequestHeader("Authorization")String token) throws NotFoundException, InvalidConfigurationException, NotAllowedException {
         if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
             throw  new NotAllowedException("User can't access or modify workspace's configuration");

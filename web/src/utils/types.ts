@@ -283,3 +283,37 @@ export interface TagPool {
   workspace_id: number;
   tags: UITag[];
 }
+
+export interface Configuration {
+  config_id: number;
+  workspace: WorkspaceLite;
+  customGlosaries: Glosary[];
+  specialTags: SpecialTag[];
+  flagged_tasks: TaskSlim[];
+}
+
+export interface Glosary {
+  id: number;
+  type: string;
+  items: GlosaryItem[];
+}
+
+export interface GlosaryItem {
+  id: number;
+  key: string;
+  value: string;
+}
+
+export interface SpecialTag {
+  id: number;
+  value: string;
+  name: string;
+  description: string;
+}
+
+export interface TaskSlim {
+  task_id: number;
+  title: string;
+  color: Color;
+  workspace_id: number;
+}
