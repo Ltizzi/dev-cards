@@ -19,7 +19,7 @@ public class ConfigurationMapper {
         dto.setWorkspace(wsMapper.toWorkspaceLiteDTO(configuration.getWorkspace()));
         dto.setCustomGlosaries(configuration.getCustomGlosaries());
         dto.setFlagged_tasks(configuration.getFlagged_tasks());
-        dto.setSpecialTags(configuration.getSpecialTags());
+        dto.setTagPool(configuration.getTagPool());
         return dto;
     }
 
@@ -27,7 +27,7 @@ public class ConfigurationMapper {
         CustomConfiguration configuration = new CustomConfiguration();
         configuration.setConfig_id(dto.getConfig_id());
         configuration.setWorkspace(wsMapper.toWorkSpaceEntity(dto.getWorkspace()));
-        configuration.setSpecialTags(dto.getSpecialTags());
+        configuration.setTagPool(dto.getTagPool());
         configuration.setFlagged_tasks(dto.getFlagged_tasks());
         configuration.setCustomGlosaries(dto.getCustomGlosaries());
         return configuration;
