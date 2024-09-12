@@ -3,6 +3,8 @@ package com.ltizzi.dev_cards.model.customConfiguration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ltizzi.dev_cards.model.customConfiguration.utils.CustomGlosary;
 import com.ltizzi.dev_cards.model.customConfiguration.utils.SpecialTag;
+import com.ltizzi.dev_cards.model.task.MiniTaskDTO;
+import com.ltizzi.dev_cards.model.task.TaskLiteDTO;
 import com.ltizzi.dev_cards.model.utils.RandomIdGenerator;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 import jakarta.persistence.*;
@@ -46,6 +48,25 @@ public class CustomConfiguration {
     private List<SpecialTag> specialTags = new ArrayList<>();
 
 
+    @ElementCollection
+    @CollectionTable(name ="flagged_tasks", joinColumns = @JoinColumn(name = "workspace_flagged_tasks"))
+    private List<MiniTaskDTO> flagged_tasks = new ArrayList<>();
+
+
+    public List<MiniTaskDTO> addFlaggedTask(MiniTaskDTO task){
+        if(!flagged_tasks.contains(task)){
+            flagged_tasks.add(task);
+        }
+        return flagged_tasks;
+    }
+
+    public List<MiniTaskDTO> removeFlaggedTask(MiniTaskDTO task){
+        if(flagged_tasks.contains(task)){
+            flagged_tasks.remove(task);
+        }
+        return flagged_tasks;
+    }
+
     public List<CustomGlosary> addGlosary(CustomGlosary glosary) throws JsonProcessingException {
         if(!customGlosaries.contains(glosary)){
             customGlosaries.add(glosary);
@@ -59,6 +80,16 @@ public class CustomConfiguration {
                     .filter(g->g.getId().equals(glosary.getId())).collect(Collectors.toList());
         }
         return customGlosaries;
+    }
+
+    public List<CustomGlosary> updateGlosary(Long id, CustomGlosary glosary){
+            return customGlosaries.stream()
+                    .map(g->{
+                        if(g.getId().equals(id)){
+                            g = glosary;
+                        }
+                        return g;
+                    }).collect(Collectors.toList());
     }
 
 
