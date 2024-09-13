@@ -82,13 +82,13 @@
 <script setup lang="ts">
   import { onBeforeMount, ref, watch } from "vue";
   import BaseModal from "../common/BaseModal.vue";
-  import { useApiCall } from "../../composables/useAPICall";
+  //import { useApiCall } from "../../composables/useAPICall";
   import { useTaskStore } from "../../store/task.store";
   import { Task, UserLite } from "../../utils/types";
-  import { EndpointType } from "../../utils/endpoints";
+  //import { EndpointType } from "../../utils/endpoints";
   import { useUserStore } from "../../store/user.store";
 
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
 
   const props = defineProps<{ showModal: boolean }>();
   const emit = defineEmits(["close"]);
@@ -122,16 +122,20 @@
       if (!addedSelf) {
         addedSelf = checkUserIsSelf(user.user_id);
       }
-      const response = (await apiCall.post(
-        EndpointType.TASK_UNASSIGN_USER,
-        null,
-        {
-          params: {
-            task_id: taskStore.currentTask.task_id,
-            user_id: user.user_id,
-          },
-        }
+      const response = (await taskStore.unassignUserFromTask(
+        taskStore.currentTask.task_id as number,
+        user.user_id
       )) as Task;
+      //  (await apiCall.post(
+      //   EndpointType.TASK_UNASSIGN_USER,
+      //   null,
+      //   {
+      //     params: {
+      //       task_id: taskStore.currentTask.task_id,
+      //       user_id: user.user_id,
+      //     },
+      //   }
+      // )) as Task;
       awaitingResponse.value = false;
       if (response.task_id) {
         if (addedSelf) userStore.refreshSelf();

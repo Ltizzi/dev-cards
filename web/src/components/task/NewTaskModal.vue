@@ -160,7 +160,7 @@
     EffortEnumArray,
     TaskTypeEnumArray,
   } from "../../utils/types";
-  import { useApiCall } from "../../composables/useAPICall";
+  //import { useApiCall } from "../../composables/useAPICall";
   import { useTaskStore } from "../../store/task.store";
   import {
     Color,
@@ -175,11 +175,11 @@
   } from "../../utils/types";
   import { useUserStore } from "../../store/user.store";
   import { useProjectStore } from "../../store/project.store";
-  import { EndpointType } from "../../utils/endpoints";
+  //import { EndpointType } from "../../utils/endpoints";
   import { taskUtils } from "../../utils/task.utils";
   import { Workspace } from "../../utils/types";
 
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
   const taskStore = useTaskStore();
   const userStore = useUserStore();
   const projectStore = useProjectStore();
@@ -257,10 +257,11 @@
         owner: owner,
         workspace: project,
       };
-      const response = (await apiCall.post(
-        EndpointType.TASK_NEW,
-        newTask
-      )) as Task;
+      const response = (await taskStore.createTask(newTask)) as Task;
+      // (await apiCall.post(
+      //   EndpointType.TASK_NEW,
+      //   newTask
+      // )) as Task;
       if (response.task_id) {
         taskStore.addTaskToCurrentProject(response);
         await projectStore.updateCurrent();

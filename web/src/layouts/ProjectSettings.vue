@@ -140,11 +140,14 @@
   async function deleteWs() {
     console.log("DELETED");
 
-    const response = (await apiCall.del(EndpointType.WORKSPACE_DELETE, {
-      params: {
-        id: projectStore.current.workspace_id,
-      },
-    })) as APIResponse;
+    const response = (await projectStore.deleteWorkspace(
+      projectStore.current.workspace_id
+    )) as APIResponse;
+    //  (await apiCall.del(EndpointType.WORKSPACE_DELETE, {
+    //   params: {
+    //     id: projectStore.current.workspace_id,
+    //   },
+    // })) as APIResponse;
     if (response.message == "Workspace deleted!") {
       setTimeout(() => {
         showDelWsModal.value = false;

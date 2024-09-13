@@ -67,12 +67,14 @@
   import { TaskUpdate, User } from "../../utils/types";
   import { useRoute } from "vue-router";
   import { onBeforeMount, ref, watch } from "vue";
-  import { useApiCall } from "../../composables/useAPICall";
-  import { EndpointType } from "../../utils/endpoints";
+  // import { useApiCall } from "../../composables/useAPICall";
+  // import { EndpointType } from "../../utils/endpoints";
+  import { useTaskStore } from "../../store/task.store";
 
   const userStore = useUserStore();
   const route = useRoute();
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
+  const taskStore = useTaskStore();
 
   const user = ref<User>();
   const task_id = ref<number>();
@@ -102,15 +104,18 @@
         creator_username: user.value.username,
         description: description.value,
       };
-      const response = (await apiCall.post(
-        EndpointType.TASK_ADD_UPDATE,
-        taskUpdate,
-        {
-          params: {
-            task_id: task_id.value,
-          },
-        }
-      )) as Array<TaskUpdate>;
+      const response = (await taskStore.addTaskUpdate(
+        taskUpdate
+      )) as TaskUpdate[];
+      //  (await apiCall.post(
+      //   EndpointType.TASK_ADD_UPDATE,
+      //   taskUpdate,
+      //   {
+      //     params: {
+      //       task_id: task_id.value,
+      //     },
+      //   }
+      // )) as Array<TaskUpdate>;
       awaitingResponse.value = false;
       if (response.length > 0) {
         success.value = true;

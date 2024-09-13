@@ -52,8 +52,8 @@
 </template>
 <script setup lang="ts">
   import { ref } from "vue";
-  import { useApiCall } from "../../composables/useAPICall";
-  import { EndpointType } from "../../utils/endpoints";
+  // import { useApiCall } from "../../composables/useAPICall";
+  // import { EndpointType } from "../../utils/endpoints";
   import { useUserStore } from "../../store/user.store";
   import { useRouter } from "vue-router";
   import { AuthResponse } from "../../utils/types";
@@ -66,7 +66,7 @@
   const isWaiting = ref(false);
   const hasError = ref(false);
 
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
   const store = useUserStore();
   const router = useRouter();
 
@@ -77,13 +77,14 @@
       email: email.value,
       password: password.value,
     };
-    const response = (await apiCall.post(
-      EndpointType.USER_REGISTER,
-      newUser
-    )) as AuthResponse;
+    const response = (await store.registerUser(newUser)) as AuthResponse;
+    // (await apiCall.post(
+    //   EndpointType.USER_REGISTER,
+    //   newUser
+    // )) as AuthResponse;
     if (response && response.token) {
       store.setSelf(response.user);
-      localStorage.setItem("user", JSON.stringify(response.user));
+      //localStorage.setItem("user", JSON.stringify(response.user));
       //localStorage.setItem("token", response.token);
       saveToken(response.token);
       isWaiting.value = false;

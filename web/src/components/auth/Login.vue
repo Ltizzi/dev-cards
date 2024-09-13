@@ -30,10 +30,10 @@
 </template>
 <script setup lang="ts">
   import { ref } from "vue";
-  import { useApiCall } from "../../composables/useAPICall";
-  import { EndpointType } from "../../utils/endpoints";
+  // import { useApiCall } from "../../composables/useAPICall";
+  // import { EndpointType } from "../../utils/endpoints";
   import { useUserStore } from "../../store/user.store";
-  import { AuthResponse } from "../../utils/types";
+  import { AuthRequest, AuthResponse } from "../../utils/types";
   import { useRouter } from "vue-router";
   import { saveToken } from "../../utils/auth.utils";
 
@@ -42,7 +42,7 @@
 
   const isWaiting = ref(false);
 
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
 
   const store = useUserStore();
 
@@ -50,19 +50,19 @@
 
   async function logIn() {
     isWaiting.value = true;
-    const user = {
-      username: username.value,
-      password: password.value,
+    const user: AuthRequest = {
+      username: username.value as string,
+      password: password.value as string,
     };
-    const response = (await apiCall.post(
-      EndpointType.USER_LOGIN,
-      user
-    )) as AuthResponse;
+    // const response = (await apiCall.post(
+    //   EndpointType.USER_LOGIN,
+    //   user
+    // )) as AuthResponse;
+    const response = (await store.login(user)) as AuthResponse;
     if (response && response.token) {
-      store.setSelf(response.user);
-      localStorage.setItem("user", JSON.stringify(response.user));
+      // store.setSelf(response.user);
       // localStorage.setItem("token", response.token);
-      saveToken(response.token);
+      // saveToken(response.token);
       isWaiting.value = false;
       router.push({ path: "/" });
     } else console.error(response);

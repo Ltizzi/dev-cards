@@ -48,12 +48,13 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { useApiCall } from "../../composables/useAPICall";
+  //import { useApiCall } from "../../composables/useAPICall";
   import { onBeforeMount, ref } from "vue";
   import { UserLite } from "../../utils/types";
-  import { EndpointType } from "../../utils/endpoints";
+  //import { EndpointType } from "../../utils/endpoints";
   import BaseDeleteModal from "../common/BaseDeleteModal.vue";
   import BaseUserAvatarItem from "../common/BaseUserAvatarItem.vue";
+  import { useProjectStore } from "../../store/project.store";
 
   const props = defineProps<{
     workspace_id: number;
@@ -61,9 +62,9 @@
     mod_list: UserLite[];
   }>();
 
-  //const projectStore = useProjectStore();
+  const projectStore = useProjectStore();
 
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
 
   const emit = defineEmits(["update"]);
 
@@ -75,16 +76,11 @@
   const showModal = ref<boolean>(false);
 
   async function addMod(id: number) {
-    const response = (await apiCall.patch(
-      EndpointType.WORKSPACE_ADD_MOD,
-      {},
-      {
-        params: {
-          ws_id: props.workspace_id,
-          user_id: id,
-        },
-      }
+    const response = (await projectStore.addUserAsMod(
+      props.workspace_id,
+      id
     )) as UserLite[];
+
     if (response.length > 0) {
       mod_list.value = response;
       //await projectStore.updateCurrent();
@@ -99,16 +95,11 @@
   }
 
   async function deleteAsMod(id: number) {
-    const response = (await apiCall.patch(
-      EndpointType.WORKSPACE_REMOVE_MOD,
-      {},
-      {
-        params: {
-          ws_id: props.workspace_id,
-          user_id: id,
-        },
-      }
+    const response = (await projectStore.removeMod(
+      props.workspace_id,
+      id
     )) as UserLite[];
+
     if (mod_list.value && response.length < mod_list.value?.length) {
       mod_list.value = response;
       emit("update");

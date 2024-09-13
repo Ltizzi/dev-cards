@@ -7,7 +7,7 @@
         <p
           :class="[
             'rounded-lg  text-white text-sm font-semibold py-0.5   capitalize px-3 transition-all ease-in-out duration-300 hover:scale-110 hover:cursor-pointer',
-            removeTagActive ? 'hover:bg-error' : '',
+            props.show ? 'hover:bg-error' : '',
             `${tag.color}`,
           ]"
           @click="goToTag(tag)"

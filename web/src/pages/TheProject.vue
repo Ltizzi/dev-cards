@@ -15,7 +15,7 @@
 <script setup lang="ts">
   import { useProjectStore } from "../store/project.store";
   import { AuthResponse, UserLite, Workspace } from "../utils/types";
-  import { ref, onBeforeMount, watch } from "vue";
+  import { ref, onBeforeMount, watch, onMounted } from "vue";
   import { useRoute } from "vue-router";
   import { useApiCall } from "../composables/useAPICall";
   import { EndpointType } from "../utils/endpoints";
@@ -88,14 +88,14 @@
     )) as AuthResponse;
     if (response.user && response.token) {
       saveToken(response.token);
-      userStore.setSelf(response.user);
-      localStorage.setItem("user", JSON.stringify(response.user));
+      userStore.updatedToken(response.user);
     }
   }
 
   onBeforeMount(async () => {
     isMobile.value = UIStore.isMobile;
     showMenu.value = !isMobile.value;
+    UIStore.getTHeme();
     if (projectStore.current.workspace_id) {
       project.value = projectStore.current;
       moderators.value = project.value.moderators;
@@ -118,8 +118,11 @@
         console.error(response);
       }
     }
+  });
+
+  onMounted(() => {
     if (isLoaded.value) {
-      designatedTaskNumber.value = userStore.self.designated_tasks.length;
+      designatedTaskNumber.value = userStore.getSelf().designated_tasks.length;
     }
   });
 </script>

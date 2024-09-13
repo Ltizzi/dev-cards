@@ -121,8 +121,8 @@
     Workspace,
     WorkspaceWithJwt,
   } from "../../utils/types";
-  import { useApiCall } from "../../composables/useAPICall";
-  import { EndpointType } from "../../utils/endpoints";
+  // import { useApiCall } from "../../composables/useAPICall";
+  // import { EndpointType } from "../../utils/endpoints";
   import { saveToken } from "../../utils/auth.utils";
 
   const userStore = useUserStore();
@@ -131,7 +131,7 @@
   const router = useRouter();
   const route = useRoute();
 
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
 
   const freshUser = ref<boolean>(false);
 
@@ -162,10 +162,13 @@
         owner: userLite,
       };
 
-      const response = (await apiCall.post(
-        EndpointType.WORKSPACE_NEW,
-        newProject
+      const response = (await projectStore.createWorkspace(
+        newProject as unknown as Workspace
       )) as WorkspaceWithJwt;
+      // (await apiCall.post(
+      //   EndpointType.WORKSPACE_NEW,
+      //   newProject
+      // )) as WorkspaceWithJwt;
 
       if (response && response.workspace.workspace_id) {
         projectStore.setCurrent(response.workspace);

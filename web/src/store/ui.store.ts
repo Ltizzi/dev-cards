@@ -16,11 +16,23 @@ export const useUIStore = defineStore("uiStore", {
       const htmlElement = document.documentElement;
       htmlElement.setAttribute("data-theme", theme);
       localStorage.setItem("theme", theme);
-      localStorage.setItem("darkTheme", checkThemeIsDark().toString());
-      this.darkTheme = checkThemeIsDark();
+      localStorage.setItem("darkTheme", checkThemeIsDark(theme).toString());
+      this.darkTheme = checkThemeIsDark(theme);
       this.darkerCard = isDarkerCardsActive();
       this.setJustUpdate();
       return this.theme;
+    },
+    getTHeme() {
+      if (this.theme.length > 0) {
+        const theme = localStorage.getItem("theme")
+          ? localStorage.getItem("theme")
+          : "dracula";
+        this.setTheme(theme as string);
+        return theme;
+      } else return this.theme;
+    },
+    checkIsDarkTheme() {
+      return this.darkTheme;
     },
     setDarkerCards(value: boolean) {
       this.darkerCard = value;

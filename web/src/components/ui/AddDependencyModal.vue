@@ -135,16 +135,19 @@
   async function addDependency() {
     awaitingResponse.value = true;
     if (selectedTask.value?.task_id) {
-      const response = (await apiCall.post(
-        EndpointType.TASK_ADD_DEPENDENCY,
-        null,
-        {
-          params: {
-            task_id: taskStore.currentTask.task_id,
-            parent_id: selectedTask.value.task_id,
-          },
-        }
-      )) as Task;
+      const id = taskStore.currentTask.task_id as number;
+      const parent_id = selectedTask.value.task_id;
+      const response = await taskStore.addDependency(id, parent_id);
+      // const response = (await apiCall.post(
+      //   EndpointType.TASK_ADD_DEPENDENCY,
+      //   null,
+      //   {
+      //     params: {
+      //       task_id: taskStore.currentTask.task_id,
+      //       parent_id: selectedTask.value.task_id,
+      //     },
+      //   }
+      // )) as Task;
       awaitingResponse.value = false;
       if (response.task_id) {
         success.value = true;

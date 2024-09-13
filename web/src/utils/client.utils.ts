@@ -21,9 +21,9 @@ function isDarkTheme(theme: string): String {
   return darkThemes.includes(theme).toString();
 }
 
-export function checkThemeIsDark(): boolean {
+export function checkThemeIsDark(theme: string): boolean {
   //no usa la variable en el localstorage
-  return darkThemes.includes(getActualTheme());
+  return darkThemes.includes(theme);
 }
 
 export function getActualTheme() {
