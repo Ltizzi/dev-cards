@@ -154,12 +154,13 @@
   import { useProjectStore } from "../store/project.store";
   import NewTaskBtn from "../components/task/NewTaskBtn.vue";
   import { useApiCall } from "../composables/useAPICall";
-  import { checkThemeIsDark } from "../utils/client.utils";
   import TaskFilterInput from "../components/ui/TaskFilterInput.vue";
   import ChangeCardSizeBtn from "../components/ui/ChangeCardSizeBtn.vue";
   import { taskUtils } from "../utils/task.utils";
+  import { useUIStore } from "../store/ui.store";
 
   const projectStore = useProjectStore();
+  const UIStore = useUIStore();
 
   const tasks = ref<Array<TaskLite>>([]);
 
@@ -378,7 +379,7 @@
   // }
 
   onBeforeMount(() => {
-    isDark.value = checkThemeIsDark();
+    isDark.value = UIStore.checkIsDarkTheme();
 
     isMicro.value = JSON.parse(
       localStorage.getItem("ui-card-btn-micro") as string

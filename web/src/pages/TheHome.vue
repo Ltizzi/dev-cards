@@ -30,6 +30,7 @@
     getActualTheme,
   } from "../utils/client.utils";
   import { useUIStore } from "../store/ui.store";
+  import { useUserStore } from "../store/user.store";
 
   const router = useRouter();
 
@@ -38,6 +39,7 @@
   const isDark = ref<boolean>(false);
 
   const UIStore = useUIStore();
+  const userStore = useUserStore();
 
   watch(
     () => UIStore.justUpdated,
@@ -56,16 +58,16 @@
 
   onMounted(() => {
     window.addEventListener("resize", handleResize);
-    const theme = localStorage.getItem("theme") as string;
+    const theme = UIStore.getTHeme(); //localStorage.getItem("theme") as string;
     if (theme) {
       //changeTheme(theme);
-      UIStore.setTheme(theme);
-      isDark.value = UIStore.darkTheme;
+      // UIStore.setTheme(theme);
+      isDark.value = UIStore.checkIsDarkTheme();
     }
     setTimeout(() => {
       firstLoaded.value = false;
     }, 1500);
-    const user = JSON.parse(localStorage.getItem("user") as string);
+    const user = userStore.getSelf(); //JSON.parse(localStorage.getItem("user") as string);
     if (!user) {
       router.push("/login");
     }

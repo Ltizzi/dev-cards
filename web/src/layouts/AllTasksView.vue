@@ -56,11 +56,12 @@
   import TaskList from "../components/task/TaskList.vue";
   import { useProjectStore } from "../store/project.store";
   import TaskListFilters from "../components/ui/TaskListFilters.vue";
-  // import TagNavigationPanel from "../components/ui/TagNavigationPanel.vue";
   import { useRoute, useRouter } from "vue-router";
   import { taskUtils } from "../utils/task.utils";
+  import { useUIStore } from "../store/ui.store";
 
   const projectStore = useProjectStore();
+  const UIStore = useUIStore();
 
   const tasks = ref<TaskLite[]>();
 
@@ -169,8 +170,8 @@
 
   onBeforeMount(() => {
     tasks.value = projectStore.current.tasks;
-    const darkTHeme = JSON.parse(localStorage.getItem("darkTheme") as string);
-    isDark.value = darkTHeme;
+    //const darkTHeme = JSON.parse(localStorage.getItem("darkTheme") as string);
+    isDark.value = UIStore.checkIsDarkTheme();
     // if (route.query.tag) {
     //   state.searchedByTag = true;
     //   filteredTasks.value = taskUtils.searchTasksByTag(

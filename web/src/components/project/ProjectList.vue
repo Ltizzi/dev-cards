@@ -13,24 +13,27 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { useApiCall } from "../../composables/useAPICall";
+  //import { useApiCall } from "../../composables/useAPICall";
   import { useProjectStore } from "../../store/project.store";
-  import { EndpointType } from "../../utils/endpoints";
+  import { useUserStore } from "../../store/user.store";
+  //import { EndpointType } from "../../utils/endpoints";
   import { Workspace } from "../../utils/types";
   import ProjectCard from "./ProjectCard.vue";
   import { onBeforeMount, ref } from "vue";
 
   const projectStore = useProjectStore();
+  const userStore = useUserStore();
 
-  const apiCall = useApiCall();
+  //  const apiCall = useApiCall();
 
   const workspaces = ref<Workspace[]>();
   const isLoaded = ref<boolean>(false);
 
   async function fetchProjects(userId: number) {
-    return (await apiCall.get(EndpointType.USER_MEMBER, {
-      params: { user_id: userId },
-    })) as Array<Workspace>;
+    return (await userStore.fetchAllWorkspacesMember(userId)) as Workspace[];
+    // return (await apiCall.get(EndpointType.USER_MEMBER, {
+    //   params: { user_id: userId },
+    // })) as Array<Workspace>;
   }
 
   onBeforeMount(async () => {
@@ -38,7 +41,7 @@
       workspaces.value = projectStore.memberOf;
       isLoaded.value = true;
     } else {
-      const id = JSON.parse(localStorage.getItem("user") as string).user_id;
+      const id = userStore.self.user_id; //JSON.parse(localStorage.getItem("user") as string).user_id;
       const wss = await fetchProjects(id);
       projectStore.setMemberOf(wss);
       workspaces.value = projectStore.memberOf;

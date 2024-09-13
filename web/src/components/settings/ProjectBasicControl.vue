@@ -65,8 +65,7 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { useApiCall } from "../../composables/useAPICall";
-  import { EndpointType } from "../../utils/endpoints";
+  import { useProjectStore } from "../../store/project.store";
   import { Workspace } from "../../utils/types";
   import BaseEditDescription from "../common/BaseEditDescription.vue";
   import { onBeforeMount, ref } from "vue";
@@ -75,24 +74,19 @@
 
   const emit = defineEmits(["update"]);
 
-  const project = ref<Workspace>();
+  const projectStore = useProjectStore();
 
-  const apiCall = useApiCall();
+  const project = ref<Workspace>();
 
   const newName = ref<string>();
   const avatarUrl = ref<string>();
 
   async function changeName() {
-    const response = (await apiCall.patch(
-      EndpointType.WORKSPACE_UPDATE_NAME,
-      {},
-      {
-        params: {
-          ws_id: project.value?.workspace_id,
-          name: newName.value,
-        },
-      }
+    const response = (await projectStore.updateWorkspaceName(
+      project.value?.workspace_id as number,
+      newName.value as string
     )) as Workspace;
+
     if (response.workspace_id == project.value?.workspace_id) {
       //projectStore.setCurrent(response);
       project.value = response;
@@ -101,16 +95,11 @@
   }
 
   async function changeAvatar() {
-    const response = (await apiCall.patch(
-      EndpointType.WORKSPACE_UPDATE_AVATAR,
-      {},
-      {
-        params: {
-          ws_id: project.value?.workspace_id,
-          url: avatarUrl.value,
-        },
-      }
+    const response = (await projectStore.updateWorkspaceAvatar(
+      project.value?.workspace_id as number,
+      avatarUrl.value as string
     )) as Workspace;
+
     if (response.workspace_id == project.value?.workspace_id) {
       //projectStore.setCurrent(response);
       project.value = response;

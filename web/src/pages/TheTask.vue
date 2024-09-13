@@ -341,6 +341,7 @@
   } from "../utils/auth.utils";
   import { dateUtils } from "../utils/date.utils";
   import { useUserStore } from "../store/user.store";
+  import { useUIStore } from "../store/ui.store";
 
   // #region: variables
   const card = ref<Task>();
@@ -348,12 +349,13 @@
   const taskStore = useTaskStore();
   const projectStore = useProjectStore();
   const userStore = useUserStore();
+  const UIStore = useUIStore();
 
   const title_color = ref<string>();
   const progress_value = ref<number>();
   const priority_color = ref<string>();
   const mouseOverTag = ref<boolean>(false);
-  const removeTagActive = ref<boolean>();
+  const removeTagActive = ref<boolean>(false);
 
   const route = useRoute();
   const router = useRouter();
@@ -374,9 +376,7 @@
 
   async function fetchTask(task_id: number) {
     console.log("soy yo");
-    const data = (await apiCall.get(EndpointType.TASK_GET_BY_ID, {
-      params: { id: task_id },
-    })) as Task;
+    const data = await taskStore.fetchTaskById(task_id); //(await apiCall.get(EndpointType.TASK_GET_BY_ID, { params: { id: task_id },  })) as Task;
     return data;
   }
 
@@ -385,27 +385,19 @@
     if (route.query.id) {
       const id = +route.query.id;
       card.value = await fetchTask(id);
-      taskStore.setCurrentTask(card.value);
+      //taskStore.setCurrentTask(card.value);
     }
   }
 
   async function updateTask(task: Task) {
     taskStore.setCurrentTask(task);
-    await projectStore.updateCurrent();
+    // await projectStore.updateCurrent();
     prepareTaskData(task);
   }
 
   async function updateProgress(progress: Progress) {
-    const response = (await apiCall.patch(
-      EndpointType.TASK_UPDATE_PROGRESS,
-      {},
-      {
-        params: {
-          task_id: card.value?.task_id,
-          progress: progress,
-        },
-      }
-    )) as Task;
+    const response = await taskStore.updateTaskProgress(progress); //(await apiCall.patch(EndpointType.TASK_UPDATE_PROGRESS, {}, { params: {  task_id: card.value?.task_id,progress: progress,},})) as Task;
+
     if (response.task_id == card.value?.task_id) {
       // taskStore.setCurrentTask(response);
       // prepareTaskData(taskStore.currentTask);
@@ -414,16 +406,7 @@
   }
 
   async function updatePriority(priority: Priority) {
-    const response = (await apiCall.patch(
-      EndpointType.TASK_UPDATE_PRIORITY,
-      {},
-      {
-        params: {
-          task_id: card.value?.task_id,
-          priority: priority,
-        },
-      }
-    )) as Task;
+    const response = await taskStore.updatePriority(priority); //(await apiCall.patch(EndpointType.TASK_UPDATE_PRIORITY,{},{params: {task_id: card.value?.task_id,priority: priority,},})) as Task;
     if (response.task_id == card.value?.task_id) {
       updateTask(response);
     } else console.error("CAN'T UPDATE TASK PRIORITY");
@@ -448,48 +431,42 @@
   }
 
   async function updateTaskStatus(option: Status) {
-    const response = (await apiCall.patch(
-      EndpointType.TASK_UPDATE_STATUS,
-      {},
-      {
-        params: {
-          task_id: card.value?.task_id,
-          status: option,
-        },
-      }
-    )) as Task;
+    const response = await taskStore.updateTaskStatus(option);
+    // (await apiCall.patch(EndpointType.TASK_UPDATE_STATUS,{},{params: {task_id: card.value?.task_id,status: option,},})) as Task;
     if (response.task_id == card.value?.task_id) {
       updateTask(response);
     } else console.error("CAN'T UPDATE TASK STATUS");
   }
 
   async function updateTaskEffort(option: Effort) {
-    const response = (await apiCall.patch(
-      EndpointType.TASK_UPDATE_EFFORT,
-      {},
-      {
-        params: {
-          task_id: card.value?.task_id,
-          effort: option,
-        },
-      }
-    )) as Task;
+    const response = await taskStore.updateTaskEffort(option);
+    // (await apiCall.patch(
+    //   EndpointType.TASK_UPDATE_EFFORT,
+    //   {},
+    //   {
+    //     params: {
+    //       task_id: card.value?.task_id,
+    //       effort: option,
+    //     },
+    //   }
+    // )) as Task;
     if (response.task_id == card.value?.task_id) {
       updateTask(response);
     } else console.error("CAN'T UPDATE TASK EFFORT");
   }
 
   async function updateTaskType(option: TaskType) {
-    const response = (await apiCall.patch(
-      EndpointType.TASK_UPDATE_TYPE,
-      {},
-      {
-        params: {
-          task_id: card.value?.task_id,
-          type: option,
-        },
-      }
-    )) as Task;
+    const response = await taskStore.updateTaskType(option);
+    // (await apiCall.patch(
+    //   EndpointType.TASK_UPDATE_TYPE,
+    //   {},
+    //   {
+    //     params: {
+    //       task_id: card.value?.task_id,
+    //       type: option,
+    //     },
+    //   }
+    // )) as Task;
     if (response.task_id == card.value?.task_id) {
       updateTask(response);
     } else console.error("CAN'T UPDATE TASK TYPE");
@@ -505,16 +482,19 @@
         (t: string) => t.toLowerCase() != tag.toLowerCase()
       );
     }
-    const response = (await apiCall.patch(
-      EndpointType.TASK_REMOVE_TAG,
-      {},
-      {
-        params: {
-          task_id: card.value?.task_id,
-          tag: tag,
-        },
-      }
-    )) as Task;
+    const response = (await removeTag(tag)) as unknown as Task;
+    // (await apiCall.patch(
+    //   EndpointType.TASK_REMOVE_TAG,
+    //   {},
+    //   {
+    //     params: {
+    //       task_id: card.value?.task_id,
+    //       tag: tag,
+    //     },
+    //   }
+    // )) as Task;
+
+    //TODO: cuando implemente TagPool
     if (response.task_id == card.value?.task_id) {
       card.value = response;
       let tags = JSON.parse(localStorage.getItem("tags") as string); //removing tag from tag pool in local
@@ -563,16 +543,22 @@
   }
 
   async function autoAssignTask() {
-    const response = (await apiCall.post(
-      EndpointType.TASK_AUTOASSIGN,
-      {},
-      {
-        params: {
-          task_id: card.value?.task_id,
-          ws_id: card.value?.workspace.workspace_id,
-        },
-      }
-    )) as Task;
+    const taskId = card.value?.task_id as number;
+    const wsId = card.value?.workspace.workspace_id as number;
+    const response = (await taskStore.autoAssignTask(
+      taskId,
+      wsId
+    )) as unknown as Task;
+    // (await apiCall.post(
+    //   EndpointType.TASK_AUTOASSIGN,
+    //   {},
+    //   {
+    //     params: {
+    //       task_id: card.value?.task_id,
+    //       ws_id: card.value?.workspace.workspace_id,
+    //     },
+    //   }
+    // )) as Task;
     if (response.task_id == card.value?.task_id) {
       card.value = response;
       await userStore.refreshSelf();
@@ -616,12 +602,8 @@
   );
 
   onBeforeMount(() => {
-    if (localStorage.getItem("darkTheme")) {
-      isDark.value = JSON.parse(localStorage.getItem("darkTheme") as string);
-      darkerCard.value = JSON.parse(
-        localStorage.getItem("darkerCards") as string
-      );
-    }
+    isDark.value = UIStore.checkIsDarkTheme(); //JSON.parse(localStorage.getItem("darkTheme") as string);
+    darkerCard.value = UIStore.darkerCard; //JSON.parse(localStorage.getItem("darkerCards") as string);
   });
 
   onMounted(async () => {

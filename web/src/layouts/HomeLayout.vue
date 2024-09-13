@@ -126,7 +126,7 @@
   }
 
   onBeforeMount(() => {
-    const user = JSON.parse(localStorage.getItem("user") as string);
+    const user = userStore.getSelf(); //JSON.parse(localStorage.getItem("user") as string);
     if (!user) {
       router.push("/login");
     } else {

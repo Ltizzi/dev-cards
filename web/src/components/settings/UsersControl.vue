@@ -125,12 +125,11 @@ import { UserLite } from '../../utils/types';
 </template>
 <script setup lang="ts">
   import { onBeforeMount, ref, watch } from "vue";
-  import { useApiCall } from "../../composables/useAPICall";
   import { UserLite } from "../../utils/types";
-  import { EndpointType } from "../../utils/endpoints";
   import BaseDeleteModal from "../common/BaseDeleteModal.vue";
   import { checkIsDark } from "../../utils/client.utils";
   import { useUIStore } from "../../store/ui.store";
+  import { useProjectStore } from "../../store/project.store";
 
   const props = defineProps<{
     workspace_id: number;
@@ -143,7 +142,7 @@ import { UserLite } from '../../utils/types';
   const isDark = ref<boolean>();
   const isMobile = ref<boolean>();
 
-  const apiCall = useApiCall();
+  const projectStore = useProjectStore();
   const UIStore = useUIStore();
 
   const emit = defineEmits(["update"]);
@@ -154,16 +153,11 @@ import { UserLite } from '../../utils/types';
   const showModal = ref<boolean>();
 
   async function removeUser() {
-    const response = (await apiCall.patch(
-      EndpointType.WORKSPACE_REMOVE_USER,
-      {},
-      {
-        params: {
-          ws_id: props.workspace_id,
-          user_id: modal_user_id_to_delete.value,
-        },
-      }
+    const response = (await projectStore.removeUserFromWorkspace(
+      props.workspace_id,
+      modal_user_id_to_delete.value as number
     )) as UserLite[];
+
     if (response.length > 0) {
       user_list.value = response;
       emit("update");
@@ -199,31 +193,20 @@ import { UserLite } from '../../utils/types';
   }
 
   async function addCollab(id: number) {
-    const response = (await apiCall.patch(
-      EndpointType.WORKSPACE_ADD_COLLABORATOR,
-      {},
-      {
-        params: {
-          ws_id: props.workspace_id,
-          user_id: id,
-        },
-      }
+    const response = (await projectStore.addUserAsCollaborator(
+      props.workspace_id,
+      id
     )) as UserLite[];
 
     emit("update");
   }
 
   async function removeCollab(id: number) {
-    const response = (await apiCall.patch(
-      EndpointType.WORKSPACE_REMOVE_COLLABORATOR,
-      {},
-      {
-        params: {
-          ws_id: props.workspace_id,
-          user_id: id,
-        },
-      }
+    const response = (await projectStore.removeUserAsCollaborator(
+      props.workspace_id,
+      id
     )) as UserLite[];
+
     emit("update");
   }
 

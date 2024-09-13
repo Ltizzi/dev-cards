@@ -91,8 +91,6 @@
   import { onBeforeMount, ref } from "vue";
   import { useUserStore } from "../../store/user.store";
   import { User } from "../../utils/types";
-  import { useApiCall } from "../../composables/useAPICall";
-  import { EndpointType } from "../../utils/endpoints";
 
   const user = ref<User>();
 
@@ -103,7 +101,6 @@
   const github = ref<string>();
 
   const userStore = useUserStore();
-  const apiCall = useApiCall();
 
   const success = ref<boolean>();
   const isLoading = ref<boolean>();
@@ -120,11 +117,8 @@
     if (github.value && github.value.length > 0)
       newUser.githubProfile = github.value;
 
-    const response = (await apiCall.patch(EndpointType.USER_UPDATE, newUser, {
-      params: {
-        user_id: newUser.user_id,
-      },
-    })) as User;
+    const response = (await userStore.updateUser(newUser)) as User;
+
     if (response.user_id == user.value?.user_id) {
       isLoading.value = false;
       success.value = true;

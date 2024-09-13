@@ -200,7 +200,10 @@
     const taskId = getTaskId();
     isModOrOwner.value = checkIsModOrOwner(projectId);
     isDesignatedUser.value = checkIsDesignated(projectId, taskId as number);
-    canModify.value = checkIfUserisTaskOwner(taskId as number, userStore.self);
+    canModify.value = checkIfUserisTaskOwner(
+      taskId as number,
+      userStore.getSelf()
+    );
   }
 
   // onBeforeMount(() => {

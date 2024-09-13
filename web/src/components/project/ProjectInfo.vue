@@ -118,8 +118,10 @@
   import { checkIsModOrOwner } from "../../utils/auth.utils";
   import TagNavigationPanel from "../ui/TagNavigationPanel.vue";
   import BaseUserAvatarItem from "../common/BaseUserAvatarItem.vue";
+  import { useUIStore } from "../../store/ui.store";
 
   const projectStore = useProjectStore();
+  const UIStore = useUIStore();
 
   const apiCall = useApiCall();
 
@@ -152,10 +154,11 @@
       project.value = projectStore.current;
       isLoaded.value = true;
     } else {
-      const id = route.query.id;
-      const response = (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {
-        params: { id: id },
-      })) as Workspace;
+      const id = route.query.id as unknown as number;
+      const response = (await projectStore.fetchProjectById(id)) as Workspace;
+      //  (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {
+      //   params: { id: id },
+      // })) as Workspace;
       if (response.workspace_id) {
         project.value = response;
         isLoaded.value = true;
@@ -165,8 +168,8 @@
     }
 
     canModify.value = checkIsModOrOwner(project.value?.workspace_id as number);
-    if (localStorage.getItem("darkTheme")) {
-      isDark.value = JSON.parse(localStorage.getItem("darkTheme") as string);
-    }
+    // if (localStorage.getItem("darkTheme")) {
+    isDark.value = UIStore.checkIsDarkTheme(); //JSON.parse(localStorage.getItem("darkTheme") as string);
+    //}
   });
 </script>

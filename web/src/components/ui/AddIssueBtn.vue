@@ -15,8 +15,8 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { useApiCall } from "../../composables/useAPICall";
-  import { EndpointType } from "../../utils/endpoints";
+  // import { useApiCall } from "../../composables/useAPICall";
+  // import { EndpointType } from "../../utils/endpoints";
   import { ProgressItem, Task } from "../../utils/types";
   import AddNewTaskIssueModal from "./AddNewTaskIssueModal.vue";
   import { defineProps, ref } from "vue";
@@ -26,7 +26,7 @@
 
   const show = ref<boolean>(false);
 
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
 
   function openModal() {
     show.value = true;

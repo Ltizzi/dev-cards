@@ -238,7 +238,7 @@
   import NewTaskBtn from "../task/NewTaskBtn.vue";
   import { useUIStore } from "../../store/ui.store";
 
-  const props = defineProps<{ isMobile: boolean }>();
+  const props = defineProps<{ isMobile?: boolean }>();
 
   const route = useRoute();
   const router = useRouter();

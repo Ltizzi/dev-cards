@@ -106,14 +106,18 @@
         },
       } as AxiosRequestConfig;
 
-      const response = (await apiCall.patch(
-        EndpointType.USER_UPDATE,
-        updatedProfile,
+      const response = (await store.completeUserProfile(
+        updatedProfile as User,
         config
       )) as User;
+      //  (await apiCall.patch(
+      //   EndpointType.USER_UPDATE,
+      //   updatedProfile,
+      //   config
+      // )) as User;
       if (response && response.user_id == user.value.user_id) {
         store.setSelf(response);
-        localStorage.setItem("user", JSON.stringify(response));
+        //localStorage.setItem("user", JSON.stringify(response));
         isWaiting.value = false;
         store.flagAsNewUser();
         router.push("/signup/project");

@@ -19,9 +19,10 @@
 </template>
 <script setup lang="ts">
   import { onBeforeMount, ref, watch } from "vue";
-  import { checkThemeIsDark } from "../../utils/client.utils";
+  import { useUIStore } from "../../store/ui.store";
 
   const isDark = ref<boolean>();
+  const UIStore = useUIStore();
 
   const search = ref<string>();
 
@@ -35,6 +36,6 @@
   );
 
   onBeforeMount(() => {
-    isDark.value = checkThemeIsDark();
+    isDark.value = UIStore.checkIsDarkTheme();
   });
 </script>

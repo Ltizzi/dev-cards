@@ -84,9 +84,11 @@
     watch,
   } from "vue";
   import { ProgressItem, Task } from "../../utils/types";
-  import { useApiCall } from "../../composables/useAPICall";
-  import { EndpointType } from "../../utils/endpoints";
+  // import { useApiCall } from "../../composables/useAPICall";
+  // import { EndpointType } from "../../utils/endpoints";
   import DeleteIssueBtn from "../ui/DeleteIssueBtn.vue";
+  import { useTaskStore } from "../../store/task.store";
+  import { useUIStore } from "../../store/ui.store";
 
   const props = defineProps<{
     issue: ProgressItem;
@@ -96,10 +98,13 @@
   }>();
   const emit = defineEmits(["update"]);
 
+  const taskStore = useTaskStore();
+  const UIStore = useUIStore();
+
   const sentence = ref<string>();
   const checked = ref<boolean>();
 
-  const apiCall = useApiCall();
+  //  const apiCall = useApiCall();
 
   const hovered = ref<boolean>(false);
 
@@ -148,15 +153,19 @@
       sentence: sentence.value as string,
       isCompleted: checked.value as boolean,
     };
-    const response = (await apiCall.patch(
-      EndpointType.TASK_UPDATE_ISSUE,
+    const response = (await taskStore.updateIssue(
       updateIssue,
-      {
-        params: {
-          task_id: props.task_id,
-        },
-      }
+      props.task_id
     )) as Task;
+    // (await apiCall.patch(
+    //   EndpointType.TASK_UPDATE_ISSUE,
+    //   updateIssue,
+    //   {
+    //     params: {
+    //       task_id: props.task_id,
+    //     },
+    //   }
+    // )) as Task;
     if (response.task_id == props.task_id) {
       emit("update", response);
     }
@@ -164,12 +173,16 @@
   }
 
   async function deleteIssue(id: number) {
-    const response = (await apiCall.del(EndpointType.TASK_REMOVE_ISSUE, {
-      params: {
-        task_id: props.task_id,
-        issue_id: props.issue.issue_id,
-      },
-    })) as Task;
+    const response = (await taskStore.deleteIssue(
+      props.issue.issue_id as number,
+      props.task_id
+    )) as Task;
+    // (await apiCall.del(EndpointType.TASK_REMOVE_ISSUE, {
+    //   params: {
+    //     task_id: props.task_id,
+    //     issue_id: props.issue.issue_id,
+    //   },
+    // })) as Task;
     if (response.task_id == props.task_id) {
       emit("update", response);
     }
@@ -198,9 +211,9 @@
     checked.value = props.issue.isCompleted;
     document.addEventListener("click", handleOutsideClicks);
 
-    if (localStorage.getItem("darkTheme")) {
-      isDark.value = JSON.parse(localStorage.getItem("darkTheme") as string);
-    }
+    // if (localStorage.getItem("darkTheme")) {
+    isDark.value = UIStore.checkIsDarkTheme(); //JSON.parse(localStorage.getItem("darkTheme") as string);
+    // }
   });
 
   onUnmounted(() => {

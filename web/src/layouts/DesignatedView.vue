@@ -47,7 +47,7 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { onBeforeMount, ref, watch } from "vue";
+  import { onMounted, ref, watch } from "vue";
   import TaskList from "../components/task/TaskList.vue";
   import { Status, TaskLite } from "../utils/types";
   import { useUserStore } from "../store/user.store";
@@ -182,8 +182,8 @@
   function prepareTasks() {
     if (checkInsideProject()) {
       const tasks = prepareProjectUserDesignatedTasks();
-      active_tasks.value = tasks.active;
-      completed_tasks.value = tasks.completed;
+      active_tasks.value = tasks.active as TaskLite[];
+      completed_tasks.value = tasks.completed as TaskLite[];
     } else {
       const tasks = prepareDesignatedTasks();
       active_tasks.value = tasks.active;
@@ -191,12 +191,17 @@
     }
   }
 
-  onBeforeMount(() => {
-    if (userStore.self && userStore.self.designated_tasks) {
+  onMounted(() => {
+    if (userStore.getSelf() && userStore.getDesignatedTask()) {
       prepareTasks();
-      if (userStore.self.designated_tasks.length == 0) no_tasks.value = true;
-      if (active_tasks.value.length == 0 && completed_tasks.value == 0)
-        no_tasks.value = true;
+      if (userStore.getDesignatedTask().length == 0) no_tasks.value = true;
+      // if (
+      //   active_tasks.value &&
+      //   active_tasks.value.length == 0 &&
+      //   completed_tasks.value &&
+      //   completed_tasks.value.length == 0
+      // )
+      //   no_tasks.value = true;
     } else {
       no_tasks.value = true;
     }

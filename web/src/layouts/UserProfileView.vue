@@ -84,17 +84,17 @@
 <script setup lang="ts">
   import { useRoute } from "vue-router";
   import { ref, onBeforeMount, watch } from "vue";
-  import { useApiCall } from "../composables/useAPICall";
-  import { EndpointType } from "../utils/endpoints";
   import { useProjectStore } from "../store/project.store";
   import { User } from "../utils/types";
   import { useUIStore } from "../store/ui.store";
+  import { useUserStore } from "../store/user.store";
 
   const route = useRoute();
   const id = ref<number>();
 
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
   const projectStore = useProjectStore();
+  const userStore = useUserStore();
   const UIStore = useUIStore();
 
   const user = ref<User>();
@@ -116,12 +116,17 @@
   );
 
   async function getUserById() {
-    const response = (await apiCall.get(EndpointType.USER_GET_BY_ID, {
-      params: {
-        user_id: id.value,
-        ws_id: projectStore.current.workspace_id,
-      },
-    })) as User;
+    const ws_id = projectStore.current.workspace_id;
+    const response = (await userStore.fetchUserById(
+      id.value as number,
+      ws_id
+    )) as unknown as User;
+    // (await apiCall.get(EndpointType.USER_GET_BY_ID, {
+    //   params: {
+    //     user_id: id.value,
+    //     ws_id: projectStore.current.workspace_id,
+    //   },
+    // })) as User;
     if (response.user_id) {
       user.value = response;
     } else {
@@ -133,7 +138,7 @@
       id.value = +route.query.id;
       await getUserById();
     } else failed.value = true;
-    isDark.value = UIStore.darkTheme;
+    isDark.value = UIStore.checkIsDarkTheme();
   });
 </script>
 <style lang=""></style>

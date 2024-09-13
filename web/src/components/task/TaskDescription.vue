@@ -49,9 +49,10 @@
 </template>
 <script setup lang="ts">
   import { ref, reactive, onBeforeMount, onUnmounted, watch } from "vue";
-  import { useApiCall } from "../../composables/useAPICall";
-  import { EndpointType } from "../../utils/endpoints";
+  // import { useApiCall } from "../../composables/useAPICall";
+  // import { EndpointType } from "../../utils/endpoints";
   import { Task } from "../../utils/types";
+  import { useTaskStore } from "../../store/task.store";
 
   const props = defineProps<{
     description: string;
@@ -63,7 +64,9 @@
 
   const description = ref<string>();
 
-  const apiCall = useApiCall();
+  const taskStore = useTaskStore();
+
+  //const apiCall = useApiCall();
 
   const hovered = ref<boolean>(false);
 
@@ -106,15 +109,19 @@
     const newDes = {
       description: description.value,
     };
-    const response = (await apiCall.patch(
-      EndpointType.TASK_UPDATE_DESCRIPTION,
+    const response = (await taskStore.updateDescription(
       newDes,
-      {
-        params: {
-          task_id: props.task_id,
-        },
-      }
+      props.task_id
     )) as Task;
+    // (await apiCall.patch(
+    //   EndpointType.TASK_UPDATE_DESCRIPTION,
+    //   newDes,
+    //   {
+    //     params: {
+    //       task_id: props.task_id,
+    //     },
+    //   }
+    // )) as Task;
     if (response.task_id == props.task_id) {
       emit("update", response);
     }

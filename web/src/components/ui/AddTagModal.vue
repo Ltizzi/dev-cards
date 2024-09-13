@@ -139,16 +139,18 @@
     //const alreadyCreatedTag = checkTag(newTag) as UITag[];
     //console.log("ALREADY TAG: ", alreadyCreatedTag);
     // tags.value.forEach(async (newTag: string) => {
-    const response = (await apiCall.patch(
-      EndpointType.TASK_ADD_TAG,
-      {},
-      {
-        params: {
-          task_id: taskStore.currentTask.task_id,
-          tag: newTag,
-        },
-      }
-    )) as Task;
+    //TODO: manejar el agregado de task a TagPool
+    const response = (await taskStore.saveTag(newTag)) as Task;
+    // (await apiCall.patch(
+    //   EndpointType.TASK_ADD_TAG,
+    //   {},
+    //   {
+    //     params: {
+    //       task_id: taskStore.currentTask.task_id,
+    //       tag: newTag,
+    //     },
+    //   }
+    // )) as Task;
     awaitingResponse.value = false;
     if (response.task_id) {
       // if (!alreadyCreatedTag[0])

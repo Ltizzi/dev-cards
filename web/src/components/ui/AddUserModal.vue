@@ -79,17 +79,17 @@
 </template>
 <script setup lang="ts">
   import { onBeforeMount, ref } from "vue";
-  import { useApiCall } from "../../composables/useAPICall";
+  //import { useApiCall } from "../../composables/useAPICall";
   import { useTaskStore } from "../../store/task.store";
   import { Task, User, UserLite } from "../../utils/types";
   import BaseModal from "../common/BaseModal.vue";
   import { useProjectStore } from "../../store/project.store";
-  import { EndpointType } from "../../utils/endpoints";
+  //import { EndpointType } from "../../utils/endpoints";
   import { useUserStore } from "../../store/user.store";
 
   const props = defineProps<{ showModal: boolean }>();
   const emit = defineEmits(["close"]);
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
   const taskStore = useTaskStore();
   const projectStore = useProjectStore();
   const userStore = useUserStore();
@@ -136,16 +136,17 @@
       if (!addedSelf) {
         addedSelf = checkAddedSelf(user.user_id);
       }
-      const response = (await apiCall.post(
-        EndpointType.TASK_ASSIGN_USER,
-        null,
-        {
-          params: {
-            task_id: taskStore.currentTask.task_id,
-            user_id: user.user_id,
-          },
-        }
-      )) as Task;
+      const response = (await taskStore.assignUserToTask(user.user_id)) as Task;
+      //  (await apiCall.post(
+      //   EndpointType.TASK_ASSIGN_USER,
+      //   null,
+      //   {
+      //     params: {
+      //       task_id: taskStore.currentTask.task_id,
+      //       user_id: user.user_id,
+      //     },
+      //   }
+      // )) as Task;
       awaitingResponse.value = false;
       if (response.task_id) {
         taskStore.setCurrentTask(response);

@@ -118,7 +118,7 @@
     isMicro: boolean;
     isDarkTheme: boolean;
     //darkerCards: boolean | null;
-    viewList: boolean | null;
+    viewList?: boolean | null;
     // isDraggable: boolean;
     // col_name: string;
   }>();
@@ -219,10 +219,6 @@
     } else return title;
   }
 
-  function getIsDarkTheme() {
-    return JSON.parse(localStorage.getItem("darkTheme") as string);
-  }
-
   onBeforeMount(() => {
     color.value = taskUtils.getColor(props.task.color);
     if (props.task.status != Status.COMPLETED) {
@@ -236,7 +232,7 @@
     //   if (props.darkerCards) darkerCards.value = props.darkerCards;
     //   else darkerCards.value = isDarkerCardsActive();
     // }
-    isDark.value = UIStore.darkTheme;
+    isDark.value = UIStore.checkIsDarkTheme();
     darkerMiniCards.value = UIStore.darkerMiniCard;
   });
 </script>

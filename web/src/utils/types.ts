@@ -253,6 +253,11 @@ export interface UserLite {
   avatar?: string;
 }
 
+export interface AuthRequest {
+  username: string;
+  password: string;
+}
+
 export interface AuthResponse {
   user: User;
   token: string;
@@ -290,7 +295,7 @@ export interface Configuration {
   config_id: number;
   workspace: WorkspaceLite;
   customGlosaries: Glosary[];
-  specialTags: SpecialTag[];
+  tagPool: TagPool;
   flagged_tasks: TaskSlim[];
 }
 

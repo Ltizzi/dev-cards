@@ -65,11 +65,85 @@ export const useProjectStore = defineStore("projects", {
         return this.current;
       }
     },
+    async fetchProjectsByUser(userId: number) {
+      if (userId) {
+        const workspaces = (await apiCall.get(EndpointType.USER_MEMBER, {
+          params: { user_id: userId },
+        })) as Array<Workspace>;
+        this.setMemberOf(workspaces);
+        return workspaces;
+      }
+    },
+    async createWorkspace(ws: Workspace) {
+      return await apiCall.post(EndpointType.WORKSPACE_NEW, ws);
+    },
     async updateCurrent() {
       return await this.fetchProjectById(this.current.workspace_id);
     },
     async updateCurrentById(id: number) {
       return await this.fetchProjectById(id);
+    },
+    //INVITE USER TO WS
+    async addUserToProjectByEmail(email: string, ws_id: number) {
+      return await apiCall.post(
+        EndpointType.WORKSPACE_ADD_USER_BY_EMAIL,
+        {},
+        { params: { ws_id: ws_id, email: email } }
+      );
+    },
+    async deleteWorkspace(id: number) {
+      return await apiCall.del(EndpointType.WORKSPACE_DELETE, {
+        params: { id: id },
+      });
+    },
+    async addUserAsMod(ws_id: number, user_id: number) {
+      return await apiCall.patch(
+        EndpointType.WORKSPACE_ADD_MOD,
+        {},
+        { params: { ws_id: ws_id, user_id: user_id } }
+      );
+    },
+    async removeMod(ws_id: number, user_id: number) {
+      return await apiCall.patch(
+        EndpointType.WORKSPACE_REMOVE_MOD,
+        {},
+        { params: { ws_id: ws_id, user_id: user_id } }
+      );
+    },
+    async updateWorkspaceName(ws_id: number, name: string) {
+      return await apiCall.patch(
+        EndpointType.WORKSPACE_UPDATE_NAME,
+        {},
+        { params: { ws_id: ws_id, name: name } }
+      );
+    },
+    async updateWorkspaceAvatar(ws_id: number, url: string) {
+      return await apiCall.patch(
+        EndpointType.WORKSPACE_UPDATE_AVATAR,
+        {},
+        { params: { ws_id: ws_id, url: url } }
+      );
+    },
+    async removeUserFromWorkspace(ws_id: number, user_id: number) {
+      return await apiCall.patch(
+        EndpointType.WORKSPACE_REMOVE_USER,
+        {},
+        { params: { ws_id: ws_id, user_id: user_id } }
+      );
+    },
+    async addUserAsCollaborator(ws_id: number, id: number) {
+      return await apiCall.patch(
+        EndpointType.WORKSPACE_ADD_COLLABORATOR,
+        {},
+        { params: { ws_id: ws_id, user_id: id } }
+      );
+    },
+    async removeUserAsCollaborator(ws_id: number, id: number) {
+      return await apiCall.patch(
+        EndpointType.WORKSPACE_REMOVE_COLLABORATOR,
+        {},
+        { params: { ws_id: ws_id, user_id: id } }
+      );
     },
     checkIsLocal() {
       return this.isLocal;
