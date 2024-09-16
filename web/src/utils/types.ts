@@ -202,7 +202,6 @@ export interface Workspace {
   moderators: Array<UserLite>;
   collaborators: Array<UserLite>;
   users: Array<UserLite>;
-
   created_at: Date;
   updated_at: Date;
 }
