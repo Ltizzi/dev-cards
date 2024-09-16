@@ -127,6 +127,7 @@
     //     ws_id: projectStore.current.workspace_id,
     //   },
     // })) as User;
+    console.log(response);
     if (response.user_id) {
       user.value = response;
     } else {

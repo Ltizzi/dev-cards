@@ -81,7 +81,7 @@ export const useUserStore = defineStore("auth", {
 
     async fetchUserById(id: number, ws_id: number) {
       const user = this.users.filter((u: User) => u.user_id === id);
-      if (user) return user;
+      if (user.length > 0) return user[0];
       else {
         const response = (await apiCall.get(EndpointType.USER_GET_BY_ID, {
           params: { user_id: id, ws_id: ws_id },
