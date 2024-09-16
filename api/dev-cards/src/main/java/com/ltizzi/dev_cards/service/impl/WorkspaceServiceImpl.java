@@ -8,6 +8,7 @@ import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.InvalidWorkspaceException;
 import com.ltizzi.dev_cards.exception.NotAllowedException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
+import com.ltizzi.dev_cards.model.customConfiguration.CustomConfiguration;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.task.TaskMapper;
 import com.ltizzi.dev_cards.model.user.UserEntity;
@@ -100,6 +101,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         List<WorkspaceEntity>  user_ws = user.getWorkspaces();
         users.add(user);
         ws.setUsers(users);
+        ws.setCustomConfiguration(new CustomConfiguration());
         WorkspaceEntity new_ws = wsRepo.save(ws);
         user_ws.add(new_ws);
         user.setWorkspaces(user_ws);

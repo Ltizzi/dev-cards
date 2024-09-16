@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ltizzi.dev_cards.exception.InvalidConfigurationException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.customConfiguration.ConfigurationDTO;
-import com.ltizzi.dev_cards.model.customConfiguration.utils.CustomGlosary;
-import com.ltizzi.dev_cards.model.customConfiguration.utils.SpecialTag;
-import com.ltizzi.dev_cards.model.customConfiguration.utils.TagPool;
-import com.ltizzi.dev_cards.model.customConfiguration.utils.UITag;
+import com.ltizzi.dev_cards.model.customConfiguration.utils.*;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 
 
@@ -48,5 +45,8 @@ public interface CustomConfigurationService {
 
     public TagPool updateTagFromPool(Long config_id, UITag tag) throws NotFoundException, InvalidConfigurationException;
 
+    public TagPool saveTagPool(Long config_id, TagPool pool) throws  NotFoundException, InvalidConfigurationException;
+
+    public ThemeData saveThemeData(Long config_id, ThemeData themeData) throws  NotFoundException, InvalidConfigurationException;
 
 }

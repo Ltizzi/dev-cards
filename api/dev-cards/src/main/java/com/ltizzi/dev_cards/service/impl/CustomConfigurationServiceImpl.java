@@ -6,10 +6,7 @@ import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.customConfiguration.ConfigurationDTO;
 import com.ltizzi.dev_cards.model.customConfiguration.ConfigurationMapper;
 import com.ltizzi.dev_cards.model.customConfiguration.CustomConfiguration;
-import com.ltizzi.dev_cards.model.customConfiguration.utils.CustomGlosary;
-import com.ltizzi.dev_cards.model.customConfiguration.utils.SpecialTag;
-import com.ltizzi.dev_cards.model.customConfiguration.utils.TagPool;
-import com.ltizzi.dev_cards.model.customConfiguration.utils.UITag;
+import com.ltizzi.dev_cards.model.customConfiguration.utils.*;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.repository.CustomConfigurationRepository;
 import com.ltizzi.dev_cards.service.CustomConfigurationService;
@@ -120,16 +117,38 @@ public class CustomConfigurationServiceImpl implements CustomConfigurationServic
 
     @Override
     public TagPool addTagToPool(Long config_id, UITag tag) throws NotFoundException, InvalidConfigurationException {
-        return null;
+        CustomConfiguration cg = getConfigById(config_id);
+        cg.addTagToPool(tag);
+        return configRepo.save(cg).getTagPool();
     }
 
     @Override
     public TagPool removeTagFromPool(Long config_id, UITag tag) throws NotFoundException, InvalidConfigurationException {
-        return null;
+        CustomConfiguration cg = getConfigById(config_id);
+        cg.removeTagFromPool(tag);
+        return configRepo.save(cg).getTagPool();
     }
 
     @Override
     public TagPool updateTagFromPool(Long config_id, UITag tag) throws NotFoundException, InvalidConfigurationException {
-        return null;
+        CustomConfiguration cg = getConfigById(config_id);
+        cg.updateTagFromPool(tag);
+        return configRepo.save(cg).getTagPool();
+    }
+
+    @Override
+    public TagPool saveTagPool(Long config_id, TagPool pool) throws NotFoundException, InvalidConfigurationException {
+        CustomConfiguration cg = getConfigById(config_id);
+        cg.setTagPool(pool);
+        cg = configRepo.save(cg);
+        return cg.getTagPool();
+    }
+
+
+    @Override
+    public ThemeData saveThemeData(Long config_id, ThemeData themeData) throws NotFoundException, InvalidConfigurationException {
+        CustomConfiguration cg = getConfigById(config_id);
+        cg.setThemeData(themeData);
+        return configRepo.save(cg).getThemeData();
     }
 }

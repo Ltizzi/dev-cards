@@ -6,9 +6,7 @@ import com.ltizzi.dev_cards.exception.NotAllowedException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.customConfiguration.ConfigurationDTO;
 import com.ltizzi.dev_cards.model.customConfiguration.CustomConfiguration;
-import com.ltizzi.dev_cards.model.customConfiguration.utils.CustomGlosary;
-import com.ltizzi.dev_cards.model.customConfiguration.utils.SpecialTag;
-import com.ltizzi.dev_cards.model.customConfiguration.utils.TagPool;
+import com.ltizzi.dev_cards.model.customConfiguration.utils.*;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.security.filter.JwtUtils;
 import com.ltizzi.dev_cards.service.CustomConfigurationService;
@@ -140,7 +138,7 @@ public class CustomConfigurationController {
         }
     }
 
-    @PostMapping("/addTag")
+    @PostMapping("/addSpecialTag")
     @ResponseBody
     public ResponseEntity<TagPool> addSpecialTag(@RequestParam  Long ws_id,
                                                  @RequestParam Long config_id,
@@ -154,7 +152,7 @@ public class CustomConfigurationController {
         }
     }
 
-    @DeleteMapping("/deleteTag")
+    @DeleteMapping("/deleteSpecialTag")
     @ResponseBody
     public ResponseEntity<TagPool> removeSpecialTag(@RequestParam Long ws_id,
                                                                 @RequestParam Long config_id,
@@ -168,7 +166,7 @@ public class CustomConfigurationController {
         }
     }
 
-    @PatchMapping("/updateTag")
+    @PatchMapping("/updateSpecialTag")
     @ResponseBody
     public ResponseEntity<TagPool> updateSpecialTag(@RequestParam Long ws_id,
                                                                 @RequestParam Long config_id,
@@ -180,6 +178,77 @@ public class CustomConfigurationController {
         }
         else{
             return new ResponseEntity<>(configServ.updateSpecialTag(config_id, id, tag), HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/addTag")
+    @ResponseBody
+    public ResponseEntity<TagPool> addTag(@RequestParam  Long ws_id,
+                                                 @RequestParam Long config_id,
+                                                 @RequestBody UITag tag,
+                                                 @RequestHeader("Authorization")String token) throws NotAllowedException, NotFoundException, InvalidConfigurationException {
+        if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
+            throw  new NotAllowedException("User can't modify workspace's configuration.");
+        }
+        else{
+            return new ResponseEntity<>(configServ.addTagToPool(config_id, tag), HttpStatus.OK);
+        }
+    }
+
+    @DeleteMapping("/deleteTag")
+    @ResponseBody
+    public ResponseEntity<TagPool> removeTag(@RequestParam Long ws_id,
+                                                    @RequestParam Long config_id,
+                                                    @RequestParam UITag tag,
+                                                    @RequestHeader("Authorization")String token) throws NotAllowedException, NotFoundException, InvalidConfigurationException {
+        if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
+            throw  new NotAllowedException("User can't modify workspace's configuration");
+        }
+        else {
+            return new ResponseEntity<>(configServ.removeTagFromPool(config_id, tag ), HttpStatus.OK);
+        }
+    }
+
+    @PatchMapping("/updateTag")
+    @ResponseBody
+    public ResponseEntity<TagPool> updateTag(@RequestParam Long ws_id,
+                                                    @RequestParam Long config_id,
+                                                    @RequestParam Long id,
+                                                    @RequestBody UITag tag,
+                                                    @RequestHeader("Authorization")String token) throws NotAllowedException, NotFoundException, InvalidConfigurationException {
+        if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
+            throw  new NotAllowedException("User can't modify workspace's configuration");
+        }
+        else{
+            return new ResponseEntity<>(configServ.updateTagFromPool(config_id, tag), HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/savePool")
+    @ResponseBody
+    public ResponseEntity<TagPool> saveTagPool(@RequestParam Long ws_id,
+                                               @RequestParam Long config_id,
+                                               @RequestBody TagPool pool,
+                                               @RequestHeader("Authorization")String token) throws NotFoundException, InvalidConfigurationException, NotAllowedException {
+        if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
+            throw  new NotAllowedException("User can't modify workspace's configuration");
+        }
+        else {
+            return new ResponseEntity<>(configServ.saveTagPool(config_id, pool), HttpStatus.OK);
+        }
+    }
+
+    @PatchMapping("/theme")
+    @ResponseBody
+    public ResponseEntity<ThemeData> updateTheme(@RequestParam Long ws_id,
+                                                 @RequestParam Long config_id,
+                                                 @RequestBody ThemeData themeData,
+                                                 @RequestHeader("Authorization")String token) throws NotAllowedException, NotFoundException, InvalidConfigurationException {
+        if(!jwtUtils.checkIsOwnerOrModerator(ws_id,token)){
+            throw  new NotAllowedException("User can't modify workspace's configuration");
+        }
+        else {
+            return new ResponseEntity<>(configServ.saveThemeData(config_id,themeData), HttpStatus.OK);
         }
     }
 }
