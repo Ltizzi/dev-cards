@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { checkThemeIsDark, isDarkerCardsActive } from "../utils/client.utils";
+import { CustomConfiguration } from "../utils/types";
 
 export const useUIStore = defineStore("uiStore", {
   state: () => ({
@@ -9,6 +10,7 @@ export const useUIStore = defineStore("uiStore", {
     darkerMiniCard: false,
     justUpdated: false,
     isMobile: false,
+    currentConfig: {} as CustomConfiguration,
   }),
   actions: {
     setTheme(theme: string) {

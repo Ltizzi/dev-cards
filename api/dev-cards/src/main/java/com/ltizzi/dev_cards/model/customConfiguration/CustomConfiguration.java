@@ -1,10 +1,7 @@
 package com.ltizzi.dev_cards.model.customConfiguration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.ltizzi.dev_cards.model.customConfiguration.utils.CustomGlosary;
-import com.ltizzi.dev_cards.model.customConfiguration.utils.SpecialTag;
-import com.ltizzi.dev_cards.model.customConfiguration.utils.TagPool;
-import com.ltizzi.dev_cards.model.customConfiguration.utils.UITag;
+import com.ltizzi.dev_cards.model.customConfiguration.utils.*;
 import com.ltizzi.dev_cards.model.task.MiniTaskDTO;
 import com.ltizzi.dev_cards.model.task.TaskLiteDTO;
 import com.ltizzi.dev_cards.model.utils.RandomIdGenerator;
@@ -49,7 +46,7 @@ public class CustomConfiguration {
 ////    @CollectionTable(name = "special_tags", joinColumns = @JoinColumn(name = "workspace_special_tags"))
 ////    private List<SpecialTag> specialTags = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(cascade= CascadeType.PERSIST)
     @JoinColumn(name = "tag_pool", referencedColumnName = "tag_pool_id")
     private TagPool tagPool;
 
@@ -57,6 +54,8 @@ public class CustomConfiguration {
     @CollectionTable(name ="flagged_tasks", joinColumns = @JoinColumn(name = "workspace_flagged_tasks"))
     private List<MiniTaskDTO> flagged_tasks = new ArrayList<>();
 
+
+    private ThemeData themeData;
 
 
     public List<MiniTaskDTO> addFlaggedTask(MiniTaskDTO task){
@@ -98,11 +97,22 @@ public class CustomConfiguration {
                     }).collect(Collectors.toList());
     }
 
+    public void createTagPool(){
+        this.setTagPool(new TagPool());
+    }
+
 
 //TODO: quizas cambiar void por algún tipo de retorno (aunuqe en el service se devuelve la lista completa)
     public void addSpecialTag(SpecialTag tag){
         tag.setId(idGenerator.generateRandomLong());
-        List<SpecialTag> tags = tagPool.getSpecialTags();
+        List<SpecialTag>tags = new ArrayList<>();
+        if(this.getTagPool() != null){
+            tags = tagPool.getSpecialTags();
+        }
+        else {
+            createTagPool();
+        }
+        //List<SpecialTag> tags = tagPool.getSpecialTags();
         tags.add(tag);
         tagPool.setSpecialTags(tags);
 //        return specialTags.contains(tag);
@@ -135,7 +145,10 @@ public class CustomConfiguration {
     }
 
     public void addTagToPool(UITag tag){
-        List<UITag> tags = tagPool.getTags();
+        List<UITag> tags = new ArrayList<>();
+        if(this.getTagPool()!=null){
+            tags = tagPool.getTags();
+        }
         tags.add(tag);
         tagPool.setTags(tags);
     }

@@ -11,6 +11,7 @@ import {
   TaskType,
   TaskUpdate,
 } from "../utils/types";
+import { taskUtils } from "../utils/task.utils";
 
 const apiCall = useApiCall();
 
@@ -105,13 +106,7 @@ export const useTaskStore = defineStore("tasks", {
         { params: { task_id: this.currentTask.task_id, type: type } }
       )) as Task;
     },
-    async removeTag(tag: string) {
-      return (await apiCall.patch(
-        EndpointType.TASK_REMOVE_TAG,
-        {},
-        { params: { task_id: this.currentTask.task_id, tag: tag } }
-      )) as Task;
-    },
+
     async addDependency(id: number, parent_id: number) {
       return (await apiCall.post(EndpointType.TASK_ADD_DEPENDENCY, null, {
         params: { task_id: id, parent_id: parent_id },
@@ -133,11 +128,22 @@ export const useTaskStore = defineStore("tasks", {
       });
     },
     async saveTag(tag: string) {
-      return await apiCall.patch(
+      const response = (await apiCall.patch(
         EndpointType.TASK_ADD_TAG,
         {},
         { params: { task_id: this.currentTask.task_id, tag: tag } }
-      );
+      )) as Task;
+      taskUtils.addTagToTagsPool(tag, response.workspace.workspace_id);
+      return response;
+    },
+    async removeTag(tag: string) {
+      const response = (await apiCall.patch(
+        EndpointType.TASK_REMOVE_TAG,
+        {},
+        { params: { task_id: this.currentTask.task_id, tag: tag } }
+      )) as Task;
+
+      return response;
     },
     async addTaskUpdate(update: TaskUpdate) {
       return await apiCall.post(EndpointType.TASK_ADD_UPDATE, update, {

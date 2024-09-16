@@ -19,7 +19,7 @@
   //import { EndpointType } from "../../utils/endpoints";
   import { Workspace } from "../../utils/types";
   import ProjectCard from "./ProjectCard.vue";
-  import { onBeforeMount, ref } from "vue";
+  import { onMounted, ref } from "vue";
 
   const projectStore = useProjectStore();
   const userStore = useUserStore();
@@ -36,12 +36,12 @@
     // })) as Array<Workspace>;
   }
 
-  onBeforeMount(async () => {
+  onMounted(async () => {
     if (projectStore.memberOf.length > 0) {
       workspaces.value = projectStore.memberOf;
       isLoaded.value = true;
     } else {
-      const id = userStore.self.user_id; //JSON.parse(localStorage.getItem("user") as string).user_id;
+      const id = userStore.getSelf().user_id; //JSON.parse(localStorage.getItem("user") as string).user_id;
       const wss = await fetchProjects(id);
       projectStore.setMemberOf(wss);
       workspaces.value = projectStore.memberOf;

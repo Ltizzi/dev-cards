@@ -291,7 +291,7 @@ export interface TagPool {
   specialTags: SpecialTag[];
 }
 
-export interface Configuration {
+export interface CustomConfiguration {
   config_id: number;
   workspace: WorkspaceLite;
   customGlosaries: Glosary[];
