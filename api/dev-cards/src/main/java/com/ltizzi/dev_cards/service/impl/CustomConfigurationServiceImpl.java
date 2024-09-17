@@ -145,10 +145,10 @@ public class CustomConfigurationServiceImpl implements CustomConfigurationServic
     }
 
 
-    @Override
-    public ThemeData saveThemeData(Long config_id, ThemeData themeData) throws NotFoundException, InvalidConfigurationException {
-        CustomConfiguration cg = getConfigById(config_id);
-        cg.setThemeData(themeData);
-        return configRepo.save(cg).getThemeData();
-    }
+//    @Override
+//    public ThemeData saveThemeData(Long config_id, ThemeData themeData) throws NotFoundException, InvalidConfigurationException {
+//        CustomConfiguration cg = getConfigById(config_id);
+//        cg.setThemeData(themeData);
+//        return configRepo.save(cg).getThemeData();
+//    }
 }

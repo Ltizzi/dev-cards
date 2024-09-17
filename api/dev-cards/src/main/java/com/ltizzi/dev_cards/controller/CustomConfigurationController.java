@@ -5,7 +5,6 @@ import com.ltizzi.dev_cards.exception.InvalidConfigurationException;
 import com.ltizzi.dev_cards.exception.NotAllowedException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.customConfiguration.ConfigurationDTO;
-import com.ltizzi.dev_cards.model.customConfiguration.CustomConfiguration;
 import com.ltizzi.dev_cards.model.customConfiguration.utils.*;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.security.filter.JwtUtils;
@@ -238,17 +237,5 @@ public class CustomConfigurationController {
         }
     }
 
-    @PatchMapping("/theme")
-    @ResponseBody
-    public ResponseEntity<ThemeData> updateTheme(@RequestParam Long ws_id,
-                                                 @RequestParam Long config_id,
-                                                 @RequestBody ThemeData themeData,
-                                                 @RequestHeader("Authorization")String token) throws NotAllowedException, NotFoundException, InvalidConfigurationException {
-        if(!jwtUtils.checkIsOwnerOrModerator(ws_id,token)){
-            throw  new NotAllowedException("User can't modify workspace's configuration");
-        }
-        else {
-            return new ResponseEntity<>(configServ.saveThemeData(config_id,themeData), HttpStatus.OK);
-        }
-    }
+
 }

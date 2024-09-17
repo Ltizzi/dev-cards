@@ -47,6 +47,6 @@ public interface CustomConfigurationService {
 
     public TagPool saveTagPool(Long config_id, TagPool pool) throws  NotFoundException, InvalidConfigurationException;
 
-    public ThemeData saveThemeData(Long config_id, ThemeData themeData) throws  NotFoundException, InvalidConfigurationException;
+    //public ThemeData saveThemeData(Long config_id, ThemeData themeData) throws  NotFoundException, InvalidConfigurationException;
 
 }
