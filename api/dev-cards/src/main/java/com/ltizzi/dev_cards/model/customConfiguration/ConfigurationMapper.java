@@ -20,7 +20,7 @@ public class ConfigurationMapper {
         dto.setCustomGlosaries(configuration.getCustomGlosaries());
         dto.setFlagged_tasks(configuration.getFlagged_tasks());
         dto.setTagPool(configuration.getTagPool());
-        dto.setThemeData(configuration.getThemeData());
+        //dto.setThemeData(configuration.getThemeData());
         return dto;
     }
 
@@ -31,7 +31,7 @@ public class ConfigurationMapper {
         configuration.setTagPool(dto.getTagPool());
         configuration.setFlagged_tasks(dto.getFlagged_tasks());
         configuration.setCustomGlosaries(dto.getCustomGlosaries());
-        configuration.setThemeData(dto.getThemeData());
+        //configuration.setThemeData(dto.getThemeData());
         return configuration;
     }
 }

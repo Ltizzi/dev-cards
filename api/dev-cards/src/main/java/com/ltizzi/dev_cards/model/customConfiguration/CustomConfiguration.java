@@ -55,7 +55,7 @@ public class CustomConfiguration {
     private List<MiniTaskDTO> flagged_tasks = new ArrayList<>();
 
 
-    private ThemeData themeData;
+    //private ThemeData themeData;
 
 
     public List<MiniTaskDTO> addFlaggedTask(MiniTaskDTO task){
