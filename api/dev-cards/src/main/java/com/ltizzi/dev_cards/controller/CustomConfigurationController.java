@@ -198,7 +198,7 @@ public class CustomConfigurationController {
     @ResponseBody
     public ResponseEntity<TagPool> removeTag(@RequestParam Long ws_id,
                                                     @RequestParam Long config_id,
-                                                    @RequestParam UITag tag,
+                                                    @RequestBody UITag tag,
                                                     @RequestHeader("Authorization")String token) throws NotAllowedException, NotFoundException, InvalidConfigurationException {
         if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
             throw  new NotAllowedException("User can't modify workspace's configuration");
@@ -212,7 +212,7 @@ public class CustomConfigurationController {
     @ResponseBody
     public ResponseEntity<TagPool> updateTag(@RequestParam Long ws_id,
                                                     @RequestParam Long config_id,
-                                                    @RequestParam Long id,
+//                                                    @RequestParam Long id,
                                                     @RequestBody UITag tag,
                                                     @RequestHeader("Authorization")String token) throws NotAllowedException, NotFoundException, InvalidConfigurationException {
         if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
