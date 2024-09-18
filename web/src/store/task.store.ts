@@ -10,8 +10,10 @@ import {
   Task,
   TaskType,
   TaskUpdate,
+  UITag,
 } from "../utils/types";
 import { taskUtils } from "../utils/task.utils";
+import { useConfigStore } from "./config.store";
 
 const apiCall = useApiCall();
 
@@ -133,7 +135,17 @@ export const useTaskStore = defineStore("tasks", {
         {},
         { params: { task_id: this.currentTask.task_id, tag: tag } }
       )) as Task;
-      taskUtils.addTagToTagsPool(tag, response.workspace.workspace_id);
+      const configStore = useConfigStore();
+      const newTag: UITag = {
+        color: taskUtils.getRandomColor(),
+        name: tag,
+      };
+      await configStore.addTagToPool(
+        response.workspace.workspace_id,
+        configStore.current.config_id,
+        newTag
+      );
+      //taskUtils.addTagToTagsPool(tag, response.workspace.workspace_id);
       return response;
     },
     async removeTag(tag: string) {

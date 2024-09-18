@@ -23,10 +23,13 @@
   import { useRoute, useRouter } from "vue-router";
   import { UITag } from "../../utils/types";
   import { taskUtils } from "../../utils/task.utils";
+  import { useConfigStore } from "../../store/config.store";
 
   const props = defineProps<{ ws_id: number; info?: boolean; show: boolean }>();
 
   const emit = defineEmits(["update"]);
+
+  const configStore = useConfigStore();
 
   const router = useRouter();
 
@@ -68,9 +71,10 @@
     }
   );
 
-  onBeforeMount(() => {
-    tags.value = taskUtils.getTags(props.ws_id);
-    if (!tags.value) taskUtils.createTagPool(props.ws_id);
+  onBeforeMount(async () => {
+    // tags.value = taskUtils.getTags(props.ws_id);
+    // if (!tags.value) taskUtils.createTagPool(props.ws_id);
+    tags.value = await configStore.getTags();
 
     isLoaded.value = tags.value.length > 0;
   });
