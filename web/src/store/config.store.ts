@@ -4,10 +4,12 @@ import {
   Glosary,
   SpecialTag,
   TagPool,
+  TaskSlim,
   UITag,
 } from "../utils/types";
 import { useApiCall } from "../composables/useAPICall";
 import { EndpointType } from "../utils/endpoints";
+import { useProjectStore } from "./project.store";
 
 const apiCall = useApiCall();
 
@@ -19,6 +21,53 @@ export const useConfigStore = defineStore("configs", {
     setCurrent(config: CustomConfiguration) {
       this.current = config;
     },
+    async getCurrent() {
+      if (this.current.config_id != null) return this.current;
+      else {
+        const projectStore = useProjectStore();
+        const ws_id = projectStore.current.workspace_id;
+        const response = await this.fetchByWorkspaceId(ws_id);
+        this.setCurrent(response);
+        return response;
+      }
+    },
+    async getTags(): Promise<UITag[]> {
+      if (this.current.config_id != null) return this.current.tagPool.tags;
+      else {
+        return (await this.getCurrent()).tagPool.tags;
+      }
+    },
+    async getSpecialTags(): Promise<SpecialTag[]> {
+      if (this.current.config_id != null)
+        return this.current.tagPool.specialTags;
+      else {
+        return (await this.getCurrent()).tagPool.specialTags;
+      }
+    },
+    async getFlaggedTags(): Promise<TaskSlim[]> {
+      if (this.current.config_id != null) return this.current.flagged_tasks;
+      else {
+        return (await this.getCurrent()).flagged_tasks;
+      }
+    },
+    async getGLosaries(): Promise<Glosary[]> {
+      if (this.current.config_id != null) return this.current.customGlosaries;
+      else {
+        return (await this.getCurrent()).customGlosaries;
+      }
+    },
+    async getGlosaryByType(type: string): Promise<Glosary | undefined> {
+      if (this.current.config_id != null)
+        return this.current.customGlosaries.find(
+          (g: Glosary) => g.type.toLowerCase() === type.toLowerCase()
+        );
+      else {
+        return (await this.getCurrent()).customGlosaries.find(
+          (g: Glosary) => g.type.toLowerCase() === type.toLowerCase()
+        );
+      }
+    },
+
     async fetchById(id: number, ws_id: number) {
       return await apiCall.get(EndpointType.CONFIG_GET_BY_ID, {
         params: {
@@ -28,11 +77,13 @@ export const useConfigStore = defineStore("configs", {
       });
     },
     async fetchByWorkspaceId(id: number) {
-      return await apiCall.get(EndpointType.CONFIG_GET_BY_WS_ID, {
+      const response = (await apiCall.get(EndpointType.CONFIG_GET_BY_WS_ID, {
         params: {
           ws_id: id,
         },
-      });
+      })) as CustomConfiguration;
+      this.setCurrent(response);
+      return response;
     },
     async saveConfig(id: number, config: CustomConfiguration) {
       return await apiCall.post(EndpointType.CONFIG_SAVE, config, {
@@ -106,13 +157,20 @@ export const useConfigStore = defineStore("configs", {
         },
       });
     },
+    async checkTagInPool(tag: UITag) {
+      if (this.current) return this.current.tagPool.tags.includes(tag);
+      else {
+        return (await this.getCurrent()).tagPool.tags.includes(tag);
+      }
+    },
     async addTagToPool(ws_id: number, config_id: number, tag: UITag) {
-      return await apiCall.post(EndpointType.CONFIG_ADD_TAG, tag, {
-        params: {
-          ws_id: ws_id,
-          config_id: config_id,
-        },
-      });
+      if (!this.checkTagInPool(tag))
+        return await apiCall.post(EndpointType.CONFIG_ADD_TAG, tag, {
+          params: {
+            ws_id: ws_id,
+            config_id: config_id,
+          },
+        });
     },
     async deleteTagFromPool(ws_id: number, config_id: number, tag: UITag) {
       return await apiCall.del(EndpointType.CONFIG_REMOVE_TAG, {

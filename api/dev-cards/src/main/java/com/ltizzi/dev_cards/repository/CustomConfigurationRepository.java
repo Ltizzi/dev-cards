@@ -15,6 +15,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CustomConfigurationRepository  extends JpaRepository<CustomConfiguration, Long> {
 
-    @Query("SELECT t FROM CustomConfiguration t WHERE t.workspace = :workspace_id")
+    @Query("SELECT t FROM CustomConfiguration t WHERE t.workspace.workspace_id = :workspace_id")
     CustomConfiguration findConfigurationByWorkspaceId(@Param("workspace_id") Long workspace_id);
 }
