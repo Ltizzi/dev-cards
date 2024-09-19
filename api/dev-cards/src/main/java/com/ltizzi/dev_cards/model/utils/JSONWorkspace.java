@@ -1,6 +1,7 @@
 package com.ltizzi.dev_cards.model.utils;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ltizzi.dev_cards.model.customConfiguration.CustomConfiguration;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.user.UserLiteDTO;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
@@ -28,6 +29,7 @@ public class JSONWorkspace {
     private UserLiteDTO user;
     private WorkspaceDTO workspace;
     private List<TaskDTO> tasks;
+    private CustomConfiguration customConfiguration;
 
     @Builder.Default
     //@JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy'T'HH:mm:ss'Z'", timezone = "UTC")

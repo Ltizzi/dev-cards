@@ -20,6 +20,7 @@ import com.ltizzi.dev_cards.model.utils.WorkspaceDtoWithJwtResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceMapper;
+import com.ltizzi.dev_cards.repository.CustomConfigurationRepository;
 import com.ltizzi.dev_cards.repository.UserRepository;
 import com.ltizzi.dev_cards.repository.WorkspaceRepository;
 import com.ltizzi.dev_cards.security.filter.JwtUtils;
@@ -49,6 +50,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Autowired
     private WorkspaceRepository wsRepo;
+
+    @Autowired
+    private CustomConfigurationRepository configRepo;
 
     @Autowired
     private UserRepository userRepo;
@@ -238,6 +242,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         WorkspaceEntity ws = getWorkspaceById(ws_id);//wsRepo.findById(ws_id).orElseThrow(()-> new NotFoundException("Workspace not found"));
         UserEntity user = getUserById(user_id);//userRepo.findById(user_id).orElseThrow(()-> new NotFoundException("User not found!"));
         Optional<UserEntity> filtrado= ws.getUsers().stream().filter(u-> u.getUser_id().equals(user_id)).findFirst();
+        CustomConfiguration config = configRepo.findConfigurationByWorkspaceId(ws_id);
         if(!filtrado.isPresent()){
             throw  new NotAllowedException("Usuario no permitido");
         }
@@ -248,6 +253,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 .workspace(wsDTO)
                 .tasks(tasks)
                 .user(userLite)
+                .customConfiguration(config)
                 .build();
 
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);

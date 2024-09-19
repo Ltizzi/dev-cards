@@ -323,3 +323,18 @@ export interface TaskSlim {
   color: Color;
   workspace_id: number;
 }
+
+export interface UserLocal {
+  nickname: string;
+  avatar: string;
+}
+
+export interface JSONWorkspace {
+  user: UserLite | UserLocal;
+  workspace: Workspace;
+  tasks: Task[];
+  customConfiguration: CustomConfiguration;
+  created_at: Date;
+  download_at?: Date;
+  update_at: Date;
+}

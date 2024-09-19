@@ -10,7 +10,7 @@ export const useUIStore = defineStore("uiStore", {
     darkerMiniCard: false,
     justUpdated: false,
     isMobile: false,
-    currentConfig: {} as CustomConfiguration,
+    offlineMode: false,
   }),
   actions: {
     setTheme(theme: string) {
@@ -57,6 +57,12 @@ export const useUIStore = defineStore("uiStore", {
     },
     setIsMobile(value: boolean) {
       this.isMobile = window.innerWidth < 1024;
+    },
+    getOfflineMode() {
+      return this.offlineMode;
+    },
+    setOfflineMode(condition: boolean) {
+      this.offlineMode = condition;
     },
   },
 });
