@@ -25,6 +25,12 @@
           >Just make one</router-link
         >
       </div>
+      <div class="text-center">
+        <p>Don't want to/can't be online?</p>
+        <p class="link link-info" @click="activeOfflineMode">
+          Turn on offline mode
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -36,9 +42,11 @@
   import { AuthRequest, AuthResponse } from "../../utils/types";
   import { useRouter } from "vue-router";
   import { saveToken } from "../../utils/auth.utils";
+  import { useUIStore } from "../../store/ui.store";
 
   const username = ref<String>();
   const password = ref<String>();
+  const UIStore = useUIStore();
 
   const isWaiting = ref(false);
 
@@ -48,21 +56,20 @@
 
   const router = useRouter();
 
+  function activeOfflineMode() {
+    UIStore.setOfflineMode(true);
+    router.push({ path: "/offline" });
+  }
+
   async function logIn() {
     isWaiting.value = true;
     const user: AuthRequest = {
       username: username.value as string,
       password: password.value as string,
     };
-    // const response = (await apiCall.post(
-    //   EndpointType.USER_LOGIN,
-    //   user
-    // )) as AuthResponse;
     const response = (await store.login(user)) as AuthResponse;
     if (response && response.token) {
-      // store.setSelf(response.user);
-      // localStorage.setItem("token", response.token);
-      // saveToken(response.token);
+      UIStore.setOfflineMode(false);
       isWaiting.value = false;
       router.push({ path: "/" });
     } else console.error(response);

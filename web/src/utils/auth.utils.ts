@@ -7,7 +7,7 @@ import {
   UserLocal,
   UserWorkspaceRoles,
 } from "./types";
-import { utils } from "./utis";
+import { utils } from "./utils";
 
 interface CustomJwtPayload extends JwtPayload {
   scope: Array<string> | string;
@@ -41,6 +41,7 @@ function removeToken(): void {
 
 function logout() {
   localStorage.removeItem("user");
+  localStorage.removeItem("localUser");
   removeToken();
 }
 

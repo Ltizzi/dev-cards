@@ -57,7 +57,8 @@
   }
   onBeforeUnmount(() => {
     console.log(props.ws);
-    if (props.ws) isLoaded.value = true;
-    avatarURL.value = props.ws.avatar;
+    //if (props.ws) isLoaded.value = true;
+    isLoaded.value = props.ws ? true : false;
+    avatarURL.value = props.ws.avatar ? props.ws.avatar : "";
   });
 </script>

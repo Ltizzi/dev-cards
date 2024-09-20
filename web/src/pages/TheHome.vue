@@ -58,16 +58,14 @@
 
   onMounted(() => {
     window.addEventListener("resize", handleResize);
-    const theme = UIStore.getTHeme(); //localStorage.getItem("theme") as string;
+    const theme = UIStore.getTHeme();
     if (theme) {
-      //changeTheme(theme);
-      // UIStore.setTheme(theme);
       isDark.value = UIStore.checkIsDarkTheme();
     }
     setTimeout(() => {
       firstLoaded.value = false;
     }, 1500);
-    const user = userStore.getSelf(); //JSON.parse(localStorage.getItem("user") as string);
+    const user = userStore.getSelf();
     if (!user) {
       router.push("/login");
     }

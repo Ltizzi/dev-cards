@@ -30,10 +30,10 @@
 
         <ul
           class="flex flex-col justify-center w-11/12 gap-4 my-2 mx-auto bg-base-100 bg-opacity-40 rounded-md px-4 py-1.5"
+          v-if="isLoaded && projects.length > 0"
         >
           <li
             v-for="project in projects"
-            v-if="isLoaded"
             @click="goTo(project)"
             :class="['-ml-3  px-1']"
           >
@@ -214,7 +214,7 @@
   }
 
   onBeforeMount(async () => {
-    if (isTokenExpired()) {
+    if (!userStore.offlineMode && isTokenExpired()) {
       router.push("/login");
     } else {
       if (!userStore.logged) {
@@ -232,7 +232,8 @@
         const projs = (await projectStore.fetchProjectsByUser(
           user.value?.user_id as number
         )) as Workspace[];
-        projects.value = sortProjects(projs);
+        if (projs && projs.length > 0) projects.value = sortProjects(projs);
+        else projects.value = [];
         // projectStore.setMemberOf(projs);
       } else router.push("/login");
 

@@ -19,7 +19,7 @@ import { taskUtils } from "../utils/task.utils";
 import { useConfigStore } from "./config.store";
 import { useUIStore } from "./ui.store";
 import { useProjectStore } from "./project.store";
-import { utils } from "../utils/utis";
+import { utils } from "../utils/utils";
 import { useUserStore } from "./user.store";
 import { mapLocalUserToUserLite, mapUserToUserLite } from "../utils/auth.utils";
 
@@ -350,7 +350,7 @@ export const useTaskStore = defineStore("tasks", {
         const userStore = useUserStore();
         const user = mapLocalUserToUserLite(userStore.local);
         const task = taskUtils.mapTaskToTaskLite(this.currentTask);
-        userStore.local.designated_tasks.push(task);
+        userStore.local.designated_tasks?.push(task);
         userStore.saveLocal();
         this.currentTask.designated_to?.push(user);
         this.saveLocalTask(this.currentTask);
@@ -372,7 +372,7 @@ export const useTaskStore = defineStore("tasks", {
         current?.tasks.push(taskLite);
         projectStore.saveWorkspaceToLocalStorage(current as Workspace);
         const userStore = useUserStore();
-        userStore.local.created_tasks.push(taskLite);
+        userStore.local.created_tasks?.push(taskLite);
         userStore.saveLocal();
         return task;
       } else return await apiCall.post(EndpointType.TASK_NEW, task);
@@ -388,11 +388,11 @@ export const useTaskStore = defineStore("tasks", {
         project.tasks = tasks;
         projectStore.saveJSONWStoLocalStorage(project);
         const userStore = useUserStore();
-        userStore.local.created_tasks = userStore.local.created_tasks.filter(
+        userStore.local.created_tasks = userStore.local.created_tasks?.filter(
           (t: TaskLite) => t.task_id !== id
         );
         userStore.local.designated_tasks =
-          userStore.local.designated_tasks.filter(
+          userStore.local.designated_tasks?.filter(
             (t: TaskLite) => t.task_id !== id
           );
         userStore.saveLocal();

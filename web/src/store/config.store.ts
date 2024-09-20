@@ -12,7 +12,7 @@ import { EndpointType } from "../utils/endpoints";
 import { useProjectStore } from "./project.store";
 import { useUIStore } from "./ui.store";
 import { JSONWorkspace } from "../utils/types";
-import { utils } from "../utils/utis";
+import { utils } from "../utils/utils";
 
 const apiCall = useApiCall();
 
