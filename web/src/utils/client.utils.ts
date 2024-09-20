@@ -1,3 +1,14 @@
+import {
+  CustomConfiguration,
+  SpecialTag,
+  TagPool,
+  TaskLite,
+  TaskSlim,
+  UITag,
+  Workspace,
+} from "./types";
+import { utils } from "./utils";
+
 const darkThemes = [
   "dracula",
   "dark",
@@ -38,4 +49,19 @@ export function checkIsDark(): boolean {
 
 export function isDarkerCardsActive(): boolean {
   return JSON.parse(localStorage.getItem("darkerCards") as string);
+}
+
+export function createCustomConfiguration(ws: Workspace) {
+  const newConfig: CustomConfiguration = {
+    config_id: utils.generateRandomId(),
+    customGlosaries: [],
+    tagPool: {
+      tag_pool_id: utils.generateRandomId(),
+      tags: [] as UITag[],
+      specialTags: [] as SpecialTag[],
+    } as TagPool,
+    workspace: ws,
+    flagged_tasks: [] as TaskSlim[],
+  };
+  return newConfig;
 }

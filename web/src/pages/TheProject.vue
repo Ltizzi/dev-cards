@@ -97,18 +97,15 @@
     showMenu.value = !isMobile.value;
     UIStore.getTHeme();
     if (projectStore.current.workspace_id) {
-      project.value = projectStore.current;
-      moderators.value = project.value.moderators;
+      project.value = projectStore.getCurrent();
+      moderators.value = project.value?.moderators;
       isLoaded.value = true;
     } else {
       const id =
         route.query.id && route.path != "/project/task"
           ? (route.query.id as unknown as number)
           : JSON.parse(localStorage.getItem("current_workspace_id") as string);
-      const response = (await projectStore.updateCurrentById(id)) as Workspace;
-      // const response = (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {
-      //   params: { id: id },
-      // })) as Workspace;
+      const response = (await projectStore.fetchProjectById(id)) as Workspace;
       if (response.workspace_id) {
         project.value = response;
         projectStore.setCurrent(response);

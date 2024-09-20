@@ -13,6 +13,7 @@ import { useUIStore } from "./ui.store";
 import { useConfigStore } from "./config.store";
 import { useUserStore } from "./user.store";
 import { workspaceUtils } from "../utils/workspace.utils";
+import { utils } from "../utils/utils";
 
 const apiCall = useApiCall();
 
@@ -75,11 +76,11 @@ export const useProjectStore = defineStore("projects", {
       this.local = ws;
     },
     saveWorkspacesToLocalStorage(arr: JSONWorkspace[]) {
-      localStorage.save("localWorkspaces", JSON.stringify(arr));
+      localStorage.setItem("localWorkspaces", JSON.stringify(arr));
     },
-    saveWorkspaceToLocalStorage(ws: Workspace) {
+    async saveWorkspaceToLocalStorage(ws: Workspace) {
       let workspaces = this.getLocalStorageWorkspaces();
-      if (this.getLocalStorageWorkspaceById(ws.workspace_id)) {
+      if (workspaces && this.getLocalStorageWorkspaceById(ws.workspace_id)) {
         workspaces = workspaces.map((jws: JSONWorkspace) => {
           if (jws.workspace.workspace_id === ws.workspace_id) {
             jws.workspace = ws;
@@ -89,7 +90,7 @@ export const useProjectStore = defineStore("projects", {
         });
         this.saveWorkspacesToLocalStorage(workspaces);
       } else {
-        this.saveJSONWStoLocalStorage(this.createJSONWorkspace(ws));
+        this.saveJSONWStoLocalStorage(await this.createJSONWorkspace(ws));
       }
     },
     checkJWSSavedInLocalStorage(jws: JSONWorkspace) {
@@ -109,10 +110,16 @@ export const useProjectStore = defineStore("projects", {
           }
           return ljws;
         });
-      } else workspaces.push(jws);
+      } else {
+        if (workspaces != null && workspaces.length > 0) workspaces.push(jws);
+        else {
+          workspaces = [] as JSONWorkspace[];
+          workspaces.push(jws);
+        }
+      }
       this.saveWorkspacesToLocalStorage(workspaces);
     },
-    createJSONWorkspace(ws: Workspace) {
+    async createJSONWorkspace(ws: Workspace) {
       const newJSON: JSONWorkspace = {
         user: {
           nickname: ws.owner.username,
@@ -120,16 +127,16 @@ export const useProjectStore = defineStore("projects", {
         } as UserLocal,
         workspace: ws,
         tasks: this.getWorkspaceTasks(ws.workspace_id),
-        customConfiguration: this.getCustomConfiguration(ws.workspace_id),
+        customConfiguration: await this.getCustomConfiguration(ws.workspace_id),
         created_at: new Date(Date.now()),
         update_at: new Date(Date.now()),
       };
       return newJSON;
     },
-    getCustomConfiguration(ws_id: number) {
+    async getCustomConfiguration(ws_id: number) {
       const configStore = useConfigStore();
-      const config = configStore.getCurrent() as unknown as CustomConfiguration;
-      return config.workspace.workspace_id === ws_id
+      const config = (await configStore.getCurrent()) as CustomConfiguration;
+      return config && config.workspace.workspace_id === ws_id
         ? config
         : ({} as CustomConfiguration);
     },
@@ -139,23 +146,29 @@ export const useProjectStore = defineStore("projects", {
       return arr;
     },
     getLocalStorageWorkspaces() {
-      return JSON.parse(
+      const ljws = JSON.parse(
         localStorage.getItem("localWorkspaces") as string
       ) as JSONWorkspace[];
+      return ljws != null ? ljws : ([] as JSONWorkspace[]);
     },
     getLocalStorageWorkspaceById(id: number) {
       const localProjects = this.getLocalStorageWorkspaces();
-      return localProjects.find(
-        (ws: JSONWorkspace) => ws.workspace.workspace_id === id
-      );
+      return localProjects != null
+        ? localProjects.find(
+            (ws: JSONWorkspace) => ws.workspace.workspace_id == id
+          )
+        : ({} as JSONWorkspace);
     },
     getUserLocalStorageWorkspaces(): Workspace[] {
       const localProjects = this.getLocalStorageWorkspaces();
-      return localProjects.map((ws: JSONWorkspace) => ws.workspace);
+      return localProjects
+        ? localProjects.map((ws: JSONWorkspace) => ws.workspace)
+        : [];
     },
     async fetchProjectById(id: number) {
       if (this.offlineMode) {
         const ws = this.getLocalStorageWorkspaceById(id)?.workspace;
+        console.log(ws);
         if (ws?.workspace_id) {
           this.setCurrent(ws);
           return ws;
@@ -178,6 +191,7 @@ export const useProjectStore = defineStore("projects", {
       }
     },
     async fetchProjectsByUser(userId: number) {
+      this.offlineMode = this.checkOfflineMode();
       if (this.offlineMode) {
         const workspaces = this.getUserLocalStorageWorkspaces();
         this.setMemberOf(workspaces);
@@ -195,8 +209,14 @@ export const useProjectStore = defineStore("projects", {
     async createWorkspace(ws: Workspace) {
       this.offlineMode = this.checkOfflineMode();
       if (this.offlineMode) {
+        ws.workspace_id = utils.generateRandomId();
+        //console.log("WS_ID: ", ws.workspace_id);
         this.setCurrent(ws);
-        this.createJSONWorkspace(ws);
+
+        const configStore = useConfigStore();
+        configStore.createConfig(ws);
+        //const jws = this.createJSONWorkspace(ws);
+        this.saveWorkspaceToLocalStorage(ws);
         const userStore = useUserStore();
         userStore.local.workspaces?.push(workspaceUtils.mapWsToWsLite(ws));
         userStore.saveLocal();
@@ -320,6 +340,8 @@ export const useProjectStore = defineStore("projects", {
       this.current = {} as Workspace;
       this.currentName = "";
       this.currentAvatar = "";
+      this.owned = [] as Workspace[];
+      this.memberOf = [] as Workspace[];
     },
   },
 });

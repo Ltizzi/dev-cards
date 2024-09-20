@@ -5,6 +5,7 @@ import {
   JSONWorkspace,
   User,
   UserLocal,
+  UserWorkspaceRoles,
 } from "../utils/types";
 import { logout, saveToken } from "../utils/auth.utils";
 import { useApiCall } from "../composables/useAPICall";
@@ -28,6 +29,8 @@ export const useUserStore = defineStore("auth", {
     user: {} as User,
     users: [] as Array<User>,
     newUser: false,
+    localRoles: [] as UserWorkspaceRoles[],
+    savedRoles: false,
   }),
   actions: {
     setOfflineMode(onoff: boolean) {
@@ -98,6 +101,23 @@ export const useUserStore = defineStore("auth", {
         return this.self;
       }
     },
+    setRoles(uwrs: UserWorkspaceRoles[]) {
+      this.localRoles = uwrs;
+      this.savedRoles = true;
+      this.saveLocalRoles();
+    },
+    getLocalRoles() {
+      if (localStorage.getItem("localRoles")) {
+        this.localRoles = JSON.parse(
+          localStorage.getItem("localRoles") as string
+        );
+      }
+      return this.localRoles;
+    },
+    saveLocalRoles() {
+      localStorage.setItem("localRoles", JSON.stringify(this.saveLocalRoles));
+    },
+
     async registerUser(user: any) {
       return await apiCall.post(EndpointType.USER_REGISTER, user);
     },
@@ -125,9 +145,9 @@ export const useUserStore = defineStore("auth", {
       this.offlineMode = this.checkOfflineMode();
       if (this.offlineMode) {
         const projectStore = useProjectStore();
-        const saved_jws = projectStore.getLocalStorageWorkspaces();
+        const saved_jws = projectStore.getLocalStorageWorkspaces() || [];
 
-        return saved_jws
+        return saved_jws.length > 0
           ? saved_jws.map((jws: JSONWorkspace) => jws.workspace)
           : [];
       } else
@@ -162,6 +182,8 @@ export const useUserStore = defineStore("auth", {
         this.local = {} as UserLocal;
         this.offlineMode = false;
       } else this.self = {} as User;
+      const projectStore = useProjectStore();
+      projectStore.clean();
       this.logged = false;
       logout();
     },
