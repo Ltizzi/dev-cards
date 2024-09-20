@@ -375,7 +375,6 @@
   // #MARK:asdas
 
   async function fetchTask(task_id: number) {
-    console.log("soy yo");
     const data = await taskStore.fetchTaskById(task_id); //(await apiCall.get(EndpointType.TASK_GET_BY_ID, { params: { id: task_id },  })) as Task;
     return data;
   }
@@ -609,7 +608,7 @@
   onMounted(async () => {
     const task_id = route.query.id;
     if (taskStore.currentTask.task_id == +taskId) {
-      card.value = taskStore.currentTask;
+      card.value = taskStore.getCurrent();
     }
     // else if (localStorage.getItem("currentTask")) {
     //   const task = JSON.parse(

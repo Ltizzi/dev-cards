@@ -1,5 +1,13 @@
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { Role, TaskLite, User, UserWorkspaceRoles } from "./types";
+import {
+  Role,
+  TaskLite,
+  User,
+  UserLite,
+  UserLocal,
+  UserWorkspaceRoles,
+} from "./types";
+import { utils } from "./utis";
 
 interface CustomJwtPayload extends JwtPayload {
   scope: Array<string> | string;
@@ -100,6 +108,26 @@ function checkIfUserisTaskOwner(task_id: number, user: User) {
   );
 }
 
+function mapLocalUserToUserLite(user: UserLocal) {
+  return {
+    user_id: utils.generateRandomId(),
+    username: user.nickname,
+    email: "",
+    avatar: user.avatar,
+    roles: "",
+  } as UserLite;
+}
+
+function mapUserToUserLite(user: User) {
+  return {
+    user_id: user.user_id,
+    username: user.username,
+    email: user.email,
+    avatar: user.avatar,
+    roles: user.roles,
+  } as UserLite;
+}
+
 export {
   saveToken,
   isTokenExpired,
@@ -112,4 +140,6 @@ export {
   checkIsModerator,
   checkIfUserisTaskOwner,
   checkIsCollaborator,
+  mapUserToUserLite,
+  mapLocalUserToUserLite,
 };

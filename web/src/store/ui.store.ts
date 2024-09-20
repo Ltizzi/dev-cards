@@ -48,7 +48,6 @@ export const useUIStore = defineStore("uiStore", {
       this.setJustUpdate();
       return this.darkerMiniCard;
     },
-
     setJustUpdate() {
       this.justUpdated = true;
       setTimeout(() => {

@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
-import { AuthRequest, AuthResponse, User } from "../utils/types";
+import { AuthRequest, AuthResponse, User, UserLocal } from "../utils/types";
 import { logout, saveToken } from "../utils/auth.utils";
 import { useApiCall } from "../composables/useAPICall";
 import { EndpointType } from "../utils/endpoints";
 import { AxiosRequestConfig } from "axios";
+import { useUIStore } from "./ui.store";
 
 const NEW_uSER_TIME = 1000 * 60 * 1;
 
@@ -15,6 +16,7 @@ export const useUserStore = defineStore("auth", {
     offlineMode: false,
     offlineSelf: {},
     self: {} as User,
+    local: {} as UserLocal,
     user: {} as User,
     users: [] as Array<User>,
     newUser: false,
@@ -22,6 +24,11 @@ export const useUserStore = defineStore("auth", {
   actions: {
     setOfflineMode(onoff: boolean) {
       this.offlineMode = onoff;
+    },
+    checkOfflineMode() {
+      const UIStore = useUIStore();
+      this.offlineMode = UIStore.getOfflineMode();
+      return this.offlineMode;
     },
     async login(loginReq: AuthRequest) {
       const response = (await apiCall.post(
@@ -34,10 +41,10 @@ export const useUserStore = defineStore("auth", {
       return response;
     },
     async refreshSelf() {
-      const apiCall = useApiCall();
       // const response = (await apiCall.get(EndpointType.USER_GET_BY_ID, {
       //   params: { user_id: this.self.user_id },
       // })) as User;
+      if (this.offlineMode) return this.getSelf();
       const response = (await apiCall.get(
         EndpointType.USER_REFRESH
       )) as AuthResponse;
@@ -54,13 +61,21 @@ export const useUserStore = defineStore("auth", {
       this.logged = true;
       this.self = user;
     },
+    saveLocal() {
+      localStorage.setItem("localUser", JSON.stringify(this.local));
+    },
     updatedToken(user: User) {
       this.setSelf(user);
       localStorage.setItem("user", JSON.stringify(user));
     },
     getSelf() {
-      if (this.offlineMode) return this.offlineSelf;
-      else {
+      this.offlineMode = this.checkOfflineMode();
+      if (this.offlineMode) {
+        this.offlineSelf = JSON.parse(
+          localStorage.getItem("localUser") as string
+        ) as UserLocal;
+        return this.offlineSelf;
+      } else {
         if (!this.self.user_id && localStorage.getItem("user")) {
           return JSON.parse(localStorage.getItem("user") as string);
         }
