@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { checkThemeIsDark, isDarkerCardsActive } from "../utils/client.utils";
-import { CustomConfiguration } from "../utils/types";
+import { CustomConfiguration, UserLocal } from "../utils/types";
+import { useUserStore } from "./user.store";
 
 export const useUIStore = defineStore("uiStore", {
   state: () => ({
@@ -58,10 +59,23 @@ export const useUIStore = defineStore("uiStore", {
       this.isMobile = window.innerWidth < 1024;
     },
     getOfflineMode() {
+      const userStore = useUserStore();
+      const user = userStore.getLocalUser() as UserLocal;
+      if (!this.offlineMode && user && this.checkOfflineMode()) {
+        this.offlineMode = this.checkOfflineMode();
+        userStore.setLocalUser(user);
+      }
       return this.offlineMode;
     },
     setOfflineMode(condition: boolean) {
       this.offlineMode = condition;
+      localStorage.setItem(
+        "offlineMode",
+        JSON.stringify({ active: condition })
+      );
+    },
+    checkOfflineMode() {
+      return JSON.parse(localStorage.getItem("offlineMode") as string).active;
     },
   },
 });

@@ -1,10 +1,17 @@
 import { defineStore } from "pinia";
-import { AuthRequest, AuthResponse, User, UserLocal } from "../utils/types";
+import {
+  AuthRequest,
+  AuthResponse,
+  JSONWorkspace,
+  User,
+  UserLocal,
+} from "../utils/types";
 import { logout, saveToken } from "../utils/auth.utils";
 import { useApiCall } from "../composables/useAPICall";
 import { EndpointType } from "../utils/endpoints";
 import { AxiosRequestConfig } from "axios";
 import { useUIStore } from "./ui.store";
+import { useProjectStore } from "./project.store";
 
 const NEW_uSER_TIME = 1000 * 60 * 1;
 
@@ -17,6 +24,7 @@ export const useUserStore = defineStore("auth", {
     offlineSelf: {},
     self: {} as User,
     local: {} as UserLocal,
+    localUsers: [] as UserLocal[],
     user: {} as User,
     users: [] as Array<User>,
     newUser: false,
@@ -41,16 +49,11 @@ export const useUserStore = defineStore("auth", {
       return response;
     },
     async refreshSelf() {
-      // const response = (await apiCall.get(EndpointType.USER_GET_BY_ID, {
-      //   params: { user_id: this.self.user_id },
-      // })) as User;
       if (this.offlineMode) return this.getSelf();
       const response = (await apiCall.get(
         EndpointType.USER_REFRESH
       )) as AuthResponse;
       if (response.user.user_id == this.self.user_id) {
-        // this.self = response.user;
-        // localStorage.setItem("user", JSON.stringify(response));
         this.setSelf(response.user);
         saveToken(response.token);
         return this.self;
@@ -61,8 +64,21 @@ export const useUserStore = defineStore("auth", {
       this.logged = true;
       this.self = user;
     },
+    setLocalUser(user: UserLocal) {
+      this.local = user;
+      this.logged = true;
+      this.offlineMode = true;
+    },
     saveLocal() {
       localStorage.setItem("localUser", JSON.stringify(this.local));
+      let localUsers = this.getLocalUsers() || [];
+      if (
+        localUsers &&
+        !localUsers.find((u: UserLocal) => u.nickname == this.local.nickname)
+      ) {
+        localUsers.push(this.local);
+        localStorage.setItem("localUsers", JSON.stringify(localUsers));
+      }
     },
     updatedToken(user: User) {
       this.setSelf(user);
@@ -106,9 +122,18 @@ export const useUserStore = defineStore("auth", {
       }
     },
     async fetchAllWorkspacesMember(id: number) {
-      return await apiCall.get(EndpointType.USER_MEMBER, {
-        params: { user_id: id },
-      });
+      this.offlineMode = this.checkOfflineMode();
+      if (this.offlineMode) {
+        const projectStore = useProjectStore();
+        const saved_jws = projectStore.getLocalStorageWorkspaces();
+
+        return saved_jws
+          ? saved_jws.map((jws: JSONWorkspace) => jws.workspace)
+          : [];
+      } else
+        return await apiCall.get(EndpointType.USER_MEMBER, {
+          params: { user_id: id },
+        });
     },
     async checkUserExists(email: string) {
       return await apiCall.get(EndpointType.USER_CHECK, {
@@ -133,7 +158,10 @@ export const useUserStore = defineStore("auth", {
       }
     },
     logoutUser() {
-      this.self = {} as User;
+      if (this.offlineMode) {
+        this.local = {} as UserLocal;
+        this.offlineMode = false;
+      } else this.self = {} as User;
       this.logged = false;
       logout();
     },
@@ -155,6 +183,15 @@ export const useUserStore = defineStore("auth", {
         const created_at = new Date(this.self.created_at).getTime();
         return Date.now() - created_at < NEW_uSER_TIME;
       }
+    },
+    getLocalUsers() {
+      this.localUsers = JSON.parse(
+        localStorage.getItem("localUsers") as string
+      );
+      return this.localUsers;
+    },
+    getLocalUser() {
+      return JSON.parse(localStorage.getItem("localUser") as string);
     },
   },
 });

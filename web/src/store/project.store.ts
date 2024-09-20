@@ -193,12 +193,14 @@ export const useProjectStore = defineStore("projects", {
       }
     },
     async createWorkspace(ws: Workspace) {
+      this.offlineMode = this.checkOfflineMode();
       if (this.offlineMode) {
         this.setCurrent(ws);
         this.createJSONWorkspace(ws);
         const userStore = useUserStore();
-        userStore.local.workspaces.push(workspaceUtils.mapWsToWsLite(ws));
+        userStore.local.workspaces?.push(workspaceUtils.mapWsToWsLite(ws));
         userStore.saveLocal();
+        return { workspace: this.current, token: "" };
       } else return await apiCall.post(EndpointType.WORKSPACE_NEW, ws);
     },
     async updateCurrent() {
@@ -223,7 +225,7 @@ export const useProjectStore = defineStore("projects", {
         );
         this.saveWorkspacesToLocalStorage(workspaces);
         const userStore = useUserStore();
-        userStore.local.workspaces = userStore.local.workspaces.filter(
+        userStore.local.workspaces = userStore.local.workspaces?.filter(
           (wsl: WorkspaceLite) => wsl.workspace_id != id
         );
         userStore.saveLocal();

@@ -3,7 +3,7 @@
     <h1 class="text-2xl font-semibold">Projects:</h1>
     <div
       class="flex flex-row lg:justify-start justify-center flex-wrap gap-2.5 pt-10 pb-5 mx-5"
-      v-if="workspaces && workspaces.length > 0"
+      v-if="isLoaded"
     >
       <ProjectCard v-for="ws in workspaces" :ws="ws" />
     </div>
@@ -24,28 +24,22 @@
   const projectStore = useProjectStore();
   const userStore = useUserStore();
 
-  //  const apiCall = useApiCall();
-
   const workspaces = ref<Workspace[]>();
   const isLoaded = ref<boolean>(false);
 
   async function fetchProjects(userId: number) {
     return (await userStore.fetchAllWorkspacesMember(userId)) as Workspace[];
-    // return (await apiCall.get(EndpointType.USER_MEMBER, {
-    //   params: { user_id: userId },
-    // })) as Array<Workspace>;
   }
 
   onMounted(async () => {
     if (projectStore.memberOf.length > 0) {
       workspaces.value = projectStore.memberOf;
-      isLoaded.value = true;
     } else {
       const id = userStore.getSelf().user_id; //JSON.parse(localStorage.getItem("user") as string).user_id;
       const wss = await fetchProjects(id);
       projectStore.setMemberOf(wss);
       workspaces.value = projectStore.memberOf;
-      isLoaded.value = true;
     }
+    if (workspaces.value.length > 0) isLoaded.value = true;
   });
 </script>
