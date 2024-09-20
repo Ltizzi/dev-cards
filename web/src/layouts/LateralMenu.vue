@@ -229,6 +229,7 @@
         user.value = userStore.getSelf();
       }
       if (user.value) {
+        console.log("lateral");
         const projs = (await projectStore.fetchProjectsByUser(
           user.value?.user_id as number
         )) as Workspace[];

@@ -1,13 +1,18 @@
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import {
+  JSONWorkspace,
   Role,
   TaskLite,
   User,
   UserLite,
   UserLocal,
   UserWorkspaceRoles,
+  Workspace,
 } from "./types";
 import { utils } from "./utils";
+import { useUIStore } from "../store/ui.store";
+import { useProjectStore } from "../store/project.store";
+import { useUserStore } from "../store/user.store";
 
 interface CustomJwtPayload extends JwtPayload {
   scope: Array<string> | string;
@@ -46,13 +51,35 @@ function logout() {
 }
 
 function getRoles(): UserWorkspaceRoles[] {
-  const token = localStorage.getItem("token");
-  //console.log(token);
-  if (token) {
-    const decoded = jwtDecode(token) as CustomJwtPayload;
-    return decoded.roles;
+  const UIStore = useUIStore();
+  if (UIStore.getOfflineMode()) {
+    const userStore = useUserStore();
+    if (userStore.savedRoles) {
+      return userStore.getLocalRoles();
+    } else {
+      const wsStore = useProjectStore();
+      const user_workspaces = wsStore.getUserLocalStorageWorkspaces();
+      const ids = user_workspaces.map((ws: Workspace) => ws.workspace_id);
+      const roles = ids.map((id: number) => {
+        const localUWR: UserWorkspaceRoles = {
+          workspace_id: id,
+          role: Role.ROLE_OWNER,
+          assigned_tasks_ids: [] as number[],
+        };
+        return localUWR;
+      });
+      userStore.setRoles(roles);
+      return roles;
+    }
   } else {
-    throw new Error("Something went wrong, couldn't get roles");
+    const token = localStorage.getItem("token");
+    //console.log(token);
+    if (token) {
+      const decoded = jwtDecode(token) as CustomJwtPayload;
+      return decoded.roles;
+    } else {
+      throw new Error("Something went wrong, couldn't get roles");
+    }
   }
 }
 

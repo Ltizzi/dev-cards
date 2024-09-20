@@ -6,6 +6,7 @@ import {
   TagPool,
   TaskSlim,
   UITag,
+  Workspace,
 } from "../utils/types";
 import { useApiCall } from "../composables/useAPICall";
 import { EndpointType } from "../utils/endpoints";
@@ -13,6 +14,7 @@ import { useProjectStore } from "./project.store";
 import { useUIStore } from "./ui.store";
 import { JSONWorkspace } from "../utils/types";
 import { utils } from "../utils/utils";
+import { createCustomConfiguration } from "../utils/client.utils";
 
 const apiCall = useApiCall();
 
@@ -41,7 +43,7 @@ export const useConfigStore = defineStore("configs", {
             ?.customConfiguration as unknown as CustomConfiguration;
 
           return this.current;
-        }
+        } else return this.current;
       }
       if (this.current.config_id != null) return this.current;
       else {
@@ -105,6 +107,10 @@ export const useConfigStore = defineStore("configs", {
       })) as CustomConfiguration;
       this.setCurrent(response);
       return response;
+    },
+    createConfig(ws: Workspace) {
+      const config = createCustomConfiguration(ws);
+      this.current = config;
     },
     async saveConfig(id: number, config: CustomConfiguration) {
       if (this.offlineMode) {

@@ -74,7 +74,7 @@
       >
         <div
           :class="[
-            '2xl:w-80 w-auto border-r-2 border-opacity-20 border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% rounded-bl-xl    overflow-x-hidden max-h-fit h-full',
+            '2xl:w-80 w-auto border-r-2 border-opacity-20 border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% rounded-bl-xl    overflow-x-hidden max-h-full h-full',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_pool"

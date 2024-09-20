@@ -452,9 +452,12 @@
       user_designated_tasks.value = getProjectDesignatedTasks();
       initComponent(project.value.workspace_id);
     } else {
-      const response = (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {
-        params: { id: id.value },
-      })) as Workspace;
+      const response = (await projectStore.fetchProjectById(
+        id.value as number
+      )) as Workspace;
+      // (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {
+      //   params: { id: id.value },
+      // })) as Workspace;
       if (response.workspace_id) {
         projectStore.setCurrent(response);
         project.value = response;
