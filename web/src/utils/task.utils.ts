@@ -11,6 +11,21 @@ import {
   Workspace,
 } from "./types";
 
+function mapTaskToTaskLite(task: Task) {
+  return {
+    task_id: task.task_id,
+    title: task.title,
+    color: task.color,
+    priority: task.priority,
+    status: task.status,
+    progress: task.progress,
+    task_type: task.task_type,
+    workspace: task.workspace,
+    task_tags: task.task_tags,
+    hasUsers: task.designated_to ? task.designated_to.length > 0 : false,
+  } as TaskLite;
+}
+
 function calcProgress(progress: Progress) {
   switch (progress) {
     case Progress.NULL:
@@ -309,4 +324,5 @@ export const taskUtils = {
   getTags,
   saveTagPool,
   createTagPool,
+  mapTaskToTaskLite,
 };

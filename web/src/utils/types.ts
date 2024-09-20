@@ -327,6 +327,9 @@ export interface TaskSlim {
 export interface UserLocal {
   nickname: string;
   avatar: string;
+  designated_tasks: TaskLite[];
+  created_tasks: TaskLite[];
+  workspaces: WorkspaceLite[];
 }
 
 export interface JSONWorkspace {
