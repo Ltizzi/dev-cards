@@ -81,7 +81,7 @@
   import { onBeforeMount, ref } from "vue";
   //import { useApiCall } from "../../composables/useAPICall";
   import { useTaskStore } from "../../store/task.store";
-  import { Task, User, UserLite } from "../../utils/types";
+  import { Task, User, UserLite, Workspace } from "../../utils/types";
   import BaseModal from "../common/BaseModal.vue";
   import { useProjectStore } from "../../store/project.store";
   //import { EndpointType } from "../../utils/endpoints";
@@ -173,7 +173,8 @@
   }
 
   onBeforeMount(() => {
-    users.value = projectStore.current.users;
+    const ws = projectStore.getCurrent() as Workspace;
+    users.value = ws.users;
   });
 </script>
 <style lang=""></style>

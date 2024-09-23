@@ -94,6 +94,7 @@
   import { useTaskStore } from "../../store/task.store";
   import { useRoute } from "vue-router";
   import { useUserStore } from "../../store/user.store";
+  import { Workspace } from "../../utils/types";
 
   const props = defineProps<{ projectId: number; taskId: number }>();
 
@@ -194,9 +195,8 @@
   }
 
   function prepareAuthorization() {
-    const projectId = props.projectId
-      ? props.projectId
-      : projectStore.current.workspace_id;
+    const ws = projectStore.getCurrent() as Workspace;
+    const projectId = props.projectId ? props.projectId : ws.workspace_id;
     const taskId = getTaskId();
     isModOrOwner.value = checkIsModOrOwner(projectId);
     isDesignatedUser.value = checkIsDesignated(projectId, taskId as number);

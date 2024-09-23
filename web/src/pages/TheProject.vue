@@ -45,11 +45,12 @@
     () => projectStore.justUpdated,
     async (newValue, oldValue) => {
       if (newValue && newValue != oldValue) {
+        const ws = projectStore.getCurrent() as Workspace;
         if (
           moderators.value &&
-          moderators.value.length < projectStore.current.moderators.length
+          moderators.value.length < ws.moderators.length
         ) {
-          moderators.value = projectStore.current.moderators;
+          moderators.value = ws.moderators;
           moderators.value.forEach(async (mod: UserLite) => {
             if (mod.user_id == userStore.self.user_id) {
               await updateToken();
@@ -61,7 +62,7 @@
           designatedTaskNumber.value < userStore.getDesignatedTask().length
         ) {
           designatedTaskNumber.value = taskUtils.getProjectUserDesignatedTasks(
-            projectStore.current.tasks,
+            ws.tasks,
             userStore.getDesignatedTask()
           ).length;
           await updateToken();
@@ -96,7 +97,8 @@
     isMobile.value = UIStore.isMobile;
     showMenu.value = !isMobile.value;
     UIStore.getTHeme();
-    if (projectStore.current.workspace_id) {
+    const ws = projectStore.getCurrent() as Workspace;
+    if (ws.workspace_id) {
       project.value = projectStore.getCurrent();
       moderators.value = project.value?.moderators;
       isLoaded.value = true;

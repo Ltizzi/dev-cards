@@ -97,7 +97,7 @@
   import BaseModal from "../common/BaseModal.vue";
   import { taskUtils } from "../../utils/task.utils";
   import { onBeforeMount, ref, watch } from "vue";
-  import { Task, TaskLite } from "../../utils/types";
+  import { Task, TaskLite, Workspace } from "../../utils/types";
   import { useProjectStore } from "../../store/project.store";
   import { useApiCall } from "../../composables/useAPICall";
   import { EndpointType } from "../../utils/endpoints";
@@ -137,7 +137,7 @@
     if (selectedTask.value?.task_id) {
       const id = taskStore.currentTask.task_id as number;
       const parent_id = selectedTask.value.task_id;
-      const response = await taskStore.addDependency(id, parent_id);
+      const response = (await taskStore.addDependency(id, parent_id)) as Task;
       // const response = (await apiCall.post(
       //   EndpointType.TASK_ADD_DEPENDENCY,
       //   null,
@@ -168,10 +168,13 @@
   }
 
   function filterTask(tasks: Array<TaskLite>) {
-    return tasks.filter(
-      (task: TaskLite) =>
-        task.task_id != taskStore.currentTask.task_id && !checkDependency(task)
-    );
+    return tasks
+      ? tasks.filter(
+          (task: TaskLite) =>
+            task.task_id != taskStore.currentTask.task_id &&
+            !checkDependency(task)
+        )
+      : [];
   }
 
   function checkDependency(task: TaskLite) {
@@ -188,7 +191,8 @@
     (newValue, oldValue) => {
       if (newValue != oldValue) {
         selectedTask.value = null;
-        tasks.value = filterTask(projectStore.current.tasks);
+        const ws = projectStore.getCurrent() as Workspace;
+        tasks.value = filterTask(ws.tasks);
       }
     }
   );

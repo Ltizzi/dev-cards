@@ -115,7 +115,7 @@ export const useUserStore = defineStore("auth", {
       return this.localRoles;
     },
     saveLocalRoles() {
-      localStorage.setItem("localRoles", JSON.stringify(this.saveLocalRoles));
+      localStorage.setItem("localRoles", JSON.stringify(this.localRoles));
     },
 
     async registerUser(user: any) {

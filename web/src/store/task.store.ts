@@ -50,9 +50,8 @@ export const useTaskStore = defineStore("tasks", {
       this.checkOfflineMode();
       if (this.offlineMode) {
         const projectStore = useProjectStore();
-        const jws = projectStore.getLocalStorageWorkspaceById(
-          projectStore.current.workspace_id
-        );
+        const ws = projectStore.getCurrent() as Workspace;
+        const jws = projectStore.getLocalStorageWorkspaceById(ws.workspace_id);
         const tasks = jws?.tasks;
         let task = tasks?.find((t: Task) => t.task_id === id);
         if (task?.task_id === id) {
@@ -76,15 +75,18 @@ export const useTaskStore = defineStore("tasks", {
     },
 
     setCurrentTask(task: Task) {
+      this.checkOfflineMode();
       localStorage.setItem("currentTask", JSON.stringify(task));
       this.currentTask = task;
     },
     saveLocalTask(task: Task) {
       const projectStore = useProjectStore();
+      const ws = projectStore.getCurrent() as Workspace;
       const jws = projectStore.getLocalStorageWorkspaceById(
-        projectStore.current.workspace_id
+        ws.workspace_id
       ) as unknown as JSONWorkspace;
-      let tasks = jws.tasks || [];
+
+      let tasks = jws.tasks ? jws.tasks : ([] as Task[]);
       if (task.task_id && this.checkTaskSavedLocal(task.task_id)) {
         tasks = tasks.map((t: Task) => {
           if (t.task_id === task.task_id) t = task;
@@ -96,8 +98,9 @@ export const useTaskStore = defineStore("tasks", {
     },
     checkTaskSavedLocal(id: number) {
       const projectStore = useProjectStore();
+      const ws = projectStore.getCurrent() as Workspace;
       const jws = projectStore.getLocalStorageWorkspaceById(
-        projectStore.current.workspace_id
+        ws.workspace_id
       ) as unknown as JSONWorkspace;
       return jws.tasks.filter((t: Task) => t.task_id === id).length > 0;
     },
@@ -260,6 +263,7 @@ export const useTaskStore = defineStore("tasks", {
         });
     },
     async saveTag(tag: string) {
+      this.checkOfflineMode();
       const newTag: UITag = {
         color: taskUtils.getRandomColor(),
         name: tag,
@@ -363,13 +367,18 @@ export const useTaskStore = defineStore("tasks", {
         );
     },
     async createTask(task: Task) {
+      this.offlineMode = this.checkOfflineMode();
       if (this.offlineMode) {
         task.task_id = utils.generateRandomId();
         this.saveLocalTask(task);
         const projectStore = useProjectStore();
-        let current = projectStore.getCurrent();
+        let current = projectStore.getCurrent() as Workspace;
         const taskLite = taskUtils.mapTaskToTaskLite(task);
-        current?.tasks.push(taskLite);
+        if (current.tasks) current?.tasks.push(taskLite);
+        else {
+          current.tasks = [];
+          current.tasks.push(taskLite);
+        }
         projectStore.saveWorkspaceToLocalStorage(current as Workspace);
         const userStore = useUserStore();
         userStore.local.created_tasks?.push(taskLite);
@@ -380,8 +389,9 @@ export const useTaskStore = defineStore("tasks", {
     async deleteTask(id: number) {
       if (this.offlineMode) {
         const projectStore = useProjectStore();
+        const ws = projectStore.getCurrent() as Workspace;
         let project = projectStore.getLocalStorageWorkspaceById(
-          projectStore.current.workspace_id
+          ws.workspace_id
         ) as unknown as JSONWorkspace;
         let tasks = project.tasks;
         tasks = tasks?.filter((t: Task) => t.task_id !== id);

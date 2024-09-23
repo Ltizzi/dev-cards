@@ -101,7 +101,7 @@
 </template>
 <script setup lang="ts">
   import { defineProps, onBeforeMount, ref, watch } from "vue";
-  import { Task, Status } from "../../utils/types";
+  import { Task, Status, Workspace } from "../../utils/types";
   import { taskUtils } from "../../utils/task.utils";
   import { useRoute, useRouter } from "vue-router";
   import { useProjectStore } from "../../store/project.store";
@@ -193,10 +193,8 @@
   // });
 
   function goToTask() {
-    if (
-      !projectStore.current ||
-      projectStore.current.workspace_id != props.task.workspace.workspace_id
-    ) {
+    const ws = projectStore.getCurrent() as Workspace;
+    if (!ws || ws.workspace_id != props.task.workspace.workspace_id) {
       const project_id = props.task.workspace.workspace_id;
       projectStore.fetchProjectById(project_id);
     }

@@ -223,14 +223,17 @@
       avatar: userStore.self.avatar,
     };
 
+    console.log("TESTING");
+    console.log(projectStore.getCurrent());
+    const workspace = projectStore.getCurrent() as Workspace;
     const project: WorkspaceLite = {
-      workspace_id: projectStore.current.workspace_id,
-      project_name: projectStore.current.project_name,
+      workspace_id: workspace.workspace_id,
+      project_name: workspace.project_name,
       owner: {
-        user_id: projectStore.current.owner.user_id,
-        username: projectStore.current.owner.username,
-        email: projectStore.current.owner.email,
-        avatar: projectStore.current.owner.avatar,
+        user_id: workspace.owner.user_id,
+        username: workspace.owner.username,
+        email: workspace.owner.email,
+        avatar: workspace.owner.avatar,
       },
     };
     if (

@@ -153,6 +153,7 @@ export const useProjectStore = defineStore("projects", {
     },
     getLocalStorageWorkspaceById(id: number) {
       const localProjects = this.getLocalStorageWorkspaces();
+      //console.log(localProjects, "....", id);
       return localProjects != null
         ? localProjects.find(
             (ws: JSONWorkspace) => ws.workspace.workspace_id == id
@@ -168,7 +169,7 @@ export const useProjectStore = defineStore("projects", {
     async fetchProjectById(id: number) {
       if (this.offlineMode) {
         const ws = this.getLocalStorageWorkspaceById(id)?.workspace;
-        console.log(ws);
+        //  console.log(ws);
         if (ws?.workspace_id) {
           this.setCurrent(ws);
           return ws;
@@ -210,6 +211,8 @@ export const useProjectStore = defineStore("projects", {
       this.offlineMode = this.checkOfflineMode();
       if (this.offlineMode) {
         ws.workspace_id = utils.generateRandomId();
+        ws.tasks = [];
+
         //console.log("WS_ID: ", ws.workspace_id);
         this.setCurrent(ws);
 

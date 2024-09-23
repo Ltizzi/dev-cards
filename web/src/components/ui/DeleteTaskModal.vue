@@ -67,6 +67,7 @@
   import BaseModal from "../common/BaseModal.vue";
   import { ref, onBeforeMount, watch } from "vue";
   import { useProjectStore } from "../../store/project.store";
+  import { Workspace } from "../../utils/types";
 
   const taskStore = useTaskStore();
   //const apiCall = useApiCall();
@@ -116,7 +117,8 @@
         reset();
         success.value = false;
         const projectStore = useProjectStore();
-        const project_id = projectStore.current.workspace_id;
+        const ws = projectStore.getCurrent() as Workspace;
+        const project_id = ws.workspace_id;
         await projectStore.updateCurrent();
         router.push(`/project/info?id=${project_id}`);
       }, 2000);

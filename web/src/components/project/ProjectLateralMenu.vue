@@ -132,7 +132,7 @@
         <ul class="before:ring-offset-purple-400"></ul>
       </details> -->
       </li>
-      <li class="whitespace-nowrap flex-shrink-0">
+      <li class="whitespace-nowrap flex-shrink-0" v-if="!state.offlineMode">
         <details close>
           <summary>Users</summary>
           <ul class="before:ring-offset-purple-400">
@@ -268,6 +268,7 @@
     addUserModal: false,
     isDark: false,
     isMobile: false,
+    offlineMode: false,
     showMenu: true,
     showHideBtn: false,
     showMenuBtn: false,
@@ -297,7 +298,18 @@
     () => projectStore.current.workspace_id,
     (newValue, oldValue) => {
       if (newValue != oldValue) {
-        project.value = projectStore.current;
+        project.value = projectStore.getCurrent();
+        user_designated_tasks.value = getProjectDesignatedTasks();
+        isModOrOwner.value = checkIsModOrOwner(newValue);
+      }
+    }
+  );
+
+  watch(
+    () => projectStore.local.workspace_id,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        project.value = projectStore.getCurrent();
         user_designated_tasks.value = getProjectDesignatedTasks();
         isModOrOwner.value = checkIsModOrOwner(newValue);
       }
@@ -317,15 +329,25 @@
   );
 
   watch(
-    () => projectStore.justUpdated,
+    () => projectStore.local.tasks,
     async (newValue, oldValue) => {
       if (
-        newValue &&
-        project.value?.workspace_id != projectStore.current.workspace_id
+        project.value?.workspace_id != projectStore.local.workspace_id &&
+        newValue != oldValue
       ) {
         project.value = await projectStore.updateCurrent();
+      }
+    }
+  );
+
+  watch(
+    () => projectStore.justUpdated,
+    async (newValue, oldValue) => {
+      const ws = projectStore.getCurrent() as Workspace;
+      if (newValue && project.value?.workspace_id != ws.workspace_id) {
+        project.value = await projectStore.updateCurrent();
       } else if (newValue != oldValue) {
-        project.value = projectStore.current;
+        project.value = projectStore.getCurrent();
         user_designated_tasks.value = getProjectDesignatedTasks();
       }
     }
@@ -419,14 +441,15 @@
   function getProjectDesignatedTasks() {
     let userTasks = [] as TaskLite[];
     const allUserTasks = userStore.getDesignatedTask();
-    allUserTasks.forEach((task: TaskLite) => {
-      if (
-        task.workspace.workspace_id == project.value?.workspace_id &&
-        task.status != Status.COMPLETED
-      ) {
-        userTasks.push(task);
-      }
-    });
+    if (allUserTasks)
+      allUserTasks.forEach((task: TaskLite) => {
+        if (
+          task.workspace.workspace_id == project.value?.workspace_id &&
+          task.status != Status.COMPLETED
+        ) {
+          userTasks.push(task);
+        }
+      });
 
     return userTasks;
   }
@@ -434,6 +457,7 @@
   function initComponent(id: number) {
     isLoaded.value = true;
     isModOrOwner.value = checkIsModOrOwner(id);
+    state.isDark = UIStore.checkIsDarkTheme(); //JSON.parse(localStorage.getItem("darkTheme") as string);
   }
 
   async function updateProject() {
@@ -442,12 +466,13 @@
   }
 
   onBeforeMount(async () => {
+    state.offlineMode = UIStore.checkOfflineMode();
     state.isMobile = UIStore.isMobile;
     state.showMenuBtn = state.isMobile;
     state.showMenu = !state.isMobile;
     state.showHideBtn = state.showMenu && state.isMobile;
     if (route.query.id) id.value = +route.query.id;
-    project.value = projectStore.current;
+    project.value = projectStore.getCurrent() as Workspace;
     if (project.value.workspace_id) {
       user_designated_tasks.value = getProjectDesignatedTasks();
       initComponent(project.value.workspace_id);
@@ -465,6 +490,5 @@
         user_designated_tasks.value = getProjectDesignatedTasks();
       }
     }
-    state.isDark = JSON.parse(localStorage.getItem("darkTheme") as string);
   });
 </script>

@@ -57,7 +57,7 @@
   }
 
   onBeforeMount(() => {
-    // UIStore.checkOfflineMode();
+    UIStore.checkOfflineMode();
     userStore.checkOfflineMode();
   });
 
