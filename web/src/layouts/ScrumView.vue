@@ -149,6 +149,7 @@
     Status,
     TaskLite,
     TaskType,
+    Workspace,
   } from "../utils/types";
   import TaskList from "../components/task/TaskList.vue";
   import { useProjectStore } from "../store/project.store";
@@ -181,6 +182,16 @@
 
   watch(
     () => projectStore.current.tasks,
+    (newValue, oldValue) => {
+      if (newValue.length != oldValue.length) {
+        tasks.value = getTasks();
+        prepareTemplate(getTasks());
+      }
+    }
+  );
+
+  watch(
+    () => projectStore.local.tasks,
     (newValue, oldValue) => {
       if (newValue.length != oldValue.length) {
         tasks.value = getTasks();
@@ -252,7 +263,8 @@
   }
 
   function getTasks() {
-    return projectStore.current.tasks;
+    const ws = projectStore.getCurrent() as Workspace;
+    return ws.tasks;
   }
 
   function changeIconSize() {

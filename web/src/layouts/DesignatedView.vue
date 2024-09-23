@@ -49,7 +49,7 @@
 <script setup lang="ts">
   import { onMounted, ref, watch } from "vue";
   import TaskList from "../components/task/TaskList.vue";
-  import { Status, TaskLite } from "../utils/types";
+  import { Status, TaskLite, Workspace } from "../utils/types";
   import { useUserStore } from "../store/user.store";
   import { useRoute } from "vue-router";
   import { useProjectStore } from "../store/project.store";
@@ -143,7 +143,8 @@
   function prepareProjectUserDesignatedTasks(): FilteredTasks {
     let active = [] as TaskLite[];
     let completed = [] as TaskLite[];
-    const tasks = projectStore.current.tasks;
+    const ws = projectStore.getCurrent() as Workspace;
+    const tasks = ws.tasks;
     const designated_tasks = getUserDesignatedTasks();
     tasks.forEach((task: TaskLite) => {
       designated_tasks.forEach((t: TaskLite) => {

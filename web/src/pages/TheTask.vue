@@ -112,7 +112,7 @@
           <!-- <h2 class="text-2xl text-start">{{ card.subtitle }}</h2> -->
 
           <div
-            v-if="card.task_tags.length > 0"
+            v-if="card.task_tags && card.task_tags.length > 0"
             :class="[
               'flex flex-row justify-between gap-2 lg:w-2/4 py-5 h-20   my-auto',
               removeTagActive ? 'hover:cursor-not-allowed' : '',
@@ -155,7 +155,7 @@
           </div>
           <div
             class="flex flex-row gap-2 py-1 align-middle"
-            v-if="card.dependencies.length > 0"
+            v-if="card.dependencies && card.dependencies.length > 0"
           >
             <font-awesome-icon
               :icon="['fas', 'sitemap']"
@@ -183,7 +183,10 @@
             class="ml-0"
           />
 
-          <div class="text-start" v-if="card.designated_to.length > 0">
+          <div
+            class="text-start"
+            v-if="card.designated_to && card.designated_to.length > 0"
+          >
             <p class="lg:text-lg text-sm font-semibold py-5 underline">
               Designated to:
             </p>
@@ -209,6 +212,7 @@
           </div>
           <div
             v-if="
+              card.designated_to &&
               card.designated_to.length == 0 &&
               (checkIsCollaborator(card.workspace.workspace_id) ||
                 checkIsModOrOwner)
@@ -278,7 +282,7 @@
           -->
           <div
             class="flex flex-col justify-start border-t-2 border-secondary pt-4"
-            v-show="card.updates.length > 0"
+            v-show="card.updates && card.updates.length > 0"
           >
             <div v-for="update in card.updates" class="flex flex-col gap-2">
               <div class="flex flex-col text-start gap-1">
@@ -296,7 +300,7 @@
     </div>
     <TaskControlSideMenu
       @update="updateTaskById"
-      :projectId="projectStore.current.workspace_id"
+      :projectId="ws_id"
       :taskId="taskId"
     ></TaskControlSideMenu>
   </div>
@@ -315,6 +319,7 @@
     Task,
     TaskType,
     UITag,
+    Workspace,
   } from "../utils/types";
   import { useTaskStore } from "../store/task.store";
   import { useApiCall } from "../composables/useAPICall";
@@ -346,6 +351,7 @@
   // #region: variables
   const card = ref<Task>();
   const taskId = ref<number>();
+  const ws_id = ref<number>();
   const taskStore = useTaskStore();
   const projectStore = useProjectStore();
   const userStore = useUserStore();
@@ -510,7 +516,8 @@
   }
 
   function getColor(name: string) {
-    const ws_id = projectStore.current.workspace_id;
+    const ws = projectStore.getCurrent() as Workspace;
+    const ws_id = ws.workspace_id;
     const tags: UITag[] | undefined = taskUtils.getTagColor(ws_id, name);
     if (tags && tags.length > 0) {
       return tags[0].color;
@@ -531,12 +538,10 @@
   }
 
   function checkUserCanModifyTask() {
+    const ws = projectStore.getCurrent() as Workspace;
     return (
-      checkIsModOrOwner(projectStore.current.workspace_id) ||
-      checkIsDesignated(
-        projectStore.current.workspace_id,
-        card.value?.task_id as number
-      ) ||
+      checkIsModOrOwner(ws.workspace_id) ||
+      checkIsDesignated(ws.workspace_id, card.value?.task_id as number) ||
       checkIfUserisTaskOwner(card.value?.task_id as number, userStore.self)
     );
   }
@@ -607,6 +612,8 @@
 
   onMounted(async () => {
     const task_id = route.query.id;
+    const ws = projectStore.getCurrent() as Workspace;
+    ws_id.value = ws.workspace_id;
     if (taskStore.currentTask.task_id == +taskId) {
       card.value = taskStore.getCurrent();
     }
@@ -620,7 +627,7 @@
     // }
     else {
       if (task_id) {
-        const data = await fetchTask(+task_id);
+        const data = (await fetchTask(+task_id)) as Task;
 
         if (data.task_id == +task_id) {
           card.value = data;

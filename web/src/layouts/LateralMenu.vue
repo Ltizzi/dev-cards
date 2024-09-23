@@ -150,7 +150,7 @@
   );
 
   watch(
-    () => projectStore.current,
+    () => projectStore.getCurrent() as Workspace,
     (newValue, oldValue) => {
       if (newValue.workspace_id != oldValue.workspace_id && !state.justChange) {
         state.selected = newValue.workspace_id;

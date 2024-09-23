@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { checkThemeIsDark, isDarkerCardsActive } from "../utils/client.utils";
-import { CustomConfiguration, UserLocal } from "../utils/types";
+import { UserLocal } from "../utils/types";
 import { useUserStore } from "./user.store";
 
 export const useUIStore = defineStore("uiStore", {
@@ -35,6 +35,7 @@ export const useUIStore = defineStore("uiStore", {
       } else return this.theme;
     },
     checkIsDarkTheme() {
+      this.darkTheme = checkThemeIsDark(this.theme);
       return this.darkTheme;
     },
     setDarkerCards(value: boolean) {

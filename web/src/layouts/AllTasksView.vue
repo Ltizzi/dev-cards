@@ -5,7 +5,7 @@
     <h1 class="text-4xl mt-7 lg:mt-5 text-base-content">All Tasks View</h1>
 
     <TaskListFilters
-      :ws_id="projectStore.current.workspace_id"
+      :ws_id="state.ws_id"
       :tasks="tasks"
       :tagSearch="state.searchedByTag"
       @changeSize="changeIconSize"
@@ -52,7 +52,7 @@
 </template>
 <script setup lang="ts">
   import { onBeforeMount, ref, watch, reactive } from "vue";
-  import { TaskLite, UITag } from "../utils/types";
+  import { TaskLite, UITag, Workspace } from "../utils/types";
   import TaskList from "../components/task/TaskList.vue";
   import { useProjectStore } from "../store/project.store";
   import TaskListFilters from "../components/ui/TaskListFilters.vue";
@@ -81,6 +81,7 @@
     lastSearchResultsCount: 0,
     noResults: false,
     searchedByTag: false,
+    ws_id: 0,
   });
 
   watch(
@@ -90,6 +91,15 @@
         setTimeout(() => {
           state.noResults = false;
         }, 1500);
+      }
+    }
+  );
+
+  watch(
+    () => projectStore.getCurrent(),
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        state.ws_id = projectStore.getCurrent()?.workspace_id as number;
       }
     }
   );
@@ -169,7 +179,9 @@
   }
 
   onBeforeMount(() => {
-    tasks.value = projectStore.current.tasks;
+    const ws = projectStore.getCurrent() as Workspace;
+    tasks.value = ws.tasks;
+    state.ws_id = ws.workspace_id;
     //const darkTHeme = JSON.parse(localStorage.getItem("darkTheme") as string);
     isDark.value = UIStore.checkIsDarkTheme();
     // if (route.query.tag) {

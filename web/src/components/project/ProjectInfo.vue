@@ -139,19 +139,29 @@
     () => projectStore.current.workspace_id,
     (newValue, oldValue) => {
       if (newValue != oldValue) {
-        project.value = projectStore.current;
+        project.value = projectStore.getCurrent() as Workspace;
+      }
+    }
+  );
+
+  watch(
+    () => projectStore.local.workspace_id,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        project.value = projectStore.getCurrent() as Workspace;
       }
     }
   );
 
   async function updateProject(workspace: Workspace) {
     projectStore.setCurrent(workspace);
-    project.value = projectStore.current;
+    project.value = projectStore.getCurrent();
   }
 
   onBeforeMount(async () => {
-    if (projectStore.current.workspace_id) {
-      project.value = projectStore.current;
+    const ws = projectStore.getCurrent() as Workspace;
+    if (ws.workspace_id) {
+      project.value = ws;
       isLoaded.value = true;
     } else {
       const id = route.query.id as unknown as number;

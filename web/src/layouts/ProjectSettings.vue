@@ -51,7 +51,7 @@
     </div>
 
     <BaseDeleteModal
-      :id="projectStore.current.workspace_id"
+      :id="state.ws_id"
       :type="'WORKSPACE'"
       :showModal="showDelWsModal"
       @cancel="closeDeleteWsModal"
@@ -95,6 +95,7 @@
   const state = reactive({
     selected: "basic",
     ownerId: 0,
+    ws_id: 0,
     options: [
       {
         title: "Basic Settings",
@@ -131,17 +132,18 @@
     console.log("UPDATING");
     if (ws) {
       projectStore.setCurrent(ws);
-      project.value = projectStore.current;
+      project.value = projectStore.getCurrent();
     } else project.value = await projectStore.updateCurrent();
 
-    projectStore.current;
+    // projectStore.current;
   }
 
   async function deleteWs() {
     console.log("DELETED");
+    const ws = projectStore.getCurrent() as Workspace;
 
     const response = (await projectStore.deleteWorkspace(
-      projectStore.current.workspace_id
+      ws.workspace_id
     )) as APIResponse;
     //  (await apiCall.del(EndpointType.WORKSPACE_DELETE, {
     //   params: {
@@ -157,10 +159,12 @@
   }
 
   async function downloadJson() {
+    const ws = projectStore.getCurrent() as Workspace;
+
     try {
       const response = (await apiCall.get(EndpointType.WORKSPACE_JSON, {
         params: {
-          ws_id: projectStore.current.workspace_id,
+          ws_id: ws.workspace_id,
           user_id: userStore.self.user_id,
         },
         responseType: "blob",
@@ -170,11 +174,7 @@
       fileLink.href = fileURL;
       fileLink.setAttribute(
         "download",
-        `${
-          projectStore.current.project_name +
-          "_" +
-          projectStore.current.updated_at
-        }.json`
+        `${ws.project_name + "_" + ws.updated_at}.json`
       );
       document.body.appendChild(fileLink);
       fileLink.click();
@@ -189,14 +189,15 @@
     () => projectStore.justUpdated,
     (newValue, oldValue) => {
       if (newValue) {
-        project.value = projectStore.current;
+        project.value = projectStore.getCurrent();
       }
     }
   );
 
   onBeforeMount(() => {
-    isOwner.value = checkIsOwner(projectStore.current.workspace_id);
-    project.value = projectStore.current;
+    const ws = projectStore.getCurrent() as Workspace;
+    isOwner.value = checkIsOwner(ws.workspace_id);
+    project.value = ws;
     state.ownerId = project.value.owner.user_id;
   });
 </script>
