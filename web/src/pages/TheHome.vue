@@ -23,7 +23,7 @@
 <script setup lang="ts">
   import LateralMenu from "../layouts/LateralMenu.vue";
   import { useRouter } from "vue-router";
-  import { ref, onMounted, watch } from "vue";
+  import { ref, onMounted, watch, onBeforeMount } from "vue";
   import {
     changeTheme,
     checkThemeIsDark,
@@ -55,6 +55,11 @@
     console.log("RESIZEEE");
     UIStore.setIsMobile(isMobile);
   }
+
+  onBeforeMount(() => {
+    // UIStore.checkOfflineMode();
+    userStore.checkOfflineMode();
+  });
 
   onMounted(() => {
     window.addEventListener("resize", handleResize);
