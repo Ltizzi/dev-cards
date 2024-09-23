@@ -61,8 +61,9 @@ export const useUIStore = defineStore("uiStore", {
     getOfflineMode() {
       const userStore = useUserStore();
       const user = userStore.getLocalUser() as UserLocal;
-      if (!this.offlineMode && user && this.checkOfflineMode()) {
-        this.offlineMode = this.checkOfflineMode();
+      const isLocal = this.checkOfflineMode();
+      if (!this.offlineMode && user && isLocal) {
+        this.offlineMode = isLocal;
         userStore.setLocalUser(user);
       }
       return this.offlineMode;
