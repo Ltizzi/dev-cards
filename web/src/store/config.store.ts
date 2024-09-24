@@ -49,7 +49,10 @@ export const useConfigStore = defineStore("configs", {
       else {
         const projectStore = useProjectStore();
         const ws = projectStore.getCurrent() as Workspace;
-        const ws_id = ws.workspace_id;
+
+        const ws_id = ws
+          ? ws.workspace_id
+          : +JSON.parse(localStorage.getItem("current_workspace_id") as string);
         const response = await this.fetchByWorkspaceId(ws_id);
         this.setCurrent(response);
         return response;

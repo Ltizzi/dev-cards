@@ -179,7 +179,8 @@
   }
 
   onBeforeMount(() => {
-    const ws = projectStore.getCurrent() as Workspace;
+    let ws = projectStore.getCurrent() as Workspace;
+    if (!ws) ws = projectStore.current;
     tasks.value = ws.tasks;
     state.ws_id = ws.workspace_id;
     //const darkTHeme = JSON.parse(localStorage.getItem("darkTheme") as string);

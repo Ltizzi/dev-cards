@@ -98,7 +98,7 @@
     showMenu.value = !isMobile.value;
     UIStore.getTHeme();
     const ws = projectStore.getCurrent() as Workspace;
-    if (ws.workspace_id) {
+    if (ws && ws.workspace_id) {
       project.value = projectStore.getCurrent();
       moderators.value = project.value?.moderators;
       isLoaded.value = true;
