@@ -139,7 +139,7 @@
     () => projectStore.current.workspace_id,
     (newValue, oldValue) => {
       if (newValue != oldValue) {
-        project.value = projectStore.getCurrent() as Workspace;
+        project.value = projectStore.current;
       }
     }
   );
@@ -148,7 +148,7 @@
     () => projectStore.local.workspace_id,
     (newValue, oldValue) => {
       if (newValue != oldValue) {
-        project.value = projectStore.getCurrent() as Workspace;
+        project.value = projectStore.local;
       }
     }
   );
@@ -160,7 +160,7 @@
 
   onBeforeMount(async () => {
     const ws = projectStore.getCurrent() as Workspace;
-    if (ws.workspace_id) {
+    if (ws && ws.workspace_id) {
       project.value = ws;
       isLoaded.value = true;
     } else {
@@ -171,6 +171,7 @@
       // })) as Workspace;
       if (response.workspace_id) {
         project.value = response;
+        projectStore.setCurrent(response);
         isLoaded.value = true;
       } else {
         console.error(response);

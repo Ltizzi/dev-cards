@@ -56,6 +56,7 @@ export const useProjectStore = defineStore("projects", {
       this.memberOf = list;
     },
     setCurrent(project: Workspace) {
+      this.checkOfflineMode();
       if (project) {
         if (this.offlineMode) this.setLocal(project);
         else this.current = project;
@@ -70,7 +71,9 @@ export const useProjectStore = defineStore("projects", {
     getCurrent() {
       this.checkOfflineMode();
       if (this.offlineMode) return this.local;
-      else this.current;
+      else {
+        if (this.current) this.current;
+      }
     },
     setLocal(ws: Workspace) {
       this.local = ws;
@@ -345,6 +348,8 @@ export const useProjectStore = defineStore("projects", {
       this.currentAvatar = "";
       this.owned = [] as Workspace[];
       this.memberOf = [] as Workspace[];
+      const uiStore = useUIStore();
+      uiStore.clean();
     },
   },
 });

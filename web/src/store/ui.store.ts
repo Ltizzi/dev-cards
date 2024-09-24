@@ -66,7 +66,7 @@ export const useUIStore = defineStore("uiStore", {
       if (!this.offlineMode && user && isLocal) {
         this.offlineMode = isLocal;
         userStore.setLocalUser(user);
-      }
+      } else this.offlineMode = isLocal;
       return this.offlineMode;
     },
     setOfflineMode(condition: boolean) {
@@ -78,6 +78,10 @@ export const useUIStore = defineStore("uiStore", {
     },
     checkOfflineMode() {
       return JSON.parse(localStorage.getItem("offlineMode") as string).active;
+    },
+    clean() {
+      if (this.offlineMode)
+        localStorage.setItem("offlineMode", JSON.stringify({ active: false }));
     },
   },
 });

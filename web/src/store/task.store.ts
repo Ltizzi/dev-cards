@@ -370,6 +370,11 @@ export const useTaskStore = defineStore("tasks", {
       this.offlineMode = this.checkOfflineMode();
       if (this.offlineMode) {
         task.task_id = utils.generateRandomId();
+        task.child_tasks = [];
+        task.dependencies = [];
+        task.designated_to = [];
+        task.task_tags = [];
+        task.updates = [];
         this.saveLocalTask(task);
         const projectStore = useProjectStore();
         let current = projectStore.getCurrent() as Workspace;

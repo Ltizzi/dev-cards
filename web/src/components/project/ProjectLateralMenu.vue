@@ -473,7 +473,7 @@
     state.showHideBtn = state.showMenu && state.isMobile;
     if (route.query.id) id.value = +route.query.id;
     project.value = projectStore.getCurrent() as Workspace;
-    if (project.value.workspace_id) {
+    if (project.value && project.value.workspace_id) {
       user_designated_tasks.value = getProjectDesignatedTasks();
       initComponent(project.value.workspace_id);
     } else {

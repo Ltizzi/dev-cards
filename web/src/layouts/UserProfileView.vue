@@ -85,7 +85,7 @@
   import { useRoute } from "vue-router";
   import { ref, onBeforeMount, watch } from "vue";
   import { useProjectStore } from "../store/project.store";
-  import { User } from "../utils/types";
+  import { User, Workspace } from "../utils/types";
   import { useUIStore } from "../store/ui.store";
   import { useUserStore } from "../store/user.store";
 
@@ -116,7 +116,8 @@
   );
 
   async function getUserById() {
-    const ws_id = projectStore.current.workspace_id;
+    const ws = projectStore.getCurrent() as Workspace;
+    const ws_id = ws.workspace_id;
     const response = (await userStore.fetchUserById(
       id.value as number,
       ws_id
