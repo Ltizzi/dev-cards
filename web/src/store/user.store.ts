@@ -6,6 +6,7 @@ import {
   User,
   UserLocal,
   UserWorkspaceRoles,
+  Workspace,
 } from "../utils/types";
 import { logout, saveToken } from "../utils/auth.utils";
 import { useApiCall } from "../composables/useAPICall";
@@ -143,17 +144,21 @@ export const useUserStore = defineStore("auth", {
     },
     async fetchAllWorkspacesMember(id: number) {
       this.offlineMode = this.checkOfflineMode();
+      const projectStore = useProjectStore();
+
       if (this.offlineMode) {
-        const projectStore = useProjectStore();
         const saved_jws = projectStore.getLocalStorageWorkspaces() || [];
 
         return saved_jws.length > 0
           ? saved_jws.map((jws: JSONWorkspace) => jws.workspace)
           : [];
-      } else
-        return await apiCall.get(EndpointType.USER_MEMBER, {
+      } else {
+        const workspaces = (await apiCall.get(EndpointType.USER_MEMBER, {
           params: { user_id: id },
-        });
+        })) as Workspace[];
+        projectStore.setMemberOf(workspaces);
+        return workspaces;
+      }
     },
     async checkUserExists(email: string) {
       return await apiCall.get(EndpointType.USER_CHECK, {

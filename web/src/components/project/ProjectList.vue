@@ -7,41 +7,50 @@
     >
       <ProjectCard v-for="ws in workspaces" :ws="ws" />
     </div>
-    <div v-else class="text-lg">
+    <div v-if="!isLoaded && workspaces.length < 1" class="text-lg">
       <h1>No current projects avaible</h1>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-  //import { useApiCall } from "../../composables/useAPICall";
   import { useProjectStore } from "../../store/project.store";
   import { useUserStore } from "../../store/user.store";
-  //import { EndpointType } from "../../utils/endpoints";
   import { Workspace } from "../../utils/types";
   import ProjectCard from "./ProjectCard.vue";
-  import { onMounted, ref, onBeforeMount } from "vue";
+  import { ref, onBeforeMount, watch } from "vue";
 
   const projectStore = useProjectStore();
   const userStore = useUserStore();
 
   const workspaces = ref<Workspace[]>();
   const isLoaded = ref<boolean>(false);
+  const fetching = ref<boolean>(false);
 
   async function fetchProjects(userId: number) {
     return (await userStore.fetchAllWorkspacesMember(userId)) as Workspace[];
   }
 
-  onMounted(async () => {
-    if (projectStore.memberOf.length > 0) {
+  watch(
+    () => projectStore.memberOf,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        workspaces.value = projectStore.memberOf;
+      }
+    }
+  );
+
+  onBeforeMount(async () => {
+    if (projectStore.memberOf) {
       workspaces.value = projectStore.memberOf;
     } else {
       const id = userStore.getSelf().user_id; //JSON.parse(localStorage.getItem("user") as string).user_id;
       const wss = await fetchProjects(id);
-      if (wss && wss.length > 0) {
+      if (wss) {
         projectStore.setMemberOf(wss);
         workspaces.value = projectStore.memberOf;
-        isLoaded.value = true;
       }
     }
+    isLoaded.value = true;
+    fetching.value = true;
   });
 </script>

@@ -144,14 +144,14 @@
     }
   );
 
-  watch(
-    () => projectStore.local.workspace_id,
-    (newValue, oldValue) => {
-      if (newValue != oldValue) {
-        project.value = projectStore.local;
-      }
-    }
-  );
+  // watch(
+  //   () => projectStore.local.workspace_id,
+  //   (newValue, oldValue) => {
+  //     if (newValue != oldValue) {
+  //       project.value = projectStore.local;
+  //     }
+  //   }
+  // );
 
   async function updateProject(workspace: Workspace) {
     projectStore.setCurrent(workspace);
