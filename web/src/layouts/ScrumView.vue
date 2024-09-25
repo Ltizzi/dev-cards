@@ -190,15 +190,15 @@
     }
   );
 
-  watch(
-    () => projectStore.local.tasks,
-    (newValue, oldValue) => {
-      if (newValue.length != oldValue.length) {
-        tasks.value = getTasks();
-        prepareTemplate(getTasks());
-      }
-    }
-  );
+  // watch(
+  //   () => projectStore.local.tasks,
+  //   (newValue, oldValue) => {
+  //     if (newValue.length != oldValue.length) {
+  //       tasks.value = getTasks();
+  //       prepareTemplate(getTasks());
+  //     }
+  //   }
+  // );
 
   watch(
     () => search.value,

@@ -58,8 +58,8 @@ export const useProjectStore = defineStore("projects", {
     setCurrent(project: Workspace) {
       this.checkOfflineMode();
       if (project) {
-        if (this.offlineMode) this.setLocal(project);
-        else this.current = project;
+        //  if (this.offlineMode) this.setLocal(project); else
+        this.current = project;
         this.currentName = project.project_name;
         this.currentAvatar = project.avatar;
         localStorage.setItem(
@@ -70,13 +70,15 @@ export const useProjectStore = defineStore("projects", {
     },
     getCurrent() {
       this.checkOfflineMode();
-      if (this.offlineMode) return this.local;
-      else {
-        if (this.current) this.current;
-      }
+      return this.current;
+      // if (this.offlineMode) return this.local;
+      // else {
+      //   if (this.current) this.current;
+      // }
     },
     setLocal(ws: Workspace) {
       this.local = ws;
+      this.setCurrent(ws);
     },
     saveWorkspacesToLocalStorage(arr: JSONWorkspace[]) {
       localStorage.setItem("localWorkspaces", JSON.stringify(arr));
@@ -329,7 +331,8 @@ export const useProjectStore = defineStore("projects", {
       return this.offlineMode;
     },
     loadLocal(ws: JSONWorkspace) {
-      this.local = ws.workspace;
+      //this.local = ws.workspace;
+      this.current = ws.workspace;
       //  let projects = this.getLocalStorageWorkspaces();
       let project = this.getLocalStorageWorkspaceById(
         ws.workspace.workspace_id
