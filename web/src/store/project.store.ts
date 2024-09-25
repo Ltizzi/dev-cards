@@ -216,7 +216,8 @@ export const useProjectStore = defineStore("projects", {
       this.offlineMode = this.checkOfflineMode();
       if (this.offlineMode) {
         ws.workspace_id = utils.generateRandomId();
-        ws.tasks = [];
+        // ws.tasks = [];
+        ws.users.push(ws.owner);
 
         //console.log("WS_ID: ", ws.workspace_id);
         this.setCurrent(ws);

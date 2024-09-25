@@ -328,17 +328,17 @@
     }
   );
 
-  watch(
-    () => projectStore.local.tasks,
-    async (newValue, oldValue) => {
-      if (
-        project.value?.workspace_id != projectStore.local.workspace_id &&
-        newValue != oldValue
-      ) {
-        project.value = await projectStore.updateCurrent();
-      }
-    }
-  );
+  // watch(
+  //   () => projectStore.local.tasks,
+  //   async (newValue, oldValue) => {
+  //     if (
+  //       project.value?.workspace_id != projectStore.local.workspace_id &&
+  //       newValue != oldValue
+  //     ) {
+  //       project.value = await projectStore.updateCurrent();
+  //     }
+  //   }
+  // );
 
   watch(
     () => projectStore.justUpdated,
