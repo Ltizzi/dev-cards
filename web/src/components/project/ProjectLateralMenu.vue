@@ -305,16 +305,16 @@
     }
   );
 
-  watch(
-    () => projectStore.local.workspace_id,
-    (newValue, oldValue) => {
-      if (newValue != oldValue) {
-        project.value = projectStore.getCurrent();
-        user_designated_tasks.value = getProjectDesignatedTasks();
-        isModOrOwner.value = checkIsModOrOwner(newValue);
-      }
-    }
-  );
+  // watch(
+  //   () => projectStore.local.workspace_id,
+  //   (newValue, oldValue) => {
+  //     if (newValue != oldValue) {
+  //       project.value = projectStore.getCurrent();
+  //       user_designated_tasks.value = getProjectDesignatedTasks();
+  //       isModOrOwner.value = checkIsModOrOwner(newValue);
+  //     }
+  //   }
+  // );
 
   watch(
     () => projectStore.current.tasks,
