@@ -357,6 +357,7 @@ export const useTaskStore = defineStore("tasks", {
         userStore.local.designated_tasks?.push(task);
         userStore.saveLocal();
         this.currentTask.designated_to?.push(user);
+        this.currentTask.status = Status.PROGRESS;
         this.saveLocalTask(this.currentTask);
         return this.currentTask;
       } else

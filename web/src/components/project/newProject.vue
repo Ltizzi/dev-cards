@@ -175,10 +175,16 @@
     }
 
     const newProject = {
-      project_name: name.value,
-      project_avatar: avatar.value,
-      description: description.value,
+      project_name: name.value as string,
+      project_avatar: avatar.value as string,
+      description: description.value as string,
       owner: userLite,
+      users: [],
+      moderators: [],
+      tasks: [],
+      collaborators: [],
+      created_at: new Date(Date.now()),
+      updated_at: new Date(Date.now()),
     };
 
     const response = (await projectStore.createWorkspace(
@@ -196,6 +202,7 @@
 
         saveToken(response.token);
         isWaiting.value = false;
+        projectStore.setMemberOf([response.workspace]);
         router.push("/");
       } else {
         isWaiting.value = false;

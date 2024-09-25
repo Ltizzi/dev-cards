@@ -172,8 +172,9 @@ export const useUserStore = defineStore("auth", {
       this.users = users;
     },
     getDesignatedTask() {
-      if (this.logged) return this.self.designated_tasks;
-      else {
+      if (this.logged) {
+        return this.getSelf().designated_tasks;
+      } else {
         if (localStorage.getItem("user")) {
           const user = JSON.parse(
             localStorage.getItem("user") as string

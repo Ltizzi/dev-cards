@@ -13,7 +13,7 @@
       <p class="text-sm">{{ shortString(props.ws.description) }}</p>
       <div class="card-actions justify-between">
         <div class="flex flex-col justify-start gap-0.5 items-center">
-          <p v-if="ws.users.length > 0" class="italic text-sm">
+          <p v-if="ws.users && ws.users.length > 0" class="italic text-sm">
             <span class="text-base font-semibold mr-1">{{
               ws.users.length
             }}</span>
