@@ -70,6 +70,8 @@
   import BaseToggle from "../components/common/BaseToggle.vue";
   import ProjectList from "../components/project/ProjectList.vue";
   import { taskUtils } from "../utils/task.utils";
+  import { useProjectStore } from "../store/project.store";
+  import { User, Workspace } from "../utils/types";
 
   const router = useRouter();
 
@@ -125,8 +127,8 @@
     loadedDesignated.value = true;
   }
 
-  onBeforeMount(() => {
-    const user = userStore.getSelf(); //JSON.parse(localStorage.getItem("user") as string);
+  onBeforeMount(async () => {
+    const user = userStore.getSelf() as User; //JSON.parse(localStorage.getItem("user") as string);
     if (!user) {
       router.push("/login");
     } else {

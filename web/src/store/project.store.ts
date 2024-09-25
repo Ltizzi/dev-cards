@@ -77,7 +77,7 @@ export const useProjectStore = defineStore("projects", {
       // }
     },
     setLocal(ws: Workspace) {
-      this.local = ws;
+      //this.local = ws;
       this.setCurrent(ws);
     },
     saveWorkspacesToLocalStorage(arr: JSONWorkspace[]) {
@@ -350,7 +350,7 @@ export const useProjectStore = defineStore("projects", {
       this.currentName = "";
       this.currentAvatar = "";
       this.owned = [] as Workspace[];
-      this.memberOf = [] as Workspace[];
+      //this.memberOf = [] as Workspace[];
       const uiStore = useUIStore();
       uiStore.clean();
     },
