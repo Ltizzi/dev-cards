@@ -55,10 +55,14 @@ export const useProjectStore = defineStore("projects", {
     setMemberOf(list: Array<Workspace>) {
       this.memberOf = list;
     },
-    setCurrent(project: Workspace) {
+    async setCurrent(project: Workspace) {
       this.checkOfflineMode();
       if (project) {
-        //  if (this.offlineMode) this.setLocal(project); else
+        if (this.offlineMode) {
+          const configStore = useConfigStore();
+          const config =
+            (await configStore.getCurrent()) as CustomConfiguration;
+        } //this.setLocal(project); else
         this.current = project;
         this.currentName = project.project_name;
         this.currentAvatar = project.avatar;
