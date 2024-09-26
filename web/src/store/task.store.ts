@@ -315,6 +315,8 @@ export const useTaskStore = defineStore("tasks", {
     async addTaskUpdate(update: TaskUpdate) {
       if (this.offlineMode) {
         update.update_id = utils.generateRandomId();
+        update.created_at = new Date(Date.now());
+        update.updated_at = new Date(Date.now());
         this.currentTask.updates?.push(update);
         this.saveLocalTask(this.currentTask);
         return this.currentTask.updates;

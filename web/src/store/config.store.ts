@@ -104,6 +104,11 @@ export const useConfigStore = defineStore("configs", {
       });
     },
     async fetchByWorkspaceId(id: number) {
+      // if (this.offlineMode) {
+      //   const projectStore = useProjectStore();
+      //   const local_ws = projectStore.getLocalStorageWorkspaceById(id);
+      //   this.current =
+      // } else {
       const response = (await apiCall.get(EndpointType.CONFIG_GET_BY_WS_ID, {
         params: {
           ws_id: id,
@@ -111,6 +116,7 @@ export const useConfigStore = defineStore("configs", {
       })) as CustomConfiguration;
       this.setCurrent(response);
       return response;
+      //}
     },
     createConfig(ws: Workspace) {
       const config = createCustomConfiguration(ws);
