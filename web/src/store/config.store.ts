@@ -15,6 +15,7 @@ import { useUIStore } from "./ui.store";
 import { JSONWorkspace } from "../utils/types";
 import { utils } from "../utils/utils";
 import { createCustomConfiguration } from "../utils/client.utils";
+import { taskUtils } from "../utils/task.utils";
 
 const apiCall = useApiCall();
 
@@ -295,6 +296,20 @@ export const useConfigStore = defineStore("configs", {
               config_id: config_id,
             },
           });
+    },
+    async removeTag(tag: string) {
+      const ws_store = useProjectStore();
+      let tasks = taskUtils.searchTasksByTag(tag, ws_store.current.tasks);
+      if (tasks.length == 0) {
+        const uiTag = this.current.tagPool.tags.filter(
+          (t: UITag) => t.name.toLowerCase() == tag.toLowerCase()
+        )[0];
+        await this.deleteTagFromPool(
+          this.current.workspace.workspace_id,
+          this.current.config_id,
+          uiTag
+        );
+      }
     },
     async deleteTagFromPool(ws_id: number, config_id: number, tag: UITag) {
       if (this.offlineMode) {

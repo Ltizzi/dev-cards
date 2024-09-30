@@ -313,13 +313,13 @@ export const useTaskStore = defineStore("tasks", {
       }
     },
     async removeTag(tag: string) {
+      const configStore = useConfigStore();
       if (this.offlineMode) {
-        let tags = this.currentTask.task_tags;
-        tags = tags?.filter(
-          (t: string) => t.toLowerCase() === tag.toLowerCase()
-        );
+        let tags = this.currentTask.task_tags as string[];
+        tags = tags.filter((t: string) => t.toLowerCase() != tag.toLowerCase());
         this.currentTask.task_tags = tags;
         this.saveLocalTask(this.currentTask);
+        await configStore.removeTag(tag);
         return this.currentTask;
       } else {
         const response = (await apiCall.patch(
@@ -327,7 +327,7 @@ export const useTaskStore = defineStore("tasks", {
           {},
           { params: { task_id: this.currentTask.task_id, tag: tag } }
         )) as Task;
-
+        await configStore.removeTag(tag);
         return response;
       }
     },
