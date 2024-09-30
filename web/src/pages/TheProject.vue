@@ -24,6 +24,7 @@
   import { saveToken } from "../utils/auth.utils";
   import { taskUtils } from "../utils/task.utils";
   import { useUIStore } from "../store/ui.store";
+  import { useConfigStore } from "../store/config.store";
 
   const route = useRoute();
 
