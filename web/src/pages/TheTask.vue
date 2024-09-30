@@ -347,6 +347,7 @@
   import { dateUtils } from "../utils/date.utils";
   import { useUserStore } from "../store/user.store";
   import { useUIStore } from "../store/ui.store";
+  import { useConfigStore } from "../store/config.store";
 
   // #region: variables
   const card = ref<Task>();
@@ -356,6 +357,7 @@
   const projectStore = useProjectStore();
   const userStore = useUserStore();
   const UIStore = useUIStore();
+  const configStore = useConfigStore();
 
   const title_color = ref<string>();
   const progress_value = ref<number>();
@@ -487,7 +489,7 @@
         (t: string) => t.toLowerCase() != tag.toLowerCase()
       );
     }
-    const response = (await removeTag(tag)) as unknown as Task;
+    const response = (await taskStore.removeTag(tag)) as unknown as Task;
     // (await apiCall.patch(
     //   EndpointType.TASK_REMOVE_TAG,
     //   {},
@@ -502,29 +504,34 @@
     //TODO: cuando implemente TagPool
     if (response.task_id == card.value?.task_id) {
       card.value = response;
-      let tags = JSON.parse(localStorage.getItem("tags") as string); //removing tag from tag pool in local
-      tags = tags.map((tp: TagPool) => {
-        if (tp.workspace_id === card.value?.workspace.workspace_id) {
-          tp.tags = tp.tags.filter(
-            (t: UITag) => t.name.toLowerCase() !== tag.toLowerCase()
-          );
-        }
-        return tp;
-      });
-      localStorage.setItem("tags", JSON.stringify(tags));
+      // let tags = JSON.parse(localStorage.getItem("tags") as string); //removing tag from tag pool in local
+      // tags = tags.map((tp: TagPool) => {
+      //   if (tp.workspace_id === card.value?.workspace.workspace_id) {
+      //     tp.tags = tp.tags.filter(
+      //       (t: UITag) => t.name.toLowerCase() !== tag.toLowerCase()
+      //     );
+      //   }
+      //   return tp;
+      // });
+      // localStorage.setItem("tags", JSON.stringify(tags));
     }
   }
 
   function getColor(name: string) {
-    const ws = projectStore.getCurrent() as Workspace;
-    const ws_id = ws.workspace_id;
-    const tags: UITag[] | undefined = taskUtils.getTagColor(ws_id, name);
-    if (tags && tags.length > 0) {
-      return tags[0].color;
-    } else {
-      taskUtils.addTagToTagsPool(name, ws_id);
-      getColor(name);
-    }
+    const tags = configStore.current.tagPool.tags;
+    const uiTag = tags.filter(
+      (t: UITag) => t.name.toLowerCase() == name.toLowerCase()
+    );
+    return uiTag[0].color;
+    // const ws = projectStore.getCurrent() as Workspace;
+    // const ws_id = ws.workspace_id;
+    // const tags: UITag[] | undefined = taskUtils.getTagColor(ws_id, name);
+    // if (tags && tags.length > 0) {
+    //   return tags[0].color;
+    // } else {
+    //   taskUtils.addTagToTagsPool(name, ws_id);
+    //   getColor(name);
+    // }
   }
 
   function goToTag(tag: string) {
