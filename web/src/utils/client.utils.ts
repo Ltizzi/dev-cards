@@ -6,6 +6,7 @@ import {
   TaskSlim,
   UITag,
   Workspace,
+  WorkspaceLite,
 } from "./types";
 import { utils } from "./utils";
 
@@ -52,6 +53,7 @@ export function isDarkerCardsActive(): boolean {
 }
 
 export function createCustomConfiguration(ws: Workspace) {
+  const ws_lite = mapWorkspaceToWorkspaceLite(ws);
   const newConfig: CustomConfiguration = {
     config_id: utils.generateRandomId(),
     customGlosaries: [],
@@ -60,8 +62,16 @@ export function createCustomConfiguration(ws: Workspace) {
       tags: [] as UITag[],
       specialTags: [] as SpecialTag[],
     } as TagPool,
-    workspace: ws,
+    workspace: ws_lite,
     flagged_tasks: [] as TaskSlim[],
   };
   return newConfig;
+}
+
+export function mapWorkspaceToWorkspaceLite(ws: Workspace) {
+  return {
+    workspace_id: ws.workspace_id,
+    project_name: ws.project_name,
+    owner: ws.owner,
+  } as WorkspaceLite;
 }

@@ -7,7 +7,7 @@
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Assign User"
         @click="modalSwitch('addUser', true)"
-        v-if="isModOrOwner"
+        v-if="isModOrOwner && !offlineMode"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'user-plus']" />
         <AddUserModal
@@ -19,7 +19,7 @@
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Remove User"
         @click="modalSwitch('removeUser', true)"
-        v-if="isModOrOwner"
+        v-if="isModOrOwner && !offlineMode"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'user-minus']" />
         <RemoveUserModal
@@ -107,6 +107,7 @@
     deleteTask: false,
   });
 
+  const offlineMode = ref<boolean>();
   const isModOrOwner = ref<boolean>();
   const isDesignatedUser = ref<boolean>();
   const canModify = ref<boolean>();
@@ -217,6 +218,7 @@
   //   prepareAuthorization();
   // });
   onMounted(() => {
+    offlineMode.value = projectStore.offlineMode;
     prepareAuthorization();
   });
 </script>
