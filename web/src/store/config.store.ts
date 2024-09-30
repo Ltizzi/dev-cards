@@ -39,9 +39,11 @@ export const useConfigStore = defineStore("configs", {
         if (!this.current.config_id) {
           const projectStore = useProjectStore();
           const id = projectStore.getCurrent()?.workspace_id as number;
+          console.log(id);
           this.current = projectStore.getLocalStorageWorkspaceById(id)
             ?.customConfiguration as unknown as CustomConfiguration;
-
+          console.log("CURRENT CONFIG:");
+          console.log(this.current);
           return this.current;
         } else return this.current;
       }
@@ -129,8 +131,10 @@ export const useConfigStore = defineStore("configs", {
           id
         ) as unknown as JSONWorkspace;
         jws.customConfiguration = config;
+        this.current = config;
         jws.update_at = new Date(Date.now());
         projectStore.saveJSONWStoLocalStorage(jws);
+        return jws.customConfiguration;
       } else
         return await apiCall.post(EndpointType.CONFIG_SAVE, config, {
           params: { ws_id: id },
@@ -274,7 +278,12 @@ export const useConfigStore = defineStore("configs", {
       }
     },
     async addTagToPool(ws_id: number, config_id: number, tag: UITag) {
-      if (!this.checkTagInPool(tag))
+      // console.log("ws:", ws_id);
+      // console.log("config: ", config_id);
+      // console.log("tag: ", tag);
+      // console.log(await this.checkTagInPool(tag));
+      const alreadySaved = await this.checkTagInPool(tag);
+      if (!alreadySaved)
         if (this.offlineMode) {
           this.current.tagPool.tags.push(tag);
           this.saveConfig(ws_id, this.current);

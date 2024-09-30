@@ -58,6 +58,7 @@ export const useProjectStore = defineStore("projects", {
     async setCurrent(project: Workspace) {
       this.checkOfflineMode();
       if (project) {
+        this.current = project;
         if (this.offlineMode) {
           const configStore = useConfigStore();
           const config =

@@ -80,12 +80,17 @@ export const useTaskStore = defineStore("tasks", {
       this.currentTask = task;
     },
     saveLocalTask(task: Task) {
+      console.log("TASK: ");
+      console.log(task);
       const projectStore = useProjectStore();
       const ws = projectStore.getCurrent() as Workspace;
+      console.log("WORKSPACE: ");
+      console.log(ws);
       const jws = projectStore.getLocalStorageWorkspaceById(
         ws.workspace_id
       ) as unknown as JSONWorkspace;
-
+      console.log("JWS:");
+      console.log(jws);
       let tasks = jws.tasks ? jws.tasks : ([] as Task[]);
       if (task.task_id && this.checkTaskSavedLocal(task.task_id)) {
         tasks = tasks.map((t: Task) => {
@@ -102,7 +107,7 @@ export const useTaskStore = defineStore("tasks", {
       const jws = projectStore.getLocalStorageWorkspaceById(
         ws.workspace_id
       ) as unknown as JSONWorkspace;
-      return jws.tasks.filter((t: Task) => t.task_id === id).length > 0;
+      return jws.tasks.filter((t: Task) => t.task_id == id).length > 0;
     },
 
     setCurrentProjectTasks(list: Array<Task>) {
@@ -263,6 +268,8 @@ export const useTaskStore = defineStore("tasks", {
         });
     },
     async saveTag(tag: string) {
+      console.log("FROM STORE");
+      console.log(this.currentTask.task_tags);
       this.checkOfflineMode();
       const newTag: UITag = {
         color: taskUtils.getRandomColor(),
@@ -275,13 +282,25 @@ export const useTaskStore = defineStore("tasks", {
         newTag
       );
       if (this.offlineMode) {
-        let tags = this.currentTask.task_tags;
-        if (!tags?.includes(tag)) {
-          tags?.push(tag);
+        console.log("DEBUG 1");
+        console.log(this.currentTask.task_tags);
+        console.log("TAG TO ADD: ", tag);
+        let tags = this.currentTask.task_tags as string[];
+        console.log(tags);
+        const alreadyAddedToTask =
+          tags.filter((t: string) => t.toLowerCase() == tag.toLowerCase())
+            .length > 0;
+        console.log(
+          tags.filter((t: string) => t.toLowerCase() == tag.toLowerCase())
+        );
+
+        if (!alreadyAddedToTask) {
+          console.log("DEBUG 2");
+          tags.push(tag);
           this.currentTask.task_tags = tags;
           this.saveLocalTask(this.currentTask);
           return this.currentTask;
-        }
+        } else return this.currentTask;
       } else {
         const response = (await apiCall.patch(
           EndpointType.TASK_ADD_TAG,
@@ -402,7 +421,7 @@ export const useTaskStore = defineStore("tasks", {
           ws.workspace_id
         ) as unknown as JSONWorkspace;
         let tasks = project.tasks;
-        tasks = tasks?.filter((t: Task) => t.task_id !== id);
+        tasks = tasks?.filter((t: Task) => t.task_id != id);
         project.tasks = tasks;
         projectStore.saveJSONWStoLocalStorage(project);
         const userStore = useUserStore();
