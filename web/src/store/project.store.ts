@@ -3,6 +3,7 @@ import {
   CustomConfiguration,
   JSONWorkspace,
   Task,
+  TaskLite,
   UserLocal,
   Workspace,
   WorkspaceLite,
@@ -14,6 +15,7 @@ import { useConfigStore } from "./config.store";
 import { useUserStore } from "./user.store";
 import { workspaceUtils } from "../utils/workspace.utils";
 import { utils } from "../utils/utils";
+import { taskUtils } from "../utils/task.utils";
 
 const apiCall = useApiCall();
 
@@ -117,6 +119,11 @@ export const useProjectStore = defineStore("projects", {
         workspaces = workspaces.map((ljws: JSONWorkspace) => {
           if (ljws.workspace.workspace_id === jws.workspace.workspace_id) {
             ljws = jws;
+            let tasks = ljws.tasks;
+            let lite_tasks: TaskLite[] = tasks.map((t: Task) =>
+              taskUtils.mapTaskToTaskLite(t)
+            );
+            ljws.workspace.tasks = lite_tasks;
           }
           return ljws;
         });

@@ -45,19 +45,22 @@ export const useTaskStore = defineStore("tasks", {
       this.tasks = response as Array<Task>;
       return response;
     },
+    getLocalTask(id: number) {
+      const projectStore = useProjectStore();
+      const ws = projectStore.getCurrent() as Workspace;
+      const jws = projectStore.getLocalStorageWorkspaceById(ws.workspace_id);
+      const tasks = jws?.tasks;
+      let task = tasks?.find((t: Task) => t.task_id === id);
+      if (task?.task_id === id) {
+        this.setCurrentTask(task);
+        return task;
+      }
+    },
 
     async fetchTaskById(id: number) {
       this.checkOfflineMode();
       if (this.offlineMode) {
-        const projectStore = useProjectStore();
-        const ws = projectStore.getCurrent() as Workspace;
-        const jws = projectStore.getLocalStorageWorkspaceById(ws.workspace_id);
-        const tasks = jws?.tasks;
-        let task = tasks?.find((t: Task) => t.task_id === id);
-        if (task?.task_id === id) {
-          this.setCurrentTask(task);
-          return task;
-        }
+        return this.getLocalTask(id);
       } else {
         const response = (await apiCall.get(EndpointType.TASK_GET_BY_ID, {
           params: {
