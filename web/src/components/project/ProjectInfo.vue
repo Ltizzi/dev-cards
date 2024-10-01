@@ -33,16 +33,6 @@
         <h1 class="mb-2 text-base font-bold">Moderators:</h1>
         <div class="flex flex-row flex-wrap gap-5">
           <p class="text-lg" v-for="mod in project.moderators">
-            <!-- <div class="flex flex-row gap-5 mt-2">
-                <div class="avatar">
-                  <div class="w-6 rounded-full">
-                    <img :src="mod.avatar" />
-                  </div>
-                </div>
-                <p class="text-sm my-auto">
-                  {{ mod.username }}
-                </p>
-              </div> -->
             <BaseUserAvatarItem
               :avatar="mod.avatar"
               :username="mod.username"
@@ -57,16 +47,6 @@
           class="flex flex-row flex-wrap gap-5 justify-center lg:mx-7 xl:mx-0"
         >
           <p class="text-lg" v-for="user in project.users">
-            <!-- <div class="flex flex-row gap-4 ml-5 ">
-                  <div class="avatar">
-                    <div class="w-6 rounded-full">
-                      <img :src="user.avatar" />
-                    </div>
-                  </div>
-                  <p class="text-sm my-auto">
-                    {{ user.username }}
-                  </p>
-                </div> -->
             <BaseUserAvatarItem
               :avatar="user.avatar"
               :username="user.username"
@@ -80,8 +60,6 @@
     <div
       class="my-10 xl:mx-7 lg:mx-14 flex flex-col justify-center items-center"
     >
-      <!-- <h1 class="mb-2 text-xl font-bold">Description:</h1>
-        <p class="mx-10 text-lg">{{ project.description }}</p> -->
       <BaseEditDescription
         :description="project.description"
         :id="project.workspace_id"
@@ -97,10 +75,8 @@
       :show="true"
       class="xl:mx-16 pb-14"
     />
-    <!-- <h1 class="text-3xl my-5">Tasks:</h1> -->
+
     <NewTaskBtn class="mx-auto" />
-    <!--     
-      <TaskList :tasks="project.tasks" :isMicro="false" :isDraggable="false" :isDark="isDark"/> -->
   </div>
 </template>
 

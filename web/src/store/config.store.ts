@@ -40,11 +40,11 @@ export const useConfigStore = defineStore("configs", {
         if (!this.current.config_id) {
           const projectStore = useProjectStore();
           const id = projectStore.getCurrent()?.workspace_id as number;
-          console.log(id);
+          //console.log(id);
           this.current = projectStore.getLocalStorageWorkspaceById(id)
             ?.customConfiguration as unknown as CustomConfiguration;
-          console.log("CURRENT CONFIG:");
-          console.log(this.current);
+          // console.log("CURRENT CONFIG:");
+          // console.log(this.current);
           return this.current;
         } else return this.current;
       }
@@ -62,7 +62,7 @@ export const useConfigStore = defineStore("configs", {
       }
     },
     async getTags(): Promise<UITag[]> {
-      if (this.current.config_id != null) return this.current.tagPool.tags;
+      if (this.current.config_id) return this.current.tagPool.tags;
       else {
         return (await this.getCurrent()).tagPool.tags;
       }
@@ -363,6 +363,9 @@ export const useConfigStore = defineStore("configs", {
             config_id: config_id,
           },
         });
+    },
+    clean() {
+      this.current = {} as CustomConfiguration;
     },
   },
 });
