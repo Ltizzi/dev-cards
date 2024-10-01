@@ -147,6 +147,7 @@
     Priority,
     Progress,
     Status,
+    Task,
     TaskLite,
     TaskType,
     Workspace,
@@ -159,6 +160,7 @@
   import ChangeCardSizeBtn from "../components/ui/ChangeCardSizeBtn.vue";
   import { taskUtils } from "../utils/task.utils";
   import { useUIStore } from "../store/ui.store";
+  import { useTaskStore } from "../store/task.store";
 
   const projectStore = useProjectStore();
   const UIStore = useUIStore();
@@ -259,7 +261,14 @@
   }
 
   function hasAssignedUser(task: TaskLite) {
-    return task.hasUsers;
+    if (!projectStore.offlineMode) return task.hasUsers;
+    else {
+      const taskStore = useTaskStore();
+      const saved_task = taskStore.getLocalTask(task.task_id) as Task;
+      return saved_task.designated_to
+        ? saved_task.designated_to.length > 0
+        : false;
+    }
   }
 
   function getTasks() {
