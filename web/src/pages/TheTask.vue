@@ -523,17 +523,17 @@
       (t: UITag) => t.name.toLowerCase() == name.toLowerCase()
     );
     if (uiTag.length > 0) return uiTag[0].color;
-    else {
-      const newTag: UITag = {
-        name: name,
-        color: taskUtils.getRandomColor(),
-      };
-      configStore.addTagToPool(
-        projectStore.current.workspace_id,
-        configStore.current.config_id,
-        newTag
-      );
-    }
+    // else {
+    //   const newTag: UITag = {
+    //     name: name,
+    //     color: taskUtils.getRandomColor(),
+    //   };
+    //   configStore.addTagToPool(
+    //     projectStore.current.workspace_id,
+    //     configStore.current.config_id,
+    //     newTag
+    //   );
+    // }
     // const ws = projectStore.getCurrent() as Workspace;
     // const ws_id = ws.workspace_id;
     // const tags: UITag[] | undefined = taskUtils.getTagColor(ws_id, name);

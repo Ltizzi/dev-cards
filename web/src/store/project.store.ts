@@ -153,6 +153,9 @@ export const useProjectStore = defineStore("projects", {
     getWorkspaceTasks(ws_id: number): Task[] {
       let arr = [] as Task[];
       //TODO: implement taskFetcher
+      if (this.offlineMode) {
+      } else {
+      }
       return arr;
     },
     getLocalStorageWorkspaces() {
@@ -359,6 +362,8 @@ export const useProjectStore = defineStore("projects", {
       //this.memberOf = [] as Workspace[];
       const uiStore = useUIStore();
       uiStore.clean();
+      const configStore = useConfigStore();
+      configStore.clean();
     },
   },
 });

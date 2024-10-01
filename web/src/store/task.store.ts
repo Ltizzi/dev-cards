@@ -80,17 +80,17 @@ export const useTaskStore = defineStore("tasks", {
       this.currentTask = task;
     },
     saveLocalTask(task: Task) {
-      console.log("TASK: ");
-      console.log(task);
+      // console.log("TASK: ");
+      // console.log(task);
       const projectStore = useProjectStore();
       const ws = projectStore.getCurrent() as Workspace;
-      console.log("WORKSPACE: ");
-      console.log(ws);
+      // console.log("WORKSPACE: ");
+      // console.log(ws);
       const jws = projectStore.getLocalStorageWorkspaceById(
         ws.workspace_id
       ) as unknown as JSONWorkspace;
-      console.log("JWS:");
-      console.log(jws);
+      // console.log("JWS:");
+      // console.log(jws);
       let tasks = jws.tasks ? jws.tasks : ([] as Task[]);
       if (task.task_id && this.checkTaskSavedLocal(task.task_id)) {
         tasks = tasks.map((t: Task) => {
