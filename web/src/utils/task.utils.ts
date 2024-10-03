@@ -91,12 +91,17 @@ function searchTasks(searchValue: string, tasks: TaskLite[]): TaskLite[] {
   return returned_tasks;
 }
 
+function filterTags(tags: string[], tag: string) {
+  return tags.filter((t: string) => t.toLowerCase() == tag).length > 0;
+}
+
 function searchTasksByTag(tag: string, tasks: TaskLite[]): TaskLite[] {
   if (!tag) {
     return tasks;
   }
   tag = tag.toLowerCase();
-  return tasks.filter((t: TaskLite) => t.task_tags.includes(tag));
+  //return tasks.filter((t: TaskLite) => t.task_tags.includes(tag));
+  return tasks.filter((t: TaskLite) => filterTags(t.task_tags, tag));
 }
 
 function searchTasksByFilters(options: any[], tasks: TaskLite[]): TaskLite[] {
