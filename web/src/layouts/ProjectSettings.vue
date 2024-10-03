@@ -101,16 +101,19 @@
         title: "Basic Settings",
         path: "basic",
         needOwner: false,
+        needOnline: false,
       },
       {
         title: "Moderators",
         path: "mods",
         needOwner: true,
+        needOnline: true,
       },
       {
         title: "Users Control",
         path: "users_control",
         needOwner: false,
+        needOnline: true,
       },
     ],
   });

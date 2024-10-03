@@ -271,6 +271,7 @@ export interface MenuOptionUI {
   title: string;
   path: string;
   needOwner: boolean;
+  needOnline: boolean;
 }
 
 export interface DropdownCheckboxOption {

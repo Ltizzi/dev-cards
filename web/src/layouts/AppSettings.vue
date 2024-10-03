@@ -40,11 +40,13 @@
         title: "User Profile",
         path: "user_profile",
         needOwner: false,
+        needOnline: false,
       },
       {
         title: "Theme Settings",
         path: "theme_setup",
         needOwner: false,
+        needOnline: false,
       },
     ],
   });
