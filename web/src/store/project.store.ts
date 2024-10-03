@@ -343,6 +343,24 @@ export const useProjectStore = defineStore("projects", {
         { params: { ws_id: ws_id, user_id: id } }
       );
     },
+    async updateProjectDescription(id: number, description: string) {
+      const newDes = { description: description };
+      if (this.offlineMode) {
+        this.current.description = description;
+        this.saveWorkspaceToLocalStorage(this.current);
+      } else {
+        const response = (await apiCall.patch(
+          EndpointType.WORKSPACE_UPDATE_DESCRIPTION,
+          newDes,
+          { params: { ws_id: id } }
+        )) as Workspace;
+        this.setCurrent(response);
+      }
+      this.justUpdated = true;
+      setTimeout(() => (this.justUpdated = false), 1000);
+      return this.current;
+    },
+
     checkIsLocal() {
       return this.offlineMode;
     },
