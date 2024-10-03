@@ -69,6 +69,8 @@
   import { EndpointType } from "../../utils/endpoints";
   import { Task, Workspace } from "../../utils/types";
   import { useUIStore } from "../../store/ui.store";
+  import { useTaskStore } from "../../store/task.store";
+  import { useProjectStore } from "../../store/project.store";
 
   const props = defineProps<{
     description: string;
@@ -138,29 +140,45 @@
   }
 
   async function updateDescription() {
-    const newDes = { description: description.value };
-    let endpoint: EndpointType;
-    let params: any;
+    const newDes = description.value as string;
+    let response: any;
     if (props.type == "task") {
-      endpoint = EndpointType.TASK_UPDATE_DESCRIPTION;
-      params = {
-        params: {
-          task_id: props.id,
-        },
-      };
+      const taskStore = useTaskStore();
+      response = (await taskStore.updateDescription(newDes, props.id)) as Task;
     } else {
-      endpoint = EndpointType.WORKSPACE_UPDATE_DESCRIPTION;
-      params = {
-        params: {
-          ws_id: props.id,
-        },
-      };
+      const projectStore = useProjectStore();
+      response = (await projectStore.updateProjectDescription(
+        props.id,
+        newDes
+      )) as Workspace;
     }
-    const response = (await apiCall.patch(endpoint, newDes, params)) as any;
     if (response.task_id == props.id || response.workspace_id == props.id) {
       emit("update", response);
     }
     state.showEditable = false;
+    //const newDes = { description: description.value };
+    // let endpoint: EndpointType;
+    // let params: any;
+    // if (props.type == "task") {
+    //   endpoint = EndpointType.TASK_UPDATE_DESCRIPTION;
+    //   params = {
+    //     params: {
+    //       task_id: props.id,
+    //     },
+    //   };
+    // } else {
+    //   endpoint = EndpointType.WORKSPACE_UPDATE_DESCRIPTION;
+    //   params = {
+    //     params: {
+    //       ws_id: props.id,
+    //     },
+    //   };
+    // }
+    // const response = (await apiCall.patch(endpoint, newDes, params)) as any;
+    // if (response.task_id == props.id || response.workspace_id == props.id) {
+    //   emit("update", response);
+    // }
+    // state.showEditable = false;
   }
 
   async function updateTaskDescription() {

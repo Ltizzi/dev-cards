@@ -347,9 +347,9 @@ export const useTaskStore = defineStore("tasks", {
           params: { task_id: this.currentTask.task_id },
         });
     },
-    async updateDescription(newDes: any, id: number) {
+    async updateDescription(newDes: string, id: number) {
       if (this.offlineMode) {
-        this.currentTask.description = newDes.description;
+        this.currentTask.description = newDes;
         this.saveLocalTask(this.currentTask);
         return this.currentTask;
       } else
