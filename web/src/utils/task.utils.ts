@@ -1,3 +1,4 @@
+import { useConfigStore } from "../store/config.store";
 import {
   Color,
   Priority,
@@ -313,6 +314,43 @@ function saveTagPool() {
   localStorage.setItem("tags", JSON.stringify(newTagPools));
 }
 
+async function parseTags(tags: string[]) {
+  const specialTags = getSpecialTagsByFilter(tags);
+  const filtered_tags = getNormalTags(tags);
+
+  return {
+    tags: filtered_tags,
+    specialTags: await getSpecialsTags(specialTags as string[]),
+  };
+}
+
+async function parseAndGetSpecialTags(tags: string[]) {
+  const filtered_tags = getSpecialTagsByFilter(tags);
+  return filtered_tags ? await getSpecialsTags(filtered_tags as string[]) : [];
+}
+
+function getSpecialTagsByFilter(tags: string[]) {
+  return tags.map((t: string) => {
+    if (t[0] === "{" && t[t.length - 1] === "}") return t;
+  });
+}
+function getNormalTags(tags: string[]) {
+  return tags.map((t: string) => {
+    if (t[0] !== "{" && t[t.length - 1] !== "}") return t;
+  });
+}
+
+async function getSpecialsTags(tags: string[]) {
+  const configStore = useConfigStore();
+  const specialTags = await configStore.getSpecialTags();
+
+  return specialTags.map((st: SpecialTag) => {
+    tags.forEach((t: string) => {
+      if (st.value.toLowerCase() == t.toLowerCase()) return st;
+    });
+  });
+}
+
 export const taskUtils = {
   calcPriorityColor,
   calcProgress,
@@ -330,4 +368,7 @@ export const taskUtils = {
   saveTagPool,
   createTagPool,
   mapTaskToTaskLite,
+  parseTags,
+  parseAndGetSpecialTags,
+  getNormalTags,
 };

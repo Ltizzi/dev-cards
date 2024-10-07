@@ -36,7 +36,14 @@
           v-show="state.selected == 'users_control'"
         />
 
-        <GlosaryControl v-show="state.selected == 'glosary_setup'" />
+        <GlosaryControl
+          :ws_id="project.workspace_id"
+          v-show="state.selected == 'glosary_setup'"
+        />
+        <SpecialTagsControl
+          :ws_id="project.workspace_id"
+          v-show="state.selected == 'tags_setup'"
+        />
       </div>
     </div>
     <div class="flex flex-row justify-between gap-5" v-if="isOwner">
@@ -81,6 +88,8 @@
   import ProjectBasicControl from "../components/settings/ProjectBasicControl.vue";
   import UsersControl from "../components/settings/UsersControl.vue";
   import GlosaryControl from "../components/settings/GlosaryControl.vue";
+  import SpecialTagsControl from "../components/settings/SpecialTagsControl.vue";
+  import { SpecialTag } from "../utils/types";
 
   const projectStore = useProjectStore();
   const userStore = useUserStore();
@@ -126,7 +135,7 @@
       },
       {
         title: "Special Tags",
-        path: "special_tags_setup",
+        path: "tags_setup",
         needOwner: false,
         needOnline: false,
       },
