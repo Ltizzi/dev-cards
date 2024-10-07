@@ -35,6 +35,8 @@
           @update="updateProject"
           v-show="state.selected == 'users_control'"
         />
+
+        <GlosaryControl v-show="state.selected == 'glosary_setup'" />
       </div>
     </div>
     <div class="flex flex-row justify-between gap-5" v-if="isOwner">
@@ -78,6 +80,7 @@
   import ModControl from "../components/settings/ModControl.vue";
   import ProjectBasicControl from "../components/settings/ProjectBasicControl.vue";
   import UsersControl from "../components/settings/UsersControl.vue";
+  import GlosaryControl from "../components/settings/GlosaryControl.vue";
 
   const projectStore = useProjectStore();
   const userStore = useUserStore();
@@ -114,6 +117,18 @@
         path: "users_control",
         needOwner: false,
         needOnline: true,
+      },
+      {
+        title: "Custom Glosaries",
+        path: "glosary_setup",
+        needOwner: false,
+        needOnline: false,
+      },
+      {
+        title: "Special Tags",
+        path: "special_tags_setup",
+        needOwner: false,
+        needOnline: false,
       },
     ],
   });
