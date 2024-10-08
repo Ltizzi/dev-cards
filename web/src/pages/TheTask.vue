@@ -110,49 +110,58 @@
         -->
         <div class="px-7 pt-10 flex flex-col gap-5 justify-start">
           <!-- <h2 class="text-2xl text-start">{{ card.subtitle }}</h2> -->
-
-          <div
-            v-if="card.task_tags && card.task_tags.length > 0"
-            :class="[
-              'flex flex-row justify-between gap-2 lg:w-2/4 py-5 h-20   my-auto',
-              removeTagActive ? 'hover:cursor-not-allowed' : '',
-            ]"
-            @mouseover="card.task_tags.length > 0 ? (mouseOverTag = true) : ''"
-            @mouseleave="mouseOverTag = false"
-            @keydown.esc="removeTagActive ? (removeTagActive = false) : ''"
-          >
-            <div class="flex flex-row justify-start w-full gap-1 my-auto">
-              <div v-for="tag in card.task_tags">
-                <p
+          <div>
+            <div
+              v-if="normal_tags && normal_tags.length > 0"
+              :class="[
+                'flex flex-row justify-between gap-2 lg:w-2/4 py-5 h-20   my-auto',
+                removeTagActive ? 'hover:cursor-not-allowed' : '',
+              ]"
+              @mouseover="normal_tags.length > 0 ? (mouseOverTag = true) : ''"
+              @mouseleave="mouseOverTag = false"
+              @keydown.esc="removeTagActive ? (removeTagActive = false) : ''"
+            >
+              <div
+                class="flex flex-row flex-wrap justify-start w-full gap-1 my-auto"
+              >
+                <div v-for="tag in normal_tags">
+                  <p
+                    :class="[
+                      'rounded-lg  text-white text-sm font-semibold py-0.5   capitalize px-3 transition-all ease-in-out duration-300 hover:scale-110 ',
+                      removeTagActive
+                        ? 'hover:bg-error hover:cursor-not-allowed'
+                        : 'hover:cursor-pointer',
+                      `${tag.color}`,
+                    ]"
+                    @click="
+                      removeTagActive ? removeTag(tag.name) : goToTag(tag.name)
+                    "
+                  >
+                    <!-- getColor(tag) -->
+                    {{ tag.name }}
+                  </p>
+                </div>
+              </div>
+              <div class="tooltip" data-tip="Click to remove tags!">
+                <button
                   :class="[
-                    'rounded-lg  text-white text-sm font-semibold py-0.5   capitalize px-3 transition-all ease-in-out duration-300 hover:scale-110 hover:cursor-pointer',
-                    removeTagActive ? 'hover:bg-error' : '',
-                    `${getColor(tag)}`,
+                    'btn btn-error',
+                    removeTagActive
+                      ? 'hover:cursor-not-allowed'
+                      : 'hover:cursor:pointer ',
                   ]"
-                  @click="removeTagActive ? removeTag(tag) : goToTag(tag)"
+                  v-if="mouseOverTag && canModify"
+                  @click="activeRemoveTag()"
                 >
-                  {{ tag }}
-                </p>
+                  <font-awesome-icon
+                    :icon="['fas', 'trash']"
+                    class="text-white size-5 my-auto"
+                  />
+                </button>
               </div>
             </div>
-            <div class="tooltip" data-tip="Click to remove tags!">
-              <button
-                :class="[
-                  'btn btn-error',
-                  removeTagActive
-                    ? 'hover:cursor-not-allowed'
-                    : 'hover:cursor:pointer ',
-                ]"
-                v-if="mouseOverTag && canModify"
-                @click="activeRemoveTag()"
-              >
-                <font-awesome-icon
-                  :icon="['fas', 'trash']"
-                  class="text-white size-5 my-auto"
-                />
-              </button>
-            </div>
           </div>
+
           <div
             class="flex flex-row gap-2 py-1 align-middle"
             v-if="card.dependencies && card.dependencies.length > 0"
@@ -314,6 +323,7 @@
     Effort,
     Priority,
     Progress,
+    SpecialTag,
     Status,
     TagPool,
     Task,
@@ -365,6 +375,9 @@
   const mouseOverTag = ref<boolean>(false);
   const removeTagActive = ref<boolean>(false);
 
+  const normal_tags = ref<UITag[]>();
+  const special_tags = ref<SpecialTag[]>();
+
   const route = useRoute();
   const router = useRouter();
 
@@ -399,7 +412,7 @@
   async function updateTask(task: Task) {
     taskStore.setCurrentTask(task);
     // await projectStore.updateCurrent();
-    prepareTaskData(task);
+    await prepareTaskData(task);
   }
 
   async function updateProgress(progress: Progress) {
@@ -447,16 +460,6 @@
 
   async function updateTaskEffort(option: Effort) {
     const response = await taskStore.updateTaskEffort(option);
-    // (await apiCall.patch(
-    //   EndpointType.TASK_UPDATE_EFFORT,
-    //   {},
-    //   {
-    //     params: {
-    //       task_id: card.value?.task_id,
-    //       effort: option,
-    //     },
-    //   }
-    // )) as Task;
     if (response.task_id == card.value?.task_id) {
       updateTask(response);
     } else console.error("CAN'T UPDATE TASK EFFORT");
@@ -464,16 +467,6 @@
 
   async function updateTaskType(option: TaskType) {
     const response = await taskStore.updateTaskType(option);
-    // (await apiCall.patch(
-    //   EndpointType.TASK_UPDATE_TYPE,
-    //   {},
-    //   {
-    //     params: {
-    //       task_id: card.value?.task_id,
-    //       type: option,
-    //     },
-    //   }
-    // )) as Task;
     if (response.task_id == card.value?.task_id) {
       updateTask(response);
     } else console.error("CAN'T UPDATE TASK TYPE");
@@ -484,22 +477,13 @@
   }
 
   async function removeTag(tag: string) {
+    console.log("ASD");
     if (card.value) {
       card.value.task_tags = card.value.task_tags?.filter(
         (t: string) => t.toLowerCase() != tag.toLowerCase()
       );
     }
     const response = (await taskStore.removeTag(tag)) as unknown as Task;
-    // (await apiCall.patch(
-    //   EndpointType.TASK_REMOVE_TAG,
-    //   {},
-    //   {
-    //     params: {
-    //       task_id: card.value?.task_id,
-    //       tag: tag,
-    //     },
-    //   }
-    // )) as Task;
 
     //TODO: cuando implemente TagPool
     if (response.task_id == card.value?.task_id) {
@@ -517,42 +501,51 @@
     }
   }
 
-  function getColor(name: string) {
-    const tags = configStore.current.tagPool.tags;
-    const uiTag = tags.filter(
-      (t: UITag) => t.name.toLowerCase() == name.toLowerCase()
-    );
-    if (uiTag.length > 0) return uiTag[0].color;
-    // else {
-    //   const newTag: UITag = {
-    //     name: name,
-    //     color: taskUtils.getRandomColor(),
-    //   };
-    //   configStore.addTagToPool(
-    //     projectStore.current.workspace_id,
-    //     configStore.current.config_id,
-    //     newTag
-    //   );
-    // }
-    // const ws = projectStore.getCurrent() as Workspace;
-    // const ws_id = ws.workspace_id;
-    // const tags: UITag[] | undefined = taskUtils.getTagColor(ws_id, name);
-    // if (tags && tags.length > 0) {
-    //   return tags[0].color;
-    // } else {
-    //   taskUtils.addTagToTagsPool(name, ws_id);
-    //   getColor(name);
-    // }
-  }
+  // async function getColor(name: string) {
+  //   const tags = await configStore.getTags();
+  //   console.log("TAGS:");
+
+  //   const uiTag = tags.filter(
+  //     (t: UITag) => t.name.toLowerCase() == name.toLowerCase()
+  //   );
+  //   console.log(uiTag);
+  //   if (uiTag.length > 0) return uiTag[0].color;
+  //   // else {
+  //   //   const newTag: UITag = {
+  //   //     name: name,
+  //   //     color: taskUtils.getRandomColor(),
+  //   //   };
+  //   //   configStore.addTagToPool(
+  //   //     projectStore.current.workspace_id,
+  //   //     configStore.current.config_id,
+  //   //     newTag
+  //   //   );
+  //   // }
+  //   // const ws = projectStore.getCurrent() as Workspace;
+  //   // const ws_id = ws.workspace_id;
+  //   // const tags: UITag[] | undefined = taskUtils.getTagColor(ws_id, name);
+  //   // if (tags && tags.length > 0) {
+  //   //   return tags[0].color;
+  //   // } else {
+  //   //   taskUtils.addTagToTagsPool(name, ws_id);
+  //   //   getColor(name);
+  //   // }
+  // }
 
   function goToTag(tag: string) {
     router.push(`/project/tasks?tag=${tag}`);
   }
 
-  function prepareTaskData(data: Task) {
+  async function prepareTaskData(data: Task) {
     title_color.value = taskUtils.getColor(data.color);
     progress_value.value = taskUtils.calcProgress(data.progress);
     priority_color.value = taskUtils.calcPriorityColor(data.priority);
+    const tags = await taskUtils.parseTags(data.task_tags as string[]);
+    normal_tags.value = tags.tags;
+    special_tags.value = tags.specialTags;
+    // normal_tags.value = (await taskUtils.getUITags(
+    //   data.task_tags as string[]
+    // )) as UITag[];
   }
 
   function checkUserCanModifyTask() {
@@ -571,16 +564,6 @@
       taskId,
       wsId
     )) as unknown as Task;
-    // (await apiCall.post(
-    //   EndpointType.TASK_AUTOASSIGN,
-    //   {},
-    //   {
-    //     params: {
-    //       task_id: card.value?.task_id,
-    //       ws_id: card.value?.workspace.workspace_id,
-    //     },
-    //   }
-    // )) as Task;
     if (response.task_id == card.value?.task_id) {
       card.value = response;
       await userStore.refreshSelf();
@@ -606,7 +589,7 @@
           taskId.value = task.task_id;
           canModify.value = checkUserCanModifyTask();
           taskStore.setCurrentTask(task);
-          prepareTaskData(task);
+          await prepareTaskData(task);
         }
       }
     }
@@ -614,11 +597,11 @@
 
   watch(
     () => taskStore.currentTask,
-    (newValue, oldValue) => {
+    async (newValue, oldValue) => {
       if (newValue != oldValue) {
         card.value = newValue;
         taskId.value = newValue.task_id;
-        prepareTaskData(newValue);
+        await prepareTaskData(newValue);
       }
     }
   );
@@ -656,7 +639,7 @@
       taskId.value = card.value.task_id;
       canModify.value = checkUserCanModifyTask();
       taskStore.setCurrentTask(card.value);
-      prepareTaskData(card.value);
+      await prepareTaskData(card.value);
       isLoaded.value = true;
     }
   });

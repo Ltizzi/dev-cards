@@ -319,7 +319,7 @@ async function parseTags(tags: string[]) {
   const filtered_tags = getNormalTags(tags);
 
   return {
-    tags: filtered_tags,
+    tags: await getUITags(filtered_tags as string[]),
     specialTags: await getSpecialsTags(specialTags as string[]),
   };
 }
@@ -340,14 +340,32 @@ function getNormalTags(tags: string[]) {
   });
 }
 
+async function getUITags(tags: string[]) {
+  const configStore = useConfigStore();
+  const UITags = await configStore.getTags();
+  // console.log("UITAGS FROM UTILS:");
+  // console.log(tags);
+  // console.log(UITags);
+  return UITags.filter((ut: UITag) => {
+    let parcial = tags.filter(
+      (t: string) => t.toLowerCase() == ut.name.toLowerCase()
+    );
+    if (parcial.length > 0) return parcial;
+  });
+}
+
 async function getSpecialsTags(tags: string[]) {
   const configStore = useConfigStore();
   const specialTags = await configStore.getSpecialTags();
 
-  return specialTags.map((st: SpecialTag) => {
-    tags.forEach((t: string) => {
-      if (st.value.toLowerCase() == t.toLowerCase()) return st;
-    });
+  return specialTags.filter((st: SpecialTag) => {
+    let parcial = tags.filter(
+      (t: string) => t.toLowerCase() == st.name.toLowerCase()
+    );
+    if (parcial.length > 0) return parcial;
+    // tags.forEach((t: string) => {
+    //   if (st.value.toLowerCase() == t.toLowerCase()) return st;
+    // });
   });
 }
 
@@ -371,4 +389,5 @@ export const taskUtils = {
   parseTags,
   parseAndGetSpecialTags,
   getNormalTags,
+  getUITags,
 };
