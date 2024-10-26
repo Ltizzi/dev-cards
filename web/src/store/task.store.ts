@@ -169,7 +169,7 @@ export const useTaskStore = defineStore("tasks", {
         return (await apiCall.patch(
           EndpointType.TASK_UPDATE_PRIORITY,
           {},
-          { params: { priority: priority } }
+          { params: { priority: priority, task_id: this.currentTask.task_id } }
         )) as Task;
     },
     async updateTaskStatus(option: Status) {
