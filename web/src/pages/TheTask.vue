@@ -109,8 +109,16 @@
         #MARK: TASK BODY
         -->
         <div class="px-7 pt-10 flex flex-col gap-5 justify-start">
+          <TagsList
+            :isSpecial="false"
+            :tags="normal_tags"
+            :canModify="canModify"
+            @removeTag="removeTag"
+            @removeSpecialTag="removeSpecialTag"
+            @navigate="goToTag"
+          />
           <!-- <h2 class="text-2xl text-start">{{ card.subtitle }}</h2> -->
-          <div>
+          <!-- <div>
             <div
               v-if="normal_tags && normal_tags.length > 0"
               :class="[
@@ -137,7 +145,7 @@
                       removeTagActive ? removeTag(tag.name) : goToTag(tag.name)
                     "
                   >
-                    <!-- getColor(tag) -->
+                    <!- getColor(tag) 
                     {{ tag.name }}
                   </p>
                 </div>
@@ -160,7 +168,7 @@
                 </button>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <div
             class="flex flex-row gap-2 py-1 align-middle"
@@ -347,6 +355,7 @@
   import TaskIssue from "../components/task/TaskIssue.vue";
   import AddIssueBtn from "../components/ui/AddIssueBtn.vue";
   import BaseUserAvatarItem from "../components/common/BaseUserAvatarItem.vue";
+  import TagsList from "../components/ui/TagsList.vue";
   import { useProjectStore } from "../store/project.store";
   import {
     checkIfUserisTaskOwner,
