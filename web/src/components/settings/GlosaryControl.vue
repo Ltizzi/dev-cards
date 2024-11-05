@@ -1,6 +1,8 @@
 import { Glosary } from '../../utils/types';
 <template lang="">
-  <div class="flex flex-col justify-center gap-10 py-10 px-10">
+  <div
+    class="flex flex-col justify-center gap-10 py-10 px-10 motion-duration-300 motion-preset-fade-lg"
+  >
     <h1 class="text-start text-2xl">Workspace's custom glosaries</h1>
 
     <button class="btn btn-primary text-white w-36" @click="newGlosary">

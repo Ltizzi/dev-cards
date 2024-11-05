@@ -1,5 +1,7 @@
 <template lang="">
-  <div class="mx-auto flex flex-col justify-center my-auto min-h-screen">
+  <div
+    class="mx-auto flex flex-col justify-center my-auto min-h-screen motion-scale-in-[0] motion-translate-x-in-[-150%] motion-translate-y-in-[300%] motion-opacity-in-[0%] motion-rotate-in-[-500deg] motion-blur-in-[100px] motion-duration-[1.08s]/scale motion-duration-[1.25s]/translate motion-duration-[0.48s]/opacity motion-duration-[1.46s]/rotate motion-duration-[0.77s]/blur motion-ease-spring-snappy"
+  >
     <div class="flex flex-col justify-center mx-auto gap-5">
       <label for="">Username:</label>
       <input

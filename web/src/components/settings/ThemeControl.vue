@@ -1,6 +1,6 @@
 <template lang="">
   <div
-    class="h-full py-10 px-5 flex flex-col justify-start gap-10 overflow-y-auto"
+    class="h-full py-10 px-5 flex flex-col justify-start gap-10 overflow-y-auto motion-duration-300 motion-preset-fade-lg"
   >
     <h1 class="text-start font-semibold text-2xl">Theme setup</h1>
     <div>
