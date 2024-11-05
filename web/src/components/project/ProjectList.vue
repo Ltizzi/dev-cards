@@ -5,7 +5,11 @@
       class="flex flex-row lg:justify-start justify-center flex-wrap gap-2.5 pt-10 pb-5 mx-5"
       v-if="isLoaded"
     >
-      <ProjectCard v-for="ws in workspaces" :ws="ws" />
+      <ProjectCard
+        v-for="ws in workspaces"
+        :ws="ws"
+        class="motion-duration-1000 motion-preset-pop"
+      />
     </div>
     <div v-if="!isLoaded && workspaces.length < 1" class="text-lg">
       <h1>No current projects avaible</h1>
