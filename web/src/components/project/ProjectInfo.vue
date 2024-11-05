@@ -1,6 +1,6 @@
 <template lang="">
   <div
-    class="flex flex-col justify-center w-full min-h-screen max-h-screen overflow-auto xl:ml-0 lg:-ml-7"
+    class="flex flex-col justify-center w-full min-h-screen max-h-screen overflow-auto xl:ml-0 lg:-ml-7 motion-duration-2000 motion-preset-slide-up motion-opacity-in-0"
     v-if="isLoaded"
   >
     <div
