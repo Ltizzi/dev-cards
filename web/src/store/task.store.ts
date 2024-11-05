@@ -330,6 +330,7 @@ export const useTaskStore = defineStore("tasks", {
           {},
           { params: { task_id: this.currentTask.task_id, tag: tag } }
         )) as Task;
+        this.setCurrentTask(response);
         await configStore.removeTag(tag);
         return response;
       }

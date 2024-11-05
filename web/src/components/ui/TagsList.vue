@@ -11,7 +11,9 @@
       @mouseleave="mouseOverTag = false"
       @keydown.esc="removeTagActive ? (removeTagActive = false) : ''"
     >
-      <div class="flex flex-row flex-wrap justify-start w-full gap-1 my-auto">
+      <div
+        class="flex flex-row flex-nowrap justify-between w-full gap-1 my-auto"
+      >
         <div
           v-if="!props.isSpecial"
           class="flex flex-row flex-wrap justify-start w-full gap-1 my-auto"
