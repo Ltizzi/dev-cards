@@ -1,11 +1,15 @@
 <template lang="">
   <div class="mt-5 xl:ml-2 lg:-ml-6 mx-auto h-screen">
-    <h1 class="text-3xl text-center">Project Settings</h1>
+    <h1
+      class="text-3xl text-center motion-duration-200 motion-delay-200 motion-preset-focus-lg"
+    >
+      Project Settings
+    </h1>
     <div
-      class="flex flex-row border-2 border-opacity-60 border-secondary bg-gradient-to-br from-base-200 to-transparent h-5/6 my-4 xl:w-full lg:w-11/12"
+      class="flex flex-row border-2 border-opacity-60 border-secondary bg-gradient-to-br from-base-200 to-transparent h-5/6 my-4 xl:w-full lg:w-11/12 motion-duration-300 motion-delay-150 motion-opacity-in-0 motion-preset-slide-up-md"
     >
       <SettingsLateralMenu
-        class="w-1/6"
+        class="w-1/6 motion-delay-200 motion-duration-200 motion-preset-fade-lg"
         @menuOption="changeMenu"
         :isOwner="isOwner"
         :options="state.options"
@@ -15,7 +19,9 @@
         class="divider lg:divider-horizontal divider-secondary opacity-60"
       ></div>
 
-      <div class="w-5/6 h-fit">
+      <div
+        class="w-5/6 h-fit motion-delay-500 motion-duration-200 motion-preset-fade-lg"
+      >
         <ProjectBasicControl
           :project="project"
           v-show="state.selected == 'basic'"

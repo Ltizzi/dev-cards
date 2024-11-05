@@ -1,5 +1,7 @@
 <template lang="">
-  <div class="my-14 flex flex-col gap-5 justify-center">
+  <div
+    class="my-14 flex flex-col gap-5 justify-center motion-duration-300 motion-preset-fade-lg"
+  >
     <h1 class="text-3xl text-start font-bold mb-14">Workspace details</h1>
 
     <label

@@ -1,6 +1,6 @@
 <template lang="">
   <div
-    class="h-full overflow-y-auto overflow-x-hidden py-10 px-5 flex flex-col justify-start gap-10"
+    class="h-full overflow-y-auto overflow-x-hidden py-10 px-5 flex flex-col justify-start gap-10 motion-duration-300 motion-preset-fade-lg"
   >
     <h1 class="text-start font-semibold text-2xl">Edit User Profile</h1>
     <div class="w-full flex lg:flex-row flex-col justify-center gap-5">
