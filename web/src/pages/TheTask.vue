@@ -1,13 +1,13 @@
 <template lang="">
   <div
     :class="[
-      'flex flex-col justify-start my-5 w-full ml-7 rounded-2xl min-h-screen lg:-ml-8 xl:ml-0 motion-duration-700 motion-preset-rebound-up motion-scale-in-50 motion-ease-in-out',
+      'flex flex-col justify-start my-5 w-full ml-7 rounded-2xl min-h-screen lg:-ml-8 xl:ml-0 ',
     ]"
     v-if="isLoaded"
   >
     <div
       :class="[
-        'w-full rounded-xl border-b-4 border-x-4 border-secondary  pb-2 ',
+        'w-full rounded-xl border-b-4 border-x-4 border-secondary  pb-2  motion-duration-700 motion-preset-rebound-up motion-scale-in-50 motion-ease-in-out',
         !isDark
           ? 'bg-base-100 text-base-content'
           : darkerCard
