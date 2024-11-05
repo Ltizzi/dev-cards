@@ -1,7 +1,11 @@
 <template lang="">
   <div class="flex flex-col justify-start" v-if="isLoaded">
     <div
-      class="text-center w-fit flex flex-row flex-wrap justify-start gap-2 mx-9"
+      :class="[
+        'text-center w-fit flex flex-row flex-wrap justify-start gap-2 mx-9 motion-duration-300 motion-ease-in-out ',
+        props.show ? 'motion-opacity-in-0 motion-preset-slide-down-lg' : '',
+        hideTags ? 'motion-opacity-out-0 -motion-translate-y-out-150' : '',
+      ]"
     >
       <div v-for="tag in tags" v-if="showTags">
         <p
@@ -37,6 +41,7 @@
 
   const tags = ref<UITag[]>();
   const showTags = ref<boolean>();
+  const hideTags = ref<boolean>();
   const isLoaded = ref<boolean>();
 
   function goToTag(tag: UITag) {
@@ -49,7 +54,11 @@
   }
 
   function handleTags() {
-    showTags.value = !showTags.value;
+    hideTags.value = !hideTags.value ? true : hideTags.value;
+    setTimeout(() => {
+      showTags.value = !showTags.value;
+      hideTags.value = hideTags.value ? false : hideTags.value;
+    }, 300);
   }
 
   watch(
@@ -66,8 +75,8 @@
     () => props.show,
     (newValue, oldValue) => {
       if (newValue) {
-        showTags.value = true;
-      } else showTags.value = false;
+        handleTags();
+      } else handleTags();
     }
   );
 

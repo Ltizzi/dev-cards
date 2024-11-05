@@ -1,11 +1,9 @@
 <template lang="">
-  <div
-    class="overflow-visible motion-duration-700 motion-preset-slide-up-md motion-scale-in-60 motion-opacity-in-0"
-  >
+  <div class="overflow-visible">
     <!-- ref="task_card" :style="style" -->
     <div
       :class="[
-        'card w-72 shadow-lg hover:z-40 -ml-1',
+        'card w-72 shadow-lg hover:z-40 -ml-1 motion-duration-700 motion-preset-slide-up-md motion-scale-in-60 motion-opacity-in-0',
         isDark
           ? darkerMiniCards
             ? 'shadow-md  shadow-secondary'
@@ -59,7 +57,7 @@
     </div>
     <div
       :class="[
-        'card w-32 shadow-md  hover:z-40',
+        'card w-32 shadow-md  hover:z-40 motion-duration-700 motion-preset-slide-up-md motion-scale-in-60 motion-opacity-in-0',
         isDark
           ? darkerMiniCards
             ? 'shadow-md  shadow-secondary'
