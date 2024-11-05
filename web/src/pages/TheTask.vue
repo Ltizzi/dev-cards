@@ -1,7 +1,7 @@
 <template lang="">
   <div
     :class="[
-      'flex flex-col justify-start my-5 w-full ml-7 rounded-2xl min-h-screen lg:-ml-8 xl:ml-0',
+      'flex flex-col justify-start my-5 w-full ml-7 rounded-2xl min-h-screen lg:-ml-8 xl:ml-0 motion-duration-700 motion-preset-rebound-up motion-scale-in-50 motion-ease-in-out',
     ]"
     v-if="isLoaded"
   >
