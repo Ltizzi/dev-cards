@@ -487,59 +487,24 @@
 
   async function removeTag(tag: string) {
     console.log("ASD");
-    if (card.value) {
-      card.value.task_tags = card.value.task_tags?.filter(
-        (t: string) => t.toLowerCase() != tag.toLowerCase()
-      );
-    }
+    // if (card.value) {
+    //   card.value.task_tags = card.value.task_tags?.filter(
+    //     (t: string) => t.toLowerCase() != tag.toLowerCase()
+    //   );
+    // }
     const response = (await taskStore.removeTag(tag)) as unknown as Task;
 
-    //TODO: cuando implemente TagPool
     if (response.task_id == card.value?.task_id) {
       card.value = response;
-      // let tags = JSON.parse(localStorage.getItem("tags") as string); //removing tag from tag pool in local
-      // tags = tags.map((tp: TagPool) => {
-      //   if (tp.workspace_id === card.value?.workspace.workspace_id) {
-      //     tp.tags = tp.tags.filter(
-      //       (t: UITag) => t.name.toLowerCase() !== tag.toLowerCase()
-      //     );
-      //   }
-      //   return tp;
-      // });
-      // localStorage.setItem("tags", JSON.stringify(tags));
+      //TODO: Testear si se actualiza correctamente o si hace falta llamar a "prepareData acá"
     }
   }
 
-  // async function getColor(name: string) {
-  //   const tags = await configStore.getTags();
-  //   console.log("TAGS:");
-
-  //   const uiTag = tags.filter(
-  //     (t: UITag) => t.name.toLowerCase() == name.toLowerCase()
-  //   );
-  //   console.log(uiTag);
-  //   if (uiTag.length > 0) return uiTag[0].color;
-  //   // else {
-  //   //   const newTag: UITag = {
-  //   //     name: name,
-  //   //     color: taskUtils.getRandomColor(),
-  //   //   };
-  //   //   configStore.addTagToPool(
-  //   //     projectStore.current.workspace_id,
-  //   //     configStore.current.config_id,
-  //   //     newTag
-  //   //   );
-  //   // }
-  //   // const ws = projectStore.getCurrent() as Workspace;
-  //   // const ws_id = ws.workspace_id;
-  //   // const tags: UITag[] | undefined = taskUtils.getTagColor(ws_id, name);
-  //   // if (tags && tags.length > 0) {
-  //   //   return tags[0].color;
-  //   // } else {
-  //   //   taskUtils.addTagToTagsPool(name, ws_id);
-  //   //   getColor(name);
-  //   // }
-  // }
+  async function removeSpecialTag(id: number) {
+    //TODO: lógica de store para remover special tags
+    //TODO: O quizás no haga falta porque eso quizás sólo debería hacerse desde la configuración del proyecto
+    //TODO: o quizás sólo se mueve de la tarea por lo que sería válido usarlo.
+  }
 
   function goToTag(tag: string) {
     router.push(`/project/tasks?tag=${tag}`);
@@ -549,12 +514,10 @@
     title_color.value = taskUtils.getColor(data.color);
     progress_value.value = taskUtils.calcProgress(data.progress);
     priority_color.value = taskUtils.calcPriorityColor(data.priority);
+
     const tags = await taskUtils.parseTags(data.task_tags as string[]);
     normal_tags.value = tags.tags;
     special_tags.value = tags.specialTags;
-    // normal_tags.value = (await taskUtils.getUITags(
-    //   data.task_tags as string[]
-    // )) as UITag[];
   }
 
   function checkUserCanModifyTask() {
