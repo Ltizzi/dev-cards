@@ -1,5 +1,7 @@
 <template lang="">
-  <div class="overflow-visible">
+  <div
+    class="overflow-visible motion-duration-700 motion-preset-slide-up-md motion-scale-in-60 motion-opacity-in-0"
+  >
     <!-- ref="task_card" :style="style" -->
     <div
       :class="[

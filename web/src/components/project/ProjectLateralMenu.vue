@@ -1,7 +1,7 @@
 <template lang="">
   <div
     :class="[
-      'w-56 bg-base-200 flex flex-col flex-nowrap h-screen',
+      'w-56 bg-base-200 flex flex-col flex-nowrap h-screen motion-duration-500 motion-opacity-in-0 motion-ease-in-out',
       state.isMobile ? 'fixed left-7 z-10' : 'fixed left-28 -ml-20',
     ]"
     v-if="isLoaded && state.showMenu"
@@ -95,7 +95,14 @@
             <span>Designated</span>
           </summary>
 
-          <ul class="before:ring-offset-purple-400">
+          <ul
+            :class="[
+              'before:ring-offset-purple-400',
+              state.designatedOpen
+                ? 'motion-duration-500 motion-ease-in-out-cubic motion-preset-slide-down-lg motion-opacity-in-0'
+                : '',
+            ]"
+          >
             <li
               v-for="task in user_designated_tasks"
               :class="[
@@ -134,12 +141,26 @@
       </li>
       <li class="whitespace-nowrap flex-shrink-0" v-if="!state.offlineMode">
         <details close>
-          <summary>Users</summary>
-          <ul class="before:ring-offset-purple-400">
+          <summary
+            :class="[
+              'hover:cursor-pointer transition-all ease-in-out hover:bg-accent',
+            ]"
+            @click="handleDropdown('users')"
+          >
+            Users
+          </summary>
+          <ul
+            :class="[
+              'before:ring-offset-purple-400 motion-duration-500 motion-ease-in-quart',
+              state.usersOpen
+                ? 'motion-opacity-in-0 motion-preset-slide-down-lg'
+                : 'motion-opacity-out-0 motion-preset-slide-up-lg',
+            ]"
+          >
             <li
               v-for="user in project.users"
               :class="[
-                'text-white flex flex-row justify-start align-middle w-full hover:bg-accent',
+                'text-white flex flex-row justify-start align-middle w-full hover:bg-accent rounded-md transition-all ease-in-out',
                 state.selectedUser == user.user_id
                   ? 'opacity-70 text-white bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent  font-semibold'
                   : '',
@@ -272,6 +293,8 @@
     showMenu: true,
     showHideBtn: false,
     showMenuBtn: false,
+    designatedOpen: false,
+    usersOpen: false,
   });
 
   watch(
@@ -305,17 +328,6 @@
     }
   );
 
-  // watch(
-  //   () => projectStore.local.workspace_id,
-  //   (newValue, oldValue) => {
-  //     if (newValue != oldValue) {
-  //       project.value = projectStore.getCurrent();
-  //       user_designated_tasks.value = getProjectDesignatedTasks();
-  //       isModOrOwner.value = checkIsModOrOwner(newValue);
-  //     }
-  //   }
-  // );
-
   watch(
     () => projectStore.current.tasks,
     async (newValue, oldValue) => {
@@ -327,18 +339,6 @@
       }
     }
   );
-
-  // watch(
-  //   () => projectStore.local.tasks,
-  //   async (newValue, oldValue) => {
-  //     if (
-  //       project.value?.workspace_id != projectStore.local.workspace_id &&
-  //       newValue != oldValue
-  //     ) {
-  //       project.value = await projectStore.updateCurrent();
-  //     }
-  //   }
-  // );
 
   watch(
     () => projectStore.justUpdated,
@@ -354,6 +354,11 @@
   );
 
   //NAVIGATION
+
+  function handleDropdown(name: string) {
+    if (name == "designated") state.designatedOpen = !state.designatedOpen;
+    if (name == "users") state.usersOpen = !state.usersOpen;
+  }
 
   function goTo(path: string, obj_id?: number) {
     let stateSelected: number;
@@ -377,6 +382,7 @@
         stateSelected = -1;
         break;
       case "designated":
+        handleDropdown("designated");
         router.push("/project/designated");
         stateSelected = -2;
         break;

@@ -6,13 +6,24 @@
       <img
         :src="props.ws.project_avatar"
         :alt="`Avatar of ${props.ws.project_name}`"
+        class="motion-preset-pop motion-duration-700 motion-delay-300"
       />
     </figure>
     <div class="card-body">
-      <h2 class="card-title">{{ props.ws.project_name }}</h2>
-      <p class="text-sm">{{ shortString(props.ws.description) }}</p>
+      <h2
+        class="card-title motion-duration-700 motion-delay-200 motion-opacity-in-0 motion-blur-in-xl"
+      >
+        {{ props.ws.project_name }}
+      </h2>
+      <p
+        class="text-sm motion-duration-700 motion-delay-200 motion-opacity-in-0 motion-blur-in-xl"
+      >
+        {{ shortString(props.ws.description) }}
+      </p>
       <div class="card-actions justify-between">
-        <div class="flex flex-col justify-start gap-0.5 items-center">
+        <div
+          class="flex flex-col justify-start gap-0.5 items-center motion-duration-700 motion-delay-1000 motion-opacity-in-0 motion-blur-in-xl"
+        >
           <p v-if="ws.users && ws.users.length > 0" class="italic text-sm">
             <span class="text-base font-semibold mr-1">{{
               ws.users.length
@@ -26,7 +37,12 @@
             {{ ` task${ws.tasks.length > 1 ? "s" : ""}` }}
           </p>
         </div>
-        <button class="btn btn-primary" @click="goToProject(ws)">Enter</button>
+        <button
+          class="btn btn-primary motion-preset-bounce motion-duration-700 motion-delay-500 motion-opacity-in-0 motion-blur-in-sm"
+          @click="goToProject(ws)"
+        >
+          Enter
+        </button>
       </div>
     </div>
   </div>

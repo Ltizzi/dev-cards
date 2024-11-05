@@ -1,7 +1,7 @@
 <template lang="">
   <teleport to="body">
     <div
-      class="lg:items-center 2xl:items-center fixed left-0 top-0 z-50 flex h-screen w-screen items-start justify-center"
+      class="lg:items-center 2xl:items-center fixed left-0 top-0 z-50 flex h-screen w-screen items-start justify-center motion-duration-500 motion-ease-spring-snappy motion-preset-slide-up-right-md motion-opacity-in-0 motion-scale-in-0"
       :class="{ 'is-active': isActive }"
     >
       <div
