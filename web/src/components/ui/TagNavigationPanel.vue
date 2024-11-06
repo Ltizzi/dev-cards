@@ -83,7 +83,17 @@
   onBeforeMount(async () => {
     // tags.value = taskUtils.getTags(props.ws_id);
     // if (!tags.value) taskUtils.createTagPool(props.ws_id);
-    tags.value = await configStore.getTags();
+    //FIXME: volver a tags.value = await configStore.getTags(), esto es un parchepara evitar duplicados
+    const unfiltered_tags = await configStore.getTags();
+    let checked_tags = [] as string[];
+    tags.value = unfiltered_tags
+      .map((ut: UITag) => {
+        if (!checked_tags.includes(ut.name.toLowerCase())) {
+          checked_tags.push(ut.name);
+          return ut;
+        }
+      })
+      .filter((t: any) => t != undefined) as UITag[];
 
     isLoaded.value = tags.value.length > 0;
   });

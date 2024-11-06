@@ -273,11 +273,21 @@ export const useConfigStore = defineStore("configs", {
         );
     },
     async checkTagInPool(tag: UITag) {
-      if (this.current) return this.current.tagPool.tags.includes(tag);
-      else {
-        return (await this.getCurrent()).tagPool.tags.includes(tag);
+      if (this.current) {
+        return (
+          this.current.tagPool.tags.filter(
+            (t: UITag) => t.name.toLowerCase() == tag.name.toLowerCase()
+          ).length > 0
+        );
+      } else {
+        return (
+          (await this.getCurrent()).tagPool.tags.filter(
+            (t: UITag) => t.name.toLowerCase() == tag.name.toLowerCase()
+          ).length > 0
+        );
       }
     },
+
     async addTagToPool(ws_id: number, config_id: number, tag: UITag) {
       // console.log("ws:", ws_id);
       // console.log("config: ", config_id);
