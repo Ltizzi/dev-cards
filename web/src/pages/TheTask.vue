@@ -29,7 +29,7 @@
             <h2
               class="2xl:text-2xl text-xl ml-2 border-r-2 border-secondary px-2 py-7 my-auto lg:min-w-44 lg:w-1/6 w-3/12 max-w-xl"
             >
-              {{ card.workspace.project_name }}
+              {{ card.workspace.project_name + " " + card.task_id }}
             </h2>
 
             <div

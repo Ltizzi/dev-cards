@@ -316,7 +316,14 @@ function saveTagPool() {
 
 async function parseTags(tags: string[]) {
   const specialTags = getSpecialTagsByFilter(tags);
-  const filtered_tags = getNormalTags(tags);
+  let filtered_tags = getNormalTags(tags);
+  let unique_tags = [] as string[];
+  filtered_tags = filtered_tags.map((t: string | undefined) => {
+    if (t && !unique_tags.includes(t.toLowerCase())) {
+      unique_tags.push(t.toLowerCase());
+      return t;
+    }
+  });
 
   return {
     tags: await getUITags(filtered_tags as string[]),
@@ -346,11 +353,31 @@ async function getUITags(tags: string[]) {
   // console.log("UITAGS FROM UTILS:");
   // console.log(tags);
   // console.log(UITags);
+
+  //TODO:FIXME:este código hay q borrarlo en prooduction (es solo un parche para filtrar tags duplicados)
+  let unique_tags = [] as string[];
+  UITags.forEach((ut: UITag) => {
+    if (unique_tags.length == 0 || !unique_tags.includes(ut.name.toLowerCase()))
+      unique_tags.push(ut.name);
+  });
+  let unique_added_tags = [] as UITag[];
+  // console.log(unique_tags);
   return UITags.filter((ut: UITag) => {
     let parcial = tags.filter(
-      (t: string) => t.toLowerCase() == ut.name.toLowerCase()
+      (t: string) =>
+        t.toLowerCase() == ut.name.toLowerCase() && //FIXME: a partir de acá debería borrarse
+        unique_tags.filter(
+          (t: string) => t.toLowerCase() == ut.name.toLowerCase()
+        ).length > 0 &&
+        unique_added_tags.filter(
+          (ui_tag: UITag) => ui_tag.name.toLowerCase() == ut.name.toLowerCase()
+        ).length == 0
     );
-    if (parcial.length > 0) return parcial;
+    if (parcial.length > 0) {
+      unique_added_tags.push(ut);
+      return parcial;
+    }
+    console.log(unique_added_tags);
   });
 }
 

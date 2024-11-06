@@ -113,8 +113,16 @@ public class CustomConfiguration {
             createTagPool();
         }
         //List<SpecialTag> tags = tagPool.getSpecialTags();
-        tags.add(tag);
-        tagPool.setSpecialTags(tags);
+        boolean already_exist = tags
+                .stream()
+                .filter(t->t.getName().equalsIgnoreCase(tag.getName()))
+                .collect(Collectors.toList())
+                .size() > 0;
+        if(!already_exist){
+            tags.add(tag);
+            tagPool.setSpecialTags(tags);
+        }
+
 //        return specialTags.contains(tag);
     }
 
@@ -149,8 +157,15 @@ public class CustomConfiguration {
         if(this.getTagPool()!=null){
             tags = tagPool.getTags();
         }
-        tags.add(tag);
-        tagPool.setTags(tags);
+        boolean alreadyAdded = tags
+                .stream()
+                .filter(t->t.getName().equalsIgnoreCase(tag.getName()))
+                .collect(Collectors.toList())
+                .size() >0;
+        if(!alreadyAdded) {
+            tags.add(tag);
+            tagPool.setTags(tags);
+        }
     }
 
     public void removeTagFromPool(UITag tag){
