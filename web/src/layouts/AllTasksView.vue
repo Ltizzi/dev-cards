@@ -104,40 +104,6 @@
     }
   );
 
-  // watch(
-  //   () => route.query.tag,
-  //   (newValue, oldValue) => {
-  //     if (newValue) {
-  //       console.log("tag:", newValue);
-  //       state.searchedByTag = true;
-  //       newValue = newValue as string;
-  //       const tags = newValue.split(" ");
-  //       console.log(tags);
-  //       if (tags.length == 1)
-  //         filteredTasks.value = fetchTasks(
-  //           newValue as string,
-  //           tasks.value as TaskLite[]
-  //         );
-  //       else {
-  //         tags.forEach((tag: string) => {
-  //           filteredTasks.value = filteredTasks.value?.concat(
-  //             fetchTasks(tag, tasks.value as TaskLite[])
-  //           );
-  //         });
-  //       }
-  //       filteredByTags.value = filteredTasks.value;
-  //       console.log(filteredByTags.value);
-  //     }
-  //   }
-  // );
-
-  // function fetchTasks(value: string, tasks_list: TaskLite[]) {
-  //   return taskUtils.searchTasksByTag(
-  //     value as string,
-  //     tasks_list as TaskLite[]
-  //   );
-  // }
-
   function handleTags() {
     showTags.value = !showTags.value;
   }
@@ -156,18 +122,6 @@
     }
   }
 
-  // function searchTasks(tag: UITag) {
-  //   if (tag) {
-  //     const search_value = tag.name;
-  //     if (!route.query.tag) router.push(`/project/tasks?tag=${search_value}`);
-  //     else router.push(`${route.fullPath}+${search_value}`);
-  //   } else {
-  //     router.push("/project/tasks");
-  //     state.searchedByTag = false;
-  //     filteredTasks.value = [];
-  //   }
-  // }
-
   function changeIconSize() {
     isMicro.value = !isMicro.value;
   }
@@ -183,16 +137,7 @@
     if (!ws) ws = projectStore.current;
     tasks.value = ws.tasks;
     state.ws_id = ws.workspace_id;
-    //const darkTHeme = JSON.parse(localStorage.getItem("darkTheme") as string);
     isDark.value = UIStore.checkIsDarkTheme();
-    // if (route.query.tag) {
-    //   state.searchedByTag = true;
-    //   filteredTasks.value = taskUtils.searchTasksByTag(
-    //     route.query.tag as string,
-    //     tasks.value as TaskLite[]
-    //   );
-    //   filteredByTags.value = filteredTasks.value;
-    // }
   });
 </script>
 <style lang=""></style>

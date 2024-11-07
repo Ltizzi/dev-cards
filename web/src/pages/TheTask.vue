@@ -486,7 +486,6 @@
   }
 
   async function removeTag(tag: string) {
-    console.log("ASD");
     // if (card.value) {
     //   card.value.task_tags = card.value.task_tags?.filter(
     //     (t: string) => t.toLowerCase() != tag.toLowerCase()
