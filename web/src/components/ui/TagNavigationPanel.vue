@@ -65,7 +65,7 @@
     () => props.ws_id,
     async (newValue, oldValue) => {
       if (newValue != oldValue) {
-        tags.value = await configStore.getTags(); //taskUtils.getTags(props.ws_id) as UITag[];
+        tags.value = await configStore.getTags();
 
         isLoaded.value = tags.value.length > 0;
       }
