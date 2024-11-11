@@ -152,7 +152,7 @@
 </template>
 <script setup lang="ts">
   import BaseDialog from "../common/BaseModal.vue";
-  import { defineProps, defineEmits, ref } from "vue";
+  import { defineProps, defineEmits, ref, useSSRContext } from "vue";
   import {
     ProgressItem,
     ColorEnumArray,
@@ -216,15 +216,14 @@
 
   async function createTask() {
     requestSent.value = true;
-    const owner: UserLite = {
-      user_id: userStore.self.user_id,
-      username: userStore.self.username,
-      email: userStore.self.email,
-      avatar: userStore.self.avatar,
-    };
+    let owner: UserLite = {} as UserLite;
+    if (userStore.self.user_id || userStore.offlineSelf.user_id) {
+      owner = userStore.getSelfAsUserLite() as UserLite;
+    } else {
+      userStore.getCurrent();
+      owner = userStore.getSelfAsUserLite() as UserLite;
+    }
 
-    console.log("TESTING");
-    console.log(projectStore.getCurrent());
     const workspace = projectStore.getCurrent() as Workspace;
     const project: WorkspaceLite = {
       workspace_id: workspace.workspace_id,
