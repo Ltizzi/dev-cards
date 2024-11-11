@@ -22,7 +22,7 @@
     </div>
 
     <div
-      class="h-5/6 overflow-y-hidden overflow-x-auto w-full lg:flex-1 xl:ml-0 lg:-ml-6"
+      class="h-5/6 overflow-y-hidden overflow-x-hidden w-full lg:flex-1 xl:ml-0 lg:-ml-6"
     >
       <div
         class="w-full grid border-2 border-t-0 border-l-0 border-r-0 border-opacity-40 border-spacing-10 border-dashed border-secondary grid-cols-5 text-xl font-semibold text-center text-base-content rounded-t-xl flex-1"
