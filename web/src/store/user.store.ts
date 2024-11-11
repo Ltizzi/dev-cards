@@ -4,6 +4,7 @@ import {
   AuthResponse,
   JSONWorkspace,
   User,
+  UserLite,
   UserLocal,
   UserWorkspaceRoles,
   Workspace,
@@ -23,7 +24,7 @@ export const useUserStore = defineStore("auth", {
   state: () => ({
     logged: false,
     offlineMode: false,
-    offlineSelf: {},
+    offlineSelf: {} as UserLocal,
     self: {} as User,
     local: {} as UserLocal,
     localUsers: [] as UserLocal[],
@@ -58,6 +59,7 @@ export const useUserStore = defineStore("auth", {
         EndpointType.USER_REFRESH
       )) as AuthResponse;
       if (response.user.user_id == this.self.user_id) {
+        console.log(response);
         this.setSelf(response.user);
         saveToken(response.token);
         return this.self;
@@ -100,6 +102,21 @@ export const useUserStore = defineStore("auth", {
           return JSON.parse(localStorage.getItem("user") as string);
         }
         return this.self;
+      }
+    },
+    getCurrent() {
+      this.offlineMode = this.checkOfflineMode();
+      if (this.offlineMode) {
+        this.offlineSelf = JSON.parse(
+          localStorage.getItem("localUser") as string
+        ) as UserLocal;
+        return this.offlineSelf;
+      } else {
+        if (!this.self.user_id && localStorage.getItem("user")) {
+          const user = JSON.parse(localStorage.getItem("user") as string);
+          this.setSelf(user);
+          return this.self;
+        } else return this.self;
       }
     },
     setRoles(uwrs: UserWorkspaceRoles[]) {
@@ -220,6 +237,29 @@ export const useUserStore = defineStore("auth", {
     },
     getLocalUser() {
       return JSON.parse(localStorage.getItem("localUser") as string);
+    },
+    getSelfAsUserLite() {
+      this.offlineMode = this.checkOfflineMode();
+      this.getCurrent();
+      if (this.offlineMode) {
+        console.log(this.offlineSelf);
+        return {
+          user_id: this.offlineSelf.user_id,
+          username: this.offlineSelf.nickname,
+          email: "local@user.com",
+          avatar: this.offlineSelf.avatar,
+        };
+      } else {
+        console.log(this.self);
+        this.getCurrent();
+        console.log(this.self);
+        return {
+          user_id: this.self.user_id,
+          username: this.self.username,
+          email: this.self.email,
+          avatar: this.self.avatar,
+        };
+      }
     },
   },
 });
