@@ -1,6 +1,6 @@
 <template lang="">
   <div
-    class="card bg-base-100 image-full w-72 min-h-56 max-h-56 shadow-xl z-0 duration-300 transition-all ease-in-out hover:scale-110"
+    class="card bg-base-100 image-full w-72 min-h-56 max-h-56 shadow-xl z-0 duration-300 transition-all ease-in-out hover:scale-110 hover:z-40 hover:shadow-2xl hover:shadow-base-300"
   >
     <figure>
       <img

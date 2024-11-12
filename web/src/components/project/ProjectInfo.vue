@@ -58,7 +58,7 @@
     </div>
 
     <div
-      class="my-10 xl:mx-7 lg:mx-14 flex flex-col justify-center items-center"
+      class="my-10 xl:mx-72 lg:mx-14 flex flex-col justify-center items-center"
     >
       <BaseEditDescription
         :description="project.description"
@@ -73,7 +73,7 @@
       :ws_id="project.workspace_id"
       :info="true"
       :show="true"
-      class="xl:mx-16 pb-14"
+      class="xl:mx-72 pb-14"
     />
 
     <NewTaskBtn class="mx-auto" />
