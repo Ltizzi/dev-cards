@@ -59,6 +59,7 @@
   onBeforeMount(() => {
     UIStore.checkOfflineMode();
     userStore.checkOfflineMode();
+    UIStore.setLoading(true);
   });
 
   onMounted(() => {
@@ -73,6 +74,8 @@
     const user = userStore.getSelf();
     if (!user) {
       router.push("/login");
+    } else {
+      UIStore.setLoading(false);
     }
   });
 </script>

@@ -18,6 +18,7 @@
 </template>
 <script setup lang="ts">
   import { useProjectStore } from "../../store/project.store";
+  import { useUIStore } from "../../store/ui.store";
   import { useUserStore } from "../../store/user.store";
   import { Workspace } from "../../utils/types";
   import ProjectCard from "./ProjectCard.vue";
@@ -25,6 +26,7 @@
 
   const projectStore = useProjectStore();
   const userStore = useUserStore();
+  const UIStore = useUIStore();
 
   const workspaces = ref<Workspace[]>();
   const isLoaded = ref<boolean>(false);
@@ -44,14 +46,17 @@
   );
 
   onBeforeMount(async () => {
+    UIStore.setLoading(true);
     if (projectStore.memberOf) {
       workspaces.value = projectStore.memberOf;
+      UIStore.setLoading(false);
     } else {
       const id = userStore.getSelf().user_id; //JSON.parse(localStorage.getItem("user") as string).user_id;
       const wss = await fetchProjects(id);
       if (wss) {
         projectStore.setMemberOf(wss);
         workspaces.value = projectStore.memberOf;
+        UIStore.setLoading(false);
       }
     }
     isLoaded.value = true;

@@ -95,6 +95,7 @@
   }
 
   onBeforeMount(async () => {
+    UIStore.setLoading(true);
     isMobile.value = UIStore.isMobile;
     showMenu.value = !isMobile.value;
     UIStore.getTHeme();
@@ -123,6 +124,7 @@
   onMounted(() => {
     if (isLoaded.value) {
       designatedTaskNumber.value = userStore.getSelf().designated_tasks.length;
+      UIStore.setLoading(false);
     }
   });
 </script>

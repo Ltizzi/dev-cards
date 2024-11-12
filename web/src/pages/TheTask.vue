@@ -583,6 +583,7 @@
   });
 
   onMounted(async () => {
+    UIStore.setLoading(true);
     const task_id = route.query.id;
     const ws = projectStore.getCurrent() as Workspace;
     ws_id.value = ws.workspace_id;
@@ -612,6 +613,7 @@
       taskStore.setCurrentTask(card.value);
       await prepareTaskData(card.value);
       isLoaded.value = true;
+      UIStore.setLoading(false);
     }
   });
 </script>
