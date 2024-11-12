@@ -12,6 +12,7 @@ export const useUIStore = defineStore("uiStore", {
     justUpdated: false,
     isMobile: false,
     offlineMode: false,
+    loading: false,
   }),
   actions: {
     setTheme(theme: string) {
@@ -58,6 +59,9 @@ export const useUIStore = defineStore("uiStore", {
     },
     setIsMobile(value: boolean) {
       this.isMobile = window.innerWidth < 1024;
+    },
+    setLoading(value: boolean) {
+      this.loading = value;
     },
     getOfflineMode() {
       const userStore = useUserStore();

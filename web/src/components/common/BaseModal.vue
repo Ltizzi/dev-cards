@@ -10,7 +10,12 @@
         @click="close()"
       ></div>
       <div
-        class="container fixed z-50 w-auto rounded-md border-2 border-secondary bg-base-100 text-base-content bg-opacity-100 shadow-xl motion-scale-in-[0] motion-translate-x-in-[-150%] motion-translate-y-in-[300%] motion-opacity-in-[0%] motion-rotate-in-[-500deg] motion-blur-in-[100px] motion-duration-[0.36s]/scale motion-duration-[0.41s]/translate motion-duration-[0.16s]/opacity motion-duration-[0.48s]/rotate motion-duration-[0.26s]/blur motion-ease-spring-snappy"
+        :class="[
+          'container fixed z-50 w-auto  text-base-content bg-opacity-200 shadow-xl ',
+          props.isLoading
+            ? 'bg-opacity-0 border-0 motion-duration-100 motion-ease-in-out motion-preset-pop'
+            : 'rounded-md border-2 border-secondary bg-base-100 motion-scale-in-[0] motion-translate-x-in-[-150%] motion-translate-y-in-[300%] motion-opacity-in-[0%] motion-rotate-in-[-500deg] motion-blur-in-[100px] motion-duration-[0.36s]/scale motion-duration-[0.41s]/translate motion-duration-[0.16s]/opacity motion-duration-[0.48s]/rotate motion-duration-[0.26s]/blur motion-ease-spring-snappy',
+        ]"
       >
         <slot></slot>
       </div>
@@ -20,7 +25,7 @@
 <script setup lang="ts">
   import { ref, defineProps } from "vue";
 
-  const props = defineProps<{ isActive: boolean }>();
+  const props = defineProps<{ isActive: boolean; isLoading: boolean }>();
 
   const isActive = ref(props.isActive);
 
