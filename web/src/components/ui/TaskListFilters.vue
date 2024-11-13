@@ -5,14 +5,14 @@
     >
       <TaskFilterInput @search="defineSearch" class="ml-0" />
       <div
-        class="flex flex-row flex-wrap lg:flex-nowrap gap-y-3 lg:gap-y-0 mt-5 lg:mt-0 gap-1 my-auto"
+        class="flex flex-row flex-wrap lg:flex-nowrap gap-y-3 lg:gap-y-0 lg:mt-0 gap-1 mt-1 items-center"
       >
         <div
           class="flex flex-row justify-center items-center my-auto gap-2 mr-2"
         >
           <div class="tooltip" data-tip="Show/Hidetags">
             <button
-              class="btn btn-outline btn-info 2xl:text-sm text-xs"
+              class="btn btn-outline btn-info 2xl:text-sm text-xs btn-sm"
               @click="handleTags"
             >
               {{ !state.showingTags ? "Show Tags" : "Hide Tags" }}
@@ -30,7 +30,7 @@
           <div class="tooltip" data-tip="Clear Search">
             <button
               :class="[
-                'btn btn-outline btn-info 2xl:text-sm text-xs',
+                'btn btn-outline btn-info 2xl:text-sm text-xs btn-sm',
                 props.tagSearch || state.tagSearch ? '' : 'btn-disabled',
               ]"
               @click="clearSearch"
