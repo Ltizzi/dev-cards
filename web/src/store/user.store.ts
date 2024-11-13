@@ -9,7 +9,12 @@ import {
   UserWorkspaceRoles,
   Workspace,
 } from "../utils/types";
-import { logout, saveToken } from "../utils/auth.utils";
+import {
+  logout,
+  mapLocalUserToUserLite,
+  mapUserToUserLite,
+  saveToken,
+} from "../utils/auth.utils";
 import { useApiCall } from "../composables/useAPICall";
 import { EndpointType } from "../utils/endpoints";
 import { AxiosRequestConfig } from "axios";
@@ -238,27 +243,30 @@ export const useUserStore = defineStore("auth", {
     getLocalUser() {
       return JSON.parse(localStorage.getItem("localUser") as string);
     },
+    //TODO: usar los methods de auth utils
     getSelfAsUserLite() {
       this.offlineMode = this.checkOfflineMode();
       this.getCurrent();
       if (this.offlineMode) {
-        console.log(this.offlineSelf);
-        return {
-          user_id: this.offlineSelf.user_id,
-          username: this.offlineSelf.nickname,
-          email: "local@user.com",
-          avatar: this.offlineSelf.avatar,
-        };
+        return mapLocalUserToUserLite(this.offlineSelf);
+        // console.log(this.offlineSelf);
+        // return {
+        //   user_id: this.offlineSelf.user_id,
+        //   username: this.offlineSelf.nickname,
+        //   email: "local@user.com",
+        //   avatar: this.offlineSelf.avatar,
+        // };
       } else {
-        console.log(this.self);
+        //      console.log(this.self);
         this.getCurrent();
-        console.log(this.self);
-        return {
-          user_id: this.self.user_id,
-          username: this.self.username,
-          email: this.self.email,
-          avatar: this.self.avatar,
-        };
+        return mapUserToUserLite(this.self);
+        // console.log(this.self);
+        // return {
+        //   user_id: this.self.user_id,
+        //   username: this.self.username,
+        //   email: this.self.email,
+        //   avatar: this.self.avatar,
+        // };
       }
     },
   },
