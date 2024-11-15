@@ -25,6 +25,9 @@
         <UserProfileSetup v-show="state.selected == 'user_profile'" />
       </div>
     </div>
+    <div class="flex flex-row justify-start">
+      <LoadWorkspaceButton />
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -35,6 +38,7 @@
   import ThemeControl from "../components/settings/ThemeControl.vue";
   import SettingsLateralMenu from "../components/settings/SettingsLateralMenu.vue";
   import UserProfileSetup from "../components/settings/UserProfileSetup.vue";
+  import LoadWorkspaceButton from "../components/ui/LoadWorkspaceButton.vue";
 
   const UIStore = useUIStore();
   const userStore = useUserStore();
