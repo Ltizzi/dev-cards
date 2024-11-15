@@ -193,7 +193,8 @@
 
   async function downloadJson() {
     const ws = projectStore.getCurrent() as Workspace;
-
+    console.log("DEBUG");
+    console.log(userStore.self.user_id);
     try {
       const response = (await apiCall.get(EndpointType.WORKSPACE_JSON, {
         params: {
