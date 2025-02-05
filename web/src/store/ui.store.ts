@@ -81,6 +81,9 @@ export const useUIStore = defineStore("uiStore", {
       );
     },
     checkOfflineMode() {
+      if (!localStorage.getItem("offlineMode")) {
+        localStorage.setItem("offlineMode", JSON.stringify({ active: false }));
+      }
       return JSON.parse(localStorage.getItem("offlineMode") as string).active;
     },
     clean() {
