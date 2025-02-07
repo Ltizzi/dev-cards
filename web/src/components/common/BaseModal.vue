@@ -25,7 +25,7 @@
 <script setup lang="ts">
   import { ref, defineProps } from "vue";
 
-  const props = defineProps<{ isActive: boolean; isLoading: boolean }>();
+  const props = defineProps<{ isActive: boolean; isLoading?: boolean }>();
 
   const isActive = ref(props.isActive);
 
