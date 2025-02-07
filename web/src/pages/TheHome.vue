@@ -74,6 +74,7 @@
     const user = userStore.getSelf();
     if (!user) {
       router.push("/login");
+      UIStore.setLoading(false);
     } else {
       UIStore.setLoading(false);
     }
