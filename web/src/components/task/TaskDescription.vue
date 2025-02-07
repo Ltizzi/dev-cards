@@ -110,7 +110,7 @@
       description: description.value,
     };
     const response = (await taskStore.updateDescription(
-      newDes,
+      newDes.description as string,
       props.task_id
     )) as Task;
     // (await apiCall.patch(

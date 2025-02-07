@@ -78,6 +78,7 @@
   const isLoaded = ref<boolean>(false);
 
   function createOfflineUser() {
+    console.log("Creating local user...");
     const newUser: UserLocal = {
       user_id: utils.generateRandomId(),
       nickname: nickname.value as string,
@@ -87,10 +88,16 @@
       created_tasks: [] as TaskLite[],
       local: true,
     };
+    console.log("USER DATA: " + newUser);
+    console.log("Setting profile as user...");
     userStore.setLocalUser(newUser);
+    console.log("Saving user to local storage....");
     userStore.saveLocal();
+    console.log("Flagging User as New...");
     userStore.flagAsNewUser();
+    console.log("Turning on Offline Mode");
     UIStore.setOfflineMode(true);
+    console.log("Re-routing to /");
     router.push("/");
   }
 
