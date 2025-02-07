@@ -80,7 +80,7 @@
   function createOfflineUser() {
     console.log("Creating local user...");
     const newUser: UserLocal = {
-      user_id: utils.generateRandomId(),
+      user_id: 1,
       nickname: nickname.value as string,
       avatar: avatarUrl.value as string,
       designated_tasks: [] as TaskLite[],
