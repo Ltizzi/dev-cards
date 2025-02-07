@@ -23,7 +23,7 @@
 <script setup lang="ts">
   import LateralMenu from "../layouts/LateralMenu.vue";
   import { useRouter } from "vue-router";
-  import { ref, onMounted, watch, onBeforeMount } from "vue";
+  import { ref, onMounted, watch, onBeforeMount, nextTick } from "vue";
   import {
     changeTheme,
     checkThemeIsDark,
@@ -71,8 +71,10 @@
     setTimeout(() => {
       firstLoaded.value = false;
     }, 1500);
+  });
+  nextTick(() => {
     const user = userStore.getSelf();
-    if (!user) {
+    if (!user.user_id) {
       router.push("/login");
       UIStore.setLoading(false);
     } else {

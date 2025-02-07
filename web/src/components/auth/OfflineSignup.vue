@@ -79,8 +79,9 @@
 
   function createOfflineUser() {
     console.log("Creating local user...");
+
     const newUser: UserLocal = {
-      user_id: 1,
+      user_id: utils.generateRandomId(),
       nickname: nickname.value as string,
       avatar: avatarUrl.value as string,
       designated_tasks: [] as TaskLite[],
@@ -88,9 +89,10 @@
       created_tasks: [] as TaskLite[],
       local: true,
     };
-    console.log("USER DATA: " + newUser);
+    console.log("USER DATA: " + newUser.user_id + " " + newUser.nickname);
     console.log("Setting profile as user...");
     userStore.setLocalUser(newUser);
+    console.log(userStore.getLocalUser());
     console.log("Saving user to local storage....");
     userStore.saveLocal();
     console.log("Flagging User as New...");
