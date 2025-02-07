@@ -16,24 +16,30 @@
   const projectStore = useProjectStore();
 
   function handleFileUpload(event: Event) {
+    console.log("LOADING...");
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
 
-    if (file) {
-      const reader = new FileReader();
+    console.log(file);
 
-      reader.onload = () => {
-        try {
-          const parsedData = JSON.parse(reader.result as string);
-          projectStore.saveJSONWStoLocalStorage(parsedData as JSONWorkspace);
-        } catch (err: any) {
-          console.error("Invalid JSON file: ", err);
-        }
-      };
+    if (!file) return;
 
-      reader.onerror = () => {
-        console.error("An Error ocurred while reading file: ", reader.error);
-      };
-    }
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      try {
+        console.log(content);
+        const parsedData = JSON.parse(content);
+        projectStore.saveJSONWStoLocalStorage(parsedData as JSONWorkspace);
+      } catch (err: any) {
+        console.error("Invalid JSON file: ", err);
+      }
+    };
+
+    reader.onerror = () => {
+      console.error("An Error ocurred while reading file: ", reader.error);
+    };
+    reader.readAsText(file);
   }
 </script>

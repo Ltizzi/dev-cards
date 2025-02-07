@@ -102,9 +102,12 @@
       avatarUrl.value as string
     )) as Workspace;
 
+    console.log(response.workspace_id);
+    console.log(response.workspace_id == project.value?.workspace_id);
     if (response.workspace_id == project.value?.workspace_id) {
       //projectStore.setCurrent(response);
       project.value = response;
+      console.log("updating");
       emit("update", response);
     }
   }

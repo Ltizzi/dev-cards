@@ -56,11 +56,8 @@
       <button class="btn btn-primary text-white" @click="downloadJson">
         Download JSON
       </button>
-      <button
-        class="btn btn-error text-white"
-        disabled
-        @click="showDeleteWsModal"
-      >
+      <!-- TODO: activar disabled de nuevo -->
+      <button class="btn btn-error text-white" @click="showDeleteWsModal">
         DELETE WORKSPACE
       </button>
     </div>
@@ -79,6 +76,7 @@
   import { useProjectStore } from "../store/project.store";
   import {
     APIResponse,
+    JSONWorkspace,
     MenuOptionUI,
     UserLite,
     Workspace,
@@ -195,27 +193,62 @@
     const ws = projectStore.getCurrent() as Workspace;
     console.log("DEBUG");
     console.log(userStore.self.user_id);
-    try {
-      const response = (await apiCall.get(EndpointType.WORKSPACE_JSON, {
-        params: {
-          ws_id: ws.workspace_id,
-          user_id: userStore.self.user_id,
-        },
-        responseType: "blob",
-      })) as BlobPart;
-      const fileURL = window.URL.createObjectURL(new Blob([response]));
-      const fileLink = document.createElement("a");
-      fileLink.href = fileURL;
-      fileLink.setAttribute(
-        "download",
-        `${ws.project_name + "_" + ws.updated_at}.json`
-      );
-      document.body.appendChild(fileLink);
-      fileLink.click();
-      document.body.removeChild(fileLink);
-      window.URL.revokeObjectURL(fileURL);
-    } catch (error) {
-      console.error(error);
+    const offlineMode = projectStore.checkOfflineMode();
+    let JSONws_blob;
+    if (!offlineMode) {
+      try {
+        const response = (await apiCall.get(EndpointType.WORKSPACE_JSON, {
+          params: {
+            ws_id: ws.workspace_id,
+            user_id: userStore.self.user_id,
+          },
+          responseType: "blob",
+        })) as BlobPart;
+        JSONws_blob = new Blob([response], { type: "application/json" });
+        // const fileURL = window.URL.createObjectURL(new Blob([response]));
+        // const fileLink = document.createElement("a");
+        // fileLink.href = fileURL;
+        // fileLink.setAttribute(
+        //   "download",
+        //   `${ws.project_name + "_" + ws.updated_at}.json`
+        // );
+        // document.body.appendChild(fileLink);
+        // fileLink.click();
+        // document.body.removeChild(fileLink);
+        // window.URL.revokeObjectURL(fileURL);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      const workspace_data = projectStore.getLocalStorageWorkspaceById(
+        ws.workspace_id
+      ) as JSONWorkspace;
+      if (workspace_data) {
+        const json_string = JSON.stringify(workspace_data);
+        JSONws_blob = new Blob([json_string], { type: "application/json" });
+        // const url = URL.createObjectURL(blob);
+        // const a = document.createElement("a");
+        // a.href = url;
+        // a.download = `${workspace_data.workspace.project_name}_${workspace_data.workspace.updated_at}.json`;
+        // document.body.appendChild(a);
+        // a.click();
+        // document.body.removeChild(a);
+      } else {
+        console.error(
+          "Something went wrong, workspace not found in localStorage. ID=",
+          ws.workspace_id
+        );
+        return;
+      }
+    }
+    if (JSONws_blob) {
+      const url = URL.createObjectURL(JSONws_blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${ws.project_name}_${ws.updated_at}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
   }
 

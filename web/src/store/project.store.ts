@@ -312,6 +312,7 @@ export const useProjectStore = defineStore("projects", {
         this.current.avatar = url;
         this.saveWorkspaceToLocalStorage(this.current);
         this.justUpdated = true;
+        return this.current;
         setTimeout(() => {
           this.justUpdated = false;
         }, 1000);
