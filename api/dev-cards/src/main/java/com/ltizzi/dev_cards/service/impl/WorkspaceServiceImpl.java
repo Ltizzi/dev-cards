@@ -8,6 +8,8 @@ import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.InvalidWorkspaceException;
 import com.ltizzi.dev_cards.exception.NotAllowedException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
+import com.ltizzi.dev_cards.model.customConfiguration.ConfigurationDTO;
+import com.ltizzi.dev_cards.model.customConfiguration.ConfigurationMapper;
 import com.ltizzi.dev_cards.model.customConfiguration.CustomConfiguration;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.task.TaskMapper;
@@ -29,8 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -65,6 +65,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private ConfigurationMapper configMapper;
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -242,7 +245,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         WorkspaceEntity ws = getWorkspaceById(ws_id);//wsRepo.findById(ws_id).orElseThrow(()-> new NotFoundException("Workspace not found"));
         UserEntity user = getUserById(user_id);//userRepo.findById(user_id).orElseThrow(()-> new NotFoundException("User not found!"));
         Optional<UserEntity> filtrado= ws.getUsers().stream().filter(u-> u.getUser_id().equals(user_id)).findFirst();
-        CustomConfiguration config = configRepo.findConfigurationByWorkspaceId(ws_id);
+        ConfigurationDTO config = configMapper.toConfigDTO(configRepo.findConfigurationByWorkspaceId(ws_id));
         if(!filtrado.isPresent()){
             throw  new NotAllowedException("Usuario no permitido");
         }
