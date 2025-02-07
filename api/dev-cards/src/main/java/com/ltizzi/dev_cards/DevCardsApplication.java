@@ -1,5 +1,6 @@
 package com.ltizzi.dev_cards;
 
+
 import com.ltizzi.dev_cards.security.utils.RsaKeyProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
