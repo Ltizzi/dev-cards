@@ -2,6 +2,7 @@
   <BaseModal
     @closeModal="cancelOperation"
     :is-active="props.showModal"
+    :is-loading="true"
     v-if="props.showModal"
   >
     <h1 class="bg-emerald-500 py-2 w-full text-center text-white font-semibold">
