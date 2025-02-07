@@ -7,7 +7,7 @@
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Assign User"
         @click="modalSwitch('addUser', true)"
-        v-if="isModOrOwner"
+        v-if="isModOrOwner && !offlineMode"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'user-plus']" />
         <AddUserModal
@@ -19,7 +19,7 @@
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Remove User"
         @click="modalSwitch('removeUser', true)"
-        v-if="isModOrOwner"
+        v-if="isModOrOwner && !offlineMode"
       >
         <font-awesome-icon class="size-8" :icon="['fas', 'user-minus']" />
         <RemoveUserModal
@@ -94,6 +94,7 @@
   import { useTaskStore } from "../../store/task.store";
   import { useRoute } from "vue-router";
   import { useUserStore } from "../../store/user.store";
+  import { Workspace } from "../../utils/types";
 
   const props = defineProps<{ projectId: number; taskId: number }>();
 
@@ -106,6 +107,7 @@
     deleteTask: false,
   });
 
+  const offlineMode = ref<boolean>();
   const isModOrOwner = ref<boolean>();
   const isDesignatedUser = ref<boolean>();
   const canModify = ref<boolean>();
@@ -194,13 +196,15 @@
   }
 
   function prepareAuthorization() {
-    const projectId = props.projectId
-      ? props.projectId
-      : projectStore.current.workspace_id;
+    const ws = projectStore.getCurrent() as Workspace;
+    const projectId = props.projectId ? props.projectId : ws.workspace_id;
     const taskId = getTaskId();
     isModOrOwner.value = checkIsModOrOwner(projectId);
     isDesignatedUser.value = checkIsDesignated(projectId, taskId as number);
-    canModify.value = checkIfUserisTaskOwner(taskId as number, userStore.self);
+    canModify.value = checkIfUserisTaskOwner(
+      taskId as number,
+      userStore.getSelf()
+    );
   }
 
   // onBeforeMount(() => {
@@ -214,6 +218,7 @@
   //   prepareAuthorization();
   // });
   onMounted(() => {
+    offlineMode.value = projectStore.offlineMode;
     prepareAuthorization();
   });
 </script>

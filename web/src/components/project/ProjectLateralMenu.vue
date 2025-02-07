@@ -1,14 +1,17 @@
 <template lang="">
   <div
-    class="w-56 bg-base-200 flex flex-col flex-nowrap h-screen"
-    v-if="isLoaded"
+    :class="[
+      'w-56 bg-base-200 flex flex-col flex-nowrap h-screen motion-duration-500 motion-opacity-in-0 motion-ease-in-out',
+      state.isMobile ? 'fixed left-7 z-10' : 'fixed left-28 -ml-20',
+    ]"
+    v-if="isLoaded && state.showMenu"
   >
     <ul
       class="menu bg-base-200 rounded-box before:ring-offset-purple-400 overflow-x-hidden overflow-y-auto mt-3 whitespace-nowrap flex-shrink-0 flex-nowrap h-5/6"
     >
       <li
         :class="[
-          'font-extrabold  text-center py-3 sticky top-0 bg-gradient-to-br from-base-100 to-neutral z-50 whitespace-nowrap flex-shrink-0 w-52 rounded-xl',
+          'font-extrabold  text-center py-3 sticky top-0 bg-gradient-to-br from-base-100 to-neutral my-3 whitespace-nowrap flex-shrink-0 w-52 rounded-xl',
           state.isDark
             ? 'from-base-100 to-neutral text-base'
             : 'from-base-100 via-30% via-base-300 to-primary text-neutral',
@@ -92,7 +95,14 @@
             <span>Designated</span>
           </summary>
 
-          <ul class="before:ring-offset-purple-400">
+          <ul
+            :class="[
+              'before:ring-offset-purple-400',
+              state.designatedOpen
+                ? 'motion-duration-500 motion-ease-in-out-cubic motion-preset-slide-down-lg motion-opacity-in-0'
+                : '',
+            ]"
+          >
             <li
               v-for="task in user_designated_tasks"
               :class="[
@@ -129,14 +139,28 @@
         <ul class="before:ring-offset-purple-400"></ul>
       </details> -->
       </li>
-      <li class="whitespace-nowrap flex-shrink-0">
+      <li class="whitespace-nowrap flex-shrink-0" v-if="!state.offlineMode">
         <details close>
-          <summary>Users</summary>
-          <ul class="before:ring-offset-purple-400">
+          <summary
+            :class="[
+              'hover:cursor-pointer transition-all ease-in-out hover:bg-accent',
+            ]"
+            @click="handleDropdown('users')"
+          >
+            Users
+          </summary>
+          <ul
+            :class="[
+              'before:ring-offset-purple-400 motion-duration-500 motion-ease-in-quart',
+              state.usersOpen
+                ? 'motion-opacity-in-0 motion-preset-slide-down-lg'
+                : 'motion-opacity-out-0 motion-preset-slide-up-lg',
+            ]"
+          >
             <li
               v-for="user in project.users"
               :class="[
-                'text-white flex flex-row justify-start align-middle w-full hover:bg-accent',
+                'text-white flex flex-row justify-start align-middle w-full hover:bg-accent rounded-md transition-all ease-in-out',
                 state.selectedUser == user.user_id
                   ? 'opacity-70 text-white bg-gradient-to-r from-secondary from-0% via-secondary to-100% to-transparent  font-semibold'
                   : '',
@@ -170,7 +194,7 @@
       </li>
     </ul>
     <div
-      class="flex flex-col justify-center gap-0.5 w-56 bg-gradient-to-br from-base-100 to-base-300 bottom-0 z-30"
+      class="flex flex-col justify-center gap-0.5 w-56 bg-gradient-to-br from-base-100 to-base-300 bottom-0 z-10"
     >
       <NewTaskBtn
         :class="['mx-auto', isModOrOwner ? '' : 'mb-5']"
@@ -206,6 +230,20 @@
       @update="updateProject"
     />
   </div>
+  <button
+    class="btn btn-square btn-outline absolute top-2 left-16 bg-base-300 z-50"
+    v-show="state.showMenuBtn"
+    @click="showMenu"
+  >
+    <font-awesome-icon :icon="['fas', 'bars']" />
+  </button>
+  <button
+    class="btn btn-square btn-outline absolute top-5 left-1/2 ml-5 bg-base-300 z-50"
+    v-show="state.showHideBtn"
+    @click="hideMenu"
+  >
+    <font-awesome-icon :icon="['fas', 'eye-slash']" />
+  </button>
 </template>
 <script setup lang="ts">
   import { useRoute, useRouter } from "vue-router";
@@ -219,6 +257,9 @@
   import { checkIsModOrOwner } from "../../utils/auth.utils";
   import AddUserByEmailModal from "../ui/AddUserByEmailModal.vue";
   import NewTaskBtn from "../task/NewTaskBtn.vue";
+  import { useUIStore } from "../../store/ui.store";
+
+  const props = defineProps<{ isMobile?: boolean }>();
 
   const route = useRoute();
   const router = useRouter();
@@ -229,6 +270,7 @@
 
   const projectStore = useProjectStore();
   const userStore = useUserStore();
+  const UIStore = useUIStore();
 
   const apiCall = useApiCall();
 
@@ -246,7 +288,26 @@
     selectedTask: 0 as number,
     addUserModal: false,
     isDark: false,
+    isMobile: false,
+    offlineMode: false,
+    showMenu: true,
+    showHideBtn: false,
+    showMenuBtn: false,
+    designatedOpen: false,
+    usersOpen: false,
   });
+
+  watch(
+    () => UIStore.isMobile,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        //showMenu.value = !isMobile.value;
+        state.isMobile = UIStore.isMobile;
+        state.showMenu = !state.isMobile;
+        state.showMenuBtn = state.isMobile;
+      }
+    }
+  );
 
   watch(
     () => route.query.id,
@@ -260,7 +321,7 @@
     () => projectStore.current.workspace_id,
     (newValue, oldValue) => {
       if (newValue != oldValue) {
-        project.value = projectStore.current;
+        project.value = projectStore.getCurrent();
         user_designated_tasks.value = getProjectDesignatedTasks();
         isModOrOwner.value = checkIsModOrOwner(newValue);
       }
@@ -282,19 +343,22 @@
   watch(
     () => projectStore.justUpdated,
     async (newValue, oldValue) => {
-      if (
-        newValue &&
-        project.value?.workspace_id != projectStore.current.workspace_id
-      ) {
+      const ws = projectStore.getCurrent() as Workspace;
+      if (newValue && project.value?.workspace_id != ws.workspace_id) {
         project.value = await projectStore.updateCurrent();
       } else if (newValue != oldValue) {
-        project.value = projectStore.current;
+        project.value = projectStore.getCurrent();
         user_designated_tasks.value = getProjectDesignatedTasks();
       }
     }
   );
 
   //NAVIGATION
+
+  function handleDropdown(name: string) {
+    if (name == "designated") state.designatedOpen = !state.designatedOpen;
+    if (name == "users") state.usersOpen = !state.usersOpen;
+  }
 
   function goTo(path: string, obj_id?: number) {
     let stateSelected: number;
@@ -318,6 +382,7 @@
         stateSelected = -1;
         break;
       case "designated":
+        handleDropdown("designated");
         router.push("/project/designated");
         stateSelected = -2;
         break;
@@ -353,6 +418,18 @@
     );
   }
 
+  function showMenu() {
+    state.showMenu = true;
+    state.showHideBtn = true;
+    state.showMenuBtn = false;
+  }
+
+  function hideMenu() {
+    state.showMenu = false;
+    state.showHideBtn = false;
+    state.showMenuBtn = true;
+  }
+
   function showFindUserByMailModal() {
     state.addUserModal = true;
   }
@@ -370,20 +447,23 @@
   function getProjectDesignatedTasks() {
     let userTasks = [] as TaskLite[];
     const allUserTasks = userStore.getDesignatedTask();
-    allUserTasks.forEach((task: TaskLite) => {
-      if (
-        task.workspace.workspace_id == project.value?.workspace_id &&
-        task.status != Status.COMPLETED
-      ) {
-        userTasks.push(task);
-      }
-    });
+    if (allUserTasks)
+      allUserTasks.forEach((task: TaskLite) => {
+        if (
+          task.workspace.workspace_id == project.value?.workspace_id &&
+          task.status != Status.COMPLETED
+        ) {
+          userTasks.push(task);
+        }
+      });
+
     return userTasks;
   }
 
   function initComponent(id: number) {
     isLoaded.value = true;
     isModOrOwner.value = checkIsModOrOwner(id);
+    state.isDark = UIStore.checkIsDarkTheme(); //JSON.parse(localStorage.getItem("darkTheme") as string);
   }
 
   async function updateProject() {
@@ -392,15 +472,23 @@
   }
 
   onBeforeMount(async () => {
+    state.offlineMode = UIStore.checkOfflineMode();
+    state.isMobile = UIStore.isMobile;
+    state.showMenuBtn = state.isMobile;
+    state.showMenu = !state.isMobile;
+    state.showHideBtn = state.showMenu && state.isMobile;
     if (route.query.id) id.value = +route.query.id;
-    project.value = projectStore.current;
-    if (project.value.workspace_id) {
+    project.value = projectStore.getCurrent() as Workspace;
+    if (project.value && project.value.workspace_id) {
       user_designated_tasks.value = getProjectDesignatedTasks();
       initComponent(project.value.workspace_id);
     } else {
-      const response = (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {
-        params: { id: id.value },
-      })) as Workspace;
+      const response = (await projectStore.fetchProjectById(
+        id.value as number
+      )) as Workspace;
+      // (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {
+      //   params: { id: id.value },
+      // })) as Workspace;
       if (response.workspace_id) {
         projectStore.setCurrent(response);
         project.value = response;
@@ -408,6 +496,5 @@
         user_designated_tasks.value = getProjectDesignatedTasks();
       }
     }
-    state.isDark = JSON.parse(localStorage.getItem("darkTheme") as string);
   });
 </script>

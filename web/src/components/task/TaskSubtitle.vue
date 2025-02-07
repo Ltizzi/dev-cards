@@ -6,7 +6,9 @@
       @mouseover="props.canModify ? (hovered = true) : (hovered = false)"
       @mouseleave="hovered = false"
     >
-      <h2 class="text-2xl text-start">{{ props.subtitle }}</h2>
+      <h2 class="lg:text-2xl text-lg font-semibold text-start">
+        {{ props.subtitle }}
+      </h2>
       <font-awesome-icon
         :class="[
           'my-auto size-7 hover:cursor-pointer',
@@ -42,9 +44,10 @@
 </template>
 <script setup lang="ts">
   import { ref, reactive, onBeforeMount, onUnmounted } from "vue";
-  import { useApiCall } from "../../composables/useAPICall";
-  import { EndpointType } from "../../utils/endpoints";
+  // import { useApiCall } from "../../composables/useAPICall";
+  // import { EndpointType } from "../../utils/endpoints";
   import { Task } from "../../utils/types";
+  import { useTaskStore } from "../../store/task.store";
 
   const props = defineProps<{
     subtitle: string;
@@ -56,7 +59,8 @@
 
   const subtitle = ref<string>();
 
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
+  const taskStore = useTaskStore();
 
   const hovered = ref<boolean>(false);
 
@@ -98,16 +102,20 @@
   }
 
   async function updateSubtitle() {
-    const response = (await apiCall.patch(
-      EndpointType.TASK_UPDATE_SUBTITLE,
-      {},
-      {
-        params: {
-          task_id: props.task_id,
-          subtitle: subtitle.value,
-        },
-      }
+    const response = (await taskStore.updateSubtitle(
+      subtitle.value as string,
+      props.task_id
     )) as Task;
+    // (await apiCall.patch(
+    //   EndpointType.TASK_UPDATE_SUBTITLE,
+    //   {},
+    //   {
+    //     params: {
+    //       task_id: props.task_id,
+    //       subtitle: subtitle.value,
+    //     },
+    //   }
+    // )) as Task;
     if (response.task_id == props.task_id) {
       emit("update", response);
     }

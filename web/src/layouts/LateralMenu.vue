@@ -30,10 +30,10 @@
 
         <ul
           class="flex flex-col justify-center w-11/12 gap-4 my-2 mx-auto bg-base-100 bg-opacity-40 rounded-md px-4 py-1.5"
+          v-if="isLoaded && projects.length > 0"
         >
           <li
             v-for="project in projects"
-            v-if="isLoaded"
             @click="goTo(project)"
             :class="['-ml-3  px-1']"
           >
@@ -127,8 +127,10 @@
         projects.value = [] as Array<Workspace>;
       } else {
         isLogged.value = true;
-        user.value = userStore.self;
-        projects.value = await fetchProjects(user.value.user_id);
+        user.value = userStore.getSelf() as User;
+        projects.value = await projectStore.fetchProjectsByUser(
+          user.value.user_id
+        );
       }
     }
   );
@@ -140,13 +142,15 @@
         // user.value = await userStore.refreshSelf();
         // await fetchProjects(user.value?.user_id as number);
         console.log("REFRESHED PROJECTS");
-        projects.value = await fetchProjects(user.value?.user_id as number);
+        projects.value = await projectStore.fetchProjectsByUser(
+          user.value?.user_id as number
+        );
       }
     }
   );
 
   watch(
-    () => projectStore.current,
+    () => projectStore.getCurrent() as Workspace,
     (newValue, oldValue) => {
       if (newValue.workspace_id != oldValue.workspace_id && !state.justChange) {
         state.selected = newValue.workspace_id;
@@ -195,11 +199,11 @@
     router.push("/appConfig");
   }
 
-  async function fetchProjects(userId: number) {
-    return (await apiCall.get(EndpointType.USER_MEMBER, {
-      params: { user_id: userId },
-    })) as Array<Workspace>;
-  }
+  // async function fetchProjects(userId: number) {
+  //   return (await apiCall.get(EndpointType.USER_MEMBER, {
+  //     params: { user_id: userId },
+  //   })) as Array<Workspace>;
+  // }
 
   function sortProjects(projs: Workspace[]) {
     return projs.sort((ws_a, ws_b) => {
@@ -210,24 +214,29 @@
   }
 
   onBeforeMount(async () => {
-    if (isTokenExpired()) {
+    if (!userStore.offlineMode && isTokenExpired()) {
       router.push("/login");
     } else {
       if (!userStore.logged) {
-        const savedUser = JSON.parse(localStorage.getItem("user") as string);
+        const savedUser = userStore.getSelf(); // JSON.parse(localStorage.getItem("user") as string);
         if (savedUser) {
-          userStore.setSelf(savedUser);
+          //userStore.setSelf(savedUser);
           user.value = savedUser;
         } else {
           router.push("/login");
         }
       } else {
-        user.value = userStore.self;
+        user.value = userStore.getSelf();
       }
-
-      const projs = await fetchProjects(user.value?.user_id as number);
-      projects.value = sortProjects(projs);
-      projectStore.setMemberOf(projs);
+      if (user.value) {
+        console.log("lateral");
+        const projs = (await projectStore.fetchProjectsByUser(
+          user.value?.user_id as number
+        )) as Workspace[];
+        if (projs && projs.length > 0) projects.value = sortProjects(projs);
+        else projects.value = [];
+        // projectStore.setMemberOf(projs);
+      } else router.push("/login");
 
       isLogged.value = true;
       isLoaded.value = true;

@@ -1,9 +1,11 @@
 <template lang="">
-  <div class="text-center w-full min-h-screen">
-    <h1 class="text-4xl mt-5 text-base-content">All Tasks View</h1>
+  <div
+    class="text-center min-h-screen h-full overflow-x-hidden 2xl:ml-0 xl:ml-6"
+  >
+    <h1 class="text-4xl mt-7 lg:mt-5 text-base-content">All Tasks View</h1>
 
     <TaskListFilters
-      :ws_id="projectStore.current.workspace_id"
+      :ws_id="state.ws_id"
       :tasks="tasks"
       :tagSearch="state.searchedByTag"
       @changeSize="changeIconSize"
@@ -50,15 +52,16 @@
 </template>
 <script setup lang="ts">
   import { onBeforeMount, ref, watch, reactive } from "vue";
-  import { TaskLite, UITag } from "../utils/types";
+  import { TaskLite, UITag, Workspace } from "../utils/types";
   import TaskList from "../components/task/TaskList.vue";
   import { useProjectStore } from "../store/project.store";
   import TaskListFilters from "../components/ui/TaskListFilters.vue";
-  // import TagNavigationPanel from "../components/ui/TagNavigationPanel.vue";
   import { useRoute, useRouter } from "vue-router";
   import { taskUtils } from "../utils/task.utils";
+  import { useUIStore } from "../store/ui.store";
 
   const projectStore = useProjectStore();
+  const UIStore = useUIStore();
 
   const tasks = ref<TaskLite[]>();
 
@@ -78,6 +81,7 @@
     lastSearchResultsCount: 0,
     noResults: false,
     searchedByTag: false,
+    ws_id: 0,
   });
 
   watch(
@@ -91,39 +95,14 @@
     }
   );
 
-  // watch(
-  //   () => route.query.tag,
-  //   (newValue, oldValue) => {
-  //     if (newValue) {
-  //       console.log("tag:", newValue);
-  //       state.searchedByTag = true;
-  //       newValue = newValue as string;
-  //       const tags = newValue.split(" ");
-  //       console.log(tags);
-  //       if (tags.length == 1)
-  //         filteredTasks.value = fetchTasks(
-  //           newValue as string,
-  //           tasks.value as TaskLite[]
-  //         );
-  //       else {
-  //         tags.forEach((tag: string) => {
-  //           filteredTasks.value = filteredTasks.value?.concat(
-  //             fetchTasks(tag, tasks.value as TaskLite[])
-  //           );
-  //         });
-  //       }
-  //       filteredByTags.value = filteredTasks.value;
-  //       console.log(filteredByTags.value);
-  //     }
-  //   }
-  // );
-
-  // function fetchTasks(value: string, tasks_list: TaskLite[]) {
-  //   return taskUtils.searchTasksByTag(
-  //     value as string,
-  //     tasks_list as TaskLite[]
-  //   );
-  // }
+  watch(
+    () => projectStore.getCurrent(),
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        state.ws_id = projectStore.getCurrent()?.workspace_id as number;
+      }
+    }
+  );
 
   function handleTags() {
     showTags.value = !showTags.value;
@@ -143,18 +122,6 @@
     }
   }
 
-  // function searchTasks(tag: UITag) {
-  //   if (tag) {
-  //     const search_value = tag.name;
-  //     if (!route.query.tag) router.push(`/project/tasks?tag=${search_value}`);
-  //     else router.push(`${route.fullPath}+${search_value}`);
-  //   } else {
-  //     router.push("/project/tasks");
-  //     state.searchedByTag = false;
-  //     filteredTasks.value = [];
-  //   }
-  // }
-
   function changeIconSize() {
     isMicro.value = !isMicro.value;
   }
@@ -166,17 +133,11 @@
   }
 
   onBeforeMount(() => {
-    tasks.value = projectStore.current.tasks;
-    const darkTHeme = JSON.parse(localStorage.getItem("darkTheme") as string);
-    isDark.value = darkTHeme;
-    // if (route.query.tag) {
-    //   state.searchedByTag = true;
-    //   filteredTasks.value = taskUtils.searchTasksByTag(
-    //     route.query.tag as string,
-    //     tasks.value as TaskLite[]
-    //   );
-    //   filteredByTags.value = filteredTasks.value;
-    // }
+    let ws = projectStore.getCurrent() as Workspace;
+    if (!ws) ws = projectStore.current;
+    tasks.value = ws.tasks;
+    state.ws_id = ws.workspace_id;
+    isDark.value = UIStore.checkIsDarkTheme();
   });
 </script>
 <style lang=""></style>

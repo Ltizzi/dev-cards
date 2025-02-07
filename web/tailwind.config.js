@@ -26,7 +26,7 @@ export default {
         /bg-(slate|red|orange|emerald|teal|sky|indigo|violet|pink|rose)-(500)/,
     },
   ],
-  plugins: [require("daisyui")],
+  plugins: [require("daisyui"), require("tailwindcss-motion")],
   daisyui: {
     themes: [
       "dracula",

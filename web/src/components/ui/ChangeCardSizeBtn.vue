@@ -1,5 +1,8 @@
 <template lang="">
-  <button class="btn btn-outline btn-secondary" @click="changeIconSize">
+  <button
+    class="btn btn-outline btn-secondary xl:text-sm text-xs btn-sm"
+    @click="changeIconSize"
+  >
     Change card size
   </button>
 </template>

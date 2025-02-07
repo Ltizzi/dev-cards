@@ -1,8 +1,12 @@
 <template lang="">
-  <div class="my-14 flex flex-col gap-5 justify-center">
-    <h2 class="text-3xl text-start font-bold mb-14">Add/Remove Mods</h2>
+  <div
+    class="my-14 flex flex-col gap-5 justify-center motion-duration-300 motion-preset-fade-lg"
+  >
+    <h2 class="lg:text-3xl text-xl text-start font-bold mb-14">
+      Add/Remove Mods
+    </h2>
     <h3 class="text-xl pt-3">User List:</h3>
-    <ul class="py-3 flex flex-row justify-start gap-5">
+    <ul class="py-3 flex flex-row flex-wrap justify-start gap-5">
       <li
         class="flex flex-row gap-2 hover:cursor-pointer"
         v-for="user in user_list"
@@ -46,12 +50,13 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { useApiCall } from "../../composables/useAPICall";
+  //import { useApiCall } from "../../composables/useAPICall";
   import { onBeforeMount, ref } from "vue";
   import { UserLite } from "../../utils/types";
-  import { EndpointType } from "../../utils/endpoints";
+  //import { EndpointType } from "../../utils/endpoints";
   import BaseDeleteModal from "../common/BaseDeleteModal.vue";
   import BaseUserAvatarItem from "../common/BaseUserAvatarItem.vue";
+  import { useProjectStore } from "../../store/project.store";
 
   const props = defineProps<{
     workspace_id: number;
@@ -59,9 +64,9 @@
     mod_list: UserLite[];
   }>();
 
-  //const projectStore = useProjectStore();
+  const projectStore = useProjectStore();
 
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
 
   const emit = defineEmits(["update"]);
 
@@ -73,16 +78,11 @@
   const showModal = ref<boolean>(false);
 
   async function addMod(id: number) {
-    const response = (await apiCall.patch(
-      EndpointType.WORKSPACE_ADD_MOD,
-      {},
-      {
-        params: {
-          ws_id: props.workspace_id,
-          user_id: id,
-        },
-      }
+    const response = (await projectStore.addUserAsMod(
+      props.workspace_id,
+      id
     )) as UserLite[];
+
     if (response.length > 0) {
       mod_list.value = response;
       //await projectStore.updateCurrent();
@@ -97,16 +97,11 @@
   }
 
   async function deleteAsMod(id: number) {
-    const response = (await apiCall.patch(
-      EndpointType.WORKSPACE_REMOVE_MOD,
-      {},
-      {
-        params: {
-          ws_id: props.workspace_id,
-          user_id: id,
-        },
-      }
+    const response = (await projectStore.removeMod(
+      props.workspace_id,
+      id
     )) as UserLite[];
+
     if (mod_list.value && response.length < mod_list.value?.length) {
       mod_list.value = response;
       emit("update");

@@ -119,6 +119,8 @@ export enum TaskType {
   BUG = "BUG",
   TESTING = "TESTING",
   MARKETING = "MARKETING",
+  MANAGEMENT = "MANAGEMENT",
+  REQUEST = "REQUEST",
 }
 
 export const TaskTypeEnumArray = [
@@ -128,6 +130,8 @@ export const TaskTypeEnumArray = [
   TaskType.BUG,
   TaskType.TESTING,
   TaskType.MARKETING,
+  TaskType.MANAGEMENT,
+  TaskType.REQUEST,
 ];
 
 export interface Task {
@@ -144,6 +148,7 @@ export interface Task {
   task_type: TaskType;
   progressItems: Array<ProgressItem>;
   dependencies?: Array<TaskLite>;
+  child_tasks?: Array<TaskLite>;
   task_tags?: Array<string>;
   updates?: Array<TaskUpdate>;
   blocked_by?: UserLite;
@@ -197,7 +202,6 @@ export interface Workspace {
   moderators: Array<UserLite>;
   collaborators: Array<UserLite>;
   users: Array<UserLite>;
-
   created_at: Date;
   updated_at: Date;
 }
@@ -248,6 +252,11 @@ export interface UserLite {
   avatar?: string;
 }
 
+export interface AuthRequest {
+  username: string;
+  password: string;
+}
+
 export interface AuthResponse {
   user: User;
   token: string;
@@ -262,6 +271,7 @@ export interface MenuOptionUI {
   title: string;
   path: string;
   needOwner: boolean;
+  needOnline: boolean;
 }
 
 export interface DropdownCheckboxOption {
@@ -275,6 +285,62 @@ export interface UITag {
 }
 
 export interface TagPool {
-  workspace_id: number;
+  workspace_id?: number;
+  tag_pool_id?: number; //TODO: Sacar el ? una vez q esté implementado
   tags: UITag[];
+  specialTags: SpecialTag[];
+}
+
+export interface CustomConfiguration {
+  config_id: number;
+  workspace: WorkspaceLite;
+  customGlosaries: Glosary[];
+  tagPool: TagPool;
+  flagged_tasks: TaskSlim[];
+}
+
+export interface Glosary {
+  id: number;
+  type: string;
+  items: GlosaryItem[];
+}
+
+export interface GlosaryItem {
+  id: number;
+  key: string;
+  value: string;
+}
+
+export interface SpecialTag {
+  id: number;
+  value: string;
+  name: string;
+  description: string;
+}
+
+export interface TaskSlim {
+  task_id: number;
+  title: string;
+  color: Color;
+  workspace_id: number;
+}
+
+export interface UserLocal {
+  user_id: number;
+  nickname: string;
+  avatar: string;
+  designated_tasks?: TaskLite[];
+  created_tasks?: TaskLite[];
+  workspaces?: WorkspaceLite[];
+  local: boolean;
+}
+
+export interface JSONWorkspace {
+  user: UserLite | UserLocal;
+  workspace: Workspace;
+  tasks: Task[];
+  customConfiguration: CustomConfiguration;
+  created_at: Date;
+  download_at?: Date;
+  update_at: Date;
 }

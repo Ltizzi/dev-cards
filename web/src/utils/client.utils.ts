@@ -1,3 +1,15 @@
+import {
+  CustomConfiguration,
+  SpecialTag,
+  TagPool,
+  TaskLite,
+  TaskSlim,
+  UITag,
+  Workspace,
+  WorkspaceLite,
+} from "./types";
+import { utils } from "./utils";
+
 const darkThemes = [
   "dracula",
   "dark",
@@ -21,9 +33,9 @@ function isDarkTheme(theme: string): String {
   return darkThemes.includes(theme).toString();
 }
 
-export function checkThemeIsDark(): boolean {
+export function checkThemeIsDark(theme: string): boolean {
   //no usa la variable en el localstorage
-  return darkThemes.includes(getActualTheme());
+  return darkThemes.includes(theme);
 }
 
 export function getActualTheme() {
@@ -38,4 +50,28 @@ export function checkIsDark(): boolean {
 
 export function isDarkerCardsActive(): boolean {
   return JSON.parse(localStorage.getItem("darkerCards") as string);
+}
+
+export function createCustomConfiguration(ws: Workspace) {
+  const ws_lite = mapWorkspaceToWorkspaceLite(ws);
+  const newConfig: CustomConfiguration = {
+    config_id: utils.generateRandomId(),
+    customGlosaries: [],
+    tagPool: {
+      tag_pool_id: utils.generateRandomId(),
+      tags: [] as UITag[],
+      specialTags: [] as SpecialTag[],
+    } as TagPool,
+    workspace: ws_lite,
+    flagged_tasks: [] as TaskSlim[],
+  };
+  return newConfig;
+}
+
+export function mapWorkspaceToWorkspaceLite(ws: Workspace) {
+  return {
+    workspace_id: ws.workspace_id,
+    project_name: ws.project_name,
+    owner: ws.owner,
+  } as WorkspaceLite;
 }

@@ -6,12 +6,15 @@
       @mouseover="props.canModify ? (hovered = true) : (hovered = false)"
       @mouseleave="hovered = false"
     >
-      <h1 class="text-3xl py-2 font-bold" ref="card_title">
+      <h1
+        class="xl:text-3xl lg:text-2xl text-lg py-2 font-bold"
+        ref="card_title"
+      >
         {{ props.title }}
       </h1>
       <font-awesome-icon
         :class="[
-          'absolute right-10 top-3 size-7 hover:cursor-pointer',
+          'absolute xl:right-10 lg:right-3 right-0 top-3 size-7 hover:cursor-pointer',
           hovered ? 'animate-pulse duration-150 text-secondary' : '',
         ]"
         :icon="['fas', 'pen-to-square']"
@@ -45,9 +48,10 @@
 </template>
 <script setup lang="ts">
   import { ref, reactive, defineProps, onBeforeMount, onUnmounted } from "vue";
-  import { useApiCall } from "../../composables/useAPICall";
-  import { EndpointType } from "../../utils/endpoints";
+  // import { useApiCall } from "../../composables/useAPICall";
+  // import { EndpointType } from "../../utils/endpoints";
   import { Task } from "../../utils/types";
+  import { useTaskStore } from "../../store/task.store";
 
   const props = defineProps<{
     title: string;
@@ -60,7 +64,8 @@
 
   const title = ref<string>();
 
-  const apiCall = useApiCall();
+  const taskStore = useTaskStore();
+  //  const apiCall = useApiCall();
 
   const hovered = ref<boolean>(false);
 
@@ -103,16 +108,20 @@
 
   async function updateTitle() {
     if (title.value && title.value?.length > 0) {
-      const response = (await apiCall.patch(
-        EndpointType.TASK_UPDATE_TITLE,
-        {},
-        {
-          params: {
-            task_id: props.task_id,
-            title: title.value,
-          },
-        }
+      const response = (await taskStore.updateTitle(
+        title.value,
+        props.task_id
       )) as Task;
+      //  (await apiCall.patch(
+      //   EndpointType.TASK_UPDATE_TITLE,
+      //   {},
+      //   {
+      //     params: {
+      //       task_id: props.task_id,
+      //       title: title.value,
+      //     },
+      //   }
+      // )) as Task;
       if (response.task_id == props.task_id) {
         emit("update", response);
       }

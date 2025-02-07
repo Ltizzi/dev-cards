@@ -1,17 +1,30 @@
 <template lang="">
-  <div class="card bg-base-100 image-full w-72 min-h-56 max-h-56 shadow-xl z-0">
+  <div
+    class="card bg-base-100 image-full w-72 min-h-56 max-h-56 shadow-xl z-0 duration-300 transition-all ease-in-out hover:scale-110 hover:z-40 hover:shadow-2xl hover:shadow-base-300"
+  >
     <figure>
       <img
         :src="props.ws.project_avatar"
         :alt="`Avatar of ${props.ws.project_name}`"
+        class="motion-preset-pop motion-duration-700 motion-delay-300"
       />
     </figure>
     <div class="card-body">
-      <h2 class="card-title">{{ props.ws.project_name }}</h2>
-      <p class="text-sm">{{ shortString(props.ws.description) }}</p>
+      <h2
+        class="card-title motion-duration-700 motion-delay-200 motion-opacity-in-0 motion-blur-in-xl"
+      >
+        {{ props.ws.project_name }}
+      </h2>
+      <p
+        class="text-sm motion-duration-700 motion-delay-200 motion-opacity-in-0 motion-blur-in-xl"
+      >
+        {{ shortString(props.ws.description) }}
+      </p>
       <div class="card-actions justify-between">
-        <div class="flex flex-col justify-start gap-0.5 items-center">
-          <p v-if="ws.users.length > 0" class="italic text-sm">
+        <div
+          class="flex flex-col justify-start gap-0.5 items-center motion-duration-700 motion-delay-1000 motion-opacity-in-0 motion-blur-in-xl"
+        >
+          <p v-if="ws.users && ws.users.length > 0" class="italic text-sm">
             <span class="text-base font-semibold mr-1">{{
               ws.users.length
             }}</span>
@@ -24,7 +37,12 @@
             {{ ` task${ws.tasks.length > 1 ? "s" : ""}` }}
           </p>
         </div>
-        <button class="btn btn-primary" @click="goToProject(ws)">Enter</button>
+        <button
+          class="btn btn-primary motion-preset-bounce motion-duration-700 motion-delay-500 motion-opacity-in-0 motion-blur-in-sm"
+          @click="goToProject(ws)"
+        >
+          Enter
+        </button>
       </div>
     </div>
   </div>
@@ -55,7 +73,8 @@
   }
   onBeforeUnmount(() => {
     console.log(props.ws);
-    if (props.ws) isLoaded.value = true;
-    avatarURL.value = props.ws.avatar;
+    //if (props.ws) isLoaded.value = true;
+    isLoaded.value = props.ws ? true : false;
+    avatarURL.value = props.ws.avatar ? props.ws.avatar : "";
   });
 </script>

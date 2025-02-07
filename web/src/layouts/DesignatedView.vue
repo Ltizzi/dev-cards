@@ -1,5 +1,8 @@
 <template lang="">
-  <div class="mt-10" v-if="isLoaded">
+  <div
+    :class="['mt-10', checkInsideProject() ? 'min-h-screen' : '']"
+    v-if="isLoaded"
+  >
     <div
       v-if="no_tasks"
       class="text-center mt-2/4 min-h-screen align-middle my-56"
@@ -8,37 +11,49 @@
         {{
           props.isLoggedIn
             ? "You dont have any current designated tasks"
+            : checkInsideProject()
+            ? "No Tasks avaible"
             : "No tasks in local enviroment. You need to log in to see remote tasks or load local workspace data."
         }}
       </h1>
     </div>
     <div v-else class="flex flex-col gap-5 justify-center">
-      <h1 class="text-2xl font-semibold text-base-content">Active tasks:</h1>
-      <TaskList
-        :tasks="active_tasks"
-        :isMicro="false"
-        :isDark="props.isDark"
-        :darkerCards="props.darkerCards"
-        :viewList="true"
-      />
-      <h1 class="text-2xl font-semibold text-base-content">Completed tasks:</h1>
-      <TaskList
-        :tasks="completed_tasks"
-        :isMicro="false"
-        :isDark="props.isDark"
-        :darkerCards="props.darkerCards"
-        :viewList="true"
-      />
+      <div v-show="active_tasks.length > 0">
+        <h1 class="text-2xl lg:ml-0 ml-5 font-semibold text-base-content">
+          Active tasks:
+        </h1>
+        <TaskList
+          :tasks="active_tasks"
+          :isMicro="isMobile"
+          :isDark="props.isDark"
+          :darkerCards="props.darkerCards"
+          :viewList="true"
+        />
+      </div>
+
+      <div v-show="completed_tasks.length > 0">
+        <h1 class="text-2xl lg:ml-0 ml-5 font-semibold text-base-content">
+          Completed tasks:
+        </h1>
+        <TaskList
+          :tasks="completed_tasks"
+          :isMicro="isMobile"
+          :isDark="props.isDark"
+          :darkerCards="props.darkerCards"
+          :viewList="true"
+        />
+      </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-  import { onBeforeMount, ref, watch } from "vue";
+  import { onMounted, ref, watch } from "vue";
   import TaskList from "../components/task/TaskList.vue";
-  import { Status, TaskLite } from "../utils/types";
+  import { Status, TaskLite, Workspace } from "../utils/types";
   import { useUserStore } from "../store/user.store";
   import { useRoute } from "vue-router";
   import { useProjectStore } from "../store/project.store";
+  import { useUIStore } from "../store/ui.store";
 
   const props = defineProps<{
     isDark: boolean;
@@ -55,8 +70,10 @@
 
   const userStore = useUserStore();
   const projectStore = useProjectStore();
+  const UIStore = useUIStore();
 
   const isLoaded = ref<boolean>();
+  const isMobile = ref<boolean>();
 
   interface FilteredTasks {
     active: TaskLite[];
@@ -94,13 +111,23 @@
   //   }
   // );
 
+  watch(
+    () => UIStore.isMobile,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        console.log("HIJO DE MIL");
+        isMobile.value = UIStore.isMobile;
+      }
+    }
+  );
+
   function cleanTasks() {
     active_tasks.value = [];
     completed_tasks.value = [];
   }
 
   function checkInsideProject(): boolean {
-    console.log(route.path);
+    //console.log(route.path);
     return route.path.includes("project");
   }
 
@@ -116,7 +143,8 @@
   function prepareProjectUserDesignatedTasks(): FilteredTasks {
     let active = [] as TaskLite[];
     let completed = [] as TaskLite[];
-    const tasks = projectStore.current.tasks;
+    const ws = projectStore.getCurrent() as Workspace;
+    const tasks = ws.tasks;
     const designated_tasks = getUserDesignatedTasks();
     tasks.forEach((task: TaskLite) => {
       designated_tasks.forEach((t: TaskLite) => {
@@ -155,8 +183,8 @@
   function prepareTasks() {
     if (checkInsideProject()) {
       const tasks = prepareProjectUserDesignatedTasks();
-      active_tasks.value = tasks.active;
-      completed_tasks.value = tasks.completed;
+      active_tasks.value = tasks.active as TaskLite[];
+      completed_tasks.value = tasks.completed as TaskLite[];
     } else {
       const tasks = prepareDesignatedTasks();
       active_tasks.value = tasks.active;
@@ -164,13 +192,22 @@
     }
   }
 
-  onBeforeMount(() => {
-    if (userStore.self && userStore.self.designated_tasks) {
+  onMounted(() => {
+    if (userStore.getSelf() && userStore.getDesignatedTask()) {
       prepareTasks();
-      if (userStore.self.designated_tasks.length == 0) no_tasks.value = true;
+      if (userStore.getDesignatedTask().length == 0) no_tasks.value = true;
+      // if (
+      //   active_tasks.value &&
+      //   active_tasks.value.length == 0 &&
+      //   completed_tasks.value &&
+      //   completed_tasks.value.length == 0
+      // )
+      //   no_tasks.value = true;
     } else {
       no_tasks.value = true;
     }
+    UIStore.setIsMobile(true);
+    isMobile.value = UIStore.isMobile;
     isLoaded.value = true;
   });
 </script>

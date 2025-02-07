@@ -1,24 +1,30 @@
 <template lang="">
-  <div class="min-h-screen flex items-center justify-center">
+  <div
+    :class="['min-h-screen w-full h-full flex items-center justify-center ']"
+  >
     <div
-      class="flex justify-center items-center text-lg mx-auto w-11/12 h-5/6 px-20 my-auto text-center bg-gradient-to-r from-transparent via-secondary py-28 rounded-xl shadow-lg shadow-accent to-primary"
-      v-if="!failed"
+      class="flex justify-center items-center text-lg mx-auto lg:w-11/12 h-fit lg:px-20 px-5 w-96 my-auto text-center bg-gradient-to-r from-transparent via-secondary lg:py-28 py-5 rounded-xl shadow-lg shadow-accent to-primary motion-duration-300 motion-ease-in-out-cubic motion-opacity-in-0 motion-scale-in-0"
+      v-if="!failed && isLoaded"
     >
       <div
-        class="flex flex-row flex-grow justify-center gap-5 bg-neutral bg-opacity-50 w-10/12 py-7 h-full rounded-2xl"
+        class="flex xl:flex-row flex-col flex-grow justify-center gap-5 bg-neutral bg-opacity-50 lg:w-10/12 w-full py-7 h-fit rounded-2xl motion-delay-500 motion-duration-200 motion-ease-in-out-quart motion-scale-in-70 motion-translate-y-in-100 motion-opacity-in-0"
       >
         <div
-          class="flex flex-col gap-5 justify-center w-1/5 min-h-96 items-end"
+          class="flex flex-col gap-5 justify-center xl:w-1/5 w-full xl:min-h-96 xl:items-end items-center"
         >
-          <div class="avatar">
-            <div class="w-44 rounded-full">
+          <div
+            class="avatar motion-delay-1500 motion-duration-200 motion-preset-bounce"
+          >
+            <div class="xl:w-44 w-36 rounded-full">
               <img :src="user.avatar ? user.avatar : default_avatar" />
             </div>
           </div>
-          <div class="text-start flex items-end flex-col gap-2">
+          <div
+            class="xl:text-start flex xl:items-end items-center text-center flex-col gap-2"
+          >
             <h1
               :class="[
-                'font-bold text-2xl px-2 py-0.5 rounded-xl w-fit mt-0 ',
+                'font-bold text-2xl px-2 py-0.5 rounded-xl w-fit mt-0 motion-delay-700 motion-duration-150 motion-preset-focus-lg ',
                 !isDark ? 'text-white' : '',
               ]"
             >
@@ -27,14 +33,17 @@
             <h2 class="italic text-info">
               <p
                 :class="[
-                  'bg-neutral px-2 py-0.5 rounded-xl w-fit mx-auto',
+                  'bg-neutral px-2 py-0.5 rounded-xl w-fit mx-auto motion-delay-700 motion-duration-300 motion-preset-focus-lg ',
                   !isDark ? 'text-white  bg-opacity-30' : 'bg-opacity-60',
                 ]"
               >
                 {{ user.email }}
               </p>
             </h2>
-            <h2 v-if="user.githubProfile" class="link-info">
+            <h2
+              v-if="user.githubProfile"
+              class="link-info motion-delay-700 motion-duration-500 motion-preset-focus-lg"
+            >
               <a
                 :href="user.githubProfile"
                 :class="[
@@ -48,11 +57,11 @@
           </div>
         </div>
         <div
-          class="flex flex-col item-middle align-middle my-auto justify-center text-center w-4/5"
+          class="flex flex-col item-middle align-middle h-full my-auto justify-center text-center xl:w-4/5 motion-delay-1000 motion-duration-200 motion-preset-focus-lg"
         >
           <p
             :class="[
-              ' px-10 grow py-5 text-justify text-base rounded-xl w-fit mx-auto whitespace-pre-line ',
+              ' lg:px-10 lg:ml-0 -ml-5 px-7 grow py-5 text-justify text-base rounded-xl w-fit mx-auto whitespace-pre-line',
               !isDark ? 'text-white' : '',
             ]"
           >
@@ -82,22 +91,23 @@
 <script setup lang="ts">
   import { useRoute } from "vue-router";
   import { ref, onBeforeMount, watch } from "vue";
-  import { useApiCall } from "../composables/useAPICall";
-  import { EndpointType } from "../utils/endpoints";
   import { useProjectStore } from "../store/project.store";
-  import { User } from "../utils/types";
+  import { User, Workspace } from "../utils/types";
   import { useUIStore } from "../store/ui.store";
+  import { useUserStore } from "../store/user.store";
 
   const route = useRoute();
   const id = ref<number>();
 
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
   const projectStore = useProjectStore();
+  const userStore = useUserStore();
   const UIStore = useUIStore();
 
   const user = ref<User>();
   const failed = ref<boolean>();
   const isDark = ref<boolean>();
+  const isLoaded = ref<boolean>(false);
 
   const default_avatar = ref<string>(
     "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Default_avatar_profile.jpg/600px-Default_avatar_profile.jpg?20231202140256"
@@ -107,6 +117,7 @@
     () => route.query.id,
     async (newValue, oldValue) => {
       if (route.query.id && newValue != oldValue) {
+        isLoaded.value = false;
         id.value = +route.query.id;
         await getUserById();
       }
@@ -114,14 +125,22 @@
   );
 
   async function getUserById() {
-    const response = (await apiCall.get(EndpointType.USER_GET_BY_ID, {
-      params: {
-        user_id: id.value,
-        ws_id: projectStore.current.workspace_id,
-      },
-    })) as User;
+    const ws = projectStore.getCurrent() as Workspace;
+    const ws_id = ws.workspace_id;
+    const response = (await userStore.fetchUserById(
+      id.value as number,
+      ws_id
+    )) as unknown as User;
+    // (await apiCall.get(EndpointType.USER_GET_BY_ID, {
+    //   params: {
+    //     user_id: id.value,
+    //     ws_id: projectStore.current.workspace_id,
+    //   },
+    // })) as User;
+    console.log(response);
     if (response.user_id) {
       user.value = response;
+      isLoaded.value = true;
     } else {
       failed.value = true;
     }
@@ -131,7 +150,7 @@
       id.value = +route.query.id;
       await getUserById();
     } else failed.value = true;
-    isDark.value = UIStore.darkTheme;
+    isDark.value = UIStore.checkIsDarkTheme();
   });
 </script>
 <style lang=""></style>

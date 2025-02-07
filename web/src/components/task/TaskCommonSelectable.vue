@@ -1,9 +1,12 @@
 <template lang="">
   <div
     :class="[
-      'py-3',
+      'py-3 2xl:border-t-0 border-t-2 2xl:border-b-0 border-b-2 xl:min-w-52 min-w-28 sm:max-w-72  w-full 2xl:min-w-32 2xl:max-w-32',
       props.canModify ? 'hover:cursor-pointer ' : '',
-      props.type == 'TaskType' ? 'min-w-28' : 'border-r-2  border-secondary',
+      props.type == 'TaskType'
+        ? 'min-w-28 border-secondary'
+        : 'border-r-2  border-secondary',
+      props.selected == TaskType.DOCUMENTATION ? 'text-xs' : '',
     ]"
   >
     <h3

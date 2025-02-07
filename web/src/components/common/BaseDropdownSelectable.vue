@@ -4,7 +4,7 @@
       tabindex="0"
       role="button"
       :class="[
-        'btn btn-info  m-1',
+        'btn btn-info  m-1 2xl:text-sm text-xs btn-sm',
         selected_options.length == 0 ? 'btn-outline' : '',
       ]"
     >
@@ -12,7 +12,7 @@
     </div>
     <ul
       tabindex="0"
-      class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 px-2 shadow py-5"
+      class="dropdown-content lg:text-sm text-xs menu bg-base-100 rounded-box z-[1] w-52 px-2 shadow py-5"
     >
       <li
         class="ml-1 hover:bg-accent pl-2 hover:text-accent-content flex flex-row justify-between h-7 my-auto align-middle"

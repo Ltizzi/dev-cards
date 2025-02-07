@@ -1,5 +1,5 @@
 <template lang="">
-  <div>
+  <div class="w-fit">
     <div
       class="flex flex-row gap-5 my-5"
       @mouseover="props.canModify ? (hovered = true) : (hovered = false)"
@@ -8,7 +8,7 @@
     >
       <p
         :class="[
-          'text-lg underline font-semibold pb-2',
+          'lg:text-lg underline font-semibold pb-2',
           props.type == 'workspace' ? 'text-center' : '',
         ]"
       >
@@ -26,19 +26,27 @@
       />
     </div>
     <div
-      class="flex my-5 mx-2 flex-col text-start"
+      class="flex my-5 lg:mx-2 flex-col text-start"
       v-if="!state.showEditable"
       @mouseover="props.canModify ? (hovered = true) : (hovered = false)"
       @mouseleave="hovered = false"
     >
-      <p :class="['text-base whitespace-pre-line']">
+      <p
+        :class="[
+          'text-sm lg:text-base text-justify whitespace-pre-line lg:mx-0 mx-2',
+        ]"
+      >
         {{ props.description }}
       </p>
     </div>
-    <div v-else class="flex flex-col mx-10" ref="descriptionComponent">
+    <div
+      v-else
+      class="flex flex-col mx-10 w-11/12 -ml-0.5"
+      ref="descriptionComponent"
+    >
       <textarea
         :class="[
-          'textarea textarea-secondary textarea-lg  my-5',
+          'textarea textarea-secondary  my-5',
           props.isDark
             ? 'text-base-300 bg-base-content'
             : 'bg-base-100 text-base-content',
@@ -47,7 +55,7 @@
         v-model="description"
         @keydown.esc="state.showEditable = false"
         rows="5"
-        cols="170"
+        :cols="calcCols()"
       ></textarea>
       <button class="btn btn-secondary text-white" @click="updateDescription">
         Update
@@ -60,6 +68,9 @@
   import { useApiCall } from "../../composables/useAPICall";
   import { EndpointType } from "../../utils/endpoints";
   import { Task, Workspace } from "../../utils/types";
+  import { useUIStore } from "../../store/ui.store";
+  import { useTaskStore } from "../../store/task.store";
+  import { useProjectStore } from "../../store/project.store";
 
   const props = defineProps<{
     description: string;
@@ -79,10 +90,12 @@
 
   const editIcon = ref<HTMLElement | null>();
   const descriptionComponent = ref<HTMLElement | null>();
+  const UIStore = useUIStore();
 
   const state = reactive({
     showEditable: false,
     recentChange: false,
+    isMobile: false,
   });
 
   addEventListener("keydown", (event) => {
@@ -114,30 +127,58 @@
     }
   }
 
+  function calcCols() {
+    return state.isMobile
+      ? window.innerWidth < 768
+        ? 30
+        : 60
+      : window.innerWidth < 1440
+      ? 60
+      : window.innerWidth < 1920
+      ? 130
+      : 160;
+  }
+
   async function updateDescription() {
-    const newDes = { description: description.value };
-    let endpoint: EndpointType;
-    let params: any;
+    const newDes = description.value as string;
+    let response: any;
     if (props.type == "task") {
-      endpoint = EndpointType.TASK_UPDATE_DESCRIPTION;
-      params = {
-        params: {
-          task_id: props.id,
-        },
-      };
+      const taskStore = useTaskStore();
+      response = (await taskStore.updateDescription(newDes, props.id)) as Task;
     } else {
-      endpoint = EndpointType.WORKSPACE_UPDATE_DESCRIPTION;
-      params = {
-        params: {
-          ws_id: props.id,
-        },
-      };
+      const projectStore = useProjectStore();
+      response = (await projectStore.updateProjectDescription(
+        props.id,
+        newDes
+      )) as Workspace;
     }
-    const response = (await apiCall.patch(endpoint, newDes, params)) as any;
     if (response.task_id == props.id || response.workspace_id == props.id) {
       emit("update", response);
     }
     state.showEditable = false;
+    //const newDes = { description: description.value };
+    // let endpoint: EndpointType;
+    // let params: any;
+    // if (props.type == "task") {
+    //   endpoint = EndpointType.TASK_UPDATE_DESCRIPTION;
+    //   params = {
+    //     params: {
+    //       task_id: props.id,
+    //     },
+    //   };
+    // } else {
+    //   endpoint = EndpointType.WORKSPACE_UPDATE_DESCRIPTION;
+    //   params = {
+    //     params: {
+    //       ws_id: props.id,
+    //     },
+    //   };
+    // }
+    // const response = (await apiCall.patch(endpoint, newDes, params)) as any;
+    // if (response.task_id == props.id || response.workspace_id == props.id) {
+    //   emit("update", response);
+    // }
+    // state.showEditable = false;
   }
 
   async function updateTaskDescription() {
@@ -168,7 +209,15 @@
     }
   );
 
+  watch(
+    () => UIStore.isMobile,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) state.isMobile = UIStore.isMobile;
+    }
+  );
+
   onBeforeMount(() => {
+    state.isMobile = UIStore.isMobile;
     description.value = props.description;
     document.addEventListener("click", handleOutsideClicks);
   });

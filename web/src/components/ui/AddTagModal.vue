@@ -112,7 +112,6 @@
   }
 
   async function addTag(newTag: string) {
-    tags.value?.push(newTag);
     await saveTag(newTag);
   }
 
@@ -135,27 +134,13 @@
   }
 
   async function saveTag(newTag: string) {
+    if (!taskStore.offlineMode) tags.value?.push(newTag);
     awaitingResponse.value = true;
-    //const alreadyCreatedTag = checkTag(newTag) as UITag[];
-    //console.log("ALREADY TAG: ", alreadyCreatedTag);
-    // tags.value.forEach(async (newTag: string) => {
-    const response = (await apiCall.patch(
-      EndpointType.TASK_ADD_TAG,
-      {},
-      {
-        params: {
-          task_id: taskStore.currentTask.task_id,
-          tag: newTag,
-        },
-      }
-    )) as Task;
+
+    //TODO: manejar el agregado de task a TagPool
+    const response = (await taskStore.saveTag(newTag)) as Task;
     awaitingResponse.value = false;
     if (response.task_id) {
-      // if (!alreadyCreatedTag[0])
-      //   taskUtils.addTagToTagsPool(
-      //     tag.value as string,
-      //     taskStore.currentTask.workspace.workspace_id
-      //   );
       success.value = true;
       tag.value = "";
       taskStore.setCurrentTask(response);

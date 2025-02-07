@@ -1,9 +1,20 @@
-# Vue 3 + TypeScript + Vite
+# Dev-Cards
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Dev tool to manage tasks. Its a fullstack app made with Vue+Tailwind & Spring, using PostgreSQL for persistence. Users can make projects/workspaces and invite other users to join it. Inside a workspace, users have different roles (owner, moderator, collaborator and users).
 
-## Recommended Setup
+## How to use it
 
-- [VS Code](https://code.visualstudio.com/) + [Vue - Official](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (previously Volar) and disable Vetur
+\*This is a monorepo. Just download dev-testing branch's last commit to use last version.
 
-- Use [vue-tsc](https://github.com/vuejs/language-tools/tree/master/packages/tsc) for performing the same type checking from the command line, or for generating d.ts files for SFCs.
+First you have to install the client's dependencies. In the root folder:
+
+...
+npm run install-web
+...
+
+For run the app:
+
+...
+npm run web
+npm run api
+...

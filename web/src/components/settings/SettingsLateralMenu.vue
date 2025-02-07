@@ -26,6 +26,7 @@
 <script setup lang="ts">
   import { reactive } from "vue";
   import { MenuOptionUI } from "../../utils/types";
+  import { useUIStore } from "../../store/ui.store";
 
   const props = defineProps<{
     isOwner: boolean;
@@ -45,6 +46,8 @@
   }
 
   function checkVisible(option: MenuOptionUI) {
-    return option.needOwner ? props.isOwner : true;
+    const UIStore = useUIStore();
+    if (!UIStore.offlineMode) return option.needOwner ? props.isOwner : true;
+    else return !option.needOnline;
   }
 </script>

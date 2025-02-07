@@ -61,15 +61,16 @@
 </template>
 <script setup lang="ts">
   import { useRoute, useRouter } from "vue-router";
-  import { useApiCall } from "../../composables/useAPICall";
+  //import { useApiCall } from "../../composables/useAPICall";
   import { useTaskStore } from "../../store/task.store";
-  import { EndpointType } from "../../utils/endpoints";
+  //import { EndpointType } from "../../utils/endpoints";
   import BaseModal from "../common/BaseModal.vue";
   import { ref, onBeforeMount, watch } from "vue";
   import { useProjectStore } from "../../store/project.store";
+  import { Workspace } from "../../utils/types";
 
   const taskStore = useTaskStore();
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
   const router = useRouter();
   const route = useRoute();
 
@@ -101,9 +102,12 @@
   async function deleteTask() {
     // if (task_title.value?.toLowerCase() == task_input.value?.toLowerCase()) {
     awaitingResponse.value = true;
-    const response = (await apiCall.del(EndpointType.TASK_DELETE, {
-      params: { id: task_id.value },
-    })) as any;
+    const response = (await taskStore.deleteTask(
+      task_id.value as number
+    )) as any;
+    //  (await apiCall.del(EndpointType.TASK_DELETE, {
+    //   params: { id: task_id.value },
+    // })) as any;
     awaitingResponse.value = false;
     if (response.message && response.message.toLowerCase() == "task deleted") {
       success.value = true;
@@ -113,7 +117,8 @@
         reset();
         success.value = false;
         const projectStore = useProjectStore();
-        const project_id = projectStore.current.workspace_id;
+        const ws = projectStore.getCurrent() as Workspace;
+        const project_id = ws.workspace_id;
         await projectStore.updateCurrent();
         router.push(`/project/info?id=${project_id}`);
       }, 2000);

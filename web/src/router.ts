@@ -19,6 +19,7 @@ import { checkIsModOrOwner } from "./utils/auth.utils";
 import BlockedTasksView from "./layouts/BlockedTasksView.vue";
 import AppSettings from "./layouts/AppSettings.vue";
 import UserProfileView from "./layouts/UserProfileView.vue";
+import OfflineSignup from "./components/auth/OfflineSignup.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -68,6 +69,7 @@ const router = createRouter({
     },
 
     { path: "/login", name: "Login", component: Login },
+    { path: "/offline", name: "OfflineSignup", component: OfflineSignup },
     {
       path: "/signup",
       name: "SignUp",

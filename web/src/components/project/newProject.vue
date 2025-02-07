@@ -118,12 +118,14 @@
   import {
     User,
     UserLite,
+    UserLocal,
     Workspace,
     WorkspaceWithJwt,
   } from "../../utils/types";
-  import { useApiCall } from "../../composables/useAPICall";
-  import { EndpointType } from "../../utils/endpoints";
+  // import { useApiCall } from "../../composables/useAPICall";
+  // import { EndpointType } from "../../utils/endpoints";
   import { saveToken } from "../../utils/auth.utils";
+  import { utils } from "../../utils/utils";
 
   const userStore = useUserStore();
   const projectStore = useProjectStore();
@@ -131,11 +133,11 @@
   const router = useRouter();
   const route = useRoute();
 
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
 
   const freshUser = ref<boolean>(false);
 
-  const user = ref<User>();
+  const user = ref<User | UserLocal>();
 
   const name = ref<string>();
   const description = ref<string>();
@@ -145,34 +147,62 @@
   const hasError = ref(false);
   const isInSignUpProcess = ref(false);
 
+  function checkUserIsLocal(obj: any): obj is UserLocal {
+    return "local" in obj;
+  }
+
   async function newProject() {
     isWaiting.value = true;
-    if (user) {
-      const userLite: UserLite = {
-        user_id: user.value?.user_id as number,
-        username: user.value?.username as string,
-        email: user.value?.email as string,
-        avatar: user.value?.avatar as string,
+    let userLite = {} as UserLite;
+    if (user.value && !userStore.offlineMode && !checkUserIsLocal(user.value)) {
+      userLite = {
+        user_id: user.value.user_id as number,
+        username: user.value.username as string,
+        email: user.value.email as string,
+        avatar: user.value.avatar as string,
       };
-
-      const newProject = {
-        project_name: name.value,
-        project_avatar: avatar.value,
-        description: description.value,
-        owner: userLite,
+    } else if (
+      user.value &&
+      userStore.offlineMode &&
+      checkUserIsLocal(user.value)
+    ) {
+      userLite = {
+        user_id: user.value.user_id,
+        username: user.value.nickname,
+        email: "user@localhost.com",
+        avatar: user.value.avatar,
       };
+    }
 
-      const response = (await apiCall.post(
-        EndpointType.WORKSPACE_NEW,
-        newProject
-      )) as WorkspaceWithJwt;
+    const newProject = {
+      project_name: name.value as string,
+      project_avatar: avatar.value as string,
+      description: description.value as string,
+      owner: userLite,
+      users: [],
+      moderators: [],
+      tasks: [],
+      collaborators: [],
+      created_at: new Date(Date.now()),
+      updated_at: new Date(Date.now()),
+    };
 
+    const response = (await projectStore.createWorkspace(
+      newProject as unknown as Workspace
+    )) as WorkspaceWithJwt;
+    // (await apiCall.post(
+    //   EndpointType.WORKSPACE_NEW,
+    //   newProject
+    // )) as WorkspaceWithJwt;
+    if (!userStore.offlineMode) {
       if (response && response.workspace.workspace_id) {
         projectStore.setCurrent(response.workspace);
         projectStore.setJustCreated();
         projectStore.addProjectToOwner(response.workspace);
+
         saveToken(response.token);
         isWaiting.value = false;
+        projectStore.setMemberOf([response.workspace]);
         router.push("/");
       } else {
         isWaiting.value = false;
@@ -182,6 +212,11 @@
           hasError.value = false;
         }, 5000);
       }
+    } else {
+      projectStore.setJustCreated();
+      projectStore.addProjectToOwner(response.workspace);
+      isWaiting.value = false;
+      router.push("/");
     }
   }
 
@@ -191,9 +226,7 @@
 
   onBeforeMount(() => {
     freshUser.value = userStore.checkIfUserIsNew();
-    console.log(userStore.self);
-    // user.value = JSON.parse(localStorage.getItem("user") as string);
-    user.value = userStore.self;
+    user.value = userStore.getSelf();
     if (route.path == "/signup/project") isInSignUpProcess.value = true;
   });
 </script>

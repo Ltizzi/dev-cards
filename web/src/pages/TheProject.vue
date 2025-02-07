@@ -1,8 +1,13 @@
 <template lang="">
-  <div class="flex flex-row justify-center w-screen" v-if="isLoaded">
-    <ProjectLateralMenu class="h-screen left-4 fixed" @update="updateProject" />
+  <div
+    class="flex flex-row justify-end w-auto overflow-x-auto lg:overflow-x-hidden lg:w-screen min-h-screen max-h-screen lg:mx-5"
+    v-if="isLoaded"
+  >
+    <ProjectLateralMenu class="h-screen fixed" @update="updateProject" />
 
-    <div class="ml-52 w-10/12">
+    <div
+      class="lg:ml-0 2xl:w-10/12 xl:w-10/12 lg:w-9/12 w-auto mx-5 lg:mx-0 2xl:mx-9"
+    >
       <router-view></router-view>
     </div>
   </div>
@@ -10,7 +15,7 @@
 <script setup lang="ts">
   import { useProjectStore } from "../store/project.store";
   import { AuthResponse, UserLite, Workspace } from "../utils/types";
-  import { ref, onBeforeMount, watch } from "vue";
+  import { ref, onBeforeMount, watch, onMounted } from "vue";
   import { useRoute } from "vue-router";
   import { useApiCall } from "../composables/useAPICall";
   import { EndpointType } from "../utils/endpoints";
@@ -18,32 +23,35 @@
   import { useUserStore } from "../store/user.store";
   import { saveToken } from "../utils/auth.utils";
   import { taskUtils } from "../utils/task.utils";
-
-  const project = ref<Workspace>();
-
-  const apiCall = useApiCall();
-
-  const isLoaded = ref<boolean>(false);
+  import { useUIStore } from "../store/ui.store";
+  import { useConfigStore } from "../store/config.store";
 
   const route = useRoute();
 
   const projectStore = useProjectStore();
-
+  const UIStore = useUIStore();
   const userStore = useUserStore();
 
-  const moderators = ref<UserLite[]>();
+  const apiCall = useApiCall();
 
+  const project = ref<Workspace>();
+  const moderators = ref<UserLite[]>();
   const designatedTaskNumber = ref<number>();
+
+  const isMobile = ref<boolean>();
+  const showMenu = ref<boolean>();
+  const isLoaded = ref<boolean>(false);
 
   watch(
     () => projectStore.justUpdated,
     async (newValue, oldValue) => {
       if (newValue && newValue != oldValue) {
+        const ws = projectStore.getCurrent() as Workspace;
         if (
           moderators.value &&
-          moderators.value.length < projectStore.current.moderators.length
+          moderators.value.length < ws.moderators.length
         ) {
-          moderators.value = projectStore.current.moderators;
+          moderators.value = ws.moderators;
           moderators.value.forEach(async (mod: UserLite) => {
             if (mod.user_id == userStore.self.user_id) {
               await updateToken();
@@ -55,7 +63,7 @@
           designatedTaskNumber.value < userStore.getDesignatedTask().length
         ) {
           designatedTaskNumber.value = taskUtils.getProjectUserDesignatedTasks(
-            projectStore.current.tasks,
+            ws.tasks,
             userStore.getDesignatedTask()
           ).length;
           await updateToken();
@@ -82,22 +90,26 @@
     )) as AuthResponse;
     if (response.user && response.token) {
       saveToken(response.token);
-      userStore.setSelf(response.user);
-      localStorage.setItem("user", JSON.stringify(response.user));
+      userStore.updatedToken(response.user);
     }
   }
 
   onBeforeMount(async () => {
-    if (projectStore.current.workspace_id) {
-      project.value = projectStore.current;
-      moderators.value = project.value.moderators;
+    UIStore.setLoading(true);
+    isMobile.value = UIStore.isMobile;
+    showMenu.value = !isMobile.value;
+    UIStore.getTHeme();
+    const ws = projectStore.getCurrent() as Workspace;
+    if (ws && ws.workspace_id) {
+      project.value = projectStore.getCurrent();
+      moderators.value = project.value?.moderators;
       isLoaded.value = true;
     } else {
-      const id = route.query.id as unknown as number;
-      const response = (await projectStore.updateCurrentById(id)) as Workspace;
-      // const response = (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {
-      //   params: { id: id },
-      // })) as Workspace;
+      const id =
+        route.query.id && route.path != "/project/task"
+          ? (route.query.id as unknown as number)
+          : JSON.parse(localStorage.getItem("current_workspace_id") as string);
+      const response = (await projectStore.fetchProjectById(id)) as Workspace;
       if (response.workspace_id) {
         project.value = response;
         projectStore.setCurrent(response);
@@ -107,8 +119,12 @@
         console.error(response);
       }
     }
+  });
+
+  onMounted(() => {
     if (isLoaded.value) {
-      designatedTaskNumber.value = userStore.self.designated_tasks.length;
+      designatedTaskNumber.value = userStore.getSelf().designated_tasks.length;
+      UIStore.setLoading(false);
     }
   });
 </script>

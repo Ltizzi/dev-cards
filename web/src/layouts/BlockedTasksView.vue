@@ -38,7 +38,7 @@
 <script setup lang="ts">
   import { onBeforeMount, ref, reactive, watch } from "vue";
   import { useProjectStore } from "../store/project.store";
-  import { TaskLite } from "../utils/types";
+  import { TaskLite, Workspace } from "../utils/types";
   import { taskUtils } from "../utils/task.utils";
   import { checkIsDark } from "../utils/client.utils";
   import TaskList from "../components/task/TaskList.vue";
@@ -85,7 +85,8 @@
   }
 
   onBeforeMount(() => {
-    tasks.value = taskUtils.searchBlockedTasks(projectStore.current.tasks);
+    const ws = projectStore.getCurrent() as Workspace;
+    tasks.value = taskUtils.searchBlockedTasks(ws.tasks);
     if (tasks.value.length == 0) {
       state.noResults = true;
     }

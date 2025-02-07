@@ -1,6 +1,11 @@
 <template lang="">
-  <div class="flex flex-col justify-center w-full min-h-screen" v-if="isLoaded">
-    <div class="flex flex-row justify-center gap-5 align-middle">
+  <div
+    class="flex flex-col justify-center w-full min-h-screen max-h-screen overflow-auto xl:ml-0 lg:-ml-7 motion-duration-2000 motion-preset-slide-up motion-opacity-in-0"
+    v-if="isLoaded"
+  >
+    <div
+      class="flex flex-row justify-center gap-5 align-middle lg:mt-7 xl:mt-0 2xl:mt-0 mt-32"
+    >
       <h1 class="text-4xl text-center my-5 font-bold">
         {{ project.project_name }}
       </h1>
@@ -28,16 +33,6 @@
         <h1 class="mb-2 text-base font-bold">Moderators:</h1>
         <div class="flex flex-row flex-wrap gap-5">
           <p class="text-lg" v-for="mod in project.moderators">
-            <!-- <div class="flex flex-row gap-5 mt-2">
-                <div class="avatar">
-                  <div class="w-6 rounded-full">
-                    <img :src="mod.avatar" />
-                  </div>
-                </div>
-                <p class="text-sm my-auto">
-                  {{ mod.username }}
-                </p>
-              </div> -->
             <BaseUserAvatarItem
               :avatar="mod.avatar"
               :username="mod.username"
@@ -48,18 +43,10 @@
       </div>
       <div>
         <h1 class="mb-2 text-base font-bold">Users:</h1>
-        <div class="flex flex-row flex-wrap gap-5">
+        <div
+          class="flex flex-row flex-wrap gap-5 justify-center lg:mx-7 xl:mx-0"
+        >
           <p class="text-lg" v-for="user in project.users">
-            <!-- <div class="flex flex-row gap-4 ml-5 ">
-                  <div class="avatar">
-                    <div class="w-6 rounded-full">
-                      <img :src="user.avatar" />
-                    </div>
-                  </div>
-                  <p class="text-sm my-auto">
-                    {{ user.username }}
-                  </p>
-                </div> -->
             <BaseUserAvatarItem
               :avatar="user.avatar"
               :username="user.username"
@@ -70,9 +57,9 @@
       </div>
     </div>
 
-    <div class="my-10 mx-14 flex flex-col justify-center items-center">
-      <!-- <h1 class="mb-2 text-xl font-bold">Description:</h1>
-        <p class="mx-10 text-lg">{{ project.description }}</p> -->
+    <div
+      class="my-10 xl:mx-72 lg:mx-14 flex flex-col justify-center items-center"
+    >
       <BaseEditDescription
         :description="project.description"
         :id="project.workspace_id"
@@ -86,12 +73,10 @@
       :ws_id="project.workspace_id"
       :info="true"
       :show="true"
-      class="mx-16 pb-14"
+      class="xl:mx-72 pb-14"
     />
-    <!-- <h1 class="text-3xl my-5">Tasks:</h1> -->
+
     <NewTaskBtn class="mx-auto" />
-    <!--     
-      <TaskList :tasks="project.tasks" :isMicro="false" :isDraggable="false" :isDark="isDark"/> -->
   </div>
 </template>
 
@@ -109,8 +94,10 @@
   import { checkIsModOrOwner } from "../../utils/auth.utils";
   import TagNavigationPanel from "../ui/TagNavigationPanel.vue";
   import BaseUserAvatarItem from "../common/BaseUserAvatarItem.vue";
+  import { useUIStore } from "../../store/ui.store";
 
   const projectStore = useProjectStore();
+  const UIStore = useUIStore();
 
   const apiCall = useApiCall();
 
@@ -133,22 +120,34 @@
     }
   );
 
+  // watch(
+  //   () => projectStore.local.workspace_id,
+  //   (newValue, oldValue) => {
+  //     if (newValue != oldValue) {
+  //       project.value = projectStore.local;
+  //     }
+  //   }
+  // );
+
   async function updateProject(workspace: Workspace) {
     projectStore.setCurrent(workspace);
-    project.value = projectStore.current;
+    project.value = projectStore.getCurrent();
   }
 
   onBeforeMount(async () => {
-    if (projectStore.current.workspace_id) {
-      project.value = projectStore.current;
+    const ws = projectStore.getCurrent() as Workspace;
+    if (ws && ws.workspace_id) {
+      project.value = ws;
       isLoaded.value = true;
     } else {
-      const id = route.query.id;
-      const response = (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {
-        params: { id: id },
-      })) as Workspace;
+      const id = route.query.id as unknown as number;
+      const response = (await projectStore.fetchProjectById(id)) as Workspace;
+      //  (await apiCall.get(EndpointType.WORKSPACE_GET_BY_ID, {
+      //   params: { id: id },
+      // })) as Workspace;
       if (response.workspace_id) {
         project.value = response;
+        projectStore.setCurrent(response);
         isLoaded.value = true;
       } else {
         console.error(response);
@@ -156,8 +155,8 @@
     }
 
     canModify.value = checkIsModOrOwner(project.value?.workspace_id as number);
-    if (localStorage.getItem("darkTheme")) {
-      isDark.value = JSON.parse(localStorage.getItem("darkTheme") as string);
-    }
+    // if (localStorage.getItem("darkTheme")) {
+    isDark.value = UIStore.checkIsDarkTheme(); //JSON.parse(localStorage.getItem("darkTheme") as string);
+    //}
   });
 </script>

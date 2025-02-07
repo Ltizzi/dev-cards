@@ -90,10 +90,12 @@
 </template>
 <script setup lang="ts">
   import { ref, watch } from "vue";
-  import { useApiCall } from "../../composables/useAPICall";
-  import { EndpointType } from "../../utils/endpoints";
+  //import { useApiCall } from "../../composables/useAPICall";
+  //import { EndpointType } from "../../utils/endpoints";
   import BaseModal from "../common/BaseModal.vue";
   import { UserLite } from "../../utils/types";
+  import { useProjectStore } from "../../store/project.store";
+  import { useUserStore } from "../../store/user.store";
 
   const input_text = ref<string>();
 
@@ -108,20 +110,26 @@
   }>();
   const emit = defineEmits(["update", "cancel"]);
 
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
+  const projectStore = useProjectStore();
+  const userStore = useUserStore();
 
   async function addUser() {
     isSearching.value = true;
-    const response = (await apiCall.post(
-      EndpointType.WORKSPACE_ADD_USER_BY_EMAIL,
-      {},
-      {
-        params: {
-          ws_id: props.ws_id,
-          email: input_text.value,
-        },
-      }
+    const response = (await projectStore.addUserToProjectByEmail(
+      input_text.value as string,
+      props.ws_id
     )) as UserLite[];
+    // (await apiCall.post(
+    //   EndpointType.WORKSPACE_ADD_USER_BY_EMAIL,
+    //   {},
+    //   {
+    //     params: {
+    //       ws_id: props.ws_id,
+    //       email: input_text.value,
+    //     },
+    //   }
+    // )) as UserLite[];
     if (response[0].user_id) {
       successMsg.value = "User added to Workspace!";
       emit("update");
@@ -150,9 +158,12 @@
       console.log(isEmail());
       if (newValue != oldValue && isEmail()) {
         isSearching.value = true;
-        const response = (await apiCall.get(EndpointType.USER_CHECK, {
-          params: { email: input_text.value },
-        })) as boolean;
+        const response = (await userStore.checkUserExists(
+          input_text.value as string
+        )) as boolean;
+        //  (await apiCall.get(EndpointType.USER_CHECK, {
+        //   params: { email: input_text.value },
+        // })) as boolean;
         if (!response) showError.value = true;
         else {
           showError.value = false;

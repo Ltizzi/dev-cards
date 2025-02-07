@@ -1,13 +1,13 @@
 <template lang="">
   <div
     :class="[
-      'flex flex-col justify-start my-5 w-full ml-0 rounded-2xl min-h-screen',
+      'flex flex-col justify-start my-5 w-full ml-7 rounded-2xl min-h-screen lg:-ml-8 xl:ml-0 ',
     ]"
     v-if="isLoaded"
   >
     <div
       :class="[
-        'w-full rounded-xl border-b-4 border-x-4 border-secondary  pb-2 ',
+        'w-full rounded-xl border-b-4 border-x-4 border-secondary  pb-2  motion-duration-700 motion-preset-rebound-up motion-scale-in-50 motion-ease-in-out',
         !isDark
           ? 'bg-base-100 text-base-content'
           : darkerCard
@@ -23,35 +23,42 @@
         <div :class="['w-full h-6  rounded-t-lg', title_color]"></div>
 
         <div
-          class="flex flex-row h-24 justify-stretch mb-0 border-b-4 border-secondary gap-0"
+          class="flex flex-row 2xl:flex-nowrap flex-wrap 2xl:h-24 h-auto justify-stretch mb-0 border-b-4 w-full border-secondary gap-0"
         >
-          <h2
-            class="text-2xl ml-2 border-r-2 border-secondary px-2 py-7 my-auto min-w-44"
-          >
-            {{ card.workspace.project_name }}
-          </h2>
+          <div class="w-full flex flex-row justify-center">
+            <h2
+              class="2xl:text-2xl text-xl ml-2 border-r-2 border-secondary px-2 py-7 my-auto lg:min-w-44 lg:w-1/6 w-3/12 max-w-xl"
+            >
+              {{ card.workspace.project_name + " " + card.task_id }}
+            </h2>
 
-          <div class="rounded-t-lg my-auto w-6/12 text-center">
-            <TaskTitle
-              :title="card.title"
-              :task_id="card.task_id"
-              :isDark="isDark"
-              :darkerCard="darkerCard"
-              :canModify="canModify"
-              @update="updateTask"
-            ></TaskTitle>
+            <div
+              class="rounded-t-lg my-auto 2xl:w-10/12 w-4/6 max-w-7xl min-w-64 text-center"
+            >
+              <TaskTitle
+                :title="card.title"
+                :task_id="card.task_id"
+                :isDark="isDark"
+                :darkerCard="darkerCard"
+                :canModify="canModify"
+                @update="updateTask"
+              ></TaskTitle>
+            </div>
+
+            <div
+              class="my-auto 2xl:w-1/6 w-3/12 max-w-32 border-l-2 border-secondary py-8 xl:px-0.5 px-5"
+            >
+              <p>by {{ card.owner.username }}</p>
+            </div>
           </div>
 
-          <div class="my-auto w-1/12 border-l-2 border-secondary py-8 px-0.5">
-            <p>by {{ card.owner.username }}</p>
-          </div>
           <div
-            class="flex flex-col justify-center gap-3 w-4/12 border-l-2 border-secondary"
+            class="flex 2xl:w-4/12 xl:max-w-full lg:max-w-5xl w-full md:max-w-4xl sm:max-w-3xl max-w-xl flex-col justify-center gap-3 border-l-2 border-secondary"
           >
             <!-- MARK: TASK STATE
            -->
             <div
-              class="flex flex-row justify-start gap-1 h-12 items-center border-b-2 border-secondary"
+              class="flex flex-row justify-start w-full gap-1 xl:h-12 items-center 2xl:border-b-2 border-secondary"
             >
               <TaskPrioritySelectable
                 :priority="card.priority"
@@ -102,53 +109,70 @@
         #MARK: TASK BODY
         -->
         <div class="px-7 pt-10 flex flex-col gap-5 justify-start">
+          <TagsList
+            :isSpecial="false"
+            :tags="normal_tags"
+            :canModify="canModify"
+            @removeTag="removeTag"
+            @removeSpecialTag="removeSpecialTag"
+            @navigate="goToTag"
+          />
           <!-- <h2 class="text-2xl text-start">{{ card.subtitle }}</h2> -->
-
-          <div
-            v-if="card.task_tags.length > 0"
-            :class="[
-              'flex flex-row justify-between gap-2 w-2/4 py-5 h-20   my-auto',
-              removeTagActive ? 'hover:cursor-not-allowed' : '',
-            ]"
-            @mouseover="card.task_tags.length > 0 ? (mouseOverTag = true) : ''"
-            @mouseleave="mouseOverTag = false"
-            @keydown.esc="removeTagActive ? (removeTagActive = false) : ''"
-          >
-            <div class="flex flex-row justify-start w-full gap-1 my-auto">
-              <div v-for="tag in card.task_tags">
-                <p
+          <!-- <div>
+            <div
+              v-if="normal_tags && normal_tags.length > 0"
+              :class="[
+                'flex flex-row justify-between gap-2 lg:w-2/4 py-5 h-20   my-auto',
+                removeTagActive ? 'hover:cursor-not-allowed' : '',
+              ]"
+              @mouseover="normal_tags.length > 0 ? (mouseOverTag = true) : ''"
+              @mouseleave="mouseOverTag = false"
+              @keydown.esc="removeTagActive ? (removeTagActive = false) : ''"
+            >
+              <div
+                class="flex flex-row flex-wrap justify-start w-full gap-1 my-auto"
+              >
+                <div v-for="tag in normal_tags">
+                  <p
+                    :class="[
+                      'rounded-lg  text-white text-sm font-semibold py-0.5   capitalize px-3 transition-all ease-in-out duration-300 hover:scale-110 ',
+                      removeTagActive
+                        ? 'hover:bg-error hover:cursor-not-allowed'
+                        : 'hover:cursor-pointer',
+                      `${tag.color}`,
+                    ]"
+                    @click="
+                      removeTagActive ? removeTag(tag.name) : goToTag(tag.name)
+                    "
+                  >
+                    <!- getColor(tag) 
+                    {{ tag.name }}
+                  </p>
+                </div>
+              </div>
+              <div class="tooltip" data-tip="Click to remove tags!">
+                <button
                   :class="[
-                    'rounded-lg  text-white text-sm font-semibold py-0.5   capitalize px-3 transition-all ease-in-out duration-300 hover:scale-110 hover:cursor-pointer',
-                    removeTagActive ? 'hover:bg-error' : '',
-                    `${getColor(tag)}`,
+                    'btn btn-error',
+                    removeTagActive
+                      ? 'hover:cursor-not-allowed'
+                      : 'hover:cursor:pointer ',
                   ]"
-                  @click="removeTagActive ? removeTag(tag) : goToTag(tag)"
+                  v-if="mouseOverTag && canModify"
+                  @click="activeRemoveTag()"
                 >
-                  {{ tag }}
-                </p>
+                  <font-awesome-icon
+                    :icon="['fas', 'trash']"
+                    class="text-white size-5 my-auto"
+                  />
+                </button>
               </div>
             </div>
-            <div class="tooltip" data-tip="Click to remove tags!">
-              <button
-                :class="[
-                  'btn btn-error',
-                  removeTagActive
-                    ? 'hover:cursor-not-allowed'
-                    : 'hover:cursor:pointer ',
-                ]"
-                v-if="mouseOverTag && canModify"
-                @click="activeRemoveTag()"
-              >
-                <font-awesome-icon
-                  :icon="['fas', 'trash']"
-                  class="text-white size-5 my-auto"
-                />
-              </button>
-            </div>
-          </div>
+          </div> -->
+
           <div
             class="flex flex-row gap-2 py-1 align-middle"
-            v-if="card.dependencies.length > 0"
+            v-if="card.dependencies && card.dependencies.length > 0"
           >
             <font-awesome-icon
               :icon="['fas', 'sitemap']"
@@ -156,7 +180,9 @@
             />
             <div v-for="task in card.dependencies" class="flex flex-row">
               <router-link :to="`/project/task?id=${task.task_id}`">
-                <p class="text-secondary font-bold text-lg italic underline">
+                <p
+                  class="text-secondary font-bold lg:text-lg text-base italic underline"
+                >
                   {{ task.title }}
                 </p>
               </router-link>
@@ -174,11 +200,16 @@
             class="ml-0"
           />
 
-          <div class="text-start" v-if="card.designated_to.length > 0">
-            <p class="text-lg font-semibold py-5 underline">Designated to:</p>
+          <div
+            class="text-start"
+            v-if="card.designated_to && card.designated_to.length > 0"
+          >
+            <p class="lg:text-lg text-sm font-semibold py-5 underline">
+              Designated to:
+            </p>
             <div class="flex flex-row justify-start gap-5 ml-5">
               <div class="w-auto" v-for="user of card.designated_to">
-                <div
+                <!-- <div
                   class="flex flex-row gap-4 items-center align-middle justify-start text-lg font-semibold"
                 >
                   <div class="avatar">
@@ -187,12 +218,18 @@
                     </div>
                   </div>
                   <span class="text-base"> {{ user.username }}, </span>
-                </div>
+                </div> -->
+                <BaseUserAvatarItem
+                  :avatar="user.avatar"
+                  :username="user.username"
+                  :id="user.user_id"
+                />
               </div>
             </div>
           </div>
           <div
             v-if="
+              card.designated_to &&
               card.designated_to.length == 0 &&
               (checkIsCollaborator(card.workspace.workspace_id) ||
                 checkIsModOrOwner)
@@ -225,8 +262,16 @@
               "
               @mouseleave="showAddIssueBtn = false"
             >
-              <div class="flex flex-row justify-start gap-5 mt-7">
-                <p class="text-lg underline font-semibold pb-5">Issues:</p>
+              <div
+                class="flex flex-row justify-start gap-5 mt-7 min-h-9 h-auto"
+              >
+                <p
+                  class="text-lg underline font-semibold pb-5"
+                  v-if="card.progressItems.length > 0"
+                >
+                  Issues:
+                </p>
+                <p v-else>Add Issue</p>
                 <AddIssueBtn
                   @update="updateTask"
                   :task_id="card.task_id"
@@ -235,7 +280,7 @@
               </div>
 
               <div
-                class="flex flex-col gap-2 indent-4"
+                class="flex flex-col gap-1 mb-5 indent-4"
                 v-for="issue in card.progressItems"
               >
                 <TaskIssue
@@ -254,6 +299,7 @@
           -->
           <div
             class="flex flex-col justify-start border-t-2 border-secondary pt-4"
+            v-show="card.updates && card.updates.length > 0"
           >
             <div v-for="update in card.updates" class="flex flex-col gap-2">
               <div class="flex flex-col text-start gap-1">
@@ -271,7 +317,7 @@
     </div>
     <TaskControlSideMenu
       @update="updateTaskById"
-      :projectId="projectStore.current.workspace_id"
+      :projectId="ws_id"
       :taskId="taskId"
     ></TaskControlSideMenu>
   </div>
@@ -285,11 +331,13 @@
     Effort,
     Priority,
     Progress,
+    SpecialTag,
     Status,
     TagPool,
     Task,
     TaskType,
     UITag,
+    Workspace,
   } from "../utils/types";
   import { useTaskStore } from "../store/task.store";
   import { useApiCall } from "../composables/useAPICall";
@@ -306,6 +354,8 @@
   //import TaskDescription from "../components/task/TaskDescription.vue";
   import TaskIssue from "../components/task/TaskIssue.vue";
   import AddIssueBtn from "../components/ui/AddIssueBtn.vue";
+  import BaseUserAvatarItem from "../components/common/BaseUserAvatarItem.vue";
+  import TagsList from "../components/ui/TagsList.vue";
   import { useProjectStore } from "../store/project.store";
   import {
     checkIfUserisTaskOwner,
@@ -315,19 +365,27 @@
   } from "../utils/auth.utils";
   import { dateUtils } from "../utils/date.utils";
   import { useUserStore } from "../store/user.store";
+  import { useUIStore } from "../store/ui.store";
+  import { useConfigStore } from "../store/config.store";
 
   // #region: variables
   const card = ref<Task>();
   const taskId = ref<number>();
+  const ws_id = ref<number>();
   const taskStore = useTaskStore();
   const projectStore = useProjectStore();
   const userStore = useUserStore();
+  const UIStore = useUIStore();
+  const configStore = useConfigStore();
 
   const title_color = ref<string>();
   const progress_value = ref<number>();
   const priority_color = ref<string>();
   const mouseOverTag = ref<boolean>(false);
-  const removeTagActive = ref<boolean>();
+  const removeTagActive = ref<boolean>(false);
+
+  const normal_tags = ref<UITag[]>();
+  const special_tags = ref<SpecialTag[]>();
 
   const route = useRoute();
   const router = useRouter();
@@ -347,10 +405,7 @@
   // #MARK:asdas
 
   async function fetchTask(task_id: number) {
-    console.log("soy yo");
-    const data = (await apiCall.get(EndpointType.TASK_GET_BY_ID, {
-      params: { id: task_id },
-    })) as Task;
+    const data = await taskStore.fetchTaskById(task_id); //(await apiCall.get(EndpointType.TASK_GET_BY_ID, { params: { id: task_id },  })) as Task;
     return data;
   }
 
@@ -359,27 +414,19 @@
     if (route.query.id) {
       const id = +route.query.id;
       card.value = await fetchTask(id);
-      taskStore.setCurrentTask(card.value);
+      //taskStore.setCurrentTask(card.value);
     }
   }
 
   async function updateTask(task: Task) {
     taskStore.setCurrentTask(task);
-    await projectStore.updateCurrent();
-    prepareTaskData(task);
+    // await projectStore.updateCurrent();
+    await prepareTaskData(task);
   }
 
   async function updateProgress(progress: Progress) {
-    const response = (await apiCall.patch(
-      EndpointType.TASK_UPDATE_PROGRESS,
-      {},
-      {
-        params: {
-          task_id: card.value?.task_id,
-          progress: progress,
-        },
-      }
-    )) as Task;
+    const response = await taskStore.updateTaskProgress(progress); //(await apiCall.patch(EndpointType.TASK_UPDATE_PROGRESS, {}, { params: {  task_id: card.value?.task_id,progress: progress,},})) as Task;
+
     if (response.task_id == card.value?.task_id) {
       // taskStore.setCurrentTask(response);
       // prepareTaskData(taskStore.currentTask);
@@ -388,16 +435,7 @@
   }
 
   async function updatePriority(priority: Priority) {
-    const response = (await apiCall.patch(
-      EndpointType.TASK_UPDATE_PRIORITY,
-      {},
-      {
-        params: {
-          task_id: card.value?.task_id,
-          priority: priority,
-        },
-      }
-    )) as Task;
+    const response = await taskStore.updatePriority(priority); //(await apiCall.patch(EndpointType.TASK_UPDATE_PRIORITY,{},{params: {task_id: card.value?.task_id,priority: priority,},})) as Task;
     if (response.task_id == card.value?.task_id) {
       updateTask(response);
     } else console.error("CAN'T UPDATE TASK PRIORITY");
@@ -422,48 +460,22 @@
   }
 
   async function updateTaskStatus(option: Status) {
-    const response = (await apiCall.patch(
-      EndpointType.TASK_UPDATE_STATUS,
-      {},
-      {
-        params: {
-          task_id: card.value?.task_id,
-          status: option,
-        },
-      }
-    )) as Task;
+    const response = await taskStore.updateTaskStatus(option);
+    // (await apiCall.patch(EndpointType.TASK_UPDATE_STATUS,{},{params: {task_id: card.value?.task_id,status: option,},})) as Task;
     if (response.task_id == card.value?.task_id) {
       updateTask(response);
     } else console.error("CAN'T UPDATE TASK STATUS");
   }
 
   async function updateTaskEffort(option: Effort) {
-    const response = (await apiCall.patch(
-      EndpointType.TASK_UPDATE_EFFORT,
-      {},
-      {
-        params: {
-          task_id: card.value?.task_id,
-          effort: option,
-        },
-      }
-    )) as Task;
+    const response = await taskStore.updateTaskEffort(option);
     if (response.task_id == card.value?.task_id) {
       updateTask(response);
     } else console.error("CAN'T UPDATE TASK EFFORT");
   }
 
   async function updateTaskType(option: TaskType) {
-    const response = (await apiCall.patch(
-      EndpointType.TASK_UPDATE_TYPE,
-      {},
-      {
-        params: {
-          task_id: card.value?.task_id,
-          type: option,
-        },
-      }
-    )) as Task;
+    const response = await taskStore.updateTaskType(option);
     if (response.task_id == card.value?.task_id) {
       updateTask(response);
     } else console.error("CAN'T UPDATE TASK TYPE");
@@ -474,79 +486,55 @@
   }
 
   async function removeTag(tag: string) {
-    if (card.value) {
-      card.value.task_tags = card.value.task_tags?.filter(
-        (t: string) => t.toLowerCase() != tag.toLowerCase()
-      );
-    }
-    const response = (await apiCall.patch(
-      EndpointType.TASK_REMOVE_TAG,
-      {},
-      {
-        params: {
-          task_id: card.value?.task_id,
-          tag: tag,
-        },
-      }
-    )) as Task;
+    // if (card.value) {
+    //   card.value.task_tags = card.value.task_tags?.filter(
+    //     (t: string) => t.toLowerCase() != tag.toLowerCase()
+    //   );
+    // }
+    const response = (await taskStore.removeTag(tag)) as unknown as Task;
+
     if (response.task_id == card.value?.task_id) {
       card.value = response;
-      let tags = JSON.parse(localStorage.getItem("tags") as string); //removing tag from tag pool in local
-      tags = tags.map((tp: TagPool) => {
-        if (tp.workspace_id === card.value?.workspace.workspace_id) {
-          tp.tags = tp.tags.filter(
-            (t: UITag) => t.name.toLowerCase() !== tag.toLowerCase()
-          );
-        }
-        return tp;
-      });
-      localStorage.setItem("tags", JSON.stringify(tags));
+      //TODO: Testear si se actualiza correctamente o si hace falta llamar a "prepareData acá"
     }
   }
 
-  function getColor(name: string) {
-    const ws_id = projectStore.current.workspace_id;
-    const tags: UITag[] | undefined = taskUtils.getTagColor(ws_id, name);
-    if (tags && tags.length > 0) {
-      return tags[0].color;
-    } else {
-      taskUtils.addTagToTagsPool(name, ws_id);
-      getColor(name);
-    }
+  async function removeSpecialTag(id: number) {
+    //TODO: lógica de store para remover special tags
+    //TODO: O quizás no haga falta porque eso quizás sólo debería hacerse desde la configuración del proyecto
+    //TODO: o quizás sólo se mueve de la tarea por lo que sería válido usarlo.
   }
 
   function goToTag(tag: string) {
     router.push(`/project/tasks?tag=${tag}`);
   }
 
-  function prepareTaskData(data: Task) {
+  async function prepareTaskData(data: Task) {
     title_color.value = taskUtils.getColor(data.color);
     progress_value.value = taskUtils.calcProgress(data.progress);
     priority_color.value = taskUtils.calcPriorityColor(data.priority);
+
+    const tags = await taskUtils.parseTags(data.task_tags as string[]);
+    normal_tags.value = tags.tags;
+    special_tags.value = tags.specialTags;
   }
 
   function checkUserCanModifyTask() {
+    const ws = projectStore.getCurrent() as Workspace;
     return (
-      checkIsModOrOwner(projectStore.current.workspace_id) ||
-      checkIsDesignated(
-        projectStore.current.workspace_id,
-        card.value?.task_id as number
-      ) ||
+      checkIsModOrOwner(ws.workspace_id) ||
+      checkIsDesignated(ws.workspace_id, card.value?.task_id as number) ||
       checkIfUserisTaskOwner(card.value?.task_id as number, userStore.self)
     );
   }
 
   async function autoAssignTask() {
-    const response = (await apiCall.post(
-      EndpointType.TASK_AUTOASSIGN,
-      {},
-      {
-        params: {
-          task_id: card.value?.task_id,
-          ws_id: card.value?.workspace.workspace_id,
-        },
-      }
-    )) as Task;
+    const taskId = card.value?.task_id as number;
+    const wsId = card.value?.workspace.workspace_id as number;
+    const response = (await taskStore.autoAssignTask(
+      taskId,
+      wsId
+    )) as unknown as Task;
     if (response.task_id == card.value?.task_id) {
       card.value = response;
       await userStore.refreshSelf();
@@ -572,7 +560,7 @@
           taskId.value = task.task_id;
           canModify.value = checkUserCanModifyTask();
           taskStore.setCurrentTask(task);
-          prepareTaskData(task);
+          await prepareTaskData(task);
         }
       }
     }
@@ -580,28 +568,27 @@
 
   watch(
     () => taskStore.currentTask,
-    (newValue, oldValue) => {
+    async (newValue, oldValue) => {
       if (newValue != oldValue) {
         card.value = newValue;
         taskId.value = newValue.task_id;
-        prepareTaskData(newValue);
+        await prepareTaskData(newValue);
       }
     }
   );
 
   onBeforeMount(() => {
-    if (localStorage.getItem("darkTheme")) {
-      isDark.value = JSON.parse(localStorage.getItem("darkTheme") as string);
-      darkerCard.value = JSON.parse(
-        localStorage.getItem("darkerCards") as string
-      );
-    }
+    isDark.value = UIStore.checkIsDarkTheme(); //JSON.parse(localStorage.getItem("darkTheme") as string);
+    darkerCard.value = UIStore.darkerCard; //JSON.parse(localStorage.getItem("darkerCards") as string);
   });
 
   onMounted(async () => {
+    UIStore.setLoading(true);
     const task_id = route.query.id;
+    const ws = projectStore.getCurrent() as Workspace;
+    ws_id.value = ws.workspace_id;
     if (taskStore.currentTask.task_id == +taskId) {
-      card.value = taskStore.currentTask;
+      card.value = taskStore.getCurrent();
     }
     // else if (localStorage.getItem("currentTask")) {
     //   const task = JSON.parse(
@@ -613,7 +600,7 @@
     // }
     else {
       if (task_id) {
-        const data = await fetchTask(+task_id);
+        const data = (await fetchTask(+task_id)) as Task;
 
         if (data.task_id == +task_id) {
           card.value = data;
@@ -624,8 +611,9 @@
       taskId.value = card.value.task_id;
       canModify.value = checkUserCanModifyTask();
       taskStore.setCurrentTask(card.value);
-      prepareTaskData(card.value);
+      await prepareTaskData(card.value);
       isLoaded.value = true;
+      UIStore.setLoading(false);
     }
   });
 </script>

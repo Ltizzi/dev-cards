@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="flex flex-row gap-1 my-auto">
+  <div class="flex flex-row xl:flex-nowrap flex-wrap gap-1 my-auto">
     <BaseDropdownSelectable
       :isDark="isDark"
       :options="colorOptions"

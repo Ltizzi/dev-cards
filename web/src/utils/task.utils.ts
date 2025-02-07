@@ -1,7 +1,9 @@
+import { useConfigStore } from "../store/config.store";
 import {
   Color,
   Priority,
   Progress,
+  SpecialTag,
   Status,
   TagPool,
   Task,
@@ -9,6 +11,21 @@ import {
   UITag,
   Workspace,
 } from "./types";
+
+function mapTaskToTaskLite(task: Task) {
+  return {
+    task_id: task.task_id,
+    title: task.title,
+    color: task.color,
+    priority: task.priority,
+    status: task.status,
+    progress: task.progress,
+    task_type: task.task_type,
+    workspace: task.workspace,
+    task_tags: task.task_tags,
+    hasUsers: task.designated_to ? task.designated_to.length > 0 : false,
+  } as TaskLite;
+}
 
 function calcProgress(progress: Progress) {
   switch (progress) {
@@ -75,12 +92,17 @@ function searchTasks(searchValue: string, tasks: TaskLite[]): TaskLite[] {
   return returned_tasks;
 }
 
+function filterTags(tags: string[], tag: string) {
+  return tags.filter((t: string) => t.toLowerCase() == tag).length > 0;
+}
+
 function searchTasksByTag(tag: string, tasks: TaskLite[]): TaskLite[] {
   if (!tag) {
     return tasks;
   }
   tag = tag.toLowerCase();
-  return tasks.filter((t: TaskLite) => t.task_tags.includes(tag));
+  //return tasks.filter((t: TaskLite) => t.task_tags.includes(tag));
+  return tasks.filter((t: TaskLite) => filterTags(t.task_tags, tag));
 }
 
 function searchTasksByFilters(options: any[], tasks: TaskLite[]): TaskLite[] {
@@ -164,6 +186,7 @@ function createTagPool(ws_id: number) {
   const newTagPool: TagPool = {
     workspace_id: ws_id,
     tags: [],
+    specialTags: [] as SpecialTag[],
   };
   tag_pools.push(newTagPool);
   localStorage.setItem("tags", JSON.stringify(tag_pools));
@@ -215,6 +238,7 @@ function addNewTagPool(
   const newTagPool: TagPool = {
     workspace_id: ws_id,
     tags: tags,
+    specialTags: [] as SpecialTag[],
   };
   pools.push(newTagPool);
   return pools;
@@ -224,17 +248,20 @@ function getTagColor(ws_id: number, tag_name: string) {
   if (localStorage.getItem("tags")) {
     const tagPools = JSON.parse(localStorage.getItem("tags") as string);
     const tagPool = getTagPoolById(tagPools, ws_id) as TagPool[];
-    return tagPool[0].tags.filter(
-      (tag: UITag) => tag.name.toLowerCase() === tag_name.toLowerCase()
-    );
+    if (tagPool[0] && tagPool[0].tags.length > 0)
+      return tagPool[0].tags.filter(
+        (tag: UITag) => tag.name.toLowerCase() === tag_name.toLowerCase()
+      );
+    else return [{ name: "", color: "red" }];
   }
 }
 
 function getTags(ws_id: number) {
   const tagPools = JSON.parse(localStorage.getItem("tags") as string);
-  const TagPool = getTagPoolById(tagPools, ws_id) as TagPool[];
-  if (TagPool[0]) return TagPool[0].tags;
-  else return [];
+  if (tagPools) {
+    const TagPool = getTagPoolById(tagPools, ws_id) as TagPool[];
+    if (TagPool[0]) return TagPool[0].tags;
+  } else return [];
 }
 
 //Method and interface used to convert old tag pool format in the new Tag pool
@@ -281,9 +308,92 @@ function saveTagPool() {
         // { name: "BACKEND", color: getRandomColor() },
         // { name: "SECURITY", color: getRandomColor() },
       ],
+      specialTags: [] as SpecialTag[],
     },
   ];
   localStorage.setItem("tags", JSON.stringify(newTagPools));
+}
+
+async function parseTags(tags: string[]) {
+  const specialTags = getSpecialTagsByFilter(tags);
+  let filtered_tags = getNormalTags(tags);
+  let unique_tags = [] as string[];
+  filtered_tags = filtered_tags.map((t: string | undefined) => {
+    if (t && !unique_tags.includes(t.toLowerCase())) {
+      unique_tags.push(t.toLowerCase());
+      return t;
+    }
+  });
+
+  return {
+    tags: await getUITags(filtered_tags as string[]),
+    specialTags: await getSpecialsTags(specialTags as string[]),
+  };
+}
+
+async function parseAndGetSpecialTags(tags: string[]) {
+  const filtered_tags = getSpecialTagsByFilter(tags);
+  return filtered_tags ? await getSpecialsTags(filtered_tags as string[]) : [];
+}
+
+function getSpecialTagsByFilter(tags: string[]) {
+  return tags.map((t: string) => {
+    if (t[0] === "{" && t[t.length - 1] === "}") return t;
+  });
+}
+function getNormalTags(tags: string[]) {
+  return tags.map((t: string) => {
+    if (t[0] !== "{" && t[t.length - 1] !== "}") return t;
+  });
+}
+
+async function getUITags(tags: string[]) {
+  const configStore = useConfigStore();
+  const UITags = await configStore.getTags();
+  // console.log("UITAGS FROM UTILS:");
+  // console.log(tags);
+  // console.log(UITags);
+
+  //TODO:FIXME:este código hay q borrarlo en prooduction (es solo un parche para filtrar tags duplicados)
+  let unique_tags = [] as string[];
+  UITags.forEach((ut: UITag) => {
+    if (unique_tags.length == 0 || !unique_tags.includes(ut.name.toLowerCase()))
+      unique_tags.push(ut.name);
+  });
+  let unique_added_tags = [] as UITag[];
+  // console.log(unique_tags);
+  return UITags.filter((ut: UITag) => {
+    let parcial = tags.filter(
+      (t: string) =>
+        t.toLowerCase() == ut.name.toLowerCase() && //FIXME: a partir de acá debería borrarse
+        unique_tags.filter(
+          (t: string) => t.toLowerCase() == ut.name.toLowerCase()
+        ).length > 0 &&
+        unique_added_tags.filter(
+          (ui_tag: UITag) => ui_tag.name.toLowerCase() == ut.name.toLowerCase()
+        ).length == 0
+    );
+    if (parcial.length > 0) {
+      unique_added_tags.push(ut);
+      return parcial;
+    }
+    console.log(unique_added_tags);
+  });
+}
+
+async function getSpecialsTags(tags: string[]) {
+  const configStore = useConfigStore();
+  const specialTags = await configStore.getSpecialTags();
+
+  return specialTags.filter((st: SpecialTag) => {
+    let parcial = tags.filter(
+      (t: string) => t.toLowerCase() == st.name.toLowerCase()
+    );
+    if (parcial.length > 0) return parcial;
+    // tags.forEach((t: string) => {
+    //   if (st.value.toLowerCase() == t.toLowerCase()) return st;
+    // });
+  });
 }
 
 export const taskUtils = {
@@ -302,4 +412,9 @@ export const taskUtils = {
   getTags,
   saveTagPool,
   createTagPool,
+  mapTaskToTaskLite,
+  parseTags,
+  parseAndGetSpecialTags,
+  getNormalTags,
+  getUITags,
 };

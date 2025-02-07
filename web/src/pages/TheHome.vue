@@ -8,17 +8,14 @@
     <LateralMenu
       :class="[
         'duration-150 transition-all  ease-in-out opacity-90 z-0 h-screen fixed  bg-gradient-to-br from-0%  from-secondary  to-100% to-transparent -mx-16   hover:translate-x-16 hover:z-20',
-        firstLoaded
-          ? `translate-x-16 z-50  
-              `
-          : ` `,
+        firstLoaded ? `translate-x-16 z-50` : ` `,
       ]"
     />
     <!--      `blur-${blur_class}`bg-opacity-${float} -->
 
     <!-- </div> -->
 
-    <div class="w-full">
+    <div class="w-auto">
       <router-view></router-view>
     </div>
   </div>
@@ -26,13 +23,14 @@
 <script setup lang="ts">
   import LateralMenu from "../layouts/LateralMenu.vue";
   import { useRouter } from "vue-router";
-  import { ref, onMounted, watch } from "vue";
+  import { ref, onMounted, watch, onBeforeMount } from "vue";
   import {
     changeTheme,
     checkThemeIsDark,
     getActualTheme,
   } from "../utils/client.utils";
   import { useUIStore } from "../store/ui.store";
+  import { useUserStore } from "../store/user.store";
 
   const router = useRouter();
 
@@ -41,6 +39,7 @@
   const isDark = ref<boolean>(false);
 
   const UIStore = useUIStore();
+  const userStore = useUserStore();
 
   watch(
     () => UIStore.justUpdated,
@@ -51,19 +50,32 @@
     }
   );
 
+  function handleResize() {
+    const isMobile = window.innerWidth < 1024;
+    console.log("RESIZEEE");
+    UIStore.setIsMobile(isMobile);
+  }
+
+  onBeforeMount(() => {
+    UIStore.checkOfflineMode();
+    userStore.checkOfflineMode();
+    UIStore.setLoading(true);
+  });
+
   onMounted(() => {
-    const theme = localStorage.getItem("theme") as string;
+    window.addEventListener("resize", handleResize);
+    const theme = UIStore.getTHeme();
     if (theme) {
-      //changeTheme(theme);
-      UIStore.setTheme(theme);
-      isDark.value = UIStore.darkTheme;
+      isDark.value = UIStore.checkIsDarkTheme();
     }
     setTimeout(() => {
       firstLoaded.value = false;
     }, 1500);
-    const user = JSON.parse(localStorage.getItem("user") as string);
+    const user = userStore.getSelf();
     if (!user) {
       router.push("/login");
+    } else {
+      UIStore.setLoading(false);
     }
   });
 </script>

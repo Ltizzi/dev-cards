@@ -1,6 +1,8 @@
 import { UserLite } from '../../utils/types';
 <template lang="">
-  <div class="flex flex-col justify-center gap-10 py-10 px-10">
+  <div
+    class="flex flex-col justify-center gap-10 py-10 px-10 motion-duration-300 motion-preset-fade-lg"
+  >
     <h1 class="text-start text-2xl">Workspace's users</h1>
     <div class="flex flex-col gap-5">
       <div class="overflow-x-auto">
@@ -8,10 +10,12 @@ import { UserLite } from '../../utils/types';
           <!-- head -->
           <thead>
             <tr>
-              <th>Avatar</th>
-              <th class="text-center">Id</th>
+              <th v-if="!isMobile && checkWindowWidth()">Avatar</th>
+              <th class="text-center" v-if="!isMobile && checkWindowWidth()">
+                Id
+              </th>
               <th>Userame</th>
-              <th>Email</th>
+              <th v-if="!isMobile && checkWindowWidth()">Email</th>
               <th class="text-center">Role</th>
               <th class="text-center">Collaborator Control</th>
               <th class="text-center">Remove</th>
@@ -19,20 +23,20 @@ import { UserLite } from '../../utils/types';
           </thead>
           <tbody>
             <tr v-for="user in user_list">
-              <th>
+              <th v-if="!isMobile && checkWindowWidth()">
                 <div class="avatar">
                   <div class="w-8 rounded-full border-primary border-2">
                     <img :src="user.avatar" />
                   </div>
                 </div>
               </th>
-              <td>
+              <td v-if="!isMobile && checkWindowWidth()">
                 <p class="text-center w-auto">{{ user.user_id }}</p>
               </td>
               <td>
                 <p class="w-auto">{{ user.username }}</p>
               </td>
-              <td>
+              <td v-if="!isMobile && checkWindowWidth()">
                 <p class="w-auto">{{ user.email }}</p>
               </td>
               <td>
@@ -123,11 +127,11 @@ import { UserLite } from '../../utils/types';
 </template>
 <script setup lang="ts">
   import { onBeforeMount, ref, watch } from "vue";
-  import { useApiCall } from "../../composables/useAPICall";
   import { UserLite } from "../../utils/types";
-  import { EndpointType } from "../../utils/endpoints";
   import BaseDeleteModal from "../common/BaseDeleteModal.vue";
   import { checkIsDark } from "../../utils/client.utils";
+  import { useUIStore } from "../../store/ui.store";
+  import { useProjectStore } from "../../store/project.store";
 
   const props = defineProps<{
     workspace_id: number;
@@ -138,8 +142,10 @@ import { UserLite } from '../../utils/types';
   }>();
 
   const isDark = ref<boolean>();
+  const isMobile = ref<boolean>();
 
-  const apiCall = useApiCall();
+  const projectStore = useProjectStore();
+  const UIStore = useUIStore();
 
   const emit = defineEmits(["update"]);
 
@@ -149,16 +155,11 @@ import { UserLite } from '../../utils/types';
   const showModal = ref<boolean>();
 
   async function removeUser() {
-    const response = (await apiCall.patch(
-      EndpointType.WORKSPACE_REMOVE_USER,
-      {},
-      {
-        params: {
-          ws_id: props.workspace_id,
-          user_id: modal_user_id_to_delete.value,
-        },
-      }
+    const response = (await projectStore.removeUserFromWorkspace(
+      props.workspace_id,
+      modal_user_id_to_delete.value as number
     )) as UserLite[];
+
     if (response.length > 0) {
       user_list.value = response;
       emit("update");
@@ -166,6 +167,10 @@ import { UserLite } from '../../utils/types';
         showModal.value = false;
       }, 1000);
     }
+  }
+
+  function checkWindowWidth() {
+    return window.innerWidth > 1600;
   }
 
   function openModal(id: number) {
@@ -190,31 +195,20 @@ import { UserLite } from '../../utils/types';
   }
 
   async function addCollab(id: number) {
-    const response = (await apiCall.patch(
-      EndpointType.WORKSPACE_ADD_COLLABORATOR,
-      {},
-      {
-        params: {
-          ws_id: props.workspace_id,
-          user_id: id,
-        },
-      }
+    const response = (await projectStore.addUserAsCollaborator(
+      props.workspace_id,
+      id
     )) as UserLite[];
 
     emit("update");
   }
 
   async function removeCollab(id: number) {
-    const response = (await apiCall.patch(
-      EndpointType.WORKSPACE_REMOVE_COLLABORATOR,
-      {},
-      {
-        params: {
-          ws_id: props.workspace_id,
-          user_id: id,
-        },
-      }
+    const response = (await projectStore.removeUserAsCollaborator(
+      props.workspace_id,
+      id
     )) as UserLite[];
+
     emit("update");
   }
 
@@ -227,7 +221,17 @@ import { UserLite } from '../../utils/types';
     }
   );
 
+  watch(
+    () => UIStore.isMobile,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        isMobile.value = UIStore.isMobile;
+      }
+    }
+  );
+
   onBeforeMount(() => {
+    isMobile.value = UIStore.isMobile;
     user_list.value = props.user_list;
     isDark.value = checkIsDark();
   });

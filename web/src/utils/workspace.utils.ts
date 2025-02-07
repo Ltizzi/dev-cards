@@ -1,4 +1,4 @@
-import { Workspace } from "./types";
+import { Workspace, WorkspaceLite } from "./types";
 
 function sortByOldestUpdate(array: Workspace[]) {
   return array.sort((a, b) => {
@@ -16,7 +16,16 @@ function sortByNewbestUpdate(array: Workspace[]) {
   });
 }
 
+function mapWsToWsLite(ws: Workspace) {
+  return {
+    workspace_id: ws.workspace_id,
+    project_name: ws.project_name,
+    owner: ws.owner,
+  } as WorkspaceLite;
+}
+
 export const workspaceUtils = {
   sortByOldestUpdate,
   sortByNewbestUpdate,
+  mapWsToWsLite,
 };

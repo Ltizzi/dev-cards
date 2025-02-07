@@ -1,7 +1,9 @@
 <template lang="">
   <div>
     <label
-      :class="['input input-bordered flex items-center gap-2 input-secondary ']"
+      :class="[
+        'input input-bordered flex items-center gap-2 input-secondary 2xl:text-base  text-xs ',
+      ]"
     >
       <!-- bg-gradient-to-r from-0% via-transparent via-50%  to-100%',
         isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300' -->
@@ -17,9 +19,10 @@
 </template>
 <script setup lang="ts">
   import { onBeforeMount, ref, watch } from "vue";
-  import { checkThemeIsDark } from "../../utils/client.utils";
+  import { useUIStore } from "../../store/ui.store";
 
   const isDark = ref<boolean>();
+  const UIStore = useUIStore();
 
   const search = ref<string>();
 
@@ -33,6 +36,6 @@
   );
 
   onBeforeMount(() => {
-    isDark.value = checkThemeIsDark();
+    isDark.value = UIStore.checkIsDarkTheme();
   });
 </script>

@@ -1,12 +1,14 @@
 <template lang="">
   <div class="flex flex-col justify-center w-full" v-if="isLoaded">
-    <div class="flex flex-row justify-between max-w-full ml-24 pt-10 max-h-40">
+    <div
+      class="flex flex-row lg:flex-nowrap flex-wrap justify-between max-w-full lg:ml-24 ml-5 pt-10 max-h-40 lg:pb-12 2xl:pb-0 pb-20"
+    >
       <div class="w-full">
         <h1 class="text-2xl">Home page</h1>
       </div>
 
       <div
-        class="flex flex-row justify-end gap-5 w-4/5 mr-10 max-h-12 my-auto align-middle"
+        class="flex flex-row lg:flex-nowrap flex-wrap justify-end gap-5 w-4/5 mr-10 max-h-12 my-auto align-middle"
       >
         <div class="flex flex-row gap-3" v-if="isDark">
           <BaseToggle
@@ -48,7 +50,7 @@
         </button>
       </div>
     </div>
-    <ProjectList v-if="isLoggedIn" />
+    <ProjectList v-if="isLoggedIn" class="lg:mt-0 mt-16" />
     <DesignatedView
       class="ml-10"
       :isDark="isDark"
@@ -68,6 +70,8 @@
   import BaseToggle from "../components/common/BaseToggle.vue";
   import ProjectList from "../components/project/ProjectList.vue";
   import { taskUtils } from "../utils/task.utils";
+  import { useProjectStore } from "../store/project.store";
+  import { User, Workspace } from "../utils/types";
 
   const router = useRouter();
 
@@ -123,8 +127,8 @@
     loadedDesignated.value = true;
   }
 
-  onBeforeMount(() => {
-    const user = JSON.parse(localStorage.getItem("user") as string);
+  onBeforeMount(async () => {
+    const user = userStore.getSelf() as User; //JSON.parse(localStorage.getItem("user") as string);
     if (!user) {
       router.push("/login");
     } else {

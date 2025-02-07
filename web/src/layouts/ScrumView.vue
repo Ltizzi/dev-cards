@@ -1,10 +1,17 @@
 <template lang="">
-  <div class="pt-5 min-h-screen h-screen flex flex-col pb-10" v-if="isLoaded">
+  <div
+    class="pt-5 min-h-screen h-screen flex flex-col pb-10 w-auto"
+    v-if="isLoaded"
+  >
     <div class="h-1/6">
       <h1 class="text-center text-4xl">Scrum board</h1>
-      <div class="flex flex-row py-5 justify-between">
+      <div
+        class="flex flex-row py-5 xl:justify-between justify-between lg:justify-around"
+      >
         <TaskFilterInput @search="defineSearch" />
-        <div class="flex flex-row justify-between gap-5">
+        <div
+          class="flex flex-row justify-between 2xl:mx-0 xl:mx-10 xl:gap-5 gap-1"
+        >
           <NewTaskBtn @update="updateProject" />
           <!-- <button class="btn btn-outline btn-secondary" @click="changeIconSize">
             Change card size
@@ -14,13 +21,15 @@
       </div>
     </div>
 
-    <div class="h-5/6 overflow-hidden flex-1">
+    <div
+      class="h-5/6 overflow-y-hidden overflow-x-hidden w-full lg:flex-1 xl:ml-0 lg:-ml-6"
+    >
       <div
         class="w-full grid border-2 border-t-0 border-l-0 border-r-0 border-opacity-40 border-spacing-10 border-dashed border-secondary grid-cols-5 text-xl font-semibold text-center text-base-content rounded-t-xl flex-1"
       >
         <div
           :class="[
-            'w-80 py-3 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r from-0% via-transparent via-50%   to-100% rounded-tl-xl',
+            '2xl:w-80 w-auto flex justify-center items-center py-3 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r from-0% via-transparent via-50%   to-100% rounded-tl-xl',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
         >
@@ -28,7 +37,7 @@
         </div>
         <div
           :class="[
-            'w-80 py-3 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100%',
+            '2xl:w-80 w-auto flex justify-center items-center py-3 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100%',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
         >
@@ -36,7 +45,7 @@
         </div>
         <div
           :class="[
-            'w-80 py-3 border-spacing-10 border-opacity-20  border-dashed border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100%',
+            '2xl:w-80 w-auto flex justify-center items-center py-3 border-spacing-10 border-opacity-20  border-dashed border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100%',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
         >
@@ -44,7 +53,7 @@
         </div>
         <div
           :class="[
-            'w-80 py-3 border-spacing-10 border-opacity-20  border-dashed border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100% ',
+            '2xl:w-80 w-auto flex justify-center items-center py-3 border-spacing-10 border-opacity-20  border-dashed border-r-2 border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%   to-100% ',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
         >
@@ -52,7 +61,7 @@
         </div>
         <div
           :class="[
-            'w-80 py-3 bg-gradient-to-r rounded-tr-xl  from-0% via-transparent via-50%  to-100%',
+            '2xl:w-80 w-auto flex justify-center items-center py-3 bg-gradient-to-r rounded-tr-xl  from-0% via-transparent via-50%  to-100%',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
         >
@@ -60,12 +69,12 @@
         </div>
       </div>
       <div
-        class="w-full grid grid-cols-5 border-opacity-30 border-spacing-10 border-dashed border-x-0 border-b-0 border-secondary rounded-b-xl shadow-lg shadow-slate-900 h-full relative"
+        class="w-full overflow-x-auto grid grid-cols-5 border-opacity-30 border-spacing-10 border-dashed border-x-0 border-b-0 border-secondary rounded-b-xl shadow-lg shadow-slate-900 h-full relative"
         ref="cols"
       >
         <div
           :class="[
-            'w-80 border-r-2 border-opacity-20 border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% rounded-bl-xl    overflow-x-hidden max-h-fit h-full',
+            '2xl:w-80 w-auto border-r-2 border-opacity-20 border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% rounded-bl-xl    overflow-x-hidden max-h-full h-full',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_pool"
@@ -78,7 +87,7 @@
         </div>
         <div
           :class="[
-            'w-80 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% overflow-x-hidden overflow-y-auto max-h-full',
+            '2xl:w-80 w-auto border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100% overflow-x-hidden overflow-y-auto max-h-full',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_priority"
@@ -91,7 +100,7 @@
         </div>
         <div
           :class="[
-            'w-80 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r from-0% via-transparent via-50% to-100% overflow-x-hidden overflow-y-auto max-h-full',
+            '2xl:w-80 w-auto border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r from-0% via-transparent via-50% to-100% overflow-x-hidden overflow-y-auto max-h-full',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_progress"
@@ -104,7 +113,7 @@
         </div>
         <div
           :class="[
-            'w-80 border-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100%  overflow-x-hidden overflow-y-auto max-h-full',
+            '2xl:w-80 w-autoborder-r-2 border-opacity-20  border-spacing-10 border-dashed border-r-secondary bg-gradient-to-r  from-0% via-transparent via-50%  to-100%  overflow-x-hidden overflow-y-auto max-h-full',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_testing"
@@ -117,7 +126,7 @@
         </div>
         <div
           :class="[
-            'w-80 bg-gradient-to-r border-opacity-50  border-spacing-10 border-dashed from-0% via-transparent via-50%  to-100% rounded-br-xl  overflow-x-hidden overflow-y-auto max-h-full',
+            '2xl:w-80 w-auto bg-gradient-to-r border-opacity-50  border-spacing-10 border-dashed from-0% via-transparent via-50%  to-100% rounded-br-xl  overflow-x-hidden overflow-y-auto max-h-full',
             isDark ? 'from-neutral to-neutral' : 'from-base-300 to-base-300',
           ]"
           ref="col_completed"
@@ -138,19 +147,23 @@
     Priority,
     Progress,
     Status,
+    Task,
     TaskLite,
     TaskType,
+    Workspace,
   } from "../utils/types";
   import TaskList from "../components/task/TaskList.vue";
   import { useProjectStore } from "../store/project.store";
   import NewTaskBtn from "../components/task/NewTaskBtn.vue";
   import { useApiCall } from "../composables/useAPICall";
-  import { checkThemeIsDark } from "../utils/client.utils";
   import TaskFilterInput from "../components/ui/TaskFilterInput.vue";
   import ChangeCardSizeBtn from "../components/ui/ChangeCardSizeBtn.vue";
   import { taskUtils } from "../utils/task.utils";
+  import { useUIStore } from "../store/ui.store";
+  import { useTaskStore } from "../store/task.store";
 
   const projectStore = useProjectStore();
+  const UIStore = useUIStore();
 
   const tasks = ref<Array<TaskLite>>([]);
 
@@ -178,6 +191,16 @@
       }
     }
   );
+
+  // watch(
+  //   () => projectStore.local.tasks,
+  //   (newValue, oldValue) => {
+  //     if (newValue.length != oldValue.length) {
+  //       tasks.value = getTasks();
+  //       prepareTemplate(getTasks());
+  //     }
+  //   }
+  // );
 
   watch(
     () => search.value,
@@ -238,11 +261,19 @@
   }
 
   function hasAssignedUser(task: TaskLite) {
-    return task.hasUsers;
+    if (!projectStore.offlineMode) return task.hasUsers;
+    else {
+      const taskStore = useTaskStore();
+      const saved_task = taskStore.getLocalTask(task.task_id) as Task;
+      return saved_task.designated_to
+        ? saved_task.designated_to.length > 0
+        : false;
+    }
   }
 
   function getTasks() {
-    return projectStore.current.tasks;
+    const ws = projectStore.getCurrent() as Workspace;
+    return ws.tasks;
   }
 
   function changeIconSize() {
@@ -369,7 +400,7 @@
   // }
 
   onBeforeMount(() => {
-    isDark.value = checkThemeIsDark();
+    isDark.value = UIStore.checkIsDarkTheme();
 
     isMicro.value = JSON.parse(
       localStorage.getItem("ui-card-btn-micro") as string

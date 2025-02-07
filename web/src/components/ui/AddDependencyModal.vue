@@ -17,7 +17,9 @@
         class="input input-bordered input-primary w-full max-w-xs mx-auto mb-2"
         v-model="search_value"
       />
-      <ul class="flex flex-row pt-5 flex-wrap gap-5 mx-auto">
+      <ul
+        class="flex flex-row pt-5 flex-wrap lg:gap-5 lg:h-full h-96 overflow-y-auto mx-auto"
+      >
         <li
           v-for="task in filtered_tasks"
           class="flex flex-row gap-2 min-w-60 max-w-60 hover:cursor-pointer transition-all hover:bg-slate-600 py-1 px-2 rounded-xl ease-in-out duration-300 my-auto"
@@ -95,7 +97,7 @@
   import BaseModal from "../common/BaseModal.vue";
   import { taskUtils } from "../../utils/task.utils";
   import { onBeforeMount, ref, watch } from "vue";
-  import { Task, TaskLite } from "../../utils/types";
+  import { Task, TaskLite, Workspace } from "../../utils/types";
   import { useProjectStore } from "../../store/project.store";
   import { useApiCall } from "../../composables/useAPICall";
   import { EndpointType } from "../../utils/endpoints";
@@ -133,16 +135,19 @@
   async function addDependency() {
     awaitingResponse.value = true;
     if (selectedTask.value?.task_id) {
-      const response = (await apiCall.post(
-        EndpointType.TASK_ADD_DEPENDENCY,
-        null,
-        {
-          params: {
-            task_id: taskStore.currentTask.task_id,
-            parent_id: selectedTask.value.task_id,
-          },
-        }
-      )) as Task;
+      const id = taskStore.currentTask.task_id as number;
+      const parent_id = selectedTask.value.task_id;
+      const response = (await taskStore.addDependency(id, parent_id)) as Task;
+      // const response = (await apiCall.post(
+      //   EndpointType.TASK_ADD_DEPENDENCY,
+      //   null,
+      //   {
+      //     params: {
+      //       task_id: taskStore.currentTask.task_id,
+      //       parent_id: selectedTask.value.task_id,
+      //     },
+      //   }
+      // )) as Task;
       awaitingResponse.value = false;
       if (response.task_id) {
         success.value = true;
@@ -163,10 +168,13 @@
   }
 
   function filterTask(tasks: Array<TaskLite>) {
-    return tasks.filter(
-      (task: TaskLite) =>
-        task.task_id != taskStore.currentTask.task_id && !checkDependency(task)
-    );
+    return tasks
+      ? tasks.filter(
+          (task: TaskLite) =>
+            task.task_id != taskStore.currentTask.task_id &&
+            !checkDependency(task)
+        )
+      : [];
   }
 
   function checkDependency(task: TaskLite) {
@@ -183,7 +191,8 @@
     (newValue, oldValue) => {
       if (newValue != oldValue) {
         selectedTask.value = null;
-        tasks.value = filterTask(projectStore.current.tasks);
+        const ws = projectStore.getCurrent() as Workspace;
+        tasks.value = filterTask(ws.tasks);
       }
     }
   );

@@ -103,7 +103,9 @@ public class UserServiceImpl implements UserService {
         UserDTO registerUser =userMapper.toUserDTO(userRepo.save(newUser));
 
 
-        wsServ.addUserByEmail(2L, registerUser.getEmail());//TESTING, ALL USERS ADDED TO WS ID 1
+
+        //wsServ.addUserByEmail(22L, registerUser.getEmail());//TESTING, ALL USERS ADDED TO WS ID 1
+
 
         List<UserWorkspacesRoles> user_roles  = new ArrayList<>();
         String token = jwtUtils.generateToken(authManager.authenticate(

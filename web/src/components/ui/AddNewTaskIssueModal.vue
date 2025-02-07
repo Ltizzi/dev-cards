@@ -31,8 +31,9 @@
   </BaseModal>
 </template>
 <script setup lang="ts">
-  import { useApiCall } from "../../composables/useAPICall";
-  import { EndpointType } from "../../utils/endpoints";
+  //import { useApiCall } from "../../composables/useAPICall";
+  import { useTaskStore } from "../../store/task.store";
+  //import { EndpointType } from "../../utils/endpoints";
   import { ProgressItem, Task } from "../../utils/types";
   import BaseModal from "../common/BaseModal.vue";
   import { defineProps, ref, watch } from "vue";
@@ -41,7 +42,8 @@
 
   const sentence = ref<string>();
 
-  const apiCall = useApiCall();
+  //const apiCall = useApiCall();
+  const taskStore = useTaskStore();
 
   const emit = defineEmits(["update", "cancel"]);
 
@@ -72,15 +74,19 @@
       sentence: sentence.value as string,
       isCompleted: false,
     };
-    const response = (await apiCall.post(
-      EndpointType.TASK_CREATE_ISSUE,
-      newIssue,
-      {
-        params: {
-          task_id: props.task_id,
-        },
-      }
-    )) as Task;
+    const response = (await taskStore.addIssue(
+      props.task_id,
+      newIssue
+    )) as unknown as Task;
+    // (await apiCall.post(
+    //   EndpointType.TASK_CREATE_ISSUE,
+    //   newIssue,
+    //   {
+    //     params: {
+    //       task_id: props.task_id,
+    //     },
+    //   }
+    // )) as Task;
     if (response.task_id == props.task_id) {
       success.value = true;
       isWaiting.value = false;
