@@ -30,7 +30,7 @@ export const useConfigStore = defineStore("configs", {
     },
     checkOfflineMode() {
       const UIStore = useUIStore();
-      this.offlineMode = UIStore.getOfflineMode();
+      this.offlineMode = UIStore.checkOfflineMode();
       return this.offlineMode;
     },
 

@@ -52,7 +52,7 @@ function logout() {
 
 function getRoles(): UserWorkspaceRoles[] {
   const UIStore = useUIStore();
-  if (UIStore.getOfflineMode()) {
+  if (UIStore.checkOfflineMode()) {
     const userStore = useUserStore();
     if (userStore.savedRoles) {
       return userStore.getLocalRoles();
@@ -139,7 +139,7 @@ function checkIfUserisTaskOwner(task_id: number, user: User) {
 function mapLocalUserToUserLite(user: UserLocal) {
   return {
     user_id: utils.generateRandomId(),
-    username: user.nickname,
+    username: user.username,
     email: "",
     avatar: user.avatar,
     roles: "",

@@ -168,7 +168,7 @@
     ) {
       userLite = {
         user_id: user.value.user_id,
-        username: user.value.nickname,
+        username: user.value.username,
         email: "user@localhost.com",
         avatar: user.value.avatar,
       };

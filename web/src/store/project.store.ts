@@ -36,7 +36,7 @@ export const useProjectStore = defineStore("projects", {
   actions: {
     checkOfflineMode() {
       const UIStore = useUIStore();
-      this.offlineMode = UIStore.getOfflineMode();
+      this.offlineMode = UIStore.checkOfflineMode();
       return this.offlineMode;
     },
     setOwned(list: Array<Workspace>) {
@@ -139,7 +139,7 @@ export const useProjectStore = defineStore("projects", {
     async createJSONWorkspace(ws: Workspace) {
       const newJSON: JSONWorkspace = {
         user: {
-          nickname: ws.owner.username,
+          username: ws.owner.username,
           avatar: ws.owner.avatar,
         } as UserLocal,
         workspace: ws,

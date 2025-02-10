@@ -29,7 +29,7 @@ const router = createRouter({
       name: "Home",
       component: TheHome,
       children: [
-        { path: "", component: HomeLayout },
+        { path: "", component: HomeLayout, name: "HomeLayout" },
         { path: "/newproject", component: NewProject },
         { path: "/appConfig", component: AppSettings },
         {
@@ -45,22 +45,37 @@ const router = createRouter({
             {
               path: "blocked",
               component: BlockedTasksView,
-              beforeEnter: (to, from) => {
-                const workspace_id = +JSON.parse(
-                  localStorage.getItem("current_workspace_id") as string
-                );
-                return checkIsModOrOwner(workspace_id) ? true : "/";
+              beforeEnter: (to, from, next) => {
+                const workspace_id = localStorage.getItem(
+                  "current_workspace_id"
+                )
+                  ? +JSON.parse(
+                      localStorage.getItem("current_workspace_id") as string
+                    )
+                  : null;
+                if (workspace_id && checkIsModOrOwner(workspace_id)) {
+                  next();
+                } else {
+                  next("/");
+                }
+                //return checkIsModOrOwner(workspace_id) ? true : "/";
               },
             },
             {
               path: "settings",
               component: ProjectSettings,
-              beforeEnter: (to, from) => {
+              beforeEnter: (to, from, next) => {
                 const workspace_id = to.query.id as unknown as number;
 
-                return checkIsModOrOwner(workspace_id)
-                  ? checkIsModOrOwner(workspace_id)
-                  : "/";
+                if (checkIsModOrOwner(workspace_id)) {
+                  next();
+                } else {
+                  next("/");
+                }
+
+                // return checkIsModOrOwner(workspace_id)
+                //   ? checkIsModOrOwner(workspace_id)
+                //   : "/";
               },
             },
           ],

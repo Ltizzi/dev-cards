@@ -37,7 +37,7 @@ export const useTaskStore = defineStore("tasks", {
   actions: {
     checkOfflineMode() {
       const UIStore = useUIStore();
-      this.offlineMode = UIStore.getOfflineMode();
+      this.offlineMode = UIStore.checkOfflineMode();
       return this.offlineMode;
     },
     async fetchAllTasks() {
