@@ -64,13 +64,18 @@ export const useUIStore = defineStore("uiStore", {
       this.loading = value;
     },
     getOfflineMode() {
+      const isLocal = this.checkOfflineMode();
       const userStore = useUserStore();
       const user = userStore.getLocalUser() as UserLocal;
-      const isLocal = this.checkOfflineMode();
+
+      //en el if &&user
       if (!this.offlineMode && user && isLocal) {
         this.offlineMode = isLocal;
+
         userStore.setLocalUser(user);
-      } else this.offlineMode = isLocal;
+      } else {
+        this.offlineMode = isLocal;
+      }
       return this.offlineMode;
     },
     setOfflineMode(condition: boolean) {

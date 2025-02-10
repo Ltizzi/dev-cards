@@ -23,14 +23,14 @@
             class="w-16 h-16 rounded-full mx-auto hover:cursor-pointer hover:border-4 border-accent border-4 border-transparent duration-300 hover:border-accent hover:border-opacity-80"
             @click="goHome"
           >
-            <img :src="user.avatar" />
+            <img :src="user.avatar" v-if="user" />
           </div>
         </div>
         <div class="divider divider-primary opacity-75"></div>
 
         <ul
           class="flex flex-col justify-center w-11/12 gap-4 my-2 mx-auto bg-base-100 bg-opacity-40 rounded-md px-4 py-1.5"
-          v-if="isLoaded && projects.length > 0"
+          v-if="isLoaded && projects && projects.length > 0"
         >
           <li
             v-for="project in projects"

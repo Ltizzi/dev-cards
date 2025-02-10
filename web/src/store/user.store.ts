@@ -45,7 +45,7 @@ export const useUserStore = defineStore("auth", {
     },
     checkOfflineMode() {
       const UIStore = useUIStore();
-      this.offlineMode = UIStore.getOfflineMode();
+      this.offlineMode = UIStore.checkOfflineMode();
       return this.offlineMode;
     },
     async login(loginReq: AuthRequest) {
@@ -85,7 +85,7 @@ export const useUserStore = defineStore("auth", {
       let localUsers = this.getLocalUsers() || [];
       if (
         localUsers &&
-        !localUsers.find((u: UserLocal) => u.nickname == this.local.nickname)
+        !localUsers.find((u: UserLocal) => u.username == this.local.username)
       ) {
         localUsers.push(this.local);
         localStorage.setItem("localUsers", JSON.stringify(localUsers));
@@ -98,10 +98,13 @@ export const useUserStore = defineStore("auth", {
     getSelf() {
       this.offlineMode = this.checkOfflineMode();
       if (this.offlineMode) {
-        this.offlineSelf = JSON.parse(
-          localStorage.getItem("localUser") as string
-        ) as UserLocal;
-        return this.offlineSelf;
+        if (this.local) return this.local;
+        else {
+          this.offlineSelf = JSON.parse(
+            localStorage.getItem("localUser") as string
+          ) as UserLocal;
+          return this.offlineSelf;
+        }
       } else {
         if (!this.self.user_id && localStorage.getItem("user")) {
           return JSON.parse(localStorage.getItem("user") as string);
@@ -111,11 +114,16 @@ export const useUserStore = defineStore("auth", {
     },
     getCurrent() {
       this.offlineMode = this.checkOfflineMode();
+      console.log("FROM USER STORE: " + this.offlineMode);
       if (this.offlineMode) {
-        this.offlineSelf = JSON.parse(
-          localStorage.getItem("localUser") as string
-        ) as UserLocal;
-        return this.offlineSelf;
+        if (this.local) return this.local;
+        else {
+          this.offlineSelf = JSON.parse(
+            localStorage.getItem("localUser") as string
+          ) as UserLocal;
+          console.log(this.offlineSelf);
+          return this.offlineSelf;
+        }
       } else {
         if (!this.self.user_id && localStorage.getItem("user")) {
           const user = JSON.parse(localStorage.getItem("user") as string);
