@@ -138,7 +138,7 @@
   watch(
     () => projectStore.justCreated,
     async (newValue, oldValue) => {
-      if (newValue) {
+      if (newValue != oldValue) {
         // user.value = await userStore.refreshSelf();
         // await fetchProjects(user.value?.user_id as number);
         console.log("REFRESHED PROJECTS");
