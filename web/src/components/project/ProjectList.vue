@@ -45,6 +45,16 @@
     }
   );
 
+  watch(
+    () => projectStore.justCreated,
+    async (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        const user_id = userStore.getCurrent().user_id;
+        workspaces.value = await projectStore.fetchProjectsByUser(user_id);
+      }
+    }
+  );
+
   onBeforeMount(async () => {
     UIStore.setLoading(true);
     if (projectStore.memberOf) {
