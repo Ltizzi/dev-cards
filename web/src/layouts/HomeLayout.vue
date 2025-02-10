@@ -56,6 +56,7 @@
       :isDark="isDark"
       :darkerCards="darkerCards"
       :isLoggedIn="isLoggedIn"
+      v-if="isLoaded"
     />
   </div>
 </template>
@@ -71,7 +72,7 @@
   import ProjectList from "../components/project/ProjectList.vue";
   import { taskUtils } from "../utils/task.utils";
   import { useProjectStore } from "../store/project.store";
-  import { User, Workspace } from "../utils/types";
+  import { User, UserLocal, Workspace } from "../utils/types";
 
   const router = useRouter();
 
@@ -87,15 +88,15 @@
 
   const isDark = ref<boolean>();
 
-  const darkerCards = ref<boolean>();
-  const darkerMiniCards = ref<boolean>();
+  const darkerCards = ref<boolean>(false);
+  const darkerMiniCards = ref<boolean>(false);
 
   watch(
     () => UIStore.justUpdated,
     (newValue, oldValue) => {
       if (newValue) {
         isDark.value = UIStore.darkTheme;
-        darkerCards.value = UIStore.darkerCard;
+        darkerCards.value = UIStore.darkerCard || false;
         darkerMiniCards.value = UIStore.darkerMiniCard;
       }
     }
@@ -128,7 +129,7 @@
   }
 
   onBeforeMount(async () => {
-    const user = userStore.getSelf() as User; //JSON.parse(localStorage.getItem("user") as string);
+    const user = userStore.getSelf() as User | UserLocal; //JSON.parse(localStorage.getItem("user") as string);
     if (!user) {
       router.push("/login");
     } else {

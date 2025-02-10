@@ -327,7 +327,7 @@ export interface TaskSlim {
 
 export interface UserLocal {
   user_id: number;
-  nickname: string;
+  username: string;
   avatar: string;
   designated_tasks?: TaskLite[];
   created_tasks?: TaskLite[];

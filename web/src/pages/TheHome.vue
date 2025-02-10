@@ -31,10 +31,12 @@
   } from "../utils/client.utils";
   import { useUIStore } from "../store/ui.store";
   import { useUserStore } from "../store/user.store";
+  import { User, UserLocal } from "../utils/types";
 
   const router = useRouter();
 
   const firstLoaded = ref(true);
+  //const hasUser = ref(false);
 
   const isDark = ref<boolean>(false);
 
@@ -50,6 +52,15 @@
     }
   );
 
+  // watch(
+  //   () => userStore.getSelf(),
+  //   (newValue, oldValue) => {
+  //     if (newValue != oldValue && !newValue) {
+  //       router.push("/login");
+  //     }
+  //   }
+  // );
+
   function handleResize() {
     const isMobile = window.innerWidth < 1024;
     console.log("RESIZEEE");
@@ -57,9 +68,11 @@
   }
 
   onBeforeMount(() => {
-    UIStore.checkOfflineMode();
+    UIStore.getOfflineMode();
     userStore.checkOfflineMode();
     UIStore.setLoading(true);
+    // hasUser.value = userStore.getSelf() ? true : false;
+    // console.log("HAS USER: " + hasUser.value);
   });
 
   onMounted(() => {
@@ -71,15 +84,19 @@
     setTimeout(() => {
       firstLoaded.value = false;
     }, 1500);
-  });
-  nextTick(() => {
-    const user = userStore.getSelf();
-    if (!user.user_id) {
-      router.push("/login");
-      UIStore.setLoading(false);
-    } else {
-      UIStore.setLoading(false);
-    }
+    // if (!userStore.getCurrent()) {
+    //   router.push("/login");
+    // }
+
+    // const user = userStore.getCurrent();
+    // console.log("USER FROM HOME: " + user.username);
+    // if (!user.user_id && router.currentRoute.value.path !== "/login") {
+    //   router.push("/login");
+    //   //  UIStore.setLoading(false);
+    // } //else UIStore.setLoading(false);
+    // else return;
+
+    UIStore.setLoading(false);
   });
 </script>
 
