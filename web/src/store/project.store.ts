@@ -244,8 +244,13 @@ export const useProjectStore = defineStore("projects", {
         const userStore = useUserStore();
         userStore.local.workspaces?.push(workspaceUtils.mapWsToWsLite(ws));
         userStore.saveLocal();
+        this.justUpdate();
         return { workspace: this.current, token: "" };
-      } else return await apiCall.post(EndpointType.WORKSPACE_NEW, ws);
+      } else {
+        const response = await apiCall.post(EndpointType.WORKSPACE_NEW, ws);
+        this.justUpdate();
+        return response;
+      }
     },
     async updateCurrent() {
       return await this.fetchProjectById(this.current.workspace_id);
@@ -273,10 +278,21 @@ export const useProjectStore = defineStore("projects", {
           (wsl: WorkspaceLite) => wsl.workspace_id != id
         );
         userStore.saveLocal();
-      } else
-        return await apiCall.del(EndpointType.WORKSPACE_DELETE, {
+        this.justUpdate();
+        return { message: "Workspace deleted!" };
+      } else {
+        const response = await apiCall.del(EndpointType.WORKSPACE_DELETE, {
           params: { id: id },
         });
+        this.justUpdate();
+        return response;
+      }
+    },
+    justUpdate() {
+      this.justCreated = true;
+      setTimeout(() => {
+        this.justCreated = false;
+      }, 200);
     },
     async addUserAsMod(ws_id: number, user_id: number) {
       return await apiCall.patch(

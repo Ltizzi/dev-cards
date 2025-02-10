@@ -98,18 +98,9 @@
   watch(
     () => userStore.getDesignatedTask(),
     (newValue, oldValue) => {
-      prepareTasks();
+      if (newValue != oldValue) prepareTasks();
     }
   );
-  // watch(
-  //   () => props.isLoggedIn,
-  //   (newValue, oldValue) => {
-  //     console.log("DESLOGUEO");
-  //     if (newValue != oldValue) {
-  //       isLoaded.value = newValue;
-  //     }
-  //   }
-  // );
 
   watch(
     () => UIStore.isMobile,
