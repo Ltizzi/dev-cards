@@ -83,7 +83,9 @@
     const newUser: UserLocal = {
       user_id: utils.generateRandomId(),
       username: nickname.value as string,
-      avatar: avatarUrl.value as string,
+      avatar: avatarUrl.value
+        ? (avatarUrl.value as string)
+        : "/assets/avatar.png",
       designated_tasks: [] as TaskLite[],
       workspaces: [] as WorkspaceLite[],
       created_tasks: [] as TaskLite[],
