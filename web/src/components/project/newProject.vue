@@ -3,7 +3,7 @@
     :class="[
       freshUser
         ? 'mx-auto flex flex-col justify-center my-auto'
-        : 'w-1/5  flex  flex-col mx-auto justify-center',
+        : 'lg:w-1/6 w-full lg:mx-auto    flex  flex-col mx-32 justify-center align-middle',
       'min-h-screen',
     ]"
   >
@@ -176,7 +176,9 @@
 
     const newProject = {
       project_name: name.value as string,
-      project_avatar: avatar.value as string,
+      project_avatar: avatar.value
+        ? (avatar.value as string)
+        : "/assets/workspace.png",
       description: description.value as string,
       owner: userLite,
       users: [],
