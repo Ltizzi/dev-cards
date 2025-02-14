@@ -1,6 +1,6 @@
 <template lang="">
   <div
-    class="h-full py-10 px-5 flex flex-col justify-start gap-10 overflow-y-auto motion-duration-300 motion-preset-fade-lg"
+    class="h-full py-10 px-0.5 lg:px-5 flex flex-col justify-start gap-10 overflow-y-auto motion-duration-300 motion-preset-fade-lg"
   >
     <h1 class="text-start font-semibold text-2xl">Theme setup</h1>
     <div>
@@ -11,7 +11,7 @@
       <h2 class="text-start text-lg font-semibold pb-5">
         Change Task background color:
       </h2>
-      <div class="w-60">
+      <div class="w-40 lg:w-60">
         <BaseToggle
           @update="handleDarker"
           :isActive="state.darkerCards"
@@ -24,7 +24,7 @@
       <h2 class="text-start text-lg font-semibold pb-5">
         Change Thumbnails background color:
       </h2>
-      <div class="w-60">
+      <div class="w-40 lg:w-60">
         <BaseToggle
           @update="handleDarker"
           :isActive="state.darkerMiniCards"

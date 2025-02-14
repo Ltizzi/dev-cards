@@ -1,7 +1,7 @@
 <template lang="">
   <div>
     <div class="dropdown" v-if="isDropdown">
-      <div tabindex="0" role="button" class="btn m-1">
+      <div tabindex="0" role="button" class="btn m-0.5 lg:m-1">
         Theme
         <svg
           width="12px"
@@ -30,14 +30,14 @@
             <input
               type="radio"
               name="theme-dropdown"
-              class="theme-controller btn btn-sm btn-block justify-start active:text-primary-content relative"
+              class="theme-controller btn btn-xs lg:btn-sm btn-block justify-start active:text-primary-content relative"
               :aria-label="capitalizeString(theme)"
               :value="theme"
               v-model="selected_theme"
             />
             <div class="flex flex-row gap-0.5 absolute right-3 mt-2">
               <div
-                class="size-4 rounded-full bg-primary"
+                class="size-2 lg:size-4 rounded-full bg-primary"
                 :data-theme="theme"
               ></div>
 
@@ -63,37 +63,37 @@
       </ul>
     </div>
     <div v-else>
-      <ul class="flex flex-row flex-wrap gap-5 w-full">
+      <ul class="flex flex-row flex-wrap gap-2 lg:gap-5 w-full">
         <li
           v-for="(theme, index) in themes"
-          class="w-60 hover:cursor-pointer"
+          class="w-5/6 lg:w-60 hover:cursor-pointer"
           @click="selectTheme(index)"
         >
           <div
             :data-theme="theme"
             class="flex flex-row gap-2 justify-evenly bg-base-100 my-auto align-middle py-0.5 rounded-xl"
           >
-            <p>{{ capitalizeString(theme) }}</p>
+            <p class="text-sm lg:text-base">{{ capitalizeString(theme) }}</p>
             <div class="flex flex-row gap-0.5 mt-2">
               <div
-                class="size-4 rounded-full bg-primary"
+                class="size-3 lg:size-4 rounded-full bg-primary"
                 :data-theme="theme"
               ></div>
 
               <div
-                class="size-4 rounded-full bg-secondary"
+                class="size-3 lg:size-4 rounded-full bg-secondary"
                 :data-theme="theme"
               ></div>
               <div
-                class="size-4 rounded-full bg-accent"
+                class="size-3 lg:size-4 rounded-full bg-accent"
                 :data-theme="theme"
               ></div>
               <div
-                class="size-4 rounded-full bg-base-100"
+                class="size-3 lg:size-4 rounded-full bg-base-100"
                 :data-theme="theme"
               ></div>
               <div
-                class="size-4 rounded-full bg-neutral"
+                class="size-3 lg:size-4 rounded-full bg-neutral"
                 :data-theme="theme"
               ></div>
             </div>

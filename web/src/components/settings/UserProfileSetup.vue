@@ -6,7 +6,7 @@
     <div class="w-full flex lg:flex-row flex-col justify-center gap-5">
       <div class="lg:w-1/2 flex flex-col gap-7">
         <label
-          class="input input-bordered input-primary lg:input-sm input-md flex items-center gap-2"
+          class="input input-bordered input-primary lg:input-sm input-xs flex items-center gap-2"
         >
           Username:
           <input
@@ -17,7 +17,7 @@
           />
         </label>
         <label
-          class="input input-bordered input-primary lg:input-sm input-md flex items-center gap-2"
+          class="input input-bordered input-primary lg:input-sm input-xs flex items-center gap-2"
         >
           Email:
           <input
@@ -31,7 +31,7 @@
 
       <div class="lg:w-1/2 flex justify-center">
         <div class="avatar">
-          <div class="w-24 rounded-full">
+          <div class="w-12 lg:w-24 rounded-full">
             <img :src="newImg ? newImg : user.avatar" />
           </div>
         </div>
@@ -39,7 +39,7 @@
     </div>
 
     <label
-      class="input input-bordered input-primary lg:input-sm input-md flex items-center gap-2"
+      class="input input-bordered input-primary lg:input-sm input-xs flex items-center gap-2"
     >
       Avatar:
       <input
@@ -50,7 +50,7 @@
       />
     </label>
     <label
-      class="input input-bordered input-primary lg:input-sm input-md text-xs flex items-center gap-2"
+      class="input input-bordered input-primary lg:input-sm input-xs text-xs flex items-center gap-2"
     >
       Github Profile:
       <input
