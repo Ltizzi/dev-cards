@@ -2,8 +2,8 @@
   <div
     :class="[
       freshUser
-        ? 'mx-auto flex flex-col justify-center my-auto'
-        : 'lg:w-1/6 w-full lg:mx-auto    flex  flex-col mx-32 justify-center align-middle',
+        ? 'mx-7 lg:mx-auto flex flex-col justify-center my-auto'
+        : 'lg:w-1/6 w-full lg:mx-auto    flex  flex-col mx-7 justify-center align-middle',
       'min-h-screen',
     ]"
   >

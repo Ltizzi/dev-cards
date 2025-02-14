@@ -1,6 +1,6 @@
 <template lang="">
   <h1 class="text-4xl text-center pt-5">Select local user</h1>
-  <div class="flex flex-row justify-evenly">
+  <div class="flex flex-col lg:flex-row justify-evenly">
     <div class="flex flex-col justify-center items-center w-1/2">
       <div
         class="flex flex-col justify-end items-end"
@@ -28,7 +28,7 @@
       </div>
     </div>
     <div
-      class="flex flex-col justify-center items-start my-auto min-h-screen w-1/2"
+      class="flex flex-col justify-center items-center lg:items-start my-auto min-h-screen w-full lg:w-1/2"
     >
       <div class="flex flex-col justify-start gap-5">
         <h1 class="text-start text-2xl">Create User</h1>

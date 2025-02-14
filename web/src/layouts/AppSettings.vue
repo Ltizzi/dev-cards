@@ -9,7 +9,7 @@
       class="flex flex-row border-2 border-opacity-60 border-secondary bg-gradient-to-br from-base-200 to-transparent h-5/6 my-4 motion-duration-300 motion-delay-150 motion-opacity-in-0 motion-preset-slide-up-md"
     >
       <SettingsLateralMenu
-        class="lg:w-1/6 w-1/12 motion-delay-200 motion-duration-200 motion-preset-fade-lg"
+        class="lg:w-1/6 w-12 motion-delay-200 motion-duration-200 motion-preset-fade-lg"
         @menuOption="changeMenu"
         :options="state.options"
         :title="'App Settings'"

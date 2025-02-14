@@ -1,9 +1,9 @@
 <template lang="">
   <ul
-    class="menu rounded-box w-fit mr-10 bg-gradient-to-br from-base-200 to-transparent"
+    class="menu rounded-box w-20 lg:w-fit mr-10 bg-gradient-to-br from-base-200 to-transparent"
   >
     <h2 class="menu-title mt-10">{{ props.title }}</h2>
-    <li>
+    <li class="-ml-5 lg:ml-0">
       <ul class="">
         <template v-for="(option, index) in props.options">
           <li
@@ -11,7 +11,7 @@
               state.selected == index
                 ? 'bg-primary bg-opacity-70 text-white rounded-lg '
                 : '',
-              'py-2 px-2 w-fit hover:cursor-pointer text-xs',
+              'py-2 px-0.5 lg:px-2 w-fit hover:cursor-pointer text-xs',
             ]"
             @click="changeMenu(index)"
             v-if="checkVisible(option)"
