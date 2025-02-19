@@ -8,7 +8,7 @@
       </div>
 
       <div
-        class="flex flex-row lg:flex-nowrap flex-wrap justify-end gap-5 w-4/5 mr-10 max-h-12 my-auto align-middle"
+        class="flex flex-row lg:flex-nowrap flex-wrap justify-start lg:justify-end gap-5 lg:w-4/5 w-full mr-10 max-h-12 my-auto align-middle items-center"
       >
         <div class="flex flex-row gap-3" v-if="isDark">
           <BaseToggle
@@ -27,7 +27,7 @@
 
         <ThemeSelector :dropdown="true" />
         <button
-          class="btn btn-outline btn-secondary"
+          class="btn btn-outline btn-secondary lg:btn-base btn-sm"
           @click="createProject"
           v-if="isLoggedIn"
         >
@@ -35,14 +35,14 @@
         </button>
 
         <button
-          class="btn btn-outline btn-success"
+          class="btn btn-outline btn-success lg:btn-base btn-sm"
           @click="login"
           v-if="!isLoggedIn"
         >
           Log in
         </button>
         <button
-          class="btn btn-outline btn-error"
+          class="btn btn-outline btn-error lg:btn-base btn-sm"
           @click="signoff"
           v-if="isLoggedIn"
         >

@@ -1,7 +1,11 @@
 <template lang="">
   <div>
     <div class="dropdown" v-if="isDropdown">
-      <div tabindex="0" role="button" class="btn m-0.5 lg:m-1">
+      <div
+        tabindex="0"
+        role="button"
+        class="btn m-0.5 lg:m-1 btn-sm lg:btn-base text-xs lg:text-base"
+      >
         Theme
         <svg
           width="12px"
@@ -17,7 +21,7 @@
       </div>
       <ul
         tabindex="0"
-        class="dropdown-content dropdown-right bg-base-300 rounded-box z-[1] w-52 p-2 shadow-2xl"
+        class="dropdown-content dropdown-right bg-base-300 rounded-box z-[100] w-52 p-2 shadow-2xl"
       >
         <li
           v-for="(theme, index) in themes"
