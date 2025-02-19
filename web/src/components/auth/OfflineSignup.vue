@@ -1,12 +1,15 @@
 <template lang="">
-  <h1 class="text-4xl text-center pt-5">Select local user</h1>
-  <div class="flex flex-col lg:flex-row justify-evenly">
-    <div class="flex flex-col justify-center items-center w-1/2">
+  <h1 class="lg:text-4xl text-xl text-center pt-5">Select local user</h1>
+  <div class="flex flex-col-reverse lg:flex-row justify-evenly h-screen">
+    <div class="flex flex-col justify-center items-center pt-5 lg:-1/2">
       <div
         class="flex flex-col justify-end items-end"
         v-if="isLoaded && !noUsers"
       >
-        <div class="card bg-neutral w-64 shadow-xl" v-for="user in localUsers">
+        <div
+          class="card bg-neutral w-64 shadow-xl card-compact lg:card-normal mb-5"
+          v-for="user in localUsers"
+        >
           <div class="card-body">
             <h2 class="card-title">{{ user.nickname }}</h2>
             <div class="flex flex-row justify-between py-5">
@@ -28,26 +31,26 @@
       </div>
     </div>
     <div
-      class="flex flex-col justify-center items-center lg:items-start my-auto min-h-screen w-full lg:w-1/2"
+      class="flex flex-col justify-center items-center lg:items-start my-auto lg:min-h-screen w-full lg:h-auto h-1/4 lg:w-1/2"
     >
       <div class="flex flex-col justify-start gap-5">
-        <h1 class="text-start text-2xl">Create User</h1>
+        <h1 class="text-start text-lg lg:text-2xl">Create User</h1>
         <label for="">Username:</label>
         <input
           type="text"
-          class="input input-bordered input-primary w-full max-w-xs"
+          class="input input-bordered input-primary w-full max-w-xs input-sm lg:input-md placeholder:text-sm"
           v-model="nickname"
           placeholder="Enter your username"
         />
         <label for="">Avatar URL:</label>
         <input
           type="text"
-          class="input input-bordered input-primary w-full max-w-xs"
+          class="input input-bordered input-primary w-full max-w-xs input-sm lg:input-md placeholder:text-sm"
           v-model="avatarUrl"
           placeholder="Enter a Avatar"
         />
         <button
-          class="btn btn-outline btn-accent mt-5"
+          class="btn btn-outline btn-accent mt-5 lg:btn-md btn-sm"
           @click="createOfflineUser"
         >
           Create local user
