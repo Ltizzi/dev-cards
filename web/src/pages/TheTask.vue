@@ -1,13 +1,13 @@
 <template lang="">
   <div
     :class="[
-      'flex flex-col justify-start my-5 w-full ml-7 rounded-2xl min-h-screen lg:-ml-8 xl:ml-0 ',
+      'flex flex-col justify-start lg:my-5 w-screen lg:w-full  ml-16 rounded-2xl min-h-screen lg:-ml-8 xl:ml-0 ',
     ]"
     v-if="isLoaded"
   >
     <div
       :class="[
-        'w-full rounded-xl border-b-4 border-x-4 border-secondary  pb-2  motion-duration-700 motion-preset-rebound-up motion-scale-in-50 motion-ease-in-out',
+        'w-fit lg:w-full rounded-xl border-b-4 border-x-4 border-secondary  pb-2  motion-duration-700 motion-preset-rebound-up motion-scale-in-50 motion-ease-in-out max-w-fit ',
         !isDark
           ? 'bg-base-100 text-base-content'
           : darkerCard
@@ -20,20 +20,21 @@
   
        -->
       <div class="flex flex-col text-center gap-0">
-        <div :class="['w-full h-6  rounded-t-lg', title_color]"></div>
+        <div :class="['lg:w-full  h-6  rounded-t-lg', title_color]"></div>
 
         <div
-          class="flex flex-row 2xl:flex-nowrap flex-wrap 2xl:h-24 h-auto justify-stretch mb-0 border-b-4 w-full border-secondary gap-0"
+          class="flex flex-row 2xl:flex-nowrap flex-wrap 2xl:h-24 h-auto justify-stretch mb-0 border-b-4 w-fit lg:w-full border-secondary gap-0"
         >
-          <div class="w-full flex flex-row justify-center">
+          <div class="w-fit lg:w-full flex flex-row justify-center">
             <h2
-              class="2xl:text-2xl text-xl ml-2 border-r-2 border-secondary px-2 py-7 my-auto lg:min-w-44 lg:w-1/6 w-3/12 max-w-xl"
+              class="2xl:text-2xl text-xs text-start lg:text-center lg:ml-2 border-r-2 border-secondary lg:px-2 py-7 my-auto lg:min-w-44 lg:w-1/6 w-12 max-w-xl"
+              v-if="!isMobile"
             >
               {{ card.workspace.project_name + " " + card.task_id }}
             </h2>
 
             <div
-              class="rounded-t-lg my-auto 2xl:w-10/12 w-4/6 max-w-7xl min-w-64 text-center"
+              class="rounded-t-lg my-auto 2xl:w-10/12 w-9/12 max-w-3xl min-w-40 text-center"
             >
               <TaskTitle
                 :title="card.title"
@@ -46,7 +47,7 @@
             </div>
 
             <div
-              class="my-auto 2xl:w-1/6 w-3/12 max-w-32 border-l-2 border-secondary py-8 xl:px-0.5 px-5"
+              class="my-auto 2xl:w-1/6 w-2/12 max-w-32 border-l-2 border-secondary py-8 xl:px-0.5 px-5 text-xs"
             >
               <p>by {{ card.owner.username }}</p>
             </div>
@@ -58,9 +59,10 @@
             <!-- MARK: TASK STATE
            -->
             <div
-              class="flex flex-row justify-start w-full gap-1 xl:h-12 items-center 2xl:border-b-2 border-secondary"
+              class="flex flex-row flex-wrap lg:flex-nowrap justify-start w-full gap-0 lg:sgap-1 xl:h-12 items-center 2xl:border-b-2 border-secondary text-xs"
             >
               <TaskPrioritySelectable
+                class="ml-0.5 lg:ml-0"
                 :priority="card.priority"
                 :isDark="isDark"
                 :darkerCard="darkerCard"
@@ -319,6 +321,7 @@
       @update="updateTaskById"
       :projectId="ws_id"
       :taskId="taskId"
+      :isMobile="isMobile"
     ></TaskControlSideMenu>
   </div>
 </template>
@@ -401,6 +404,8 @@
   const canModify = ref<boolean>();
 
   const isLoaded = ref<boolean>();
+
+  const isMobile = ref<boolean>(false);
 
   // #MARK:asdas
 
@@ -580,6 +585,7 @@
   onBeforeMount(() => {
     isDark.value = UIStore.checkIsDarkTheme(); //JSON.parse(localStorage.getItem("darkTheme") as string);
     darkerCard.value = UIStore.darkerCard; //JSON.parse(localStorage.getItem("darkerCards") as string);
+    isMobile.value = UIStore.isMobile;
   });
 
   onMounted(async () => {

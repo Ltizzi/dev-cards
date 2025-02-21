@@ -1,7 +1,7 @@
 <template lang="">
   <div
     :class="[
-      'py-3 2xl:border-t-0 border-t-2 2xl:border-b-0 border-b-2 xl:min-w-52 min-w-28 sm:max-w-72  w-full 2xl:min-w-32 2xl:max-w-32',
+      'py-3 2xl:border-t-0 border-t-2 2xl:border-b-0 border-b-2 xl:min-w-52 min-w-20 lg:min-w-28 sm:max-w-72 w-auto  lg:w-full 2xl:min-w-32 2xl:max-w-32',
       props.canModify ? 'hover:cursor-pointer ' : '',
       props.type == 'TaskType'
         ? 'min-w-28 border-secondary'
@@ -11,7 +11,7 @@
   >
     <h3
       :class="[
-        '  px-2 hover:animate-pulse transition-all ease-in-out duration-200',
+        'px-2 hover:animate-pulse transition-all ease-in-out duration-200',
       ]"
       @click="changeElement"
       v-if="state.default"
