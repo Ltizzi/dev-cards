@@ -7,7 +7,7 @@
   >
     <div
       :class="[
-        'w-full rounded-xl border-b-4 border-x-4 border-secondary  pb-2  motion-duration-700 motion-preset-rebound-up motion-scale-in-50 motion-ease-in-out max-w-fit ',
+        'w-full rounded-xl border-b-4 border-x-4 border-secondary  pb-2  motion-duration-700 motion-preset-rebound-up motion-scale-in-50 motion-ease-in-out max-w-fit lg:max-w-full ',
         !isDark
           ? 'bg-base-100 text-base-content'
           : darkerCard
