@@ -85,6 +85,7 @@
   import BaseDeleteModal from "../components/common/BaseDeleteModal.vue";
   import { EndpointType } from "../utils/endpoints";
   import { checkIsOwner } from "../utils/auth.utils";
+  import { dateUtils } from "../utils/date.utils";
   import { useRouter } from "vue-router";
   import { useUserStore } from "../store/user.store";
   import SettingsLateralMenu from "../components/settings/SettingsLateralMenu.vue";
@@ -245,7 +246,8 @@
       const url = URL.createObjectURL(JSONws_blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${ws.project_name}_${ws.updated_at}.json`;
+
+      a.download = `${ws.project_name}_${dateUtils.getActualDate()}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
