@@ -43,7 +43,9 @@ export const useProjectStore = defineStore("projects", {
       this.owned = list;
     },
     addProjectToOwner(project: Workspace) {
-      const user = JSON.parse(localStorage.getItem("user") as string);
+      const user =
+        JSON.parse(localStorage.getItem("user") as string) ||
+        JSON.parse(localStorage.getItem("localUser") as string);
       if (user && project.owner.user_id == user.user_id) {
         this.owned.push(project);
       }
@@ -139,6 +141,9 @@ export const useProjectStore = defineStore("projects", {
     async createJSONWorkspace(ws: Workspace) {
       const newJSON: JSONWorkspace = {
         user: {
+          user_id: ws.owner.user_id,
+          email: ws.owner.email,
+          local: true,
           username: ws.owner.username,
           avatar: ws.owner.avatar,
         } as UserLocal,

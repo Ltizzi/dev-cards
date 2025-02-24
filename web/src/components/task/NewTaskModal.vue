@@ -217,12 +217,17 @@
   async function createTask() {
     requestSent.value = true;
     let owner: UserLite = {} as UserLite;
-    if (userStore.self.user_id || userStore.offlineSelf.user_id) {
-      owner = userStore.getSelfAsUserLite() as UserLite;
-    } else {
+    // if (userStore.self.user_id || userStore.offlineSelf.user_id) {
+    //   owner = userStore.getSelfAsUserLite() as UserLite;
+    // } else {
+    //   userStore.getCurrent();
+    //   owner = userStore.getSelfAsUserLite() as UserLite;
+    // }
+    if (!userStore.self.user_id || !userStore.offlineSelf.user_id) {
       userStore.getCurrent();
-      owner = userStore.getSelfAsUserLite() as UserLite;
     }
+
+    owner = userStore.getSelfAsUserLite() as UserLite;
 
     const workspace = projectStore.getCurrent() as Workspace;
     const project: WorkspaceLite = {

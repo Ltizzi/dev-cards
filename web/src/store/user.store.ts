@@ -256,7 +256,9 @@ export const useUserStore = defineStore("auth", {
       this.offlineMode = this.checkOfflineMode();
       this.getCurrent();
       if (this.offlineMode) {
-        return mapLocalUserToUserLite(this.offlineSelf);
+        console.log("fetching offline user..");
+        console.log(this.getCurrent());
+        return mapLocalUserToUserLite(this.local);
         // console.log(this.offlineSelf);
         // return {
         //   user_id: this.offlineSelf.user_id,

@@ -7,7 +7,7 @@
   >
     <div
       :class="[
-        'w-fit lg:w-full rounded-xl border-b-4 border-x-4 border-secondary  pb-2  motion-duration-700 motion-preset-rebound-up motion-scale-in-50 motion-ease-in-out max-w-fit ',
+        'w-full rounded-xl border-b-4 border-x-4 border-secondary  pb-2  motion-duration-700 motion-preset-rebound-up motion-scale-in-50 motion-ease-in-out max-w-fit ',
         !isDark
           ? 'bg-base-100 text-base-content'
           : darkerCard
@@ -515,6 +515,7 @@
   }
 
   async function prepareTaskData(data: Task) {
+    console.log(data);
     title_color.value = taskUtils.getColor(data.color);
     progress_value.value = taskUtils.calcProgress(data.progress);
     priority_color.value = taskUtils.calcPriorityColor(data.priority);
@@ -526,6 +527,7 @@
 
   function checkUserCanModifyTask() {
     const ws = projectStore.getCurrent() as Workspace;
+    if (UIStore.offlineMode) return true;
     return (
       checkIsModOrOwner(ws.workspace_id) ||
       checkIsDesignated(ws.workspace_id, card.value?.task_id as number) ||

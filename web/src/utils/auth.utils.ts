@@ -13,6 +13,7 @@ import { utils } from "./utils";
 import { useUIStore } from "../store/ui.store";
 import { useProjectStore } from "../store/project.store";
 import { useUserStore } from "../store/user.store";
+import { toRaw } from "vue";
 
 interface CustomJwtPayload extends JwtPayload {
   scope: Array<string> | string;
@@ -137,16 +138,21 @@ function checkIfUserisTaskOwner(task_id: number, user: User) {
 }
 
 function mapLocalUserToUserLite(user: UserLocal) {
+  console.log("MAPPING USER LOCAL TO USER LITE");
+
+  const rawUser = toRaw(user);
+  console.log(rawUser);
   return {
-    user_id: utils.generateRandomId(),
-    username: user.username,
-    email: "",
-    avatar: user.avatar,
+    user_id: rawUser.user_id || utils.generateRandomId(),
+    username: rawUser.username,
+    email: "local@host.com",
+    avatar: rawUser.avatar,
     roles: "",
   } as UserLite;
 }
 
 function mapUserToUserLite(user: User) {
+  //TODO: fijarse si este user también es un proxy
   return {
     user_id: user.user_id,
     username: user.username,
