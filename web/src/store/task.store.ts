@@ -437,6 +437,7 @@ export const useTaskStore = defineStore("tasks", {
             (t: TaskLite) => t.task_id !== id
           );
         userStore.saveLocal();
+        return { message: "task deleted" };
       } else
         return await apiCall.del(EndpointType.TASK_DELETE, {
           params: { id: id },
