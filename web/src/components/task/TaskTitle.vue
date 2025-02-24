@@ -7,7 +7,7 @@
       @mouseleave="hovered = false"
     >
       <h1
-        class="xl:text-3xl lg:text-2xl text-lg py-2 font-bold"
+        class="xl:text-3xl lg:text-2xl text-base py-2 font-bold"
         ref="card_title"
       >
         {{ props.title }}

@@ -1,7 +1,11 @@
 <template lang="">
   <div class="fixed right-0 top-1/3">
     <ul
-      class="menu bg-accent hover:bg-base-300 gap-3 rounded-box translate-x-16 hover:translate-x-0 transition-all"
+      :class="[
+        'menu bg-accent hover:bg-base-300 gap-3 rounded-box translate-x-20 lg:translate-x-16 hover:translate-x-0 transition-all pl-8 md:pl-0',
+        mobileSHow ? 'translate-x-0' : '',
+      ]"
+      @click="show"
     >
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
@@ -96,7 +100,11 @@
   import { useUserStore } from "../../store/user.store";
   import { Workspace } from "../../utils/types";
 
-  const props = defineProps<{ projectId: number; taskId: number }>();
+  const props = defineProps<{
+    projectId: number;
+    taskId: number;
+    isMobile: boolean;
+  }>();
 
   const modalState = reactive({
     addUser: false,
@@ -115,6 +123,8 @@
   const projectStore = useProjectStore();
   const taskStore = useTaskStore();
   const userStore = useUserStore();
+
+  const mobileShow = ref<boolean>();
 
   const route = useRoute();
 
@@ -205,6 +215,12 @@
       taskId as number,
       userStore.getSelf()
     );
+  }
+
+  function show() {
+    if (props.isMobile) {
+      mobileShow.value = !mobileShow.value;
+    } else return;
   }
 
   // onBeforeMount(() => {

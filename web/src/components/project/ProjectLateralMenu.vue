@@ -40,11 +40,11 @@
               : '',
           ]"
         >
-          <summary
+          <div
             class="py-2 rounded-xl hover:cursor-pointer transition-all ease-in-out"
           >
             <span>All Tasks</span>
-          </summary>
+          </div>
         </div>
       </li>
       <li @click="goTo('scrum')">
@@ -56,11 +56,11 @@
               : '',
           ]"
         >
-          <summary
+          <div
             class="py-2 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full"
           >
             <span>Scrum Board</span>
-          </summary>
+          </div>
         </div>
       </li>
       <li @click="goTo('blocked')" v-if="isModOrOwner">
@@ -72,11 +72,11 @@
               : '',
           ]"
         >
-          <summary
+          <div
             class="py-2 rounded-xl hover:cursor-pointer transition-all ease-in-out w-full"
           >
             <span>Blocked</span>
-          </summary>
+          </div>
         </div>
       </li>
 

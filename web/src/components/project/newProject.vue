@@ -148,11 +148,14 @@
   const isInSignUpProcess = ref(false);
 
   function checkUserIsLocal(obj: any): obj is UserLocal {
+    console.log("local" in obj);
     return "local" in obj;
   }
 
   async function newProject() {
     isWaiting.value = true;
+    console.log("USER DATA:");
+    console.log(user.value);
     let userLite = {} as UserLite;
     if (user.value && !userStore.offlineMode && !checkUserIsLocal(user.value)) {
       userLite = {
@@ -166,6 +169,7 @@
       userStore.offlineMode &&
       checkUserIsLocal(user.value)
     ) {
+      console.log("OFFLINE");
       userLite = {
         user_id: user.value.user_id,
         username: user.value.username,
