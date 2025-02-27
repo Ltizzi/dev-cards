@@ -1,12 +1,12 @@
 <template lang="">
   <div class="h-screen lg:w-5/6 lg:mx-auto mx-5">
     <h1
-      class="pt-5 text-base lg:text-3xl text-center motion-duration-200 motion-delay-200 motion-preset-focus-lg"
+      class="pt-5 xl:pt-5 lg:pt-1 text-base lg:text-2xl text-center motion-duration-200 motion-delay-200 motion-preset-focus-lg"
     >
       App Settings
     </h1>
     <div
-      class="flex flex-row border-2 border-opacity-60 border-secondary bg-gradient-to-br from-base-200 to-transparent lg:h-5/6 h-5/6 my-4 motion-duration-300 motion-delay-150 motion-opacity-in-0 motion-preset-slide-up-md"
+      class="flex flex-row border-2 border-opacity-60 border-secondary bg-gradient-to-br from-base-200 to-transparent h-5/6 my-4 motion-duration-300 motion-delay-150 motion-opacity-in-0 motion-preset-slide-up-md"
     >
       <SettingsLateralMenu
         class="lg:w-1/6 w-12 motion-delay-200 motion-duration-200 motion-preset-fade-lg"
@@ -25,7 +25,7 @@
         <UserProfileSetup v-show="state.selected == 'user_profile'" />
       </div>
     </div>
-    <div class="flex flex-row justify-start">
+    <div class="flex flex-row justify-start h-1/6">
       <LoadWorkspaceButton />
     </div>
   </div>
