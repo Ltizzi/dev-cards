@@ -106,7 +106,7 @@
     console.log("Turning on Offline Mode");
     UIStore.setOfflineMode(true);
     console.log("Re-routing to /");
-    router.push("/");
+    router.push("/newproject");
   }
 
   function selectUser(user: UserLocal) {
