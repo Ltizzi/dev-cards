@@ -1,7 +1,7 @@
 <template lang="">
   <div
     :class="[
-      freshUser
+      freshUser && !isOffline
         ? 'mx-7 lg:mx-auto flex flex-col justify-center my-auto'
         : 'lg:w-1/6 w-full lg:mx-auto    flex  flex-col mx-7 justify-center align-middle',
       'min-h-screen',
@@ -143,6 +143,7 @@
   const description = ref<string>();
   const avatar = ref<string>();
 
+  const isOffline = ref(false);
   const isWaiting = ref(false);
   const hasError = ref(false);
   const isInSignUpProcess = ref(false);
@@ -233,6 +234,7 @@
   onBeforeMount(() => {
     freshUser.value = userStore.checkIfUserIsNew();
     user.value = userStore.getSelf();
+    isOffline.value = userStore.checkOfflineMode();
     if (route.path == "/signup/project") isInSignUpProcess.value = true;
   });
 </script>
