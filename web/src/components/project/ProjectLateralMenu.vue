@@ -1,17 +1,19 @@
 <template lang="">
   <div
     :class="[
-      'w-56 bg-base-200 flex flex-col flex-nowrap h-screen motion-duration-500 motion-opacity-in-0 motion-ease-in-out',
-      state.isMobile ? 'fixed left-7 z-10' : 'fixed left-28 -ml-20',
+      'w-56 lg:w-40 xl:w-56 bg-base-200 flex flex-col flex-nowrap h-screen  motion-duration-500 motion-opacity-in-0 motion-ease-in-out',
+      state.isMobile
+        ? 'fixed left-7 z-10'
+        : 'fixed lg:left-5 lg:ml-0 2xl:left-28 2xl:-ml-20',
     ]"
     v-if="isLoaded && state.showMenu"
   >
     <ul
-      class="menu bg-base-200 rounded-box before:ring-offset-purple-400 overflow-x-hidden overflow-y-auto mt-3 whitespace-nowrap flex-shrink-0 flex-nowrap h-5/6"
+      class="menu bg-base-200 rounded-box before:ring-offset-purple-400 overflow-x-hidden overflow-y-auto pt-3 whitespace-nowrap flex-shrink-0 flex-nowrap h-5/6"
     >
       <li
         :class="[
-          'font-extrabold  text-center py-3 sticky top-0 bg-gradient-to-br from-base-100 to-neutral my-3 whitespace-nowrap flex-shrink-0 w-52 rounded-xl',
+          'font-extrabold  text-center py-3 lg:py-0.5 xl:py-3 sticky top-0 bg-gradient-to-br from-base-100 to-neutral my-3 whitespace-nowrap flex-shrink-0 w-52 lg:w-36 xl:w-52 rounded-xl',
           state.isDark
             ? 'from-base-100 to-neutral text-base'
             : 'from-base-100 via-30% via-base-300 to-primary text-neutral',
@@ -194,29 +196,29 @@
       </li>
     </ul>
     <div
-      class="flex flex-col justify-center gap-0.5 w-56 bg-gradient-to-br from-base-100 to-base-300 bottom-0 z-10"
+      class="flex flex-col justify-center gap-0.5 lg:gap-0 xl:gap-0.5 w-56 lg:w-40 xl:w-56 bg-gradient-to-br from-base-100 to-base-300 bottom-0 z-10 h-1/6"
     >
       <NewTaskBtn
         :class="['mx-auto', isModOrOwner ? '' : 'mb-5']"
         :icon="true"
       />
       <div
-        class="divider divider-secondary my-2 opacity-40"
+        class="divider divider-secondary my-2 lg:my-0 xl:my-2 opacity-40"
         v-if="isModOrOwner"
       ></div>
 
       <div
-        class="flex flex-row flex-wrap justify-evenly gap-2 mb-3"
+        class="flex flex-row flex-wrap justify-evenly gap-2 mb-3 lg:-mt-1 xl:mt-0"
         v-if="isModOrOwner"
       >
         <font-awesome-icon
-          class="size-6 text-success py-2 px-3 rounded-xl hover:cursor-pointer hover:bg-neutral"
+          class="size-6 xl:size-6 lg:size-3 text-success py-2 xl:py-2 lg:py-0.5 px-3 rounded-xl hover:cursor-pointer hover:bg-neutral"
           :icon="['fas', 'user-plus']"
           @click="showFindUserByMailModal"
         />
 
         <font-awesome-icon
-          class="size-6 py-2 px-3 text-primary rounded-xl hover:cursor-pointer hover:bg-neutral"
+          class="size-6 xl:size-6 lg:size-3 py-2 px-3 xl:py-2 lg:py-0.5 text-primary rounded-xl hover:cursor-pointer hover:bg-neutral"
           :icon="['fas', 'sliders']"
           @click="goTo('settings')"
         />

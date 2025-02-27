@@ -3,7 +3,7 @@
     <div class="tooltip tooltip-primary" data-tip="Create new task">
       <button
         :class="[
-          'btn  btn-secondary ',
+          'btn  btn-secondary btn-sm lg:btn-xs xl:btn-sm',
           props.icon
             ? 'text-neutral-content  hover:scale-105 transition-all duration-150 ease-in-out w-48'
             : 'btn-outline',
