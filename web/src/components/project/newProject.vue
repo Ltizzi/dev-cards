@@ -3,7 +3,7 @@
     :class="[
       freshUser && !isOffline
         ? 'mx-7 lg:mx-auto flex flex-col justify-center my-auto'
-        : 'lg:w-1/6 w-full lg:mx-auto    flex  flex-col mx-7 justify-center align-middle',
+        : 'lg:w-1/6 w-3/6 lg:mx-auto    flex  flex-col mx-7 justify-center align-middle',
       'min-h-screen',
     ]"
   >
@@ -68,7 +68,7 @@
         :class="[
           freshUser
             ? 'flex flex-row justify-around'
-            : 'flex flex-row gap-5 -ml-12 mt-5 justify-center',
+            : 'flex flex-row gap-5 -ml-12 lg:ml-5 2xl:-ml-12 mt-5 justify-center',
         ]"
       >
         <button :class="['btn btn-outline btn-accent']" @click="newProject">
