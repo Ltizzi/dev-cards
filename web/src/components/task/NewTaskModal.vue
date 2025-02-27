@@ -5,20 +5,20 @@
     @closeModal="closeModal"
   >
     <div
-      class="sm:px-7 sm:py-5 flex flex-col gap-5 justify-center px-2 py-2 text-base-content w-full"
+      class="sm:px-7 sm:py-5 flex flex-col gap-5 lg:gap-2 xl:gap-5 justify-center px-2 py-2 text-base-content w-full"
     >
       <h1 class="2xl:text-3xl text-center text-xl font-bold">New Task</h1>
       <div
         class="flex flex-row justify-evenly gap-3 gap-y-5 lg:gap-y-0 py-3 flex-wrap lg:flex-nowrap"
       >
         <label
-          class="input input-bordered input-primary lg:w-1/2 w-4/5 flex items-center gap-2"
+          class="input input-bordered input-primary lg:w-1/2 w-4/5 flex items-center gap-2 lg:input-sm xl:input-md"
         >
           Title
           <input type="text" class="grow" placeholder="Title" v-model="title" />
         </label>
         <label
-          class="input input-bordered input-primary lg:w-1/2 w-4/5 flex items-center gap-2"
+          class="input input-bordered input-primary lg:w-1/2 w-4/5 lg:input-sm xl:input-md flex items-center gap-2"
         >
           Subtitle
           <input
@@ -29,7 +29,9 @@
           />
         </label>
       </div>
-      <div class="flex flex-row flex-wrap justify-evenly gap-5 py-3">
+      <div
+        class="flex flex-row flex-wrap justify-evenly gap-5 py-3 lg:py-0.5 xl:py-3"
+      >
         <select
           class="select select-primary select-sm lg:w-80 w-4/5 lg:max-w-xs"
           v-model="color"
@@ -70,11 +72,11 @@
           color != 'Pick a color' ? getColor(color) : '',
         ]"
       ></div>
-      <div class="flex flex-col justify-evenly gap-5 pb-3">
+      <div class="flex flex-col justify-evenly gap-5 pb-3 lg:pb-0.5 xl:pb-3">
         <ol class="flex flex-col justify-center text-white">
           <li
             v-for="item in progressItems"
-            class="text-base text-center text-base-content"
+            class="text-base lg:text-sm xl:text-base text-center text-base-content"
           >
             {{ item.sentence }}
           </li>
@@ -101,9 +103,9 @@
         </div>
       </div>
       <textarea
-        class="textarea textarea-primary lg:textarea-lg textarea-xs"
+        class="textarea textarea-primary xl:textarea-lg textarea-xs"
         placeholder="Description"
-        rows="5"
+        rows="4"
         v-model="description"
       ></textarea>
 

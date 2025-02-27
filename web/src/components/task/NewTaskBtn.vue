@@ -5,14 +5,14 @@
         :class="[
           'btn  btn-secondary btn-sm lg:btn-xs xl:btn-sm',
           props.icon
-            ? 'text-neutral-content  hover:scale-105 transition-all duration-150 ease-in-out w-48'
+            ? 'text-neutral-content  hover:scale-105 transition-all duration-150 ease-in-out w-48 lg:w-40 xl:w-48'
             : 'btn-outline',
         ]"
         @click="openModal"
       >
         <font-awesome-icon
           :icon="['fas', 'square-plus']"
-          class="size-7"
+          class="size-7 lg:size-4 xl:size-7"
           v-if="props.icon"
         />
         <div v-else class="text-xs xl:text-sm">Create Task</div>

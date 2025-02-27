@@ -1,7 +1,7 @@
 <template lang="">
   <input
     type="file"
-    class="file-input file-input-bordered file-input-primary w-full max-w-xs file-input-xs lg:file-input-lg"
+    class="file-input file-input-bordered file-input-primary w-full max-w-xs file-input-xs lg:file-input-sm xl:file-lg"
     accept=".json"
     @change="handleFileUpload"
   />
