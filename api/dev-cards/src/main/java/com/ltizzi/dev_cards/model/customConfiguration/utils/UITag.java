@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UITag {
 
+    //TODO: implementar id
+    //private String id;
     private String name;
     private String color;
 }

@@ -28,9 +28,9 @@
         >
       </div>
       <div class="text-center">
-        <p>Don't want to/can't be online?</p>
+        <p>Don't want to/can't be/API isn't online?</p>
         <p class="link link-info" @click="activeOfflineMode">
-          Turn on offline mode
+          Turn on local mode
         </p>
       </div>
     </div>
