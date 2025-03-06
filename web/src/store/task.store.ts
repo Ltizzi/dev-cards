@@ -274,6 +274,7 @@ export const useTaskStore = defineStore("tasks", {
       console.log("FROM STORE");
       console.log(this.currentTask.task_tags);
       this.checkOfflineMode();
+      //TODO: add id here or in the API?
       const newTag: UITag = {
         color: taskUtils.getRandomColor(),
         name: tag,

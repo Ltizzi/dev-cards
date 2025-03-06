@@ -1,8 +1,6 @@
 package com.ltizzi.dev_cards.model.utils;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ltizzi.dev_cards.model.customConfiguration.ConfigurationDTO;
-import com.ltizzi.dev_cards.model.customConfiguration.CustomConfiguration;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.user.UserLiteDTO;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceDTO;
