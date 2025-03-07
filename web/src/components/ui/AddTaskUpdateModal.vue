@@ -64,7 +64,7 @@
 <script setup lang="ts">
   import { useUserStore } from "../../store/user.store";
   import BaseModal from "../common/BaseModal.vue";
-  import { TaskUpdate, User } from "../../utils/types";
+  import { TaskUpdate, User, UserLocal } from "../../utils/types";
   import { useRoute } from "vue-router";
   import { onBeforeMount, ref, watch } from "vue";
   // import { useApiCall } from "../../composables/useAPICall";
@@ -76,7 +76,7 @@
   //const apiCall = useApiCall();
   const taskStore = useTaskStore();
 
-  const user = ref<User>();
+  const user = ref<User | UserLocal>();
   const task_id = ref<number>();
   const description = ref<string>();
 
@@ -155,6 +155,6 @@
     } else {
       setFailed("Can't get task id");
     }
-    user.value = userStore.self;
+    user.value = userStore.getCurrent();
   });
 </script>

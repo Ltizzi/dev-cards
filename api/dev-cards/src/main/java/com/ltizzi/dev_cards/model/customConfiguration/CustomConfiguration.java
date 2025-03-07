@@ -3,7 +3,6 @@ package com.ltizzi.dev_cards.model.customConfiguration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ltizzi.dev_cards.model.customConfiguration.utils.*;
 import com.ltizzi.dev_cards.model.task.MiniTaskDTO;
-import com.ltizzi.dev_cards.model.task.TaskLiteDTO;
 import com.ltizzi.dev_cards.model.utils.RandomIdGenerator;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 import jakarta.persistence.*;
@@ -152,6 +151,7 @@ public class CustomConfiguration {
         //return false;
     }
 
+    //TODO: Usar ids para filtrar -voy a generar uuids en el cliente- para add, delete y update
     public void addTagToPool(UITag tag){
         List<UITag> tags = new ArrayList<>();
         if(this.getTagPool()!=null){
