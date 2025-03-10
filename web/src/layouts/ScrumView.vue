@@ -4,9 +4,9 @@
     v-if="isLoaded"
   >
     <div class="h-1/6">
-      <h1 class="text-center text-4xl">Scrum board</h1>
+      <h1 class="text-center text-4xl lg:text-2xl xl:text-4xl">Scrum board</h1>
       <div
-        class="flex flex-row py-5 xl:justify-between justify-between lg:justify-around"
+        class="flex flex-row py-5 lg:py-1 xl:py-5 xl:justify-between justify-between lg:justify-around items-center"
       >
         <TaskFilterInput @search="defineSearch" />
         <div
