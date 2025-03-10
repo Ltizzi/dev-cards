@@ -208,17 +208,17 @@
       ></div>
 
       <div
-        class="flex flex-row flex-wrap justify-evenly gap-2 mb-3 lg:-mt-1 xl:mt-0"
+        class="flex flex-row flex-wrap justify-evenly gap-2 mb-3 lg:mt-1 xl:mt-0"
         v-if="isModOrOwner"
       >
         <font-awesome-icon
-          class="size-6 xl:size-6 lg:size-3 text-success py-2 xl:py-2 lg:py-0.5 px-3 rounded-xl hover:cursor-pointer hover:bg-neutral"
+          class="size-6 xl:size-6 lg:size-5 text-success py-2 xl:py-3 lg:py-1 px-3 rounded-xl hover:cursor-pointer hover:bg-neutral"
           :icon="['fas', 'user-plus']"
           @click="showFindUserByMailModal"
         />
 
         <font-awesome-icon
-          class="size-6 xl:size-6 lg:size-3 py-2 px-3 xl:py-2 lg:py-0.5 text-primary rounded-xl hover:cursor-pointer hover:bg-neutral"
+          class="size-6 xl:size-6 lg:size-5 py-2 px-3 xl:py-3 lg:py-1 text-primary rounded-xl hover:cursor-pointer hover:bg-neutral"
           :icon="['fas', 'sliders']"
           @click="goTo('settings')"
         />
