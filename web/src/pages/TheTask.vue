@@ -119,58 +119,6 @@
             @removeSpecialTag="removeSpecialTag"
             @navigate="goToTag"
           />
-          <!-- <h2 class="text-2xl text-start">{{ card.subtitle }}</h2> -->
-          <!-- <div>
-            <div
-              v-if="normal_tags && normal_tags.length > 0"
-              :class="[
-                'flex flex-row justify-between gap-2 lg:w-2/4 py-5 h-20   my-auto',
-                removeTagActive ? 'hover:cursor-not-allowed' : '',
-              ]"
-              @mouseover="normal_tags.length > 0 ? (mouseOverTag = true) : ''"
-              @mouseleave="mouseOverTag = false"
-              @keydown.esc="removeTagActive ? (removeTagActive = false) : ''"
-            >
-              <div
-                class="flex flex-row flex-wrap justify-start w-full gap-1 my-auto"
-              >
-                <div v-for="tag in normal_tags">
-                  <p
-                    :class="[
-                      'rounded-lg  text-white text-sm font-semibold py-0.5   capitalize px-3 transition-all ease-in-out duration-300 hover:scale-110 ',
-                      removeTagActive
-                        ? 'hover:bg-error hover:cursor-not-allowed'
-                        : 'hover:cursor-pointer',
-                      `${tag.color}`,
-                    ]"
-                    @click="
-                      removeTagActive ? removeTag(tag.name) : goToTag(tag.name)
-                    "
-                  >
-                    <!- getColor(tag) 
-                    {{ tag.name }}
-                  </p>
-                </div>
-              </div>
-              <div class="tooltip" data-tip="Click to remove tags!">
-                <button
-                  :class="[
-                    'btn btn-error',
-                    removeTagActive
-                      ? 'hover:cursor-not-allowed'
-                      : 'hover:cursor:pointer ',
-                  ]"
-                  v-if="mouseOverTag && canModify"
-                  @click="activeRemoveTag()"
-                >
-                  <font-awesome-icon
-                    :icon="['fas', 'trash']"
-                    class="text-white size-5 my-auto"
-                  />
-                </button>
-              </div>
-            </div>
-          </div> -->
 
           <div
             class="flex flex-row gap-2 py-1 align-middle"
@@ -211,16 +159,6 @@
             </p>
             <div class="flex flex-row justify-start gap-5 ml-5">
               <div class="w-auto" v-for="user of card.designated_to">
-                <!-- <div
-                  class="flex flex-row gap-4 items-center align-middle justify-start text-lg font-semibold"
-                >
-                  <div class="avatar">
-                    <div class="w-6 rounded-full">
-                      <img :src="user.avatar" />
-                    </div>
-                  </div>
-                  <span class="text-base"> {{ user.username }}, </span>
-                </div> -->
                 <BaseUserAvatarItem
                   :avatar="user.avatar"
                   :username="user.username"
@@ -243,12 +181,6 @@
             </button>
           </div>
           <div class="flex flex-col divide-y-2 divide-secondary">
-            <!-- <TaskDescription
-              :description="card.description"
-              :task_id="card.task_id"
-              :isDark="isDark"
-              @update="updateTask"
-            /> -->
             <BaseEditDescription
               :description="card.description"
               :id="card.task_id"
@@ -273,7 +205,9 @@
                 >
                   Issues:
                 </p>
-                <p v-else>Add Issue</p>
+                <p v-else class="text-lg underline font-semibold pb-5">
+                  Add Issue
+                </p>
                 <AddIssueBtn
                   @update="updateTask"
                   :task_id="card.task_id"
@@ -299,22 +233,28 @@
           <!-- 
           #MARK: task updates
           -->
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="flex flex-col justify-start pt-4"
+      v-show="card.updates && card.updates.length > 0"
+    >
+      <div
+        v-for="update in card.updates"
+        class="flex flex-col gap-4 mt-4 border-2 rounded-md border-secondary p-4"
+      >
+        <div class="flex flex-col text-start gap-1">
+          <p>{{ update.description }}</p>
           <div
-            class="flex flex-col justify-start border-t-2 border-secondary pt-4"
-            v-show="card.updates && card.updates.length > 0"
+            class="flex flex-row justify-end gap-5 italic text-sm font-light"
           >
-            <div v-for="update in card.updates" class="flex flex-col gap-2">
-              <div class="flex flex-col text-start gap-1">
-                <p>{{ update.description }}</p>
-                <div class="flex flex-row justify-end gap-5">
-                  <p>{{ dateUtils.generateDateTemplate(update.created_at) }}</p>
-                  <p>by {{ update.creator_username }}</p>
-                </div>
-              </div>
-              <div class="divider divider-secondary"></div>
-            </div>
+            <p>{{ dateUtils.generateDateTemplate(update.created_at) }}</p>
+            <p>by {{ update.creator_username }}</p>
           </div>
         </div>
+        <!-- <div class="divider divider-secondary"></div> -->
       </div>
     </div>
     <TaskControlSideMenu
