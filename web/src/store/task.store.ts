@@ -229,15 +229,26 @@ export const useTaskStore = defineStore("tasks", {
         })) as Task;
     },
     async addIssue(id: number, issue: ProgressItem) {
+      console.log("double pre");
+      console.log(issue);
       if (this.offlineMode) {
-        issue.issue_id = utils.generateRandomId();
-        this.currentTask.progressItems.push(issue);
-        this.saveLocalTask(this.currentTask);
-        return this.currentTask;
+        const task = this.getLocalTask(
+          this.currentTask.task_id as number
+        ) as Task;
+
+        task?.progressItems.push(issue);
+
+        // this.saveLocalTask(task);
+        // this.setCurrentTask(task);
+        // console.log(this.currentTask.progressItems);
+        setTimeout(() => {
+          return this.getCurrent();
+        }, 200);
       } else
         return await apiCall.post(EndpointType.TASK_CREATE_ISSUE, issue, {
           params: { task_id: id },
         });
+      return this.currentTask;
     },
     async updateIssue(issue: ProgressItem, id: number) {
       if (this.offlineMode) {

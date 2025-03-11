@@ -377,7 +377,7 @@ async function getUITags(tags: string[]) {
       unique_added_tags.push(ut);
       return parcial;
     }
-    console.log(unique_added_tags);
+    // console.log(unique_added_tags);
   });
 }
 
