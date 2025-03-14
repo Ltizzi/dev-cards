@@ -30,7 +30,7 @@
       <div class="text-center">
         <p>Don't want to/can't be/API isn't online?</p>
         <p class="link link-info" @click="activeOfflineMode">
-          Turn on local mode
+          Switch to Local Mode
         </p>
       </div>
     </div>
