@@ -251,7 +251,15 @@
             class="flex flex-row justify-end gap-5 italic text-sm font-light"
           >
             <p>{{ dateUtils.generateDateTemplate(update.created_at) }}</p>
-            <p>by {{ update.creator_username }}</p>
+            <p v-if="isLocalModeOn">by {{ update.creator_username }}</p>
+            <p v-else>
+              by
+              <RouterLink
+                class="link"
+                :to="`/project/user?id=${update.creator_user_id}`"
+                >{{ update.creator_username }}</RouterLink
+              >
+            </p>
           </div>
         </div>
         <!-- <div class="divider divider-secondary"></div> -->
@@ -346,6 +354,8 @@
   const isLoaded = ref<boolean>();
 
   const isMobile = ref<boolean>(false);
+
+  const isLocalModeOn = ref<boolean>(false);
 
   // #MARK:asdas
 
@@ -528,6 +538,7 @@
     isDark.value = UIStore.checkIsDarkTheme(); //JSON.parse(localStorage.getItem("darkTheme") as string);
     darkerCard.value = UIStore.darkerCard; //JSON.parse(localStorage.getItem("darkerCards") as string);
     isMobile.value = UIStore.isMobile;
+    isLoaded.value = UIStore.checkOfflineMode();
   });
 
   onMounted(async () => {
