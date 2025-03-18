@@ -239,7 +239,7 @@
 
     <div
       class="flex flex-col justify-start pt-4"
-      v-show="card.updates && card.updates.length > 0"
+      v-if="card && card.updates && card.updates.length > 0"
     >
       <div
         v-for="update in card.updates"
@@ -573,6 +573,7 @@
       await prepareTaskData(card.value);
       isLoaded.value = true;
       UIStore.setLoading(false);
+      console.log(card.value);
     }
   });
 </script>
