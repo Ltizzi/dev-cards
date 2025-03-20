@@ -2,6 +2,7 @@ import { Glosary } from '../../utils/types';
 <template lang="">
   <div
     class="flex flex-col justify-center gap-10 py-10 px-10 motion-duration-300 motion-preset-fade-lg"
+    v-if="isLoaded"
   >
     <h1 class="text-start text-2xl">Workspace's custom glosaries</h1>
 
@@ -64,15 +65,22 @@ import { Glosary } from '../../utils/types';
     <BaseDeleteModal
       :id="id_to_delete"
       :type="'custom glosary'"
-      :showModal="showDelModal"
-      @cancel="closeDelModal"
+      :showModal="state.showDelModal"
+      @cancel="closeModal('del')"
       @delete="removeGlosary"
+    />
+    <AddNewGlosaryModal
+      :showModal="state.showNewModal"
+      @close="closeModal('new')"
+      :config_id="state.config_id"
+      :ws_id="state.ws_id"
     />
   </div>
 </template>
 <script setup lang="ts">
-  import { onBeforeMount, ref } from "vue";
+  import { onBeforeMount, ref, reactive } from "vue";
   import BaseDeleteModal from "../common/BaseDeleteModal.vue";
+  import AddNewGlosaryModal from "../ui/customConfiguration/AddNewGlosaryModal.vue";
   import { Glosary } from "../../utils/types";
   import { useConfigStore } from "../../store/config.store";
 
@@ -81,7 +89,14 @@ import { Glosary } from '../../utils/types';
   const isLoaded = ref<boolean>(false);
   const isMobile = ref<boolean>(false);
   const showDelModal = ref<boolean>(false);
-  const id_to_delete = ref<number>();
+  const id_to_delete = ref<number>(0);
+
+  const state = reactive({
+    showDelModal: false,
+    showNewModal: false,
+    config_id: 0,
+    ws_id: 0,
+  });
 
   const configStore = useConfigStore();
 
@@ -94,15 +109,32 @@ import { Glosary } from '../../utils/types';
     showDelModal.value = true;
   }
 
-  function closeDelModal() {
-    showDelModal.value = false;
+  function closeModal(modal: string) {
+    switch (modal) {
+      case "del":
+        state.showDelModal = false;
+        break;
+      case "new":
+        state.showNewModal = false;
+        break;
+    }
   }
 
-  function newGlosary() {}
+  function newGlosary() {
+    state.showNewModal = true;
+  }
 
   function checkWindowWidth() {}
 
   onBeforeMount(async () => {
+    const config = await configStore.getCurrent();
+    state.config_id = config.config_id;
+    state.ws_id = config.workspace.workspace_id;
     glosary_list.value = await configStore.getGLosaries();
+    console.log("FROM GLOSARY CONTROL");
+    console.log(state.config_id);
+    console.log(state.ws_id);
+    console.log(glosary_list.value);
+    isLoaded.value = true;
   });
 </script>

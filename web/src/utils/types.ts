@@ -306,7 +306,7 @@ export interface Glosary {
 }
 
 export interface GlosaryItem {
-  id: number;
+  id?: number;
   key: string;
   value: string;
 }

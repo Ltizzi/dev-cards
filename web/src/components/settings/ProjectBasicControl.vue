@@ -59,7 +59,7 @@
         :description="project.description"
         :id="project.workspace_id"
         :isDark="isDark"
-        :type="workspace"
+        :type="'workspace'"
         :canModify="true"
         @update="updateProject"
       />
