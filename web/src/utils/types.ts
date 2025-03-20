@@ -300,13 +300,13 @@ export interface CustomConfiguration {
 }
 
 export interface Glosary {
-  id: number;
+  id?: number;
   type: string;
   items: GlosaryItem[];
 }
 
 export interface GlosaryItem {
-  id: number;
+  id?: number;
   key: string;
   value: string;
 }
