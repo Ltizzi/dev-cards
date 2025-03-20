@@ -35,8 +35,8 @@ import { Glosary } from '../../utils/types';
                 <p class="w-auto text-center">{{ glosary.items.length }}</p>
               </td>
 
-              <td class="w-auto flex justify-center">
-                <div class="tooltip tooltip-info">
+              <td class="flex justify-center">
+                <div class="tooltip tooltip-info flex flex-row gap-5">
                   <div
                     class="hover:cursor-pointer duration-100 hover:scale-110 ease-in-out transition-all"
                     @click="editGlosary(glosary.id)"
@@ -69,19 +69,22 @@ import { Glosary } from '../../utils/types';
       @cancel="closeModal('del')"
       @delete="removeGlosary"
     />
-    <AddNewGlosaryModal
-      :showModal="state.showNewModal"
-      @close="closeModal('new')"
+    <GlosaryModalEditor
+      :showModal="state.showEditorModal"
+      @close="closeModal('editor')"
       @updateList="updateList(list)"
       :config_id="state.config_id"
       :ws_id="state.ws_id"
+      :isEditor="state.isEditor"
+      :glosaryToEdit="state.glosaryToEdit"
+      :glosaries="state.glosaries"
     />
   </div>
 </template>
 <script setup lang="ts">
   import { onBeforeMount, ref, reactive } from "vue";
   import BaseDeleteModal from "../common/BaseDeleteModal.vue";
-  import AddNewGlosaryModal from "../ui/customConfiguration/AddNewGlosaryModal.vue";
+  import GlosaryModalEditor from "../ui/customConfiguration/GlosaryModalEditor.vue";
   import { Glosary } from "../../utils/types";
   import { useConfigStore } from "../../store/config.store";
   import { useUIStore } from "../../store/ui.store";
@@ -94,9 +97,12 @@ import { Glosary } from '../../utils/types';
 
   const state = reactive({
     showDelModal: false,
-    showNewModal: false,
+    showEditorModal: false,
     config_id: 0,
     ws_id: 0,
+    isEditor: false,
+    glosaryToEdit: {} as Glosary | undefined,
+    glosaries: [] as Glosary[],
   });
 
   const configStore = useConfigStore();
@@ -104,15 +110,23 @@ import { Glosary } from '../../utils/types';
 
   const glosary_list = ref<Glosary[]>();
 
-  function editGlosary(id: number) {}
+  function editGlosary(id: number) {
+    state.isEditor = true;
+    state.showEditorModal = true;
+    state.glosaryToEdit = glosary_list.value
+      ?.filter((g: Glosary) => g.id == id)
+      .at(0) as Glosary;
+  }
 
   function closeModal(modal: string) {
     switch (modal) {
       case "del":
         state.showDelModal = false;
         break;
-      case "new":
-        state.showNewModal = false;
+      case "editor":
+        state.showEditorModal = false;
+        state.isEditor = false;
+        state.glosaryToEdit = undefined;
         break;
     }
   }
@@ -133,7 +147,7 @@ import { Glosary } from '../../utils/types';
       glosary
     )) as Glosary[];
     if (response.length > 0) {
-      glosary_list.value = response;
+      updateList();
       state.showDelModal = false;
     } else {
       state.showDelModal = false;
@@ -142,11 +156,14 @@ import { Glosary } from '../../utils/types';
   }
 
   function newGlosary() {
-    state.showNewModal = true;
+    state.isEditor = false;
+    state.showEditorModal = true;
+    state.glosaryToEdit = undefined;
   }
 
-  function updateList(list: Glosary[]) {
-    glosary_list.value = list;
+  function updateList() {
+    glosary_list.value = configStore.current.customGlosaries;
+    state.glosaries = glosary_list.value;
   }
 
   function checkWindowWidth() {
@@ -158,11 +175,8 @@ import { Glosary } from '../../utils/types';
     const config = await configStore.getCurrent();
     state.config_id = config.config_id;
     state.ws_id = config.workspace.workspace_id;
-    glosary_list.value = await configStore.getGLosaries();
-    console.log("FROM GLOSARY CONTROL");
-    console.log(state.config_id);
-    console.log(state.ws_id);
-    console.log(glosary_list.value);
+    updateList();
+
     isLoaded.value = true;
   });
 </script>
