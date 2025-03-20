@@ -4,7 +4,7 @@
     v-if="props.showModal"
     @closeModal="closeModal"
   >
-    <div class="py-5 px-5 w-full">
+    <div class="py-5 px-5">
       <h1 class="text-center text-2xl pb-4 font-medium">Create new Glosary</h1>
       <p class="pb-5 font-light">
         Glosaries are used to customize tasks states's labels.
@@ -22,25 +22,42 @@
           </button>
         </li>
       </ul>
-      <div class="py-5">
-        <div v-for="(input, index) in state.labels" class="pb-2">
-          <label class="input">
-            <span class="label">{{ state.labels[index] }}</span>
+      <div class="py-5 flex flex-row flex-wrap max-w-96 mx-auto gap-y-3">
+        <div v-for="(input, index) in state.labels" class="w-48">
+          <label class="form-control">
+            <div class="label">
+              <span class="label-text text-xs"> {{ state.labels[index] }}</span>
+            </div>
             <input
               type="text"
               :placeholder="state.inputs[index].value"
               v-model="state.inputs[index].value"
+              class="input input-bordered focus:input-primary input-secondary input-sm w-44"
             />
+            <!-- w-full max-w-xs -->
           </label>
         </div>
+      </div>
+      <div class="flex flex-row gap-5 justify-center w-full py-3">
+        <button class="btn btn-outline btn-primary" @click="addNewGlosary">
+          Send
+        </button>
+        <button class="btn btn-outline btn-error" @click="closeModal">
+          Cancel
+        </button>
       </div>
     </div>
   </BaseModal>
 </template>
 <script setup lang="ts">
   import { onBeforeMount, reactive, watch } from "vue";
-  import { CustomConfiguration, GlosaryItem } from "../../../utils/types";
+  import {
+    CustomConfiguration,
+    Glosary,
+    GlosaryItem,
+  } from "../../../utils/types";
   import BaseModal from "../../common/BaseModal.vue";
+  import { useConfigStore } from "../../../store/config.store";
 
   const props = defineProps<{
     showModal: boolean;
@@ -48,6 +65,8 @@
     ws_id: number;
   }>();
   const emit = defineEmits(["updateList", "close"]);
+
+  const configStore = useConfigStore();
 
   const types = ["PRIORITY", "EFFORT", "STATUS", "PROGRESS", "TASK_TYPE"];
 
@@ -79,6 +98,7 @@
 
   function addLabels(labels: string[]) {
     state.labels = [];
+    state.inputs = [];
 
     for (let i = 0; i < labels.length; i++) {
       state.labels.push(labels[i]);
@@ -128,10 +148,31 @@
     addLabels(labels as string[]);
   }
 
-  function addNewGlosary() {
+  function labelsToUpper() {
+    console.log("INPUTS:");
+    console.log(state.inputs);
+    return state.inputs.map((input: GlosaryItem) => ({
+      ...input,
+      key: input.key.toLocaleUpperCase(),
+    }));
+  }
+
+  async function addNewGlosary() {
+    const items = labelsToUpper();
     const newGlosary = {
       type: state.selectedState,
+      items: items as unknown as GlosaryItem[],
     };
+    console.log(newGlosary);
+    const response = (await configStore.addGlosary(
+      props.config_id,
+      props.ws_id,
+      newGlosary
+    )) as Glosary[];
+    if (response.length > 0) {
+      emit("updateList", response);
+      emit("close");
+    } else console.error("ERROR SAVING GLOSARY");
   }
 
   onBeforeMount(() => {

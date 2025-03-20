@@ -300,7 +300,7 @@ export interface CustomConfiguration {
 }
 
 export interface Glosary {
-  id: number;
+  id?: number;
   type: string;
   items: GlosaryItem[];
 }
