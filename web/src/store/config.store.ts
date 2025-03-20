@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import {
   CustomConfiguration,
   Glosary,
+  GlosaryItem,
   SpecialTag,
   TagPool,
   TaskSlim,
@@ -152,6 +153,11 @@ export const useConfigStore = defineStore("configs", {
     async addGlosary(id: number, ws_id: number, glosary: Glosary) {
       if (this.offlineMode) {
         glosary.id = utils.generateRandomId();
+        glosary.items = glosary.items.map((item: GlosaryItem) => ({
+          ...item,
+          id: utils.generateRandomId(),
+        })) as GlosaryItem[];
+
         this.current.customGlosaries.push(glosary);
         await this.saveConfig(ws_id, this.current);
         return this.current.customGlosaries;
