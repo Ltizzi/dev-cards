@@ -63,12 +63,11 @@ export const useProjectStore = defineStore("projects", {
       this.checkOfflineMode();
       if (project) {
         this.current = project;
-        if (this.offlineMode) {
-          const configStore = useConfigStore();
-          const config =
-            (await configStore.getCurrent()) as CustomConfiguration;
-        } //this.setLocal(project); else
-        this.current = project;
+        // if (this.offlineMode) {
+        const configStore = useConfigStore();
+        const config = (await configStore.getCurrent()) as CustomConfiguration;
+        //} //this.setLocal(project); else
+        //this.current = project;
         this.currentName = project.project_name;
         this.currentAvatar = project.avatar;
         localStorage.setItem(

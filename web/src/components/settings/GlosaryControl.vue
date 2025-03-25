@@ -176,7 +176,6 @@ import { Glosary } from '../../utils/types';
     state.config_id = config.config_id;
     state.ws_id = config.workspace.workspace_id;
     updateList();
-
     isLoaded.value = true;
   });
 </script>

@@ -8,6 +8,7 @@ import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,21 +80,34 @@ public class CustomConfiguration {
     }
 
     public List<CustomGlosary> removeGlosary(CustomGlosary glosary){
-        if(customGlosaries.stream().filter(g->g.getId().equals(glosary.getId())).collect(Collectors.toList()).size()>0){
-            customGlosaries = customGlosaries.stream()
-                    .filter(g->g.getId().equals(glosary.getId())).collect(Collectors.toList());
-        }
+//        if(customGlosaries.stream().filter(g->g.getId().equals(glosary.getId())).collect(Collectors.toList()).size()>0){
+//            customGlosaries = customGlosaries.stream()
+//                    .filter(g->g.getId().equals(glosary.getId())).collect(Collectors.toList());
+//        }
+//        return customGlosaries;
+        customGlosaries.removeIf(g->g.getId().equals(glosary.getId()));
         return customGlosaries;
     }
 
+    @Transactional
     public List<CustomGlosary> updateGlosary(Long id, CustomGlosary glosary){
-            return customGlosaries.stream()
-                    .map(g->{
-                        if(g.getId().equals(id)){
-                            g = glosary;
-                        }
-                        return g;
-                    }).collect(Collectors.toList());
+//            return customGlosaries.stream()
+//                    .map(g->{
+//                        if(g.getId().equals(id)){
+//                            g = glosary;
+//                        }
+//                        return g;
+//                    }).collect(Collectors.toList());
+        customGlosaries.stream()
+                .filter(g->g.getId().equals(id))
+                .findFirst()
+                .ifPresent(existing->{
+                    existing.setType(glosary.getType());
+                    existing.getItems().clear();
+                    existing.getItems().addAll(glosary.getItems());
+                });
+        return customGlosaries;
+
     }
 
     public void createTagPool(){

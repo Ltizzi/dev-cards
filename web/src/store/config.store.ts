@@ -37,10 +37,11 @@ export const useConfigStore = defineStore("configs", {
 
     async getCurrent() {
       this.checkOfflineMode();
+      const projectStore = useProjectStore();
+      const ws = projectStore.getCurrent();
       if (this.offlineMode) {
         if (!this.current.config_id) {
-          const projectStore = useProjectStore();
-          const id = projectStore.getCurrent()?.workspace_id as number;
+          const id = ws.workspace_id as number;
           //console.log(id);
           this.current = projectStore.getLocalStorageWorkspaceById(id)
             ?.customConfiguration as unknown as CustomConfiguration;
@@ -49,11 +50,12 @@ export const useConfigStore = defineStore("configs", {
           return this.current;
         } else return this.current;
       }
-      if (this.current.config_id != null) return this.current;
+      if (
+        this.current.config_id != null &&
+        this.current.workspace.workspace_id == ws.workspace_id
+      )
+        return this.current;
       else {
-        const projectStore = useProjectStore();
-        const ws = projectStore.getCurrent() as Workspace;
-
         const ws_id = ws
           ? ws.workspace_id
           : +JSON.parse(localStorage.getItem("current_workspace_id") as string);
