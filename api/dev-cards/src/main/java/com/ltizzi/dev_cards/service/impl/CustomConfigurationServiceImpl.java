@@ -8,11 +8,15 @@ import com.ltizzi.dev_cards.model.customConfiguration.ConfigurationMapper;
 import com.ltizzi.dev_cards.model.customConfiguration.CustomConfiguration;
 import com.ltizzi.dev_cards.model.customConfiguration.utils.*;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
+import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 import com.ltizzi.dev_cards.repository.CustomConfigurationRepository;
+import com.ltizzi.dev_cards.repository.WorkspaceRepository;
 import com.ltizzi.dev_cards.service.CustomConfigurationService;
+import com.ltizzi.dev_cards.service.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +32,9 @@ public class CustomConfigurationServiceImpl implements CustomConfigurationServic
     @Autowired
     private ConfigurationMapper configMapper;
 
+    @Autowired
+    private WorkspaceRepository wsRepo;
+
     @Override
     public ConfigurationDTO getConfigurationById(Long id) throws NotFoundException {
         return configMapper.toConfigDTO(configRepo.findById(id).orElseThrow(()->new NotFoundException("Configuration not found")));
@@ -39,7 +46,18 @@ public class CustomConfigurationServiceImpl implements CustomConfigurationServic
 
     @Override
     public ConfigurationDTO getConfigurationByWorkspaceId(Long ws_id) throws NotFoundException {
-        return configMapper.toConfigDTO(configRepo.findConfigurationByWorkspaceId(ws_id));
+        if(configRepo.findConfigurationByWorkspaceId(ws_id) != null){
+            return configMapper.toConfigDTO(configRepo.findConfigurationByWorkspaceId(ws_id));
+        }
+        else {
+            WorkspaceEntity ws = wsRepo.getReferenceById(ws_id);
+            CustomConfiguration cg = new CustomConfiguration();
+            cg.setWorkspace(ws);
+            cg.setCustomGlosaries(new ArrayList<CustomGlosary>());
+            cg.setTagPool(new TagPool());
+            return configMapper.toConfigDTO(configRepo.save(cg));
+        }
+
     }
 
     @Override

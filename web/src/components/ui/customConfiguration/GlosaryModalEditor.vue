@@ -4,17 +4,28 @@
     v-if="props.showModal"
     @closeModal="closeModal"
   >
-    <div class="py-5 px-5">
-      <h1 class="text-center text-2xl pb-4 font-medium">Create new Glosary</h1>
+    <div class="py-5 px-5" v-if="!state.noAvailable">
+      <h1 class="text-center text-2xl pb-4 font-medium">
+        {{ props.isEditor ? "Edit Glosary" : "Create new Glosary" }}
+      </h1>
       <p class="pb-5 font-light">
         Glosaries are used to customize tasks states's labels.
       </p>
       <ul class="flex flex-row justify-around gap-3">
-        <li v-for="type in types">
+        <li v-for="(type, index) in types">
           <button
             :class="[
               'btn  btn-md hover:cursor-pointer btn-primary hover:btn-secondary',
-              state.selectedState == type ? '' : ' btn-outline',
+
+              state.selectedState == type
+                ? ''
+                : props.isEditor
+                ? 'btn-disabled'
+                : 'btn-outline',
+
+              !props.isEditor && checkIsAvailable(type) //!state.enabledBtns[index]
+                ? 'btn-disabled'
+                : '',
             ]"
             @click="selectType(type)"
           >
@@ -47,6 +58,17 @@
         </button>
       </div>
     </div>
+    <div v-else class="w-full p-5">
+      <h1 class="text-xl text-center py-5 mx-20 w-96">
+        There aren't avaible glosaries slots to add a new one. You can edit an
+        old one.
+      </h1>
+      <div class="flex flex-row gap-5 justify-center w-full py-3">
+        <button class="btn btn-outline btn-error" @click="closeModal">
+          Cancel
+        </button>
+      </div>
+    </div>
   </BaseModal>
 </template>
 <script setup lang="ts">
@@ -63,6 +85,9 @@
     showModal: boolean;
     config_id: number;
     ws_id: number;
+    isEditor: boolean;
+    glosaryToEdit?: Glosary;
+    glosaries: Glosary[];
   }>();
   const emit = defineEmits(["updateList", "close"]);
 
@@ -73,17 +98,45 @@
   //  const glosary_type = ref<string>();
 
   const state = reactive({
-    totalInputs: 0,
     selectedState: "PRIORITY",
     labels: [] as string[],
     inputs: [] as GlosaryItem[],
+    disabledBtns: [],
+    noAvailable: false,
   });
 
   watch(
     () => state.selectedState,
     (newValue, oldValue) => {
       if (newValue && newValue != oldValue) {
+        //getAvaibleGlosaries();
         calcNumberOfTextInputs(newValue);
+      }
+    }
+  );
+
+  watch(
+    () => props.isEditor,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        if (!newValue) {
+          state.selectedState = getAvailableGlosaries() as string;
+          if (state.selectedState) calcNumberOfTextInputs(state.selectedState);
+          else state.noAvailable = true;
+        } else {
+          state.selectedState = props.glosaryToEdit?.type as string;
+          calcNumberOfTextInputs(state.selectedState);
+        }
+      }
+    }
+  );
+
+  watch(
+    () => props.glosaries,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        if (props.glosaries.length < 5) state.noAvailable = false;
+        else state.noAvailable = true;
       }
     }
   );
@@ -104,7 +157,9 @@
       state.labels.push(labels[i]);
       state.inputs.push({
         key: labels[i],
-        value: labels[i],
+        value: !props.isEditor
+          ? labels[i]
+          : (props.glosaryToEdit?.items[i].value as string),
       });
     }
   }
@@ -112,22 +167,17 @@
   function getLabelsByType(type: string) {
     switch (type) {
       case "PRIORITY":
-        state.totalInputs = 5;
         return ["Very low", "Low", "Medium", "High", "Very High"];
       case "EFFORT":
-        state.totalInputs = 3;
         return ["Low", "Medium", "High"];
 
       case "STATUS":
-        state.totalInputs = 5;
         return ["Pending", "Progress", "Testing", "Completed", "Blocked"];
 
       case "PROGRESS":
-        state.totalInputs = 5;
         return ["Null", "Not functional", "Basic", "Intermediate", "Advance"];
 
       case "TASK_TYPE":
-        state.totalInputs = 8;
         return [
           "Code",
           "Art",
@@ -149,8 +199,6 @@
   }
 
   function labelsToUpper() {
-    console.log("INPUTS:");
-    console.log(state.inputs);
     return state.inputs.map((input: GlosaryItem) => ({
       ...input,
       key: input.key.toLocaleUpperCase(),
@@ -170,12 +218,26 @@
       newGlosary
     )) as Glosary[];
     if (response.length > 0) {
-      emit("updateList", response);
+      emit("updateList");
       emit("close");
     } else console.error("ERROR SAVING GLOSARY");
   }
 
+  function getAvailableGlosaries() {
+    const arr = props.glosaries.map((g: Glosary) => g.type);
+    state.disabledBtns = arr as any;
+    for (let i = 0; i < types.length; i++) {
+      if (!arr.includes(types[i])) return types[i];
+    }
+  }
+
+  function checkIsAvailable(type: string) {
+    return state.disabledBtns.filter((s: string) => s === type).length > 0;
+  }
+
   onBeforeMount(() => {
-    calcNumberOfTextInputs("PRIORITY");
+    state.selectedState = getAvailableGlosaries() as string;
+    if (state.selectedState) calcNumberOfTextInputs(state.selectedState);
+    else state.noAvailable = true;
   });
 </script>
