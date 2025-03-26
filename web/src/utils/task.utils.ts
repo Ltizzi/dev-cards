@@ -396,6 +396,12 @@ async function getSpecialsTags(tags: string[]) {
   });
 }
 
+async function getCustomGlosaries() {
+  const configStore = useConfigStore();
+  const glosaries = await configStore.getGLosaries();
+  return glosaries ? glosaries : null;
+}
+
 export const taskUtils = {
   calcPriorityColor,
   calcProgress,
@@ -417,4 +423,5 @@ export const taskUtils = {
   parseAndGetSpecialTags,
   getNormalTags,
   getUITags,
+  getCustomGlosaries,
 };
