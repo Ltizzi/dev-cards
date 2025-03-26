@@ -67,6 +67,7 @@
                 :isDark="isDark"
                 :darkerCard="darkerCard"
                 :canModify="canModify"
+                :glosary="customGlosaries.priority"
                 @update-priority="updatePriority"
               ></TaskPrioritySelectable>
 
@@ -76,6 +77,7 @@
                 :canModify="canModify"
                 :isDark="isDark"
                 :darkerCard="darkerCard"
+                :glosary="customGlosaries.status"
                 @update-status="updateTaskOptions"
               ></TaskCommonSelectable>
 
@@ -85,6 +87,7 @@
                 :canModify="canModify"
                 :isDark="isDark"
                 :darkerCard="darkerCard"
+                :glosary="customGlosaries.effort"
                 @update-effort="updateTaskOptions"
               ></TaskCommonSelectable>
 
@@ -94,6 +97,7 @@
                 :canModify="canModify"
                 :isDark="isDark"
                 :darkerCard="darkerCard"
+                :glosary="customGlosaries.taskType"
                 @update-task-type="updateTaskOptions"
               ></TaskCommonSelectable>
             </div>
@@ -103,6 +107,7 @@
               :canModify="canModify"
               :isDark="isDark"
               :darkerCard="darkerCard"
+              :glosary="customGlosaries.progress"
               @update="updateProgress"
             ></TaskProgress>
           </div>
@@ -277,7 +282,7 @@
 #MARK: SCRIPT SETUP
 -->
 <script setup lang="ts">
-  import { ref, onBeforeMount, onMounted, watch } from "vue";
+  import { ref, onBeforeMount, onMounted, watch, reactive } from "vue";
   import {
     Effort,
     Priority,
@@ -318,6 +323,7 @@
   import { useUserStore } from "../store/user.store";
   import { useUIStore } from "../store/ui.store";
   import { useConfigStore } from "../store/config.store";
+  import { Glosary } from "../utils/types";
 
   // #region: variables
   const card = ref<Task>();
@@ -328,6 +334,14 @@
   const userStore = useUserStore();
   const UIStore = useUIStore();
   const configStore = useConfigStore();
+
+  const customGlosaries = reactive({
+    priority: {},
+    status: {},
+    effort: {},
+    progress: {},
+    taskType: {},
+  });
 
   const title_color = ref<string>();
   const progress_value = ref<number>();
@@ -465,7 +479,7 @@
   }
 
   async function prepareTaskData(data: Task) {
-    console.log(data);
+    //console.log(data);
     title_color.value = taskUtils.getColor(data.color);
     progress_value.value = taskUtils.calcProgress(data.progress);
     priority_color.value = taskUtils.calcPriorityColor(data.priority);
@@ -496,6 +510,29 @@
       card.value = response;
       await userStore.refreshSelf();
     }
+  }
+
+  function prepareGlosaries(glosaries: Glosary[]) {
+    glosaries.forEach((g: Glosary) => {
+      switch (g.type) {
+        case "PRIORITY":
+          customGlosaries.priority = g;
+          break;
+        case "STATUS":
+          customGlosaries.status = g;
+          break;
+        case "EFFORT":
+          customGlosaries.effort = g;
+          break;
+        case "PROGRESS":
+          customGlosaries.progress = g;
+          break;
+        case "TASK_TYPE":
+          customGlosaries.taskType = g;
+          break;
+      }
+      console.log(customGlosaries);
+    });
   }
 
   const just_fetched = ref<boolean>();
@@ -534,11 +571,15 @@
     }
   );
 
-  onBeforeMount(() => {
+  onBeforeMount(async () => {
     isDark.value = UIStore.checkIsDarkTheme(); //JSON.parse(localStorage.getItem("darkTheme") as string);
     darkerCard.value = UIStore.darkerCard; //JSON.parse(localStorage.getItem("darkerCards") as string);
     isMobile.value = UIStore.isMobile;
     isLoaded.value = UIStore.checkOfflineMode();
+    const cg = await taskUtils.getCustomGlosaries();
+    if (cg) {
+      prepareGlosaries(cg);
+    }
   });
 
   onMounted(async () => {
@@ -573,7 +614,7 @@
       await prepareTaskData(card.value);
       isLoaded.value = true;
       UIStore.setLoading(false);
-      console.log(card.value);
+      //console.log(card.value);
     }
   });
 </script>
