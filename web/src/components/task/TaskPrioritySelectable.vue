@@ -183,13 +183,12 @@
   );
 
   onBeforeMount(() => {
-    // console.log("FROM SELECTABLE");
-    // console.log(props.glosary);
+    
     if (props.glosary.type) {
       state.hasCustomGlosary = true;
       state.priorityToShow = getGlosaryItem() as unknown as string;
     }
-    //console.log(state.priorityToShow);
+  
   });
 </script>
 <style lang=""></style>
