@@ -59,8 +59,14 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { Effort, Status, TaskType } from "../../utils/types";
-  import { watch, ref, reactive } from "vue";
+  import {
+    Effort,
+    Glosary,
+    GlosaryItem,
+    Status,
+    TaskType,
+  } from "../../utils/types";
+  import { watch, ref, reactive, onBeforeMount } from "vue";
   import {
     EffortEnumArray,
     StatusEnumArray,
@@ -73,12 +79,15 @@
     isDark: boolean;
     darkerCard: boolean;
     canModify: boolean;
+    glosary: Glosary;
   }>();
 
   const emit = defineEmits(["updateStatus", "updateEffort", "updateTaskType"]);
 
   const state = reactive({
     default: true,
+    hasGlosary: false,
+    optionToShow: "",
   });
 
   const options = ref<Array<Effort> | Array<Status> | Array<TaskType>>();
@@ -106,6 +115,16 @@
     }
   }
 
+  function getGlosaryItem() {
+    let label = "";
+    props.glosary.items.forEach((i: GlosaryItem) => {
+      if (props.selected.toLowerCase() == i.key.toLowerCase()) {
+        label = i.value;
+      }
+    });
+    return label;
+  }
+
   watch(
     () => state.default,
     (newValue, oldValue) => {
@@ -125,5 +144,12 @@
       }
     }
   );
+
+  onBeforeMount(() => {
+    if (props.glosary.type) {
+      state.hasGlosary = true;
+      state.optionToShow = getGlosaryItem() as unknown as string;
+    }
+  });
 </script>
 <style lang=""></style>
