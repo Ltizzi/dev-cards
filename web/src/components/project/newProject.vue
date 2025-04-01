@@ -2,7 +2,7 @@
   <div
     :class="[
       freshUser && !isOffline
-        ? 'mx-7 lg:mx-auto flex flex-col justify-center my-auto'
+        ? 'mx-7 lg:mx-auto lg:w-3/6 flex flex-col justify-center my-auto'
         : 'lg:w-1/6 w-3/6 lg:mx-auto    flex  flex-col mx-7 justify-center align-middle',
       'min-h-screen',
     ]"
