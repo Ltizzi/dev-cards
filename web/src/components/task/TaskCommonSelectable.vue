@@ -1,12 +1,12 @@
-<template lang="">
+<template lang="html">
   <div
     :class="[
       'py-3 2xl:border-t-0 border-t-2 2xl:border-b-0 border-b-2 xl:min-w-52 min-w-20 lg:min-w-28 sm:max-w-72 w-auto  lg:w-full 2xl:min-w-32 2xl:max-w-32',
-      props.canModify ? 'hover:cursor-pointer ' : '',
-      props.type == 'TaskType'
+      canModify ? 'hover:cursor-pointer ' : '',
+      type == 'TaskType'
         ? 'min-w-28 border-secondary'
         : 'border-r-2  border-secondary',
-      props.selected == TaskType.DOCUMENTATION ? 'text-xs' : '',
+      selected == TaskType.DOCUMENTATION ? 'text-xs' : '',
     ]"
   >
     <h3
@@ -16,7 +16,7 @@
       @click="changeElement"
       v-if="state.default"
     >
-      {{ props.selected }}
+      {{ state.hasGlosary ? state.optionToShow : selected }}
     </h3>
     <select
       :class="[
@@ -51,21 +51,17 @@
               : 'text-base-300 bg-base-content'
             : 'bg-base-100 text-base-content'
         "
-        v-for="option in options"
+        v-for="(option, index) in options"
+        :key="index"
       >
-        {{ option }}
+        {{ state.hasGlosary ? glosary.items[index].value : option }}
       </option>
     </select>
   </div>
 </template>
 <script setup lang="ts">
-  import {
-    Effort,
-    Glosary,
-    GlosaryItem,
-    Status,
-    TaskType,
-  } from "../../utils/types";
+  import { Effort, Status, TaskType } from "../../utils/types";
+  import type { Glosary, GlosaryItem } from "../../utils/types";
   import { watch, ref, reactive, onBeforeMount } from "vue";
   import {
     EffortEnumArray,
@@ -82,6 +78,8 @@
     glosary: Glosary;
   }>();
 
+  defineExpose({ TaskType });
+
   const emit = defineEmits(["updateStatus", "updateEffort", "updateTaskType"]);
 
   const state = reactive({
@@ -90,7 +88,7 @@
     optionToShow: "",
   });
 
-  const options = ref<Array<Effort> | Array<Status> | Array<TaskType>>();
+  const options = ref<Array<Effort> | Array<Status> | Array<TaskType>>([]);
   const selectedOption = ref<Status | Effort | TaskType>();
 
   function changeElement() {
@@ -140,13 +138,35 @@
       if (newValue != oldValue) {
         state.default = true;
         const type: any = "update" + props.type;
-        emit(type, props.type, selectedOption.value);
+        if (!state.hasGlosary) {
+          emit(type, props.type, selectedOption.value);
+        } else {
+          let selected: any;
+          props.glosary.items.forEach((item: GlosaryItem) => {
+            if (selectedOption.value == item.value) {
+              selected = item.key;
+            }
+          });
+          emit(type, props.type, selected);
+        }
+      }
+    }
+  );
+
+  watch(
+    () => props.glosary,
+    (newValue, oldValue) => {
+      if (newValue && newValue != oldValue) {
+        if (props.glosary.type) {
+          state.hasGlosary = true;
+          state.optionToShow = getGlosaryItem() as unknown as string;
+        }
       }
     }
   );
 
   onBeforeMount(() => {
-    if (props.glosary.type) {
+    if (props.glosary && props.glosary.type) {
       state.hasGlosary = true;
       state.optionToShow = getGlosaryItem() as unknown as string;
     }
