@@ -163,13 +163,20 @@ export const useConfigStore = defineStore("configs", {
         this.current.customGlosaries.push(glosary);
         await this.saveConfig(ws_id, this.current);
         return this.current.customGlosaries;
-      } else
-        return await apiCall.post(EndpointType.CONFIG_ADD_GLOSARY, glosary, {
-          params: {
-            ws_id: ws_id,
-            config_id: id,
-          },
-        });
+      } else {
+        const cgs = (await apiCall.post(
+          EndpointType.CONFIG_ADD_GLOSARY,
+          glosary,
+          {
+            params: {
+              ws_id: ws_id,
+              config_id: id,
+            },
+          }
+        )) as Glosary[];
+        this.current.customGlosaries = cgs;
+        return this.current.customGlosaries;
+      }
     },
     async removeGlosary(ws_id: number, config_id: number, glosary: Glosary) {
       if (this.offlineMode) {
@@ -178,14 +185,17 @@ export const useConfigStore = defineStore("configs", {
         this.current.customGlosaries = cg;
         await this.saveConfig(ws_id, this.current);
         return cg;
-      } else
-        return await apiCall.del(EndpointType.CONFIG_REMOVE_GLOSARY, {
+      } else {
+        const cgs = (await apiCall.del(EndpointType.CONFIG_REMOVE_GLOSARY, {
           params: {
             ws_id: ws_id,
             config_id: config_id,
           },
           data: glosary,
-        });
+        })) as Glosary[];
+        this.current.customGlosaries = cgs;
+        return this.current.customGlosaries;
+      }
     },
     async updateGlosary(
       ws_id: number,
@@ -204,8 +214,8 @@ export const useConfigStore = defineStore("configs", {
         this.current.customGlosaries = cg;
         this.saveConfig(ws_id, this.current);
         return cg;
-      } else
-        return await apiCall.patch(
+      } else {
+        const cgs = (await apiCall.patch(
           EndpointType.CONFIG_UPDATE_GLOSARY,
           glosary,
           {
@@ -215,7 +225,10 @@ export const useConfigStore = defineStore("configs", {
               id: id,
             },
           }
-        );
+        )) as Glosary[];
+        this.current.customGlosaries = cgs;
+        return this.current.customGlosaries;
+      }
     },
     async addSpecialTag(ws_id: number, config_id: number, tag: SpecialTag) {
       if (this.offlineMode) {

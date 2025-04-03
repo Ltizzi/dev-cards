@@ -45,6 +45,7 @@
         <GlosaryControl
           :ws_id="project.workspace_id"
           v-show="state.selected == 'glosary_setup'"
+          @update="updateProject"
         />
         <SpecialTagsControl
           :ws_id="project.workspace_id"

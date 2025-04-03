@@ -90,6 +90,7 @@ import { Glosary } from '../../utils/types';
   import { useUIStore } from "../../store/ui.store";
 
   const props = defineProps<{ ws_id: number }>();
+  const emit = defineEmits(["update"]);
 
   const isLoaded = ref<boolean>(false);
   const isMobile = ref<boolean>(false);
@@ -118,7 +119,7 @@ import { Glosary } from '../../utils/types';
       .at(0) as Glosary;
   }
 
-  function closeModal(modal: string) {
+  async function closeModal(modal: string) {
     switch (modal) {
       case "del":
         state.showDelModal = false;
@@ -129,6 +130,7 @@ import { Glosary } from '../../utils/types';
         state.glosaryToEdit = undefined;
         break;
     }
+    updateList();
   }
 
   function showDeleteModal(id: number) {
@@ -146,8 +148,8 @@ import { Glosary } from '../../utils/types';
       state.config_id,
       glosary
     )) as Glosary[];
+    updateList();
     if (response.length > 0) {
-      updateList();
       state.showDelModal = false;
     } else {
       state.showDelModal = false;
@@ -164,6 +166,7 @@ import { Glosary } from '../../utils/types';
   function updateList() {
     glosary_list.value = configStore.current.customGlosaries;
     state.glosaries = glosary_list.value;
+    emit("update");
   }
 
   function checkWindowWidth() {
