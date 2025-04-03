@@ -41,7 +41,7 @@
             : 'bg-base-100 text-base-content',
         ]"
       >
-        Pick task priority
+        Pick task {{ type }}
       </option>
       <option
         :class="
@@ -53,8 +53,24 @@
         "
         v-for="(option, index) in options"
         :key="index"
+        v-if="!state.hasGlosary"
       >
-        {{ state.hasGlosary ? glosary.items[index].value : option }}
+        {{ option }}
+      </option>
+      <option
+        :class="
+          props.isDark
+            ? props.darkerCard
+              ? 'bg-neutral text-neutral-content'
+              : 'text-base-300 bg-base-content'
+            : 'bg-base-100 text-base-content'
+        "
+        v-for="(option, index) in filteredGlosaries"
+        :key="index"
+        v-if="state.hasGlosary"
+      >
+        {{ option.value }}
+        <!-- state.hasGlosary ? glosary.items[index].value : option -->
       </option>
     </select>
   </div>
@@ -62,7 +78,7 @@
 <script setup lang="ts">
   import { Effort, Status, TaskType } from "../../utils/types";
   import type { Glosary, GlosaryItem } from "../../utils/types";
-  import { watch, ref, reactive, onBeforeMount } from "vue";
+  import { watch, ref, reactive, onBeforeMount, computed } from "vue";
   import {
     EffortEnumArray,
     StatusEnumArray,
@@ -87,6 +103,10 @@
     hasGlosary: false,
     optionToShow: "",
   });
+
+  const filteredGlosaries = computed(() =>
+    props.glosary.items.filter((i: GlosaryItem) => i.value != "")
+  );
 
   const options = ref<Array<Effort> | Array<Status> | Array<TaskType>>([]);
   const selectedOption = ref<Status | Effort | TaskType>();
