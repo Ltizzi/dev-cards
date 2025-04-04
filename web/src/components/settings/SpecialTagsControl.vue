@@ -140,6 +140,10 @@
     emit("update");
   }
 
+  function checkWindowWidth() {
+    return window.innerWidth > 1600;
+  }
+
   onBeforeMount(async () => {
     isMobile.value = UIStore.isMobile;
     const config = await configStore.getCurrent();
