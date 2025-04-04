@@ -41,7 +41,7 @@
                 <div class="tooltip tooltip-info">
                   <div
                     class="hover:cursor-pointer duration-100 hover:scale-110 ease-in-out transition-all"
-                    @click="editGlosary(tag.id)"
+                    @click="editGlosary(tag)"
                   >
                     <font-awesome-icon
                       :icon="['fas', 'circle-plus']"
@@ -50,7 +50,7 @@
                   </div>
                   <div
                     class="hover:cursor-pointer duration-100 hover:scale-110 ease-in-out transition-all"
-                    @click="removeGlosary(tag.id)"
+                    @click="removeGlosary(tag)"
                   >
                     <font-awesome-icon
                       :icon="['fas', 'circle-minus']"
@@ -67,47 +67,90 @@
     <BaseDeleteModal
       :id="target_id"
       :type="'special Tag'"
-      :showModal="showDelModal"
-      @cancel="closeDelModal"
+      :showModal="state.showDelModal"
+      @cancel="closeModal('del')"
       @delete="removeTag"
     />
   </div>
 </template>
 <script setup lang="ts">
-  import { onBeforeMount, ref } from "vue";
+  import { onBeforeMount, ref, reactive } from "vue";
   import BaseDeleteModal from "../common/BaseDeleteModal.vue";
 
   import { useConfigStore } from "../../store/config.store";
   import { SpecialTag } from "../../utils/types";
+  import { useUIStore } from "../../store/ui.store";
+  import { config } from "process";
 
   const props = defineProps<{ ws_id: number }>();
+  const emit = defineEmits(["update"]);
 
   const isLoaded = ref<boolean>(false);
   const isMobile = ref<boolean>(false);
-  const showDelModal = ref<boolean>(false);
-  const target_id = ref<number>();
+
+  const state = reactive({
+    showDelModal: false,
+    showEditorModal: false,
+    target_id: 0,
+    config_id: 0,
+    ws_id: 0,
+    isEditor: false,
+    tagToEdit: {} as SpecialTag | undefined,
+  });
 
   const configStore = useConfigStore();
+  const UIStore = useUIStore();
 
   const tags_list = ref<SpecialTag[]>();
 
-  function editTag(id: number) {}
-
-  function removeTag(id: number) {
-    target_id.value = id;
-    showDelModal.value = true;
+  function editTag(tag: SpecialTag) {
+    state.isEditor = true;
+    state.showEditorModal = true;
+    state.tagToEdit = tag;
   }
 
-  function closeDelModal() {
-    target_id.value = 0;
-    showDelModal.value = false;
+  function removeTag(tag: SpecialTag) {
+    state.target_id = tag.id;
+    state.showDelModal = true;
   }
 
-  function newTag() {}
+  function closeModal(type: string) {
+    switch (type) {
+      case "del":
+        state.showDelModal = false;
+        state.target_id = 0;
+        break;
+      case "editor":
+        state.showEditorModal = false;
+        state.isEditor = false;
+        state.tagToEdit = undefined;
+        break;
+    }
+    updateList();
+  }
 
-  function checkWindowWidth() {}
+  function newTag() {
+    state.isEditor = false;
+    state.showEditorModal = true;
+    state.tagToEdit = undefined;
+  }
+
+  function updateList() {
+    tags_list.value = configStore.current.tagPool.specialTags;
+    emit("update");
+  }
+
+  function checkWindowWidth() {
+    return window.innerWidth > 1600;
+  }
 
   onBeforeMount(async () => {
-    tags_list.value = await configStore.getSpecialTags();
+    isMobile.value = UIStore.isMobile;
+    const config = await configStore.getCurrent();
+    tags_list.value = config.tagPool.specialTags;
+    state.config_id = config.config_id;
+    state.ws_id = config.workspace.workspace_id;
+    updateList();
+    isLoaded.value = true;
   });
 </script>

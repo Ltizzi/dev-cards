@@ -52,6 +52,7 @@
               : 'bg-base-content'
             : 'bg-base-100 ',
         ]"
+        v-if="glosary.items[0].value"
       >
         {{ state.hasCustomGlosary ? props.glosary.items[0].value : "VERY_LOW" }}
       </option>
@@ -64,6 +65,7 @@
               : 'bg-base-content'
             : 'bg-base-100 ',
         ]"
+        v-if="glosary.items[1].value"
       >
         {{ state.hasCustomGlosary ? props.glosary.items[1].value : "LOW" }}
       </option>
@@ -76,6 +78,7 @@
               : 'bg-base-content'
             : 'bg-base-100 ',
         ]"
+        v-if="glosary.items[2].value"
       >
         {{ state.hasCustomGlosary ? props.glosary.items[2].value : "MEDIUM" }}
       </option>
@@ -88,6 +91,7 @@
               : 'bg-base-content'
             : 'bg-base-100 ',
         ]"
+        v-if="glosary.items[3].value"
       >
         {{ state.hasCustomGlosary ? props.glosary.items[3].value : "HIGH" }}
       </option>
@@ -100,6 +104,7 @@
               : 'bg-base-content'
             : 'bg-base-100 ',
         ]"
+        v-if="glosary.items[4].value"
       >
         {{
           state.hasCustomGlosary ? props.glosary.items[4].value : "VERY_HIGH"
@@ -183,12 +188,10 @@
   );
 
   onBeforeMount(() => {
-    
     if (props.glosary.type) {
       state.hasCustomGlosary = true;
       state.priorityToShow = getGlosaryItem() as unknown as string;
     }
-  
   });
 </script>
 <style lang=""></style>
