@@ -312,7 +312,7 @@ export interface GlosaryItem {
 }
 
 export interface SpecialTag {
-  id: number;
+  id?: number;
   value: string;
   name: string;
   description: string;
