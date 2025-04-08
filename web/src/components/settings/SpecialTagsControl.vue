@@ -17,8 +17,12 @@
                 Id
               </th>
               <th>Name</th>
-              <th class="text-center">Value</th>
-              <th class="text-center">Description</th>
+              <th class="text-start" v-if="!isMobile && checkWindowWidth()">
+                Value
+              </th>
+              <th class="text-start" v-if="!isMobile && checkWindowWidth()">
+                Description
+              </th>
               <th class="text-center">Control</th>
             </tr>
           </thead>
@@ -34,14 +38,14 @@
                 <p class="w-auto">{{ tag.value }}</p>
               </td>
               <td v-if="!isMobile && checkWindowWidth()">
-                <p class="w-auto">{{ tag.description }}</p>
+                <p class="w-auto">{{ getDescription(tag.description) }}</p>
               </td>
 
               <td class="w-auto flex justify-center">
-                <div class="tooltip tooltip-info">
+                <div class="tooltip tooltip-info flex flex-row gap-3">
                   <div
                     class="hover:cursor-pointer duration-100 hover:scale-110 ease-in-out transition-all"
-                    @click="editGlosary(tag)"
+                    @click="editTag(tag)"
                   >
                     <font-awesome-icon
                       :icon="['fas', 'circle-plus']"
@@ -50,7 +54,7 @@
                   </div>
                   <div
                     class="hover:cursor-pointer duration-100 hover:scale-110 ease-in-out transition-all"
-                    @click="removeGlosary(tag)"
+                    @click="removeTag(tag)"
                   >
                     <font-awesome-icon
                       :icon="['fas', 'circle-minus']"
@@ -71,6 +75,7 @@
       :isEditor="state.isEditor"
       :tagToEdit="state.tagToEdit"
       @close="closeModal('editor')"
+      @updateList="updateList"
     />
     <BaseDeleteModal
       :id="target_id"
@@ -89,7 +94,7 @@
   import { useConfigStore } from "../../store/config.store";
   import { SpecialTag } from "../../utils/types";
   import { useUIStore } from "../../store/ui.store";
-  import { config } from "process";
+  import { utils } from "../../utils/utils";
 
   const props = defineProps<{ ws_id: number }>();
   const emit = defineEmits(["update"]);
@@ -119,7 +124,7 @@
   }
 
   function removeTag(tag: SpecialTag) {
-    state.target_id = tag.id;
+    state.target_id = tag.id as number;
     state.showDelModal = true;
   }
 
@@ -150,7 +155,12 @@
   }
 
   function checkWindowWidth() {
-    return window.innerWidth > 1600;
+    return window.innerWidth > 1280;
+  }
+
+  function getDescription(desc: string) {
+    const LENGTH = 20;
+    return desc.length < LENGTH ? desc : utils.textReduce(desc, LENGTH);
   }
 
   onBeforeMount(async () => {

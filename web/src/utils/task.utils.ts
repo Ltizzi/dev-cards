@@ -402,6 +402,28 @@ async function getCustomGlosaries() {
   return glosaries ? glosaries : null;
 }
 
+function generateSpecialTag(name: string) {
+  const TOTAL_CHARACTERS = 5;
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const values = new Uint8Array(TOTAL_CHARACTERS);
+  window.crypto.getRandomValues(values);
+  const id = Array.from(values)
+    .map((v: any) => chars[v % chars.length])
+    .join("");
+  return "%%§" + name + "§" + id + "§%%";
+}
+
+function parseSpecialTag(tag: string) {
+  const regex = /(%%§[^%]+§%%)/g;
+  return regex.test(tag);
+}
+
+function updateSpecialTagValue(value: string, newValue: string) {
+  const splited = value.split("§");
+  return "%%§" + newValue + "§" + splited[2] + "§%%";
+}
+
 export const taskUtils = {
   calcPriorityColor,
   calcProgress,
@@ -424,4 +446,7 @@ export const taskUtils = {
   getNormalTags,
   getUITags,
   getCustomGlosaries,
+  generateSpecialTag,
+  parseSpecialTag,
+  updateSpecialTagValue,
 };

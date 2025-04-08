@@ -232,12 +232,13 @@ export const useConfigStore = defineStore("configs", {
     },
     async addSpecialTag(ws_id: number, config_id: number, tag: SpecialTag) {
       if (this.offlineMode) {
+        tag.id = utils.generateRandomId();
         let special_tags = this.current.tagPool.specialTags;
         if (!special_tags.includes(tag)) {
           special_tags.push(tag);
           this.current.tagPool.specialTags = special_tags;
           this.saveConfig(ws_id, this.current);
-          return this.current.tagPool;
+          return this.current.tagPool.specialTags;
         }
       } else
         return await apiCall.post(EndpointType.CONFIG_ADD_SPECIAL_TAG, tag, {
@@ -279,7 +280,7 @@ export const useConfigStore = defineStore("configs", {
         });
         this.current.tagPool.specialTags = special_tags;
         this.saveConfig(ws_id, this.current);
-        return this.current.tagPool;
+        return this.current.tagPool.specialTags;
       } else
         return await apiCall.patch(
           EndpointType.CONFIG_UPDATE_SPECIAL_TAG,
