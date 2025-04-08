@@ -50,7 +50,7 @@
     </div>
   </BaseModal>
 </template>
-<script lang="ts">
+<script setup lang="ts">
   import { ref } from "vue";
   import { useConfigStore } from "../../../store/config.store";
   import { SpecialTag } from "../../../utils/types";
@@ -64,9 +64,15 @@
     tagToEdit: SpecialTag;
   }>();
 
-  const tag = ref<SpecialTag>();
+  const tag = ref<SpecialTag>({} as SpecialTag);
 
   const emit = defineEmits(["updateList", "close"]);
 
   const confnigStore = useConfigStore();
+
+  function addNewTag() {}
+
+  function closeModal() {
+    emit("close");
+  }
 </script>
