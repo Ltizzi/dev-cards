@@ -1,31 +1,22 @@
 <template>
   <BaseModal :is-active="showModal" v-if="showModal" @closeModal="closeModal">
-    <div class="p-5">
+    <div class="pt-5 pb-2 flex flex-col justify-center text-center">
       <h1 class="text-center text-2xl pb-4 font-medium">
         {{ isEditor ? "Edit Special Tag" : "Create new Special Tag" }}
       </h1>
-      <p class="pb-5 font-light">
+      <p class="pt-5 text-sm font-extralight w-3/4 mx-auto">
         Special tags are tags with more functionality. Can be used to group
         tasks, divide them by groups, flag tasks, etc.
       </p>
     </div>
-    <div class="py-5 flex flex-row flex-wrap max-w-96 mx-auto gap-y-3">
+    <div class="py-5 flex flex-col max-w-96 mx-auto gap-y-3">
       <label class="form-control">
-        <div class="label"><span class="label-text text-xs"></span>Value</div>
-        <input
-          type="text"
-          :placeholder="props.isEditor ? tagToEdit.value : 'Value'"
-          v-model="tag.value"
-          class="input input-bordered focus:input-primary input-secondary input-sm w-44"
-        />
-      </label>
-      <label class="form-control">
-        <div class="label"><span class="label-text text-xs"></span>Name</div>
+        <div class="label"><span class="label-text text-xs">Name</span></div>
         <input
           type="text"
           :placeholder="props.isEditor ? tagToEdit.name : 'Name'"
           v-model="tag.name"
-          class="input input-bordered focus:input-primary input-secondary input-sm w-44"
+          class="input input-bordered focus:input-primary input-secondary input-sm w-auto"
         />
       </label>
       <label class="form-control">
@@ -34,9 +25,11 @@
         </div>
         <textarea
           class="textarea textarea-primary"
+          rows="4"
           :placeholder="
             props.isEditor ? tagToEdit.description : 'Enter a description'
           "
+          v-model="tag.description"
         ></textarea>
       </label>
     </div>
@@ -51,10 +44,11 @@
   </BaseModal>
 </template>
 <script setup lang="ts">
-  import { ref } from "vue";
+  import { ref, watch } from "vue";
   import { useConfigStore } from "../../../store/config.store";
   import { SpecialTag } from "../../../utils/types";
   import BaseModal from "../../common/BaseModal.vue";
+  import { taskUtils } from "../../../utils/task.utils";
 
   const props = defineProps<{
     showModal: boolean;
@@ -68,9 +62,58 @@
 
   const emit = defineEmits(["updateList", "close"]);
 
-  const confnigStore = useConfigStore();
+  const configStore = useConfigStore();
 
-  function addNewTag() {}
+  watch(
+    () => props.tagToEdit,
+    (newValue, oldValue) => {
+      if (newValue && newValue != oldValue) {
+        tag.value.name = props.tagToEdit.name;
+        tag.value.description = props.tagToEdit.description;
+      }
+    }
+  );
+
+  async function addNewTag() {
+    if (!props.isEditor) {
+      const new_tag: SpecialTag = {
+        value: taskUtils.generateSpecialTag(tag.value.name.toUpperCase()),
+        name: tag.value.name,
+        description: tag.value.description,
+      };
+      const response = (await configStore.addSpecialTag(
+        props.ws_id,
+        props.config_id,
+        new_tag
+      )) as SpecialTag[];
+      console.log(response);
+      if (response.length > 0) {
+        emit("updateList");
+        emit("close");
+      } else console.error("ERROR SAVING TAG");
+    } else {
+      const updatedTag: SpecialTag = {
+        id: props.tagToEdit.id as number,
+        value: taskUtils.updateSpecialTagValue(
+          props.tagToEdit.value,
+          tag.value.value
+        ),
+        name: tag.value.name,
+        description: tag.value.description,
+      };
+
+      const response = (await configStore.updateSpecialTag(
+        props.ws_id,
+        props.config_id,
+        updatedTag.id as number,
+        updatedTag
+      )) as SpecialTag[];
+      if (response.length > 0) {
+        emit("updateList");
+        emit("close");
+      } else console.error("ERROR UPDATING TAG");
+    }
+  }
 
   function closeModal() {
     emit("close");

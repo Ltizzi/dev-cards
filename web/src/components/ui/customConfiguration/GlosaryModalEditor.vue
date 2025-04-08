@@ -207,20 +207,40 @@
 
   async function addNewGlosary() {
     const items = labelsToUpper();
-    const newGlosary = {
-      type: state.selectedState,
-      items: items as unknown as GlosaryItem[],
-    };
-    console.log(newGlosary);
-    const response = (await configStore.addGlosary(
-      props.config_id,
-      props.ws_id,
-      newGlosary
-    )) as Glosary[];
-    if (response.length > 0) {
-      emit("updateList");
-      emit("close");
-    } else console.error("ERROR SAVING GLOSARY");
+
+    if (!props.isEditor) {
+      const newGlosary = {
+        type: state.selectedState,
+        items: items as unknown as GlosaryItem[],
+      };
+      console.log(newGlosary);
+      const response = (await configStore.addGlosary(
+        props.config_id,
+        props.ws_id,
+        newGlosary
+      )) as Glosary[];
+      if (response.length > 0) {
+        emit("updateList");
+        emit("close");
+      } else console.error("ERROR SAVING GLOSARY");
+    } else {
+      //TODO: check logic
+      const updatedGlosary = {
+        id: props.glosaryToEdit?.id,
+        type: state.selectedState,
+        items: items as unknown as GlosaryItem[],
+      } as Glosary;
+      const response = await configStore.updateGlosary(
+        props.ws_id,
+        props.config_id,
+        updatedGlosary,
+        updatedGlosary.id as number
+      );
+      if (response.length > 0) {
+        emit("updateList");
+        emit("close");
+      } else console.error("ERROR UPDATING GLOSARY");
+    }
   }
 
   function getAvailableGlosaries() {
