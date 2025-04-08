@@ -64,6 +64,14 @@
         </table>
       </div>
     </div>
+    <SpecialTagModalEditor
+      :showModal="state.showEditorModal"
+      :config_id="state.config_id"
+      :ws_id="state.ws_id"
+      :isEditor="state.isEditor"
+      :tagToEdit="state.tagToEdit"
+      @close="closeModal('editor')"
+    />
     <BaseDeleteModal
       :id="target_id"
       :type="'special Tag'"
@@ -76,6 +84,7 @@
 <script setup lang="ts">
   import { onBeforeMount, ref, reactive } from "vue";
   import BaseDeleteModal from "../common/BaseDeleteModal.vue";
+  import SpecialTagModalEditor from "../ui/customConfiguration/SpecialTagModalEditor.vue";
 
   import { useConfigStore } from "../../store/config.store";
   import { SpecialTag } from "../../utils/types";
