@@ -134,7 +134,7 @@
       state.config_id,
       id
     );
-    if (response.length > 0) {
+    if (response.length > 0 || Array.isArray(response)) {
       updateList();
       state.showDelModal = false;
     } else console.error("something went wrong erasing special tag");
