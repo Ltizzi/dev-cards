@@ -194,7 +194,7 @@
   function calcNumberOfTextInputs(newValue: string) {
     let labels = [] as string[] | undefined;
     labels = getLabelsByType(newValue);
-    console.log(labels);
+    //console.log(labels);
     addLabels(labels as string[]);
   }
 

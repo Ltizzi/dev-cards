@@ -63,7 +63,7 @@
 
   function handleResize() {
     const isMobile = window.innerWidth < 1024;
-    console.log("RESIZEEE");
+    //console.log("RESIZEEE");
     UIStore.setIsMobile(isMobile);
   }
 
