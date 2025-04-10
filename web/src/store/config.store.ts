@@ -240,13 +240,20 @@ export const useConfigStore = defineStore("configs", {
           this.saveConfig(ws_id, this.current);
           return this.current.tagPool.specialTags;
         }
-      } else
-        return await apiCall.post(EndpointType.CONFIG_ADD_SPECIAL_TAG, tag, {
-          params: {
-            ws_id: ws_id,
-            config_id: config_id,
-          },
-        });
+      } else {
+        const response = (await apiCall.post(
+          EndpointType.CONFIG_ADD_SPECIAL_TAG,
+          tag,
+          {
+            params: {
+              ws_id: ws_id,
+              config_id: config_id,
+            },
+          }
+        )) as TagPool;
+        this.current.tagPool = response;
+        return this.current.tagPool.specialTags;
+      }
     },
     async removeSpecialTag(ws_id: number, config_id: number, id: number) {
       if (this.offlineMode) {
@@ -254,15 +261,21 @@ export const useConfigStore = defineStore("configs", {
         special_tags = special_tags.filter((sp: SpecialTag) => sp.id !== id);
         this.current.tagPool.specialTags = special_tags;
         this.saveConfig(ws_id, this.current);
-        return this.current.tagPool;
-      } else
-        return await apiCall.del(EndpointType.CONFIG_REMOVE_SPECIAL_TAG, {
-          params: {
-            ws_id: ws_id,
-            config_id: config_id,
-            id: id,
-          },
-        });
+        return this.current.tagPool.specialTags;
+      } else {
+        const response = (await apiCall.del(
+          EndpointType.CONFIG_REMOVE_SPECIAL_TAG,
+          {
+            params: {
+              ws_id: ws_id,
+              config_id: config_id,
+              id: id,
+            },
+          }
+        )) as TagPool;
+        this.current.tagPool = response;
+        return this.current.tagPool.specialTags;
+      }
     },
     async updateSpecialTag(
       ws_id: number,
@@ -281,8 +294,8 @@ export const useConfigStore = defineStore("configs", {
         this.current.tagPool.specialTags = special_tags;
         this.saveConfig(ws_id, this.current);
         return this.current.tagPool.specialTags;
-      } else
-        return await apiCall.patch(
+      } else {
+        const response = (await apiCall.patch(
           EndpointType.CONFIG_UPDATE_SPECIAL_TAG,
           tag,
           {
@@ -292,7 +305,10 @@ export const useConfigStore = defineStore("configs", {
               id: id,
             },
           }
-        );
+        )) as TagPool;
+        this.current.tagPool = response;
+        return this.current.tagPool.specialTags;
+      }
     },
     async checkTagInPool(tag: UITag) {
       if (this.current) {
