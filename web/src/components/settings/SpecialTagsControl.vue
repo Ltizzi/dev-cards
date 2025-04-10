@@ -54,7 +54,7 @@
                   </div>
                   <div
                     class="hover:cursor-pointer duration-100 hover:scale-110 ease-in-out transition-all"
-                    @click="removeTag(tag)"
+                    @click="openRemoveTagModal(tag)"
                   >
                     <font-awesome-icon
                       :icon="['fas', 'circle-minus']"
@@ -78,7 +78,7 @@
       @updateList="updateList"
     />
     <BaseDeleteModal
-      :id="target_id"
+      :id="state.target_id"
       :type="'special Tag'"
       :showModal="state.showDelModal"
       @cancel="closeModal('del')"
@@ -123,9 +123,21 @@
     state.tagToEdit = tag;
   }
 
-  function removeTag(tag: SpecialTag) {
-    state.target_id = tag.id as number;
+  function openRemoveTagModal(tag: SpecialTag) {
     state.showDelModal = true;
+    state.target_id = tag.id as number;
+  }
+
+  async function removeTag(id: number) {
+    const response = await configStore.removeSpecialTag(
+      state.ws_id,
+      state.config_id,
+      id
+    );
+    if (response.length > 0) {
+      updateList();
+      state.showDelModal = false;
+    } else console.error("something went wrong erasing special tag");
   }
 
   function closeModal(type: string) {
