@@ -151,17 +151,25 @@ public class CustomConfiguration {
     }
 
     public void updateSpecialTag(Long id, SpecialTag tag){
-        if(tagPool.getSpecialTags().contains(tag)){
-            List<SpecialTag>tags = tagPool.getSpecialTags().stream()
-                    .map(t->{
-                        if(t.getId().equals(id)){
-                            t = tag;
-                        }
-                        return t;
-                    }).collect(Collectors.toList());
-            tagPool.setSpecialTags(tags);
-            //return true;
-        }
+        tagPool.getSpecialTags().stream()
+                .filter(t->t.getId().equals(id))
+                .findFirst()
+                .ifPresent(existing->{
+                    existing.setName(tag.getName());
+                    existing.setValue(tag.getValue());
+                    existing.setDescription(tag.getDescription());
+                });
+//        if(tagPool.getSpecialTags().contains(tag)){
+//            List<SpecialTag>tags = tagPool.getSpecialTags().stream()
+//                    .map(t->{
+//                        if(t.getId().equals(id)){
+//                            t = tag;
+//                        }
+//                        return t;
+//                    }).collect(Collectors.toList());
+//            tagPool.setSpecialTags(tags);
+//            //return true;
+//        }
         //return false;
     }
 
