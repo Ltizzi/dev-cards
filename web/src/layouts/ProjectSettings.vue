@@ -162,7 +162,7 @@
   }
 
   async function updateProject(ws?: Workspace) {
-    console.log("UPDATING");
+    //console.log("UPDATING");
     if (ws) {
       projectStore.setCurrent(ws);
       project.value = projectStore.getCurrent();
@@ -172,7 +172,7 @@
   }
 
   async function deleteWs() {
-    console.log("DELETED");
+    //console.log("DELETED");
     const ws = projectStore.getCurrent() as Workspace;
 
     const response = (await projectStore.deleteWorkspace(
