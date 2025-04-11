@@ -116,8 +116,11 @@
         #MARK: TASK BODY
         -->
         <div class="px-7 pt-10 flex flex-col gap-5 justify-start">
+          <div class="my-6 flex flex-row flex-wrap">
+            <SpecialTagElement v-for="tag in special_tags" :tag="tag" />
+          </div>
+          <!--FIXME: :isSpecial="false" -->
           <TagsList
-            :isSpecial="false"
             :tags="normal_tags"
             :canModify="canModify"
             @removeTag="removeTag"
@@ -312,6 +315,7 @@
   import AddIssueBtn from "../components/ui/AddIssueBtn.vue";
   import BaseUserAvatarItem from "../components/common/BaseUserAvatarItem.vue";
   import TagsList from "../components/ui/TagsList.vue";
+  import SpecialTagElement from "../components/ui/customConfiguration/SpecialTagElement.vue";
   import { useProjectStore } from "../store/project.store";
   import {
     checkIfUserisTaskOwner,
@@ -349,8 +353,8 @@
   const mouseOverTag = ref<boolean>(false);
   const removeTagActive = ref<boolean>(false);
 
-  const normal_tags = ref<UITag[]>();
-  const special_tags = ref<SpecialTag[]>();
+  const normal_tags = ref<string[]>();
+  const special_tags = ref<string[]>();
 
   const route = useRoute();
   const router = useRouter();
@@ -480,13 +484,14 @@
 
   async function prepareTaskData(data: Task) {
     //console.log(data);
+    const tags = await taskUtils.parseTags(data.task_tags as string[]);
+    console.log(tags);
+    normal_tags.value = tags.tags;
+    special_tags.value = tags.specialTags;
+
     title_color.value = taskUtils.getColor(data.color);
     progress_value.value = taskUtils.calcProgress(data.progress);
     priority_color.value = taskUtils.calcPriorityColor(data.priority);
-
-    const tags = await taskUtils.parseTags(data.task_tags as string[]);
-    normal_tags.value = tags.tags;
-    special_tags.value = tags.specialTags;
   }
 
   function checkUserCanModifyTask() {
@@ -531,7 +536,7 @@
           customGlosaries.taskType = g;
           break;
       }
-      console.log(customGlosaries);
+      //console.log(customGlosaries);
     });
   }
 
@@ -580,9 +585,6 @@
     if (cg) {
       prepareGlosaries(cg);
     }
-  });
-
-  onMounted(async () => {
     UIStore.setLoading(true);
     const task_id = route.query.id;
     const ws = projectStore.getCurrent() as Workspace;
@@ -617,4 +619,6 @@
       //console.log(card.value);
     }
   });
+
+  onMounted(async () => {});
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isLoaded">
     <!-- "normal_tags && normal_tags.length > 0" -->
     <div
       v-if="props.tags && props.tags.length > 0"
@@ -14,10 +14,8 @@
       <div
         class="flex flex-row flex-nowrap justify-between w-full gap-1 my-auto"
       >
-        <div
-          v-if="!props.isSpecial"
-          class="flex flex-row flex-wrap justify-start w-full gap-1 my-auto"
-        >
+        <!-- v-if="!props.isSpecial" -->
+        <div class="flex flex-row flex-wrap justify-start w-full gap-1 my-auto">
           <div v-for="tag in normal_tags">
             <p
               :class="[
@@ -34,7 +32,8 @@
             </p>
           </div>
         </div>
-        <div
+        <!-- TODO:FIXME: pensar si uso ese componente para renderizar la lista de special tags -->
+        <!-- <div
           v-else
           class="flex flex-row flex-wrap justify-start w-full gap-1 my-auto"
         >
@@ -49,11 +48,11 @@
               ]"
               @click="removeTagActive ? removeTag(tag.name) : goToTag(tag.name)"
             >
-              <!-- getColor(tag) -->
+              !-- getColor(tag) --
               {{ tag.name }}
             </p>
           </div>
-        </div>
+        </div> -->
       </div>
       <div class="tooltip" data-tip="Click to remove tags!">
         <button
@@ -76,12 +75,13 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { defineProps, onMounted, ref } from "vue";
+  import { defineProps, onBeforeMount, ref } from "vue";
   import { SpecialTag, UITag } from "../../utils/types";
+  import { taskUtils } from "../../utils/task.utils";
 
   const props = defineProps<{
-    isSpecial: boolean;
-    tags: UITag[] | SpecialTag[];
+    // isSpecial: boolean;
+    tags: string[];
     canModify: boolean;
   }>();
 
@@ -121,13 +121,13 @@
     emit("navigate", name);
   }
 
-  onMounted(() => {
+  onBeforeMount(async () => {
     if (props.tags && props.tags.length > 0) {
-      if (props.isSpecial) {
-        special_tags.value = props.tags as SpecialTag[];
-      } else {
-        normal_tags.value = props.tags as UITag[];
-      }
+      // if (props.isSpecial) {
+      //   special_tags.value = props.tags as SpecialTag[];
+      // } else {
+      normal_tags.value = await taskUtils.getUITags(props.tags);
+      //}
       isLoaded.value = true;
     }
   });

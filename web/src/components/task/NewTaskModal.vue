@@ -154,7 +154,7 @@
 </template>
 <script setup lang="ts">
   import BaseDialog from "../common/BaseModal.vue";
-  import { defineProps, defineEmits, ref, useSSRContext } from "vue";
+  import { defineProps, defineEmits, ref } from "vue";
   import {
     ProgressItem,
     ColorEnumArray,
@@ -177,11 +177,9 @@
   } from "../../utils/types";
   import { useUserStore } from "../../store/user.store";
   import { useProjectStore } from "../../store/project.store";
-  //import { EndpointType } from "../../utils/endpoints";
   import { taskUtils } from "../../utils/task.utils";
   import { Workspace } from "../../utils/types";
 
-  //const apiCall = useApiCall();
   const taskStore = useTaskStore();
   const userStore = useUserStore();
   const projectStore = useProjectStore();
@@ -314,11 +312,4 @@
   }
 
   const props = defineProps<{ showModal: boolean }>();
-
-  // console.log(
-  //   ColorEnumArray,
-  //   PriorityEnumArray,
-  //   EffortEnumArray,
-  //   TaskTypeEnumArray
-  // );
 </script>
