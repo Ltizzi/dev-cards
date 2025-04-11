@@ -20,6 +20,25 @@
         />
       </label>
       <label class="form-control">
+        <div class="label"><span class="label-text text-xs">Color</span></div>
+        <select
+          class="select select-secondary w-full max-w-xs select-sm"
+          v-model="color"
+        >
+          <option disabled selected>Pick a color</option>
+          <option
+            v-for="clr in ColorEnumArray"
+            class="flex flex-row gap-2 justify-between"
+          >
+            {{ clr }}
+          </option>
+        </select>
+      </label>
+      <span
+        :class="['h-3 w-full mt-2 rounded-md', getColor(color as Color)]"
+      ></span>
+
+      <label class="form-control">
         <div class="label">
           <span class="label-text text-xs">Description</span>
         </div>
@@ -46,9 +65,10 @@
 <script setup lang="ts">
   import { ref, watch } from "vue";
   import { useConfigStore } from "../../../store/config.store";
-  import { SpecialTag } from "../../../utils/types";
+  import { Color, SpecialTag } from "../../../utils/types";
   import BaseModal from "../../common/BaseModal.vue";
   import { taskUtils } from "../../../utils/task.utils";
+  import { ColorEnumArray } from "../../../utils/types";
 
   const props = defineProps<{
     showModal: boolean;
@@ -60,9 +80,13 @@
 
   const tag = ref<SpecialTag>({} as SpecialTag);
 
+  const color = ref<Color | string>("");
+
   const emit = defineEmits(["updateList", "close"]);
 
   const configStore = useConfigStore();
+
+  const getColor = (color: Color) => taskUtils.getColor(color);
 
   watch(
     () => props.tagToEdit,
@@ -77,10 +101,14 @@
   async function addNewTag() {
     if (!props.isEditor) {
       const new_tag: SpecialTag = {
-        value: taskUtils.generateSpecialTag(tag.value.name.toUpperCase()),
+        value: taskUtils.generateSpecialTag(
+          tag.value.name.toUpperCase(),
+          color.value
+        ),
         name: tag.value.name,
         description: tag.value.description,
       };
+      taskUtils.getSpecialTagColor(new_tag.value);
       const response = (await configStore.addSpecialTag(
         props.ws_id,
         props.config_id,
