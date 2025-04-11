@@ -61,7 +61,7 @@ function calcPriorityColor(priority: Priority) {
 }
 
 function getColor(color: Color) {
-  return color.toLocaleLowerCase();
+  return color.toLowerCase();
 }
 
 function stringShortener(value: string) {
@@ -317,68 +317,83 @@ function saveTagPool() {
 async function parseTags(tags: string[]) {
   const specialTags = getSpecialTagsByFilter(tags);
   let filtered_tags = getNormalTags(tags);
-  let unique_tags = [] as string[];
-  filtered_tags = filtered_tags.map((t: string | undefined) => {
-    if (t && !unique_tags.includes(t.toLowerCase())) {
-      unique_tags.push(t.toLowerCase());
-      return t;
-    }
-  });
+  // let unique_tags = [] as string[];
+  // filtered_tags = filtered_tags.map((t: string | undefined) => {
+  //   if (t && !unique_tags.includes(t.toLowerCase())) {
+  //     unique_tags.push(t.toLowerCase());
+  //     return t;
+  //   }
+  // }) as string[];
 
   return {
-    tags: await getUITags(filtered_tags as string[]),
-    specialTags: await getSpecialsTags(specialTags as string[]),
+    tags: filtered_tags,
+    specialTags: specialTags, //await getSpecialsTags(specialTags as string[])
   };
 }
 
 async function parseAndGetSpecialTags(tags: string[]) {
   const filtered_tags = getSpecialTagsByFilter(tags);
-  return filtered_tags ? await getSpecialsTags(filtered_tags as string[]) : [];
+  return filtered_tags;
+  //return filtered_tags ? await getSpecialsTags(filtered_tags as string[]) : [];
 }
 
 function getSpecialTagsByFilter(tags: string[]) {
-  return tags.map((t: string) => {
-    if (t[0] === "{" && t[t.length - 1] === "}") return t;
+  const values = tags.filter((t: string) => {
+    //if (t[0] === "{" && t[t.length - 1] === "}") return t;
+    if (parseSpecialTag(t)) return t;
   });
+  return values;
 }
 function getNormalTags(tags: string[]) {
-  return tags.map((t: string) => {
-    if (t[0] !== "{" && t[t.length - 1] !== "}") return t;
+  return tags.filter((t: string) => {
+    //if (t[0] !== "{" && t[t.length - 1] !== "}") return t;
+    if (!parseSpecialTag(t)) return t;
   });
 }
 
 async function getUITags(tags: string[]) {
   const configStore = useConfigStore();
   const UITags = await configStore.getTags();
-  // console.log("UITAGS FROM UTILS:");
-  // console.log(tags);
-  // console.log(UITags);
+  console.log("UITAGS FROM UTILS:");
+  console.log(tags);
+  console.log(UITags);
 
   //TODO:FIXME:este código hay q borrarlo en prooduction (es solo un parche para filtrar tags duplicados)
-  let unique_tags = [] as string[];
-  UITags.forEach((ut: UITag) => {
-    if (unique_tags.length == 0 || !unique_tags.includes(ut.name.toLowerCase()))
-      unique_tags.push(ut.name);
-  });
-  let unique_added_tags = [] as UITag[];
+  // let unique_tags = [] as string[];
+  // UITags.forEach((ut: UITag) => {
+  //   if (unique_tags.length == 0 || !unique_tags.includes(ut.name.toLowerCase()))
+  //     unique_tags.push(ut.name);
+  // });
+  // let unique_added_tags = [] as UITag[];
   // console.log(unique_tags);
-  return UITags.filter((ut: UITag) => {
-    let parcial = tags.filter(
-      (t: string) =>
-        t.toLowerCase() == ut.name.toLowerCase() && //FIXME: a partir de acá debería borrarse
-        unique_tags.filter(
-          (t: string) => t.toLowerCase() == ut.name.toLowerCase()
-        ).length > 0 &&
-        unique_added_tags.filter(
-          (ui_tag: UITag) => ui_tag.name.toLowerCase() == ut.name.toLowerCase()
-        ).length == 0
-    );
-    if (parcial.length > 0) {
-      unique_added_tags.push(ut);
-      return parcial;
-    }
-    // console.log(unique_added_tags);
+  let uiTags = [] as UITag[];
+  UITags.forEach((ut: UITag) => {
+    tags.forEach((t: string) => {
+      if (t.toLowerCase() == ut.name.toLowerCase()) uiTags.push(ut);
+    });
   });
+  return uiTags;
+
+  // return UITags.filter((ut: UITag) => {
+  //   tags.forEach((t: string) => {
+  //     if (t.toLowerCase() == ut.name.toLowerCase()) return ut;
+  //   });
+  // let parcial = tags.filter(
+  //   (t: string) => t.toLowerCase() == ut.name.toLowerCase()
+  // && //FIXME: a partir de acá debería borrarse
+  //   unique_tags.filter(
+  //     (t: string) => t.toLowerCase() == ut.name.toLowerCase()
+  //   ).length > 0 &&
+  //   unique_added_tags.filter(
+  //     (ui_tag: UITag) => ui_tag.name.toLowerCase() == ut.name.toLowerCase()
+  //   ).length == 0
+  // );
+  // if (parcial.length > 0) {
+  //   unique_added_tags.push(ut);
+  //   return parcial;
+  // }
+  // console.log(unique_added_tags);
+  // });
 }
 
 async function getSpecialsTags(tags: string[]) {
@@ -387,7 +402,7 @@ async function getSpecialsTags(tags: string[]) {
 
   return specialTags.filter((st: SpecialTag) => {
     let parcial = tags.filter(
-      (t: string) => t.toLowerCase() == st.name.toLowerCase()
+      (t: string) => t.toLowerCase() == st.value.toLowerCase()
     );
     if (parcial.length > 0) return parcial;
     // tags.forEach((t: string) => {
@@ -402,7 +417,8 @@ async function getCustomGlosaries() {
   return glosaries ? glosaries : null;
 }
 
-function generateSpecialTag(name: string) {
+//TODO: agregar color al value del special tag y un método para sacar el color.
+function generateSpecialTag(name: string, color: Color | string) {
   const TOTAL_CHARACTERS = 5;
   const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -411,7 +427,7 @@ function generateSpecialTag(name: string) {
   const id = Array.from(values)
     .map((v: any) => chars[v % chars.length])
     .join("");
-  return "%%§" + name + "§" + id + "§%%";
+  return "%%§" + name + "§" + id + "§" + color + "§%%";
 }
 
 function parseSpecialTag(tag: string) {
@@ -422,6 +438,22 @@ function parseSpecialTag(tag: string) {
 function updateSpecialTagValue(value: string, newValue: string) {
   const splited = value.split("§");
   return "%%§" + newValue + "§" + splited[2] + "§%%";
+}
+
+function getSpecialTagColor(value: string) {
+  const splited = value.split("§");
+  return splited[3];
+}
+
+function getSpecialTagAsObject(value: any) {
+  if (value) {
+    const splited = value.split("§");
+    return {
+      id: splited[2],
+      name: splited[1],
+      color: splited[3],
+    };
+  }
 }
 
 export const taskUtils = {
@@ -449,4 +481,6 @@ export const taskUtils = {
   generateSpecialTag,
   parseSpecialTag,
   updateSpecialTagValue,
+  getSpecialTagColor,
+  getSpecialTagAsObject,
 };
