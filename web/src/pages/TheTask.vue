@@ -117,7 +117,11 @@
         -->
         <div class="px-7 pt-10 flex flex-col gap-5 justify-start">
           <div class="my-6 flex flex-row flex-wrap">
-            <SpecialTagElement v-for="tag in special_tags" :tag="tag" />
+            <SpecialTagElement
+              v-for="tag in special_tags"
+              :tag="tag"
+              :fromControl="false"
+            />
           </div>
           <!--FIXME: :isSpecial="false" -->
           <TagsList

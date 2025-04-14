@@ -45,7 +45,7 @@
       </li>
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
-        data-tip="Add special tag"
+        data-tip="Manage special tags"
         @click="modalSwitch('addSpecialTag', true)"
         v-if="isModOrOwner || isDesignatedUser || canModify"
       >

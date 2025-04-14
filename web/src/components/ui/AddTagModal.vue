@@ -159,8 +159,13 @@
 
   function reset() {
     // tags.value = [];
-    tags.value = taskStore.currentTask.task_tags as Array<string>;
+    getTags();
     tag.value = "";
+  }
+
+  function getTags() {
+    const preTags = taskStore.currentTask.task_tags as Array<string>;
+    tags.value = taskUtils.getNormalTags(preTags);
   }
 
   watch(
@@ -173,6 +178,6 @@
   );
 
   onBeforeMount(() => {
-    tags.value = taskStore.currentTask.task_tags as Array<string>;
+    reset();
   });
 </script>
