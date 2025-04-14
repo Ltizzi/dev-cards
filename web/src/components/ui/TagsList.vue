@@ -14,8 +14,11 @@
       <div
         class="flex flex-row flex-nowrap justify-between w-full gap-1 my-auto"
       >
-        <!-- v-if="!props.isSpecial" -->
-        <div class="flex flex-row flex-wrap justify-start w-full gap-1 my-auto">
+        <!--  -->
+        <div
+          class="flex flex-row flex-wrap justify-start w-full gap-1 my-auto"
+          v-if="!props.isSpecial"
+        >
           <div v-for="tag in normal_tags">
             <p
               :class="[
@@ -33,26 +36,18 @@
           </div>
         </div>
         <!-- TODO:FIXME: pensar si uso ese componente para renderizar la lista de special tags -->
-        <!-- <div
+        <div
           v-else
           class="flex flex-row flex-wrap justify-start w-full gap-1 my-auto"
         >
           <div v-for="tag in special_tags">
-            <p
-              :class="[
-                'rounded-lg  text-white text-sm font-semibold py-0.5   capitalize px-3 transition-all ease-in-out duration-300 hover:scale-110 bg-gradient-to-r from-primary via-secondary to-accent',
-                removeTagActive
-                  ? 'hover:bg-error hover:cursor-not-allowed'
-                  : 'hover:cursor-pointer', //TODO: ELEGIR COLOR PARA LAS SPECIAL TAGS
-                ,
-              ]"
-              @click="removeTagActive ? removeTag(tag.name) : goToTag(tag.name)"
-            >
-              !-- getColor(tag) --
-              {{ tag.name }}
-            </p>
+            <SpecialTagElement
+              :tag="tag"
+              :fromControl="false"
+              @click="goToTag(tag)"
+            />
           </div>
-        </div> -->
+        </div>
       </div>
       <div class="tooltip" data-tip="Click to remove tags!">
         <button
@@ -78,9 +73,10 @@
   import { defineProps, onBeforeMount, ref } from "vue";
   import { SpecialTag, UITag } from "../../utils/types";
   import { taskUtils } from "../../utils/task.utils";
+  import SpecialTagElement from "./customConfiguration/SpecialTagElement.vue";
 
   const props = defineProps<{
-    // isSpecial: boolean;
+    isSpecial: boolean;
     tags: string[];
     canModify: boolean;
   }>();
@@ -90,7 +86,7 @@
   const mouseOverTag = ref<boolean>(false);
   const removeTagActive = ref<boolean>(false);
 
-  const special_tags = ref<SpecialTag[]>();
+  const special_tags = ref<string[]>();
   const normal_tags = ref<UITag[]>();
 
   const isLoaded = ref<boolean>(false);
@@ -108,14 +104,14 @@
     }
   }
 
-  function removeSpecialTag(id: number) {
-    if (special_tags.value && special_tags.value.length > 0) {
-      special_tags.value = special_tags.value.filter(
-        (sp: SpecialTag) => sp.id != id
-      );
-      emit("removeSpecialTag", id);
-    }
-  }
+  // function removeSpecialTag(id: number) {
+  //   if (special_tags.value && special_tags.value.length > 0) {
+  //     special_tags.value = special_tags.value.filter(
+  //       (sp: SpecialTag) => sp.id != id
+  //     );
+  //     emit("removeSpecialTag", id);
+  //   }
+  // }
 
   function goToTag(name: string) {
     emit("navigate", name);
@@ -123,11 +119,12 @@
 
   onBeforeMount(async () => {
     if (props.tags && props.tags.length > 0) {
-      // if (props.isSpecial) {
-      //   special_tags.value = props.tags as SpecialTag[];
-      // } else {
-      normal_tags.value = await taskUtils.getUITags(props.tags);
-      //}
+      if (props.isSpecial) {
+        special_tags.value = props.tags as string[];
+      } else {
+        const preNormalTags = taskUtils.getNormalTags(props.tags);
+        normal_tags.value = await taskUtils.getUITags(preNormalTags);
+      }
       isLoaded.value = true;
     }
   });

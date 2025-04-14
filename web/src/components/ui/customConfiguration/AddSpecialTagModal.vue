@@ -3,17 +3,18 @@
     <div
       class="py-5 px-10 rounded-md min-w-96 flex flex-col text-center justify-center gap-5"
     >
-      <h1 class="text-3xl font-semibold">Add Special Tag</h1>
+      <h1 class="text-3xl font-semibold">Special Tag Control</h1>
       <div class="flex flex-col gap-5" v-if="avaibleSpecialTags">
         <p class="font-extralight">
           Click and pick one or more Special Tag to add/remove to the current
           Task
         </p>
-        <ul class="mx-5 flex flex-row justify-center">
+        <ul class="mx-5 flex flex-row justify-center gap-2 flex-wrap">
           <li v-for="tag in tags">
             <SpecialTagElement
               :added="checkAlreadyAdded(tag.value)"
               :tag="tag.value"
+              :fromControl="true"
               :class="[
                 'hover:cursor-pointer rounded-md border-2',
                 checkAlreadyAdded(tag.value)

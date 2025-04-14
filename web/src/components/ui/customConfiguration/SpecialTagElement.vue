@@ -1,9 +1,9 @@
 <template>
   <div
-    :class="['px-3 py-2 rounded-lg text-xl font-semibold shadow-md border-double border-4 border-neutral-content transition-all duration-75 hover:border-neutral', getColor(tag?.color as Color), added ? 'hover:bg-error hover:text-error-content':'hover:bg-success hover:text-success-content' ]"
+    :class="['px-3 py-2 rounded-lg text-xl font-semibold shadow-md border-double border-4 border-neutral-content transition-all duration-75 hover:border-neutral', getColor(tag?.color as Color), fromControl? added ? 'hover:bg-error hover:text-error-content':'hover:bg-success hover:text-success-content':'' ]"
     v-if="tag"
   >
-    {{ tag.name }}
+    {{ tag.name.toUpperCase() }}
   </div>
 </template>
 
@@ -14,6 +14,7 @@
   const props = defineProps<{
     tag: string;
     added?: boolean;
+    fromControl: boolean;
   }>();
 
   interface STagUtil {
