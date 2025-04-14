@@ -322,7 +322,7 @@ export const useTaskStore = defineStore("tasks", {
           {},
           { params: { task_id: this.currentTask.task_id, tag: tag } }
         )) as Task;
-
+        this.setCurrentTask(response);
         //taskUtils.addTagToTagsPool(tag, response.workspace.workspace_id);
         return response;
       }

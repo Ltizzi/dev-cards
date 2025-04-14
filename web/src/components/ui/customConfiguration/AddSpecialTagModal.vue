@@ -12,6 +12,7 @@
         <ul class="mx-5 flex flex-row justify-center">
           <li v-for="tag in tags">
             <SpecialTagElement
+              :added="checkAlreadyAdded(tag.value)"
               :tag="tag.value"
               :class="[
                 'hover:cursor-pointer rounded-md border-2',
@@ -81,6 +82,7 @@
       const response = await taskStore.removeTag(tag);
       await prepareData();
     } else {
+      added_tags.value.push(tag);
       const response = (await taskStore.saveTag(tag)) as Task;
 
       const tags = response.task_tags?.filter(
@@ -107,11 +109,17 @@
       }
     }
   );
+  watch(
+    () => taskStore.currentTask.task_tags,
+    async (newValue, oldValue) => {
+      if (newValue != oldValue) await prepareData();
+    }
+  );
 
   async function prepareData() {
     tags.value = configstore.current.tagPool.specialTags;
     if (tags.value.length > 0) avaibleSpecialTags.value = true;
-    const task_tags = taskStore.currentTask.task_tags as string[];
+    const task_tags = (await taskStore.getCurrent().task_tags) as string[];
     if (task_tags && task_tags.length > 0)
       added_tags.value = await taskUtils.parseAndGetSpecialTags(task_tags);
   }
