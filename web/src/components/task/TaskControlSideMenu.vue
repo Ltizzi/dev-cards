@@ -45,6 +45,21 @@
       </li>
       <li
         class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
+        data-tip="Add special tag"
+        @click="modalSwitch('addSpecialTag', true)"
+        v-if="isModOrOwner || isDesignatedUser || canModify"
+      >
+        <font-awesome-icon
+          class="size-8 text-primary"
+          :icon="['fas', 'circle-plus']"
+        />
+        <AddSpecialTagModal
+          :showModal="modalState.addSpecialTag"
+          @close="modalSwitch('addSpecialTag', false)"
+        />
+      </li>
+      <li
+        class="tooltip tooltip-left hover:bg-primary hover:rounded-lg transition-all"
         data-tip="Add dependency"
         @click="modalSwitch('addDependency', true)"
         v-if="isModOrOwner || isDesignatedUser || canModify"
@@ -89,6 +104,7 @@
   import AddDependencyModal from "../ui/AddDependencyModal.vue";
   import AddTaskUpdateModal from "../ui/AddTaskUpdateModal.vue";
   import DeleteTaskModal from "../ui/DeleteTaskModal.vue";
+  import AddSpecialTagModal from "../ui/customConfiguration/AddSpecialTagModal.vue";
   import {
     checkIfUserisTaskOwner,
     checkIsDesignated,
@@ -110,6 +126,7 @@
     addUser: false,
     removeUser: false,
     addTag: false,
+    addSpecialTag: false,
     addDependency: false,
     addUpdate: false,
     deleteTask: false,
@@ -139,6 +156,7 @@
         modalState.addDependency = false;
         modalState.addUpdate = false;
         modalState.deleteTask = false;
+        modalState.addSpecialTag = false;
         break;
       case "removeUser":
         modalState.removeUser = condition;
@@ -147,6 +165,7 @@
         modalState.addDependency = false;
         modalState.addUpdate = false;
         modalState.deleteTask = false;
+        modalState.addSpecialTag = false;
         break;
       case "addTag":
         modalState.addTag = condition;
@@ -155,6 +174,16 @@
         modalState.addDependency = false;
         modalState.addUpdate = false;
         modalState.deleteTask = false;
+        modalState.addSpecialTag = false;
+        break;
+      case "addSpecialTag":
+        modalState.addSpecialTag = condition;
+        modalState.removeUser = false;
+        modalState.addUser = false;
+        modalState.addDependency = false;
+        modalState.addUpdate = false;
+        modalState.deleteTask = false;
+        emit("update");
         break;
       case "addDependency":
         modalState.addDependency = condition;
@@ -163,6 +192,7 @@
         modalState.addUser = false;
         modalState.addUpdate = false;
         modalState.deleteTask = false;
+        modalState.addSpecialTag = false;
         break;
       case "addUpdate":
         modalState.addUpdate = condition;
@@ -171,6 +201,7 @@
         modalState.removeUser = false;
         modalState.addUser = false;
         modalState.deleteTask = false;
+        modalState.addSpecialTag = false;
         emit("update");
         break;
       case "deleteTask":
@@ -180,6 +211,7 @@
         modalState.addTag = false;
         modalState.removeUser = false;
         modalState.addUser = false;
+        modalState.addSpecialTag = false;
         break;
     }
   }
