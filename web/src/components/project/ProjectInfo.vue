@@ -69,6 +69,9 @@
         @update="updateProject"
       />
     </div>
+
+    <SpecialTagNavigation :showTags="true" class="xl:mx-72 pb-14" />
+
     <TagNavigationPanel
       :ws_id="project.workspace_id"
       :info="true"
@@ -94,6 +97,7 @@
   import { checkIsModOrOwner } from "../../utils/auth.utils";
   import TagNavigationPanel from "../ui/TagNavigationPanel.vue";
   import BaseUserAvatarItem from "../common/BaseUserAvatarItem.vue";
+  import SpecialTagNavigation from "../ui/customConfiguration/SpecialTagNavigation.vue";
   import { useUIStore } from "../../store/ui.store";
 
   const projectStore = useProjectStore();

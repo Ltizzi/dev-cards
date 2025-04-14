@@ -286,16 +286,21 @@ export const useTaskStore = defineStore("tasks", {
       console.log(this.currentTask.task_tags);
       this.checkOfflineMode();
       //TODO: add id here or in the API?
-      const newTag: UITag = {
-        color: taskUtils.getRandomColor(),
-        name: tag,
-      };
+
+      const newTag = {} as UITag;
+
       const configStore = useConfigStore();
-      await configStore.addTagToPool(
-        this.currentTask.workspace.workspace_id,
-        configStore.current.config_id,
-        newTag
-      );
+
+      if (!taskUtils.parseSpecialTag(tag)) {
+        newTag.color = taskUtils.getRandomColor();
+        newTag.name = tag;
+        await configStore.addTagToPool(
+          this.currentTask.workspace.workspace_id,
+          configStore.current.config_id,
+          newTag
+        );
+      }
+
       if (this.offlineMode) {
         console.log("DEBUG 1");
         console.log(this.currentTask.task_tags);
@@ -322,7 +327,7 @@ export const useTaskStore = defineStore("tasks", {
           {},
           { params: { task_id: this.currentTask.task_id, tag: tag } }
         )) as Task;
-
+        this.setCurrentTask(response);
         //taskUtils.addTagToTagsPool(tag, response.workspace.workspace_id);
         return response;
       }
