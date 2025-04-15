@@ -100,7 +100,10 @@ function searchTasksByTag(tag: string, tasks: TaskLite[]): TaskLite[] {
   if (!tag) {
     return tasks;
   }
+  // const hasEncodedSymbol = /%C2%A7/i.test(tag);
+  // if (hasEncodedSymbol) tag = tag.replace(/%C2%A7/gi, "§");
   tag = tag.toLowerCase();
+
   //return tasks.filter((t: TaskLite) => t.task_tags.includes(tag));
   return tasks.filter((t: TaskLite) => filterTags(t.task_tags, tag));
 }
@@ -450,7 +453,7 @@ function getSpecialTagAsObject(value: any) {
     const splited = value.split("§");
     return {
       id: splited[2],
-      name: splited[1],
+      name: splited[1].replace("_", " "),
       color: splited[3],
     };
   }
