@@ -10,6 +10,18 @@
         <div
           class="flex flex-row justify-center items-center my-auto gap-2 mr-2"
         >
+          <div class="tooltip" data-tip="Show/Hide Special Tags">
+            <button
+              class="btn btn-outline btn-info 2xl:text-sm text-xs btn-sm"
+              @click="handleSpecialTags"
+            >
+              {{
+                !state.showingSpecialTags
+                  ? "Show Special Tags"
+                  : "Hide Special Tags"
+              }}
+            </button>
+          </div>
           <div class="tooltip" data-tip="Show/Hidetags">
             <button
               class="btn btn-outline btn-info 2xl:text-sm text-xs btn-sm"
@@ -52,6 +64,11 @@
         />
       </div>
     </div>
+    <SpecialTagNavigation
+      :showTags="state.showingSpecialTags"
+      @update="searchTasks"
+      class="pb-5"
+    />
     <TagNavigationPanel
       :ws_id="props.ws_id"
       :show="state.showingTags"
@@ -64,6 +81,7 @@
   import TaskPropFilters from "./TaskPropFilters.vue";
   import ChangeCardSizeBtn from "./ChangeCardSizeBtn.vue";
   import TagNavigationPanel from "./TagNavigationPanel.vue";
+  import SpecialTagNavigation from "./customConfiguration/SpecialTagNavigation.vue";
   import { TaskLite, UITag } from "../../utils/types";
   import { onBeforeMount, reactive, ref, watch } from "vue";
   import { taskUtils } from "../../utils/task.utils";
@@ -95,6 +113,7 @@
     lastSearchResultsCount: 0,
     noResults: false,
     showingTags: false,
+    showingSpecialTags: false,
     tagSearch: false,
   });
 
@@ -178,6 +197,11 @@
 
   function handleTags() {
     state.showingTags = !state.showingTags;
+    emit("handleTags");
+  }
+
+  function handleSpecialTags() {
+    state.showingSpecialTags = !state.showingSpecialTags;
     emit("handleTags");
   }
 
@@ -292,20 +316,34 @@
     );
   }
 
-  function searchTasks(tag: UITag | null) {
+  function checkUItag(obj: unknown): obj is UITag {
+    return (
+      typeof obj === "object" &&
+      obj !== null &&
+      "name" in obj &&
+      typeof obj.name === "string" &&
+      "color" in obj &&
+      typeof obj.color === "string"
+    );
+  }
+
+  function searchTasks(tag: UITag | string | null) {
     //este método NO busca/filtra tasks por tags, solo agrega tags a la ruta de la web, el filtro viene después
+
     if (tag) {
-      const search_value = tag.name;
+      const search_value = checkUItag(tag) ? tag.name : tag;
       if (!route.query.tag) router.push(`/project/tasks?tag=${search_value}`);
       else {
-        if (!route.fullPath.includes(tag.name))
+        if (!route.fullPath.includes(search_value))
           router.push(`${route.fullPath}+${search_value}`);
         else {
           let queryTags = route.query.tag as string;
           const tags = queryTags.split(" ");
           console.log(tags);
           let filtered_tags = tags
-            .filter((t: string) => t.toLowerCase() != tag.name.toLowerCase())
+            .filter(
+              (t: string) => t.toLowerCase() != search_value.toLowerCase()
+            )
             .toString()
             .replace(",", "+");
           if (filtered_tags.length > 0)

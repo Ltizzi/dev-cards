@@ -70,7 +70,11 @@
       />
     </div>
 
-    <SpecialTagNavigation :showTags="true" class="xl:mx-72 pb-14" />
+    <SpecialTagNavigation
+      :showTags="true"
+      class="xl:mx-72 pb-14"
+      :info="true"
+    />
 
     <TagNavigationPanel
       :ws_id="project.workspace_id"
