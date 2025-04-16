@@ -231,7 +231,7 @@
 
     const workspace = projectStore.getCurrent() as Workspace;
     const project: WorkspaceLite = {
-      workspace_id: workspace.workspace_id,
+      workspace_id: workspace.workspace_id as number,
       project_name: workspace.project_name,
       owner: {
         user_id: workspace.owner.user_id,

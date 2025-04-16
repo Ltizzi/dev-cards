@@ -502,8 +502,11 @@
     const ws = projectStore.getCurrent() as Workspace;
     if (UIStore.offlineMode) return true;
     return (
-      checkIsModOrOwner(ws.workspace_id) ||
-      checkIsDesignated(ws.workspace_id, card.value?.task_id as number) ||
+      checkIsModOrOwner(ws.workspace_id as number) ||
+      checkIsDesignated(
+        ws.workspace_id as number,
+        card.value?.task_id as number
+      ) ||
       checkIfUserisTaskOwner(card.value?.task_id as number, userStore.self)
     );
   }

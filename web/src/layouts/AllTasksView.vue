@@ -136,7 +136,7 @@
     let ws = projectStore.getCurrent() as Workspace;
     if (!ws) ws = projectStore.current;
     tasks.value = ws.tasks;
-    state.ws_id = ws.workspace_id;
+    state.ws_id = ws.workspace_id as number;
     isDark.value = UIStore.checkIsDarkTheme();
   });
 </script>

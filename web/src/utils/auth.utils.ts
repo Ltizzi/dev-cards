@@ -61,9 +61,9 @@ function getRoles(): UserWorkspaceRoles[] {
       const wsStore = useProjectStore();
       const user_workspaces = wsStore.getUserLocalStorageWorkspaces();
       const ids = user_workspaces.map((ws: Workspace) => ws.workspace_id);
-      const roles = ids.map((id: number) => {
+      const roles = ids.map((id: number | undefined) => {
         const localUWR: UserWorkspaceRoles = {
-          workspace_id: id,
+          workspace_id: id as number,
           role: Role.ROLE_OWNER,
           assigned_tasks_ids: [] as number[],
         };
