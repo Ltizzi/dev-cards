@@ -70,10 +70,11 @@ export const useProjectStore = defineStore("projects", {
         //this.current = project;
         this.currentName = project.project_name;
         this.currentAvatar = project.avatar;
-        localStorage.setItem(
-          "current_workspace_id",
-          project.workspace_id.toString()
-        );
+        if (project.workspace_id)
+          localStorage.setItem(
+            "current_workspace_id",
+            project.workspace_id.toString()
+          );
       }
     },
     getCurrent() {
@@ -93,7 +94,10 @@ export const useProjectStore = defineStore("projects", {
     },
     async saveWorkspaceToLocalStorage(ws: Workspace) {
       let workspaces = this.getLocalStorageWorkspaces();
-      if (workspaces && this.getLocalStorageWorkspaceById(ws.workspace_id)) {
+      if (
+        workspaces &&
+        this.getLocalStorageWorkspaceById(ws.workspace_id as number)
+      ) {
         workspaces = workspaces.map((jws: JSONWorkspace) => {
           if (jws.workspace.workspace_id === ws.workspace_id) {
             jws.workspace = ws;
@@ -147,8 +151,10 @@ export const useProjectStore = defineStore("projects", {
           avatar: ws.owner.avatar,
         } as UserLocal,
         workspace: ws,
-        tasks: this.getWorkspaceTasks(ws.workspace_id),
-        customConfiguration: await this.getCustomConfiguration(ws.workspace_id),
+        tasks: this.getWorkspaceTasks(ws.workspace_id as number),
+        customConfiguration: await this.getCustomConfiguration(
+          ws.workspace_id as number
+        ),
         created_at: new Date(Date.now()),
         update_at: new Date(Date.now()),
       };
@@ -257,7 +263,7 @@ export const useProjectStore = defineStore("projects", {
       }
     },
     async updateCurrent() {
-      return await this.fetchProjectById(this.current.workspace_id);
+      return await this.fetchProjectById(this.current.workspace_id as number);
     },
     async updateCurrentById(id: number) {
       return await this.fetchProjectById(id);
@@ -390,9 +396,12 @@ export const useProjectStore = defineStore("projects", {
       this.current = ws.workspace;
       //  let projects = this.getLocalStorageWorkspaces();
       let project = this.getLocalStorageWorkspaceById(
-        ws.workspace.workspace_id
+        ws.workspace.workspace_id as number
       );
-      if (project?.workspace.workspace_id === ws.workspace.workspace_id) {
+      if (
+        project &&
+        project?.workspace.workspace_id === ws.workspace.workspace_id
+      ) {
         if (ws.update_at.getTime() > project.update_at.getTime()) project = ws;
       } else {
         this.saveJSONWStoLocalStorage(ws);

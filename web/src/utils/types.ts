@@ -193,7 +193,7 @@ export interface TaskLite {
 }
 
 export interface Workspace {
-  workspace_id: number;
+  workspace_id?: number;
   project_name: string;
   description: string;
   avatar: string;
@@ -292,7 +292,7 @@ export interface TagPool {
 }
 
 export interface CustomConfiguration {
-  config_id: number;
+  config_id?: number;
   workspace: WorkspaceLite;
   customGlosaries: Glosary[];
   tagPool: TagPool;
