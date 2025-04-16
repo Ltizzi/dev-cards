@@ -176,7 +176,7 @@
     const ws = projectStore.getCurrent() as Workspace;
 
     const response = (await projectStore.deleteWorkspace(
-      ws.workspace_id
+      ws.workspace_id as number
     )) as APIResponse;
     //  (await apiCall.del(EndpointType.WORKSPACE_DELETE, {
     //   params: {
@@ -223,7 +223,7 @@
       }
     } else {
       const workspace_data = projectStore.getLocalStorageWorkspaceById(
-        ws.workspace_id
+        ws.workspace_id as number
       ) as JSONWorkspace;
       if (workspace_data) {
         const json_string = JSON.stringify(workspace_data);
@@ -266,7 +266,7 @@
 
   onBeforeMount(() => {
     const ws = projectStore.getCurrent() as Workspace;
-    isOwner.value = checkIsOwner(ws.workspace_id);
+    isOwner.value = checkIsOwner(ws.workspace_id as number);
     project.value = ws;
     state.ownerId = project.value.owner.user_id;
   });

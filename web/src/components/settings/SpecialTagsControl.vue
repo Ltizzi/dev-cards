@@ -179,7 +179,7 @@
     isMobile.value = UIStore.isMobile;
     const config = await configStore.getCurrent();
     tags_list.value = config.tagPool.specialTags;
-    state.config_id = config.config_id;
+    state.config_id = config.config_id as number;
     state.ws_id = config.workspace.workspace_id;
     updateList();
     isLoaded.value = true;

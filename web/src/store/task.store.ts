@@ -48,7 +48,9 @@ export const useTaskStore = defineStore("tasks", {
     getLocalTask(id: number) {
       const projectStore = useProjectStore();
       const ws = projectStore.getCurrent() as Workspace;
-      const jws = projectStore.getLocalStorageWorkspaceById(ws.workspace_id);
+      const jws = projectStore.getLocalStorageWorkspaceById(
+        ws.workspace_id as number
+      );
       const tasks = jws?.tasks;
       let task = tasks?.find((t: Task) => t.task_id === id);
       if (task?.task_id === id) {
@@ -90,7 +92,7 @@ export const useTaskStore = defineStore("tasks", {
       // console.log("WORKSPACE: ");
       // console.log(ws);
       const jws = projectStore.getLocalStorageWorkspaceById(
-        ws.workspace_id
+        ws.workspace_id as number
       ) as unknown as JSONWorkspace;
       // console.log("JWS:");
       // console.log(jws);
@@ -108,7 +110,7 @@ export const useTaskStore = defineStore("tasks", {
       const projectStore = useProjectStore();
       const ws = projectStore.getCurrent() as Workspace;
       const jws = projectStore.getLocalStorageWorkspaceById(
-        ws.workspace_id
+        ws.workspace_id as number
       ) as unknown as JSONWorkspace;
       return jws.tasks.filter((t: Task) => t.task_id == id).length > 0;
     },
@@ -296,7 +298,7 @@ export const useTaskStore = defineStore("tasks", {
         newTag.name = tag;
         await configStore.addTagToPool(
           this.currentTask.workspace.workspace_id,
-          configStore.current.config_id,
+          configStore.current.config_id as number,
           newTag
         );
       }
@@ -439,7 +441,7 @@ export const useTaskStore = defineStore("tasks", {
         const projectStore = useProjectStore();
         const ws = projectStore.getCurrent() as Workspace;
         let project = projectStore.getLocalStorageWorkspaceById(
-          ws.workspace_id
+          ws.workspace_id as number
         ) as unknown as JSONWorkspace;
         let tasks = project.tasks;
         tasks = tasks?.filter((t: Task) => t.task_id != id);

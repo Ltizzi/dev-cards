@@ -241,8 +241,11 @@
     const ws = projectStore.getCurrent() as Workspace;
     const projectId = props.projectId ? props.projectId : ws.workspace_id;
     const taskId = getTaskId();
-    isModOrOwner.value = checkIsModOrOwner(projectId);
-    isDesignatedUser.value = checkIsDesignated(projectId, taskId as number);
+    isModOrOwner.value = checkIsModOrOwner(projectId as number);
+    isDesignatedUser.value = checkIsDesignated(
+      projectId as number,
+      taskId as number
+    );
     canModify.value = checkIfUserisTaskOwner(
       taskId as number,
       userStore.getSelf()

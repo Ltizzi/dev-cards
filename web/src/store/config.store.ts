@@ -59,7 +59,7 @@ export const useConfigStore = defineStore("configs", {
         const ws_id = ws
           ? ws.workspace_id
           : +JSON.parse(localStorage.getItem("current_workspace_id") as string);
-        const response = await this.fetchByWorkspaceId(ws_id);
+        const response = await this.fetchByWorkspaceId(ws_id as number);
         this.setCurrent(response);
         return response;
       }
@@ -354,7 +354,7 @@ export const useConfigStore = defineStore("configs", {
         )[0];
         await this.deleteTagFromPool(
           this.current.workspace.workspace_id,
-          this.current.config_id,
+          this.current.config_id as number,
           uiTag
         );
       }
