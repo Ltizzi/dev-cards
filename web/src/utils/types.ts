@@ -340,6 +340,8 @@ export interface JSONWorkspace {
   workspace: Workspace;
   tasks: Task[];
   customConfiguration: CustomConfiguration;
+  onlineExport?: boolean;
+  localExport?: boolean;
   created_at: Date;
   download_at?: Date;
   update_at: Date;
