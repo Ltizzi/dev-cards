@@ -226,6 +226,7 @@
         ws.workspace_id as number
       ) as JSONWorkspace;
       if (workspace_data) {
+        workspace_data.onlineExport = true;
         const json_string = JSON.stringify(workspace_data);
         JSONws_blob = new Blob([json_string], { type: "application/json" });
         // const url = URL.createObjectURL(blob);
