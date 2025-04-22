@@ -153,7 +153,7 @@
     () => projectStore.getCurrent() as Workspace,
     (newValue, oldValue) => {
       if (newValue.workspace_id != oldValue.workspace_id && !state.justChange) {
-        state.selected = newValue.workspace_id;
+        state.selected = newValue.workspace_id as number;
       }
     }
   );
@@ -182,7 +182,7 @@
   }
 
   function goTo(project: Workspace) {
-    state.selected = project.workspace_id;
+    state.selected = project.workspace_id as number;
     state.isHome = false;
     projectStore.setCurrent(project);
     state.justChange = true;

@@ -129,7 +129,7 @@
     const ws_id = ws.workspace_id;
     const response = (await userStore.fetchUserById(
       id.value as number,
-      ws_id
+      ws_id as number
     )) as unknown as User;
     // (await apiCall.get(EndpointType.USER_GET_BY_ID, {
     //   params: {

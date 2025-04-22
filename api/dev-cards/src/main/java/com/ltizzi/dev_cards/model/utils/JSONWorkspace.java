@@ -30,6 +30,8 @@ public class JSONWorkspace {
     private List<TaskDTO> tasks;
     private ConfigurationDTO customConfiguration;
 
+    private boolean onlineExport;
+
     @Builder.Default
     //@JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy'T'HH:mm:ss'Z'", timezone = "UTC")
     private Date created_at = new Date();
