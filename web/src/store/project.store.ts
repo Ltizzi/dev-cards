@@ -133,6 +133,7 @@ export const useProjectStore = defineStore("projects", {
           return ljws;
         });
       } else {
+        jws.localExport = true;
         if (workspaces != null && workspaces.length > 0) workspaces.push(jws);
         else {
           workspaces = [] as JSONWorkspace[];
@@ -155,6 +156,7 @@ export const useProjectStore = defineStore("projects", {
         customConfiguration: await this.getCustomConfiguration(
           ws.workspace_id as number
         ),
+        localExport: true,
         created_at: new Date(Date.now()),
         update_at: new Date(Date.now()),
       };

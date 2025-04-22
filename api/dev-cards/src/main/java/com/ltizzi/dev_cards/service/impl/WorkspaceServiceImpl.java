@@ -262,6 +262,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 .tasks(tasks)
                 .user(userLite)
                 .customConfiguration(config)
+                .onlineExport(true)
                 .build();
 
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
