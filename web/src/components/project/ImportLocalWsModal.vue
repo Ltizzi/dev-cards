@@ -27,6 +27,8 @@
     workspace: {} as Workspace,
     ws_id: 0,
     config_saved: false,
+    saved_parent_tasks: new Map() as Map<number, Task>,
+    saved_tasks: [] as Task[],
   });
 
   const projectStore = useProjectStore();
@@ -41,21 +43,23 @@
   async function importJSONWorkspace(jsw: JSONWorkspace) {
     //WORKSPACE
     changeMsg("Preparing Workspace");
-    const ws = prepareWs(jsw.workspace);
-    await importWorkspace(ws);
-    if (!state.ws_saved) return;
+    if (jsw.localExport) {
+      const ws = prepareWs(jsw.workspace);
+      await importWorkspace(ws);
+      if (!state.ws_saved) return;
 
-    //CONFIGURATION
-    changeMsg("Preparing Custom Configuration");
-    const config = prepareConfiguration(
-      jsw.customConfiguration,
-      state.workspace
-    );
-    await importConfigurations(config);
-    if (!state.config_saved) return;
+      //CONFIGURATION
+      changeMsg("Preparing Custom Configuration");
+      const config = prepareConfiguration(
+        jsw.customConfiguration,
+        state.workspace
+      );
+      await importConfigurations(config);
+      if (!state.config_saved) return;
 
-    changeMsg("Preparing tasks");
-    const tasks = jsw.tasks;
+      changeMsg("Preparing tasks");
+      const tasks = jsw.tasks;
+    }
   }
 
   async function importWorkspace(ws: Workspace) {
@@ -123,16 +127,42 @@
   }
 
   async function importTasks(tasks: Task[]) {
-    let parent_tasks = [] as TaskLite[];
-    let saved_parent_tasks = [] as Task[];
-    let saved_tasks = [] as Task[];
+    let parent_tasks = new Map() as Map<number, Task>;
 
-    changeMsg("Resolving dependencies");
+    changeMsg("Resolving dependencies...");
     tasks.sort((a, b) => (a.task_id as number) - (b.task_id as number));
     tasks.forEach((t: Task) => {
-      if (t.dependencies && t.dependencies.length > 0) {
-        t.dependencies.forEach((pt: TaskLite) => parent_tasks.push(pt));
+      if (t.child_tasks && t.child_tasks.length > 0) {
+        parent_tasks.set(t.task_id as number, t);
       }
     });
+    parent_tasks.forEach(async (t, key, map) => {
+      importTask(t, key, map, tasks);
+    });
+  }
+
+  async function importTask(
+    t: Task,
+    key: number,
+    map: Map<number, Task>,
+    tasks: Task[]
+  ) {
+    if (!t.dependencies) {
+      t.task_id = undefined;
+      const res = (await taskStore.createTask(t)) as Task;
+      if (res.task_id) {
+        state.saved_parent_tasks.set(key, res);
+        state.saved_tasks.push(res);
+      }
+    } else {
+      let dependencies_ids = [] as number[];
+      t.dependencies.forEach((tl: TaskLite) =>
+        dependencies_ids.push(tl.task_id)
+      );
+      let child_tasks = tasks.filter((t: Task) =>
+        dependencies_ids.includes(t.task_id as number)
+      );
+      //if(map.get)
+    }
   }
 </script>
