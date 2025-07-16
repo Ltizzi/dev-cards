@@ -4,6 +4,8 @@
     v-if="isLogged"
     @mouseover="state.isHovering = true"
     @mouseleave="state.isHovering = false"
+    @touchstart="state.isHovering = true"
+    @touchend="state.isHovering = false"
   >
     <div class="relative h-full">
       <div class="flex flex-col justify-center py-5 px-0.5" v-if="isLoaded">
