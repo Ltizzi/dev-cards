@@ -31,6 +31,7 @@
       try {
         console.log(content);
         const parsedData = JSON.parse(content);
+        //TODO:FIXME:acá se carga el json de local
         projectStore.saveJSONWStoLocalStorage(parsedData as JSONWorkspace);
       } catch (err: any) {
         console.error("Invalid JSON file: ", err);
