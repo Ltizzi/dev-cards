@@ -366,7 +366,10 @@ export interface ImportProcess {
   customConfig?: CustomConfiguration;
 }
 
-export interface ImportError {}
+export interface ImportError {
+  type: string;
+  message: string;
+}
 
 export interface LevelBatch {
   level: number;
