@@ -50,7 +50,9 @@
     updatedData.tasks = updatedData.tasks.map((task) => ({
       ...task,
       owner: updatedData.user as UserLite,
-      blocked_by: task.blocked_by ? (updatedData.user as UserLite) : {},
+      blocked_by: task.blocked_by
+        ? (updatedData.user as UserLite)
+        : ({} as UserLite),
       designated_to:
         (task.designated_to?.map((u: any) =>
           u.local ? updatedData.user : u
