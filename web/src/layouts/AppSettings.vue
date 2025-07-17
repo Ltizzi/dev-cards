@@ -23,6 +23,7 @@
       >
         <ThemeControl v-show="state.selected == 'theme_setup'" />
         <UserProfileSetup v-show="state.selected == 'user_profile'" />
+        <ImportWorkspace />
       </div>
     </div>
     <div class="flex flex-row justify-start h-1/6">
@@ -39,6 +40,7 @@
   import SettingsLateralMenu from "../components/settings/SettingsLateralMenu.vue";
   import UserProfileSetup from "../components/settings/UserProfileSetup.vue";
   import LoadWorkspaceButton from "../components/ui/LoadWorkspaceButton.vue";
+  import ImportWorkspace from "../components/settings/ImportWorkspace.vue";
 
   const UIStore = useUIStore();
   const userStore = useUserStore();
@@ -55,6 +57,12 @@
       {
         title: "Theme Settings",
         path: "theme_setup",
+        needOwner: false,
+        needOnline: false,
+      },
+      {
+        title: "Import Workspace",
+        path: "import",
         needOwner: false,
         needOnline: false,
       },
