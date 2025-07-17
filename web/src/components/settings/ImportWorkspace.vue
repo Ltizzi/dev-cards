@@ -1,22 +1,24 @@
-<template lang="html">
-  <div></div>
+<template lang="">
+  <div>
+    asdasd
+    <button @click="importWorkspace">Press</button>
+  </div>
 </template>
 <script setup lang="ts">
   import { reactive } from "vue";
   import {
     ImportProcess,
     JSONWorkspace,
+    LevelBatch,
     Task,
     TaskBatch,
     User,
     UserLite,
-    UserLocal,
     Workspace,
   } from "../../utils/types";
   import { useUserStore } from "../../store/user.store";
   import { useProjectStore } from "../../store/project.store";
   import { mapUserToUserLite } from "../../utils/auth.utils";
-  import { LevelBatch, ProgressItem } from "../../utils/types";
   import { useTaskStore } from "../../store/task.store";
   import { useConfigStore } from "../../store/config.store";
 

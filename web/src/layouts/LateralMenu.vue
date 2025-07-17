@@ -8,10 +8,13 @@
     @touchend="state.isHovering = false"
   >
     <div class="relative h-full">
-      <div class="flex flex-col justify-center py-5 px-0.5" v-if="isLoaded">
+      <div
+        class="flex flex-col justify-center py-5 px-0.5 h-fit"
+        v-if="isLoaded"
+      >
         <div
           :class="[
-            'avatar ',
+            'avatar h-1/6 ',
             state.selected == 0 && state.isHovering
               ? 'border-l-4 border-accent -ml-1'
               : 'border-l-0 border-base',
@@ -31,7 +34,7 @@
         <div class="divider divider-primary opacity-75"></div>
 
         <ul
-          class="flex flex-col justify-center w-11/12 gap-4 my-2 mx-auto bg-base-100 bg-opacity-40 rounded-md px-4 py-1.5"
+          class="flex flex-col justify-center w-11/12 gap-2 my-2 mx-auto bg-base-100 bg-opacity-40 rounded-md px-4 py-1.5 overflow-y-auto"
           v-if="isLoaded && projects && projects.length > 0"
         >
           <li
