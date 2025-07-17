@@ -346,3 +346,38 @@ export interface JSONWorkspace {
   download_at?: Date;
   update_at: Date;
 }
+
+export interface ImportProcess {
+  phase:
+    | "analyzing"
+    | "workspace"
+    | "level_processing"
+    | "customConfig"
+    | "completed"
+    | "error";
+  total: number;
+  processed: number;
+  errors: ImportError[];
+  currentLevel: number;
+  totalLevels: number;
+  globalMapping: Record<number, number>;
+  levelBatches: LevelBatch[];
+  workspace?: Workspace;
+  customConfig?: CustomConfiguration;
+}
+
+export interface ImportError {}
+
+export interface LevelBatch {
+  level: number;
+  batches: TaskBatch[];
+  status: "pending" | "processing" | "completed" | "error";
+}
+
+export interface TaskBatch {
+  id: string;
+  tasks: Task[];
+  status: "pending" | "processing" | "completed" | "error";
+  retryCount: number;
+  idMapping: Record<number, number>;
+}
