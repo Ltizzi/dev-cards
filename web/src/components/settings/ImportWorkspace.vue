@@ -1,14 +1,53 @@
 <template lang="">
-  <div class="flex flex-col justify-start">
-    <input
-      type="file"
-      class="file-input file-input-bordered file-input-primary w-full max-w-xs file-input-xs lg:file-input-sm xl:file-lg"
-      accept=".json"
-      @change="handleInputChange"
-    />
-    <button class="btn btn-outline btn-primary" @click="importWorkspace">
-      Submit
-    </button>
+  <div class="flex flex-col justify-start gap-5 py-5">
+    <h1 class="font-semibold card-title text-xl">
+      Upload Workspace (only accept valid .json files)
+    </h1>
+    <div class="flex flex-row justify-start gap-5 align-middle">
+      <input
+        type="file"
+        class="file-input file-input-bordered file-input-primary w-full max-w-xs file-input-xs lg:file-input-sm xl:file-lg"
+        accept=".json"
+        @change="handleInputChange"
+      />
+      <button
+        class="btn btn-outline btn-primary btn-sm"
+        @click="importWorkspace"
+      >
+        Submit
+      </button>
+    </div>
+    <div
+      :class="[
+        'bg-base-content flex flex-col justify-center gap-3 text-center py-5 items-center text-base-300 duration-500 transition-all ',
+        importState.working
+          ? 'opacity-100 translate-y-0 '
+          : 'opacity-0 -translate-y-40',
+      ]"
+      v-if="importState.working"
+    >
+      <h1 class="font-semibold text-lg">
+        {{
+          importState.phase[0].toUpperCase() +
+          importState.phase.slice(1) +
+          "..."
+        }}
+      </h1>
+      <p class="text-base italic">
+        Tasks: {{ importState.processed + " / " + importState.total }}
+      </p>
+      <p class="text-base italic">Errors: {{ importState.errors.length }}</p>
+      <p class="text-base italic">
+        Hierarchy level:
+        {{ importState.currentLevel + " / " + importState.totalLevels }}
+      </p>
+      <div
+        class="flex flex-col justify-start gap-2 text-sm"
+        v-if="importState.errors.length > 0"
+      >
+        <p v-for="err in importState.errors">{{ err }}</p>
+      </div>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -28,6 +67,7 @@
   import { mapUserToUserLite } from "../../utils/auth.utils";
   import { useTaskStore } from "../../store/task.store";
   import { useConfigStore } from "../../store/config.store";
+  import { utils } from "../../utils/utils";
 
   const userStore = useUserStore();
   const wsStore = useProjectStore();
@@ -43,6 +83,7 @@
     totalLevels: 0,
     globalMapping: {},
     levelBatches: [],
+    working: false,
   });
 
   const fileContent = ref<JSONWorkspace>();
@@ -71,8 +112,9 @@
   }
 
   async function importWorkspace() {
+    importState.working = true;
     const jsonData = fileContent.value as JSONWorkspace;
-    const user = userStore.self;
+    const user = userStore.getSelf();
 
     importState.total = jsonData.tasks.length;
 
@@ -89,11 +131,14 @@
       wsToCreate.project_name = wsToImport.project_name;
       wsToCreate.description = wsToImport.description;
       wsToCreate.avatar = wsToImport.avatar;
-      wsToCreate.created_at = wsToImport.created_at;
-
-      // const ws = (await wsStore.createWorkspace(wsToCreate)) as Workspace;
-      const ws = {} as Workspace;
-      ws.workspace_id = 999;
+      wsToCreate.created_at = new Date(
+        utils.fixDateFormat(wsToImport.created_at) as string
+      );
+      //NOTE: API CALL
+      console.log(wsToCreate);
+      const ws = (await wsStore.createWorkspace(wsToCreate)) as Workspace;
+      //const ws = {} as Workspace;
+      //ws.workspace_id = 999;
       importState.workspace = ws;
 
       importState.levelBatches = dependencyLevels.map((levelTasks, index) => ({
@@ -111,13 +156,17 @@
           ws.workspace_id as number
         );
       }
-      importState.phase = "customConfig";
+      //importState.phase = "customConfig";
 
       console.log(importState);
 
       //TODO: upload customConfig
 
       //const custConfig = await configStore.importCustomConfig(jsonData.customConfiguration      );
+      importState.phase = "completed";
+      setTimeout(() => {
+        importState.working = false;
+      }, 10000);
     } catch (err: any) {
       importState.phase = "error";
       importState.errors.push({ type: "critical", message: err.message });
@@ -192,7 +241,7 @@
 
         if (remaining.length > 0) {
           console.warn(
-            "Dependencias ciruclares o no resuletas detectadas. Procesando:",
+            "Dependencias circulares o no resuletas detectadas. Procesando:",
             remaining[0]
           );
           currentLevel.push(remaining[0]);
@@ -210,8 +259,8 @@
     console.log(
       "Niveles de dependencias:",
       levels.map((lvl, i) => ({
-        nivel: i,
-        tareas: lvl.length,
+        level: i,
+        tasks: lvl.length,
         ids: lvl.map((t) => t.task_id),
       }))
     );
