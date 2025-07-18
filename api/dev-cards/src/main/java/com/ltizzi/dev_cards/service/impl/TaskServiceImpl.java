@@ -5,9 +5,11 @@ import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.task.TaskEntity;
+import com.ltizzi.dev_cards.model.task.TaskLiteDTO;
 import com.ltizzi.dev_cards.model.task.TaskMapper;
 import com.ltizzi.dev_cards.model.task.utils.*;
 import com.ltizzi.dev_cards.model.user.UserEntity;
+import com.ltizzi.dev_cards.model.user.UserLiteDTO;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.utils.RandomIdGenerator;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
@@ -73,6 +75,49 @@ public class TaskServiceImpl implements TaskService {
         new_task = taskRepo.save(new_task);
         wsRepo.save(ws);
         return taskMapper.toTaskDTO(new_task);
+    }
+
+    @Override
+    public List<TaskDTO> saveTasks(List<TaskDTO> tasks, Long ws_id) throws InvalidTaskException, NotFoundException, InvalidUserException {
+        WorkspaceEntity ws = wsRepo.findById(ws_id).orElseThrow(
+                ()->new NotFoundException("Workspace not found!"));
+        List<TaskDTO> new_tasks = new ArrayList<>();
+        for(TaskDTO task: tasks){
+            TaskEntity new_task = taskMapper.toTaskEntityFresh(task);
+            new_task.addWorkspace(ws);
+            new_task.setProgressItems(addIdToIssues(task.getProgressItems()));
+            new_task = taskRepo.save(new_task);
+            wsRepo.save(ws);
+            if(!task.getTask_tags().isEmpty()){
+                for(String tag: new_task.getTask_tags()){
+                    addTagToTask(new_task.getTask_id(), tag);
+                }
+            }
+            if(!task.getDependencies().isEmpty()){
+                for(TaskLiteDTO t: task.getDependencies()){
+                    addDependency(new_task.getTask_id(), t.getTask_id());
+                }
+            }
+            if(!task.getUpdates().isEmpty()){
+                for(TaskUpdate update: task.getUpdates()){
+                    addTaskUpdate(new_task.getTask_id(), update);
+                }
+            }
+            if(task.getBlocked_by() != null){
+                UserEntity user = userRepo.findById(task.getBlocked_by().getUser_id()).orElseThrow(
+                        ()->new NotFoundException("blocked by user not found!")
+                );
+                new_task.setBlocked_by(user);
+            }
+            if(!task.getDesignated_to().isEmpty()){
+                for(UserLiteDTO user: task.getDesignated_to()){
+                    assignUser(new_task.getTask_id(), user.getUser_id());
+                }
+            }
+            new_task = taskRepo.save(new_task);
+            new_tasks.add(taskMapper.toTaskDTO(new_task));
+        }
+        return new_tasks;
     }
 
     public List<ProgressItem> addIdToIssues(List<ProgressItem> issues){
