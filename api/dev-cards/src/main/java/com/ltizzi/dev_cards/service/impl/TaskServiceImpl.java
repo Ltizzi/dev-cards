@@ -87,34 +87,40 @@ public class TaskServiceImpl implements TaskService {
             new_task.addWorkspace(ws);
             new_task.setProgressItems(addIdToIssues(task.getProgressItems()));
             new_task = taskRepo.save(new_task);
+            boolean updatedTask = false;
             wsRepo.save(ws);
             if(!task.getTask_tags().isEmpty()){
                 for(String tag: new_task.getTask_tags()){
                     addTagToTask(new_task.getTask_id(), tag);
                 }
+                updatedTask = true;
             }
             if(!task.getDependencies().isEmpty()){
                 for(TaskLiteDTO t: task.getDependencies()){
                     addDependency(new_task.getTask_id(), t.getTask_id());
                 }
+                updatedTask = true;
             }
             if(!task.getUpdates().isEmpty()){
                 for(TaskUpdate update: task.getUpdates()){
                     addTaskUpdate(new_task.getTask_id(), update);
                 }
+                updatedTask = true;
             }
             if(task.getBlocked_by() != null){
                 UserEntity user = userRepo.findById(task.getBlocked_by().getUser_id()).orElseThrow(
                         ()->new NotFoundException("blocked by user not found!")
                 );
                 new_task.setBlocked_by(user);
+                updatedTask = true;
             }
             if(!task.getDesignated_to().isEmpty()){
                 for(UserLiteDTO user: task.getDesignated_to()){
                     assignUser(new_task.getTask_id(), user.getUser_id());
                 }
+                updatedTask = true;
             }
-            new_task = taskRepo.save(new_task);
+            if(updatedTask) new_task = taskRepo.save(new_task);
             new_tasks.add(taskMapper.toTaskDTO(new_task));
         }
         return new_tasks;

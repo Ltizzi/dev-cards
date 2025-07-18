@@ -436,6 +436,12 @@ export const useTaskStore = defineStore("tasks", {
         return task;
       } else return await apiCall.post(EndpointType.TASK_NEW, task);
     },
+    async importTasks(tasks: Task[], ws_id: number) {
+      const res = (await apiCall.post(EndpointType.TASK_IMPORT, tasks, {
+        params: { ws_id: ws_id },
+      })) as Task[];
+      return res;
+    },
     async deleteTask(id: number) {
       if (this.offlineMode) {
         const projectStore = useProjectStore();

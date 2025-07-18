@@ -364,6 +364,7 @@ export interface ImportProcess {
   levelBatches: LevelBatch[];
   workspace?: Workspace;
   customConfig?: CustomConfiguration;
+  working: boolean;
 }
 
 export interface ImportError {
