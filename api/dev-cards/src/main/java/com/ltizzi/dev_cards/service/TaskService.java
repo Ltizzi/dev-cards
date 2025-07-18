@@ -7,7 +7,7 @@ import com.ltizzi.dev_cards.model.task.TaskDTO;
 import com.ltizzi.dev_cards.model.task.utils.ProgressItem;
 import com.ltizzi.dev_cards.model.task.utils.TaskUpdate;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
-
+import org.springframework.scheduling.config.Task;
 
 
 import java.util.List;
@@ -25,6 +25,8 @@ public interface TaskService {
     public TaskDTO getTaskById(Long id) throws NotFoundException;
 
     public TaskDTO saveTask(TaskDTO task) throws InvalidTaskException, NotFoundException;
+
+    public List<TaskDTO> saveTasks(List<TaskDTO> tasks, Long ws_id) throws InvalidTaskException, NotFoundException, InvalidUserException;
 
     public TaskDTO updateTask(Long task_id, TaskDTO task) throws  InvalidTaskException, NotFoundException;
 

@@ -103,6 +103,37 @@ public class TaskMapper {
 
     }
 
+    public TaskEntity toTaskEntityFresh(TaskDTO dto) {
+        TaskEntity task = new TaskEntity();
+
+        task.setTitle(dto.getTitle());
+        task.setSubtitle(dto.getSubtitle());
+        task.setDescription(dto.getDescription());
+        task.setColor(dto.getColor());
+        task.setPriority(dto.getPriority());
+        task.setEffort(dto.getEffort());
+        task.setStatus(dto.getStatus());
+        task.setProgress(dto.getProgress());
+        task.setTask_type(dto.getTask_type());
+
+       // task.setWorkspace(wsMapper.toWorkSpaceEntity(dto.getWorkspace()));
+
+      //  task.setProgressItems(dto.getProgressItems());
+      //  task.setDependencies(toArrayTaskEntityFromLiteDTO(dto.getDependencies()));
+      //  task.setChild_tasks(toArrayTaskEntityFromLiteDTO(dto.getChild_tasks()));
+      //  task.setTask_tags(dto.getTask_tags());
+      //task.setUpdates(dto.getUpdates());
+//        if(dto.getBlocked_by()!= null) {
+//            task.setBlocked_by(userMapper.toUserEntity(dto.getBlocked_by()));
+//        }
+        task.setOwner(userMapper.toUserEntity(dto.getOwner()));
+        //task.setDesignated_to(userMapper.toArrayUserEntityFromLite(dto.getDesignated_to()));
+        task.setCreated_at(dto.getCreated_at());
+
+        return task;
+
+    }
+
     public TaskEntity toTaskEntity(TaskLiteDTO dto){
         TaskEntity task = new TaskEntity();
         if(dto.getTask_id()!= null){

@@ -1,11 +1,18 @@
 <template lang="">
-  <div>
-    asdasd
-    <button @click="importWorkspace">Press</button>
+  <div class="flex flex-col justify-start">
+    <input
+      type="file"
+      class="file-input file-input-bordered file-input-primary w-full max-w-xs file-input-xs lg:file-input-sm xl:file-lg"
+      accept=".json"
+      @change="handleInputChange"
+    />
+    <button class="btn btn-outline btn-primary" @click="importWorkspace">
+      Submit
+    </button>
   </div>
 </template>
 <script setup lang="ts">
-  import { reactive } from "vue";
+  import { reactive, ref } from "vue";
   import {
     ImportProcess,
     JSONWorkspace,
@@ -37,6 +44,85 @@
     globalMapping: {},
     levelBatches: [],
   });
+
+  const fileContent = ref<JSONWorkspace>();
+
+  function handleInputChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      try {
+        fileContent.value = JSON.parse(content);
+      } catch (err: any) {
+        console.error("Invalid JSON file: ", err);
+      }
+    };
+
+    reader.onerror = () => {
+      console.error("An Error ocurred while reading file: ", reader.error);
+    };
+    reader.readAsText(file);
+  }
+
+  async function importWorkspace() {
+    const jsonData = fileContent.value as JSONWorkspace;
+    const user = userStore.self;
+
+    importState.total = jsonData.tasks.length;
+
+    try {
+      const updatedData = updateLocalReferences(jsonData, user);
+
+      const dependencyLevels = analyzeDependencies(jsonData.tasks);
+
+      importState.phase = "workspace";
+
+      const wsToImport = jsonData.workspace;
+      const wsToCreate = {} as Workspace;
+      wsToCreate.owner = mapUserToUserLite(user);
+      wsToCreate.project_name = wsToImport.project_name;
+      wsToCreate.description = wsToImport.description;
+      wsToCreate.avatar = wsToImport.avatar;
+      wsToCreate.created_at = wsToImport.created_at;
+
+      // const ws = (await wsStore.createWorkspace(wsToCreate)) as Workspace;
+      const ws = {} as Workspace;
+      ws.workspace_id = 999;
+      importState.workspace = ws;
+
+      importState.levelBatches = dependencyLevels.map((levelTasks, index) => ({
+        level: index,
+        batches: createBatches(levelTasks, 10),
+        status: "pending",
+      }));
+
+      importState.phase = "level_processing";
+
+      for (let level = 0; level < importState.levelBatches.length; level++) {
+        importState.currentLevel = level;
+        await processLevel(
+          importState.levelBatches[level],
+          ws.workspace_id as number
+        );
+      }
+      importState.phase = "customConfig";
+
+      console.log(importState);
+
+      //TODO: upload customConfig
+
+      //const custConfig = await configStore.importCustomConfig(jsonData.customConfiguration      );
+    } catch (err: any) {
+      importState.phase = "error";
+      importState.errors.push({ type: "critical", message: err.message });
+    }
+  }
 
   function updateLocalReferences(jsonData: JSONWorkspace, user: User) {
     const updatedData = { ...jsonData };
@@ -80,76 +166,57 @@
           task.child_tasks?.map((child) => child.task_id) || [];
         const allDependencies = [...dependencyIds, ...childTaskIds];
 
-        const allDependenciesResolved = allDependencies.every(
-          (depId) => processed.has(depId) || taskMap.has(depId)
+        const validDependencies = allDependencies.filter((depId) =>
+          taskMap.has(depId)
         );
 
-        if (allDependenciesResolved) {
-          currentLevel.push(task);
-        }
+        const canProcess =
+          validDependencies.length === 0 ||
+          validDependencies.every((depId) => processed.has(depId));
 
-        if (currentLevel.length === 0) {
-          const remaining = tasks.filter(
-            (t) => !processed.has(task.task_id as number)
-          );
-          currentLevel.push(...remaining);
-        }
+        if (canProcess) currentLevel.push(task);
 
-        currentLevel.forEach((task) => processed.add(task.task_id as number));
-        levels.push(currentLevel);
+        // const allDependenciesResolved = allDependencies.every(
+        //   (depId) => processed.has(depId) || taskMap.has(depId)
+        // );
+
+        // if (allDependencies.length === 0 || allDependenciesResolved) {
+        //   currentLevel.push(task);
+        // }
       }
+
+      if (currentLevel.length === 0) {
+        const remaining = tasks.filter(
+          (t) => !processed.has(t.task_id as number)
+        );
+
+        if (remaining.length > 0) {
+          console.warn(
+            "Dependencias ciruclares o no resuletas detectadas. Procesando:",
+            remaining[0]
+          );
+          currentLevel.push(remaining[0]);
+        } else {
+          break;
+        }
+
+        //currentLevel.push(...remaining);
+      }
+
+      currentLevel.forEach((task) => processed.add(task.task_id as number));
+      levels.push([...currentLevel]);
     }
+
+    console.log(
+      "Niveles de dependencias:",
+      levels.map((lvl, i) => ({
+        nivel: i,
+        tareas: lvl.length,
+        ids: lvl.map((t) => t.task_id),
+      }))
+    );
 
     return levels;
-  }
-
-  async function importWorkspace(jsonData: JSONWorkspace) {
-    const user = userStore.self;
-
-    importState.total = jsonData.tasks.length;
-
-    try {
-      const updatedData = updateLocalReferences(jsonData, user);
-
-      const dependencyLevels = analyzeDependencies(jsonData.tasks);
-
-      importState.phase = "workspace";
-
-      const wsToImport = jsonData.workspace;
-      const wsToCreate = {} as Workspace;
-      wsToCreate.owner = mapUserToUserLite(user);
-      wsToCreate.project_name = wsToImport.project_name;
-      wsToCreate.description = wsToImport.description;
-      wsToCreate.avatar = wsToImport.avatar;
-      wsToCreate.created_at = wsToImport.created_at;
-
-      const ws = (await wsStore.createWorkspace(wsToCreate)) as Workspace;
-      importState.workspace = ws;
-
-      importState.levelBatches = dependencyLevels.map((levelTasks, index) => ({
-        level: index,
-        batches: createBatches(levelTasks, 10),
-        status: "pending",
-      }));
-
-      importState.phase = "level_processing";
-
-      for (let level = 0; level < importState.levelBatches.length; level++) {
-        importState.currentLevel = level;
-        await processLevel(
-          importState.levelBatches[level],
-          ws.workspace_id as number
-        );
-      }
-      importState.phase = "customConfig";
-
-      //TODO: upload customConfig
-
-      //const custConfig = await configStore.importCustomConfig(jsonData.customConfiguration      );
-    } catch (err: any) {
-      importState.phase = "error";
-      importState.errors.push({ type: "critical", message: err.message });
-    }
   }
 
   async function processLevel(levelBatch: LevelBatch, ws_id: number) {
@@ -160,6 +227,8 @@
     }
 
     levelBatch.status = "completed";
+
+    return levelBatch;
   }
 
   async function processBatch(batch: TaskBatch, ws_id: number) {
@@ -176,7 +245,7 @@
       console.log("TASKS FOR API: ");
       console.log(tasksForAPI);
       console.log("**************");
-      const createdTasks = [] as Task[];
+      const createdTasks = tasksForAPI; //[] as Task[];
 
       batch.tasks.forEach((localTask, index) => {
         const remoteTask = createdTasks[index];

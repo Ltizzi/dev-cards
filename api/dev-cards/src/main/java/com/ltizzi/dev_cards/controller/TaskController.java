@@ -63,6 +63,16 @@ public class TaskController {
 
     }
 
+    @PostMapping("/import")
+    @ResponseBody
+    public ResponseEntity<List<TaskDTO>> saveTasks(@RequestBody List<TaskDTO> tasks, @RequestParam Long ws_id, @RequestHeader("Authorization")String token) throws NotAllowedException, InvalidTaskException, NotFoundException, InvalidUserException {
+        if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
+            throw new NotAllowedException("User has to be owner/moderator to import tasks");
+        }else{
+            return new ResponseEntity<>(taskServ.saveTasks(tasks,ws_id),HttpStatus.OK);
+        }
+    }
+
     @PatchMapping("/update")
     @ResponseBody
     public ResponseEntity<TaskDTO> updateTask(@RequestParam Long id,
