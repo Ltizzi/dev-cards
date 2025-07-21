@@ -58,21 +58,27 @@
     LevelBatch,
     Task,
     TaskBatch,
+    TaskLite,
     User,
     UserLite,
     Workspace,
+    WorkspaceWithJwt,
   } from "../../utils/types";
   import { useUserStore } from "../../store/user.store";
   import { useProjectStore } from "../../store/project.store";
-  import { mapUserToUserLite } from "../../utils/auth.utils";
+  import { mapUserToUserLite, saveToken } from "../../utils/auth.utils";
   import { useTaskStore } from "../../store/task.store";
   import { useConfigStore } from "../../store/config.store";
   import { utils } from "../../utils/utils";
+  import { taskUtils } from "../../utils/task.utils";
+  import { AnyCnameRecord } from "node:dns";
 
   const userStore = useUserStore();
   const wsStore = useProjectStore();
   const taskStore = useTaskStore();
   const configStore = useConfigStore();
+
+  const tasks = ref<Map<number, Task>>();
 
   const importState: ImportProcess = reactive({
     phase: "analyzing",
@@ -136,7 +142,14 @@
       );
       //NOTE: API CALL
       console.log(wsToCreate);
-      const ws = (await wsStore.createWorkspace(wsToCreate)) as Workspace;
+      const res = (await wsStore.createWorkspace(
+        wsToCreate
+      )) as WorkspaceWithJwt;
+      wsStore.addProjectToOwner(res.workspace);
+      const ws = res.workspace;
+      saveToken(res.token);
+      wsStore.setCurrent(res.workspace);
+      wsStore.setMemberOf([...wsStore.memberOf, res.workspace]);
       //const ws = {} as Workspace;
       //ws.workspace_id = 999;
       importState.workspace = ws;
@@ -284,17 +297,27 @@
     batch.status = "processing";
     try {
       const resolvedTasks = batch.tasks.map((t) => resolveTaskReferences(t));
+      const jsonData = fileContent.value as JSONWorkspace;
+      const tasks = jsonData.tasks;
 
       const tasksForAPI = resolvedTasks.map((task) => ({
         ...task,
         workspace_id: ws_id,
-      }));
+        dependencies: task.dependencies.map((t) => getTaskLiteById(t)),
+        // child_tasks: task.child_tasks.map((t) => getTaskLiteById(t)),
+        updated_at: new Date(
+          utils.fixDateFormat(task.updated_at as Date) as string
+        ),
+        created_at: new Date(
+          utils.fixDateFormat(task.created_at as Date) as string
+        ),
+      })) as unknown as Task[];
 
       //TODO: API y store methods to upload tasks batches
       console.log("TASKS FOR API: ");
       console.log(tasksForAPI);
       console.log("**************");
-      const createdTasks = tasksForAPI; //[] as Task[];
+      const createdTasks = await taskStore.importTasks(tasksForAPI, ws_id); //[] as Task[];
 
       batch.tasks.forEach((localTask, index) => {
         const remoteTask = createdTasks[index];
@@ -350,5 +373,10 @@
       updates: task.updates || [],
       progressItems: task.progressItems || [],
     };
+  }
+
+  function getTaskLiteById(id: any) {
+    const tasks = fileContent.value?.tasks as Task[];
+    return taskUtils.mapTaskToTaskLite(tasks.find((t) => t == id) as Task);
   }
 </script>
