@@ -385,3 +385,8 @@ export interface TaskBatch {
   retryCount: number;
   idMapping: Record<number, number>;
 }
+
+export interface TaskWithReference {
+  task: Task;
+  reference: TaskSlim;
+}
