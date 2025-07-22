@@ -3,10 +3,7 @@ package com.ltizzi.dev_cards.service.impl;
 import com.ltizzi.dev_cards.exception.InvalidTaskException;
 import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
-import com.ltizzi.dev_cards.model.task.TaskDTO;
-import com.ltizzi.dev_cards.model.task.TaskEntity;
-import com.ltizzi.dev_cards.model.task.TaskLiteDTO;
-import com.ltizzi.dev_cards.model.task.TaskMapper;
+import com.ltizzi.dev_cards.model.task.*;
 import com.ltizzi.dev_cards.model.task.utils.*;
 import com.ltizzi.dev_cards.model.user.UserEntity;
 import com.ltizzi.dev_cards.model.user.UserLiteDTO;
@@ -78,10 +75,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDTO> saveTasks(List<TaskDTO> tasks, Long ws_id) throws InvalidTaskException, NotFoundException, InvalidUserException {
+    public List<TaskDTOWithReference> saveTasks(List<TaskDTO> tasks, Long ws_id) throws InvalidTaskException, NotFoundException, InvalidUserException {
         WorkspaceEntity ws = wsRepo.findById(ws_id).orElseThrow(
                 ()->new NotFoundException("Workspace not found!"));
-        List<TaskDTO> new_tasks = new ArrayList<>();
+        List<TaskDTOWithReference> new_tasks = new ArrayList<>();
         for(TaskDTO task: tasks){
             TaskEntity new_task = taskMapper.toTaskEntityFresh(task);
             new_task.addWorkspace(ws);
@@ -121,7 +118,12 @@ public class TaskServiceImpl implements TaskService {
                 updatedTask = true;
             }
             if(updatedTask) new_task = taskRepo.save(new_task);
-            new_tasks.add(taskMapper.toTaskDTO(new_task));
+            TaskDTOWithReference taskWithReference = new TaskDTOWithReference();
+            taskWithReference.setTask(taskMapper.toTaskDTO(new_task));
+            MiniTaskDTO taskMini = new MiniTaskDTO();
+            taskMini = taskMapper.toTaskMini(task);
+            taskWithReference.setReference(taskMini);
+            new_tasks.add(taskWithReference);
         }
         return new_tasks;
     }

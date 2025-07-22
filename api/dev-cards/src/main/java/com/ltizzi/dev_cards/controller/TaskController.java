@@ -5,6 +5,7 @@ import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotAllowedException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
+import com.ltizzi.dev_cards.model.task.TaskDTOWithReference;
 import com.ltizzi.dev_cards.model.task.TaskEntity;
 import com.ltizzi.dev_cards.model.task.utils.ProgressItem;
 import com.ltizzi.dev_cards.model.task.utils.TaskUpdate;
@@ -65,7 +66,7 @@ public class TaskController {
 
     @PostMapping("/import")
     @ResponseBody
-    public ResponseEntity<List<TaskDTO>> saveTasks(@RequestBody List<TaskDTO> tasks, @RequestParam Long ws_id, @RequestHeader("Authorization")String token) throws NotAllowedException, InvalidTaskException, NotFoundException, InvalidUserException {
+    public ResponseEntity<List<TaskDTOWithReference>> saveTasks(@RequestBody List<TaskDTO> tasks, @RequestParam Long ws_id, @RequestHeader("Authorization")String token) throws NotAllowedException, InvalidTaskException, NotFoundException, InvalidUserException {
         if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
             throw new NotAllowedException("User has to be owner/moderator to import tasks");
         }else{

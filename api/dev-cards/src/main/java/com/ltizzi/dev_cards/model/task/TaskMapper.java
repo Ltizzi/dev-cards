@@ -200,4 +200,13 @@ public class TaskMapper {
         }
         return dtos;
     }
+
+    public MiniTaskDTO toTaskMini(TaskDTO task){
+        MiniTaskDTO miniTask = new MiniTaskDTO();
+        miniTask.setTask_id(task.getTask_id());
+        miniTask.setColor(task.getColor());
+        miniTask.setTitle(task.getTitle());
+        miniTask.setWorkspace_id(task.getWorkspace().getWorkspace_id());
+        return miniTask;
+    }
 }
