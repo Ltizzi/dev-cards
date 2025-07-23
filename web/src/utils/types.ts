@@ -135,7 +135,7 @@ export const TaskTypeEnumArray = [
 ];
 
 export interface Task {
-  task_id?: number;
+  task_id?: string;
   title: string;
   subtitle: string;
   description: string;
@@ -177,7 +177,7 @@ export interface TaskUpdate {
 }
 
 export interface TaskLite {
-  task_id: number;
+  task_id: string;
   title: string;
   //subtitle: string;
   task_type: TaskType;
@@ -228,7 +228,7 @@ export enum Role {
 export interface UserWorkspaceRoles {
   workspace_id: number;
   role: Role;
-  assigned_tasks_ids?: number[];
+  assigned_tasks_ids?: string[];
 }
 
 export interface User {
@@ -319,7 +319,7 @@ export interface SpecialTag {
 }
 
 export interface TaskSlim {
-  task_id: number;
+  task_id: string;
   title: string;
   color: Color;
   workspace_id: number;
@@ -360,7 +360,7 @@ export interface ImportProcess {
   errors: ImportError[];
   currentLevel: number;
   totalLevels: number;
-  globalMapping: Record<number, number>;
+  globalMapping: Record<string, string>;
   levelBatches: LevelBatch[];
   workspace?: Workspace;
   customConfig?: CustomConfiguration;
@@ -383,7 +383,7 @@ export interface TaskBatch {
   tasks: Task[];
   status: "pending" | "processing" | "completed" | "error";
   retryCount: number;
-  idMapping: Record<number, number>;
+  idMapping: Record<string, string>;
 }
 
 export interface TaskWithReference {

@@ -335,7 +335,7 @@
 
   // #region: variables
   const card = ref<Task>();
-  const taskId = ref<number>();
+  const taskId = ref<string>();
   const ws_id = ref<number>();
   const taskStore = useTaskStore();
   const projectStore = useProjectStore();
@@ -381,7 +381,7 @@
 
   // #MARK:asdas
 
-  async function fetchTask(task_id: number) {
+  async function fetchTask(task_id: string) {
     const data = await taskStore.fetchTaskById(task_id); //(await apiCall.get(EndpointType.TASK_GET_BY_ID, { params: { id: task_id },  })) as Task;
     return data;
   }
@@ -389,7 +389,7 @@
   async function updateTaskById() {
     console.log("SOY RE YO");
     if (route.query.id) {
-      const id = +route.query.id;
+      const id = route.query.id as string;
       card.value = await fetchTask(id);
       //taskStore.setCurrentTask(card.value);
     }
@@ -505,14 +505,14 @@
       checkIsModOrOwner(ws.workspace_id as number) ||
       checkIsDesignated(
         ws.workspace_id as number,
-        card.value?.task_id as number
+        card.value?.task_id as string
       ) ||
-      checkIfUserisTaskOwner(card.value?.task_id as number, userStore.self)
+      checkIfUserisTaskOwner(card.value?.task_id as string, userStore.self)
     );
   }
 
   async function autoAssignTask() {
-    const taskId = card.value?.task_id as number;
+    const taskId = card.value?.task_id as string;
     const wsId = card.value?.workspace.workspace_id as number;
     const response = (await taskStore.autoAssignTask(
       taskId,
@@ -555,7 +555,7 @@
       const id = newValue;
       if (newValue != oldValue && id && !just_fetched.value) {
         isLoaded.value = false;
-        const task = await fetchTask(+id);
+        const task = await fetchTask(id as string);
         just_fetched.value = true;
         setTimeout(() => {
           just_fetched.value = false;
@@ -593,10 +593,10 @@
       prepareGlosaries(cg);
     }
     UIStore.setLoading(true);
-    const task_id = route.query.id;
+    const task_id = route.query.id as string;
     const ws = projectStore.getCurrent() as Workspace;
     ws_id.value = ws.workspace_id;
-    if (taskStore.currentTask.task_id == +taskId) {
+    if (taskStore.currentTask.task_id == taskId.value) {
       card.value = taskStore.getCurrent();
     }
     // else if (localStorage.getItem("currentTask")) {
@@ -609,9 +609,9 @@
     // }
     else {
       if (task_id) {
-        const data = (await fetchTask(+task_id)) as Task;
+        const data = (await fetchTask(task_id)) as Task;
 
-        if (data.task_id == +task_id) {
+        if (data.task_id == task_id) {
           card.value = data;
         }
       }

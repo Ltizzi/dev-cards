@@ -80,7 +80,7 @@
   const taskStore = useTaskStore();
   const configStore = useConfigStore();
 
-  const tasksMap = ref<Map<number, Task>>(new Map());
+  const tasksMap = ref<Map<string, Task>>(new Map());
 
   const importState: ImportProcess = reactive({
     phase: "analyzing",
@@ -220,13 +220,13 @@
   function analyzeDependencies(tasks: Task[]): Task[][] {
     const taskMap = new Map(tasks.map((t) => [t.task_id, t]));
     const levels: Task[][] = [];
-    const processed = new Set<number>();
+    const processed = new Set<string>();
 
     while (processed.size < tasks.length) {
       const currentLevel: Task[] = [];
 
       for (const task of tasks) {
-        if (processed.has(task.task_id as number)) continue;
+        if (processed.has(task.task_id as string)) continue;
 
         const dependencyIds =
           task.dependencies?.map((dep) => dep.task_id) || [];
@@ -247,7 +247,7 @@
 
       if (currentLevel.length === 0) {
         const remaining = tasks.filter(
-          (t) => !processed.has(t.task_id as number)
+          (t) => !processed.has(t.task_id as string)
         );
 
         if (remaining.length > 0) {
@@ -261,7 +261,7 @@
         }
       }
 
-      currentLevel.forEach((task) => processed.add(task.task_id as number));
+      currentLevel.forEach((task) => processed.add(task.task_id as string));
       levels.push([...currentLevel]);
     }
 
@@ -346,9 +346,9 @@
 
       batch.tasks.forEach((localTask, index) => {
         const remoteTask = createdTasks[index];
-        const i = localTask.task_id as number;
-        batch.idMapping[i] = remoteTask.task.task_id as number;
-        importState.globalMapping[i] = remoteTask.task.task_id as number;
+        const i = localTask.task_id as string;
+        batch.idMapping[i] = remoteTask.task.task_id as string;
+        importState.globalMapping[i] = remoteTask.task.task_id as string;
       });
 
       addTasksWithReferencesToMap(createdTasks);
@@ -411,7 +411,7 @@
     tasks.forEach((t: TaskWithReference) => {
       // if (!tasksMap.value?.has(t.task.task_id as number)) {
       console.log("Añadiendo...");
-      tasksMap.value?.set(t.task.task_id as number, t.task);
+      tasksMap.value?.set(t.task.task_id as string, t.task);
       // }
     });
     //console.log(tasksMap.value);

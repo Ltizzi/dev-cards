@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 function generateRandomId() {
   const lastId = localStorage.getItem("lastId");
   if (!lastId) {
@@ -10,6 +12,10 @@ function generateRandomId() {
   }
 
   //return Math.floor(Math.random() * 100000) + 1; //removed Number Number.MIN_SAFE_INTEGER
+}
+
+function generateUUID() {
+  return uuidv4();
 }
 
 function generateRealRandomId() {
@@ -44,4 +50,5 @@ export const utils = {
   generateRealRandomId,
   textReduce,
   fixDateFormat,
+  generateUUID,
 };
