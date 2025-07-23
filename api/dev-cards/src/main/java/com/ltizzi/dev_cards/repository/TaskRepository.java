@@ -8,13 +8,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Leonardo Terlizzi
  */
 @Repository
-public interface TaskRepository extends JpaRepository<TaskEntity, Long>,
-        PagingAndSortingRepository<TaskEntity,Long> {
+public interface TaskRepository extends JpaRepository<TaskEntity, UUID>,
+        PagingAndSortingRepository<TaskEntity,UUID> {
 
     Long countBy();
 

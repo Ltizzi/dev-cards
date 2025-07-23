@@ -52,12 +52,12 @@ public class TaskServiceImpl implements TaskService {
         return taskMapper.toArrayTaskDTO(taskPage.getContent());
     }
 
-    private TaskEntity findTaskById(Long id) throws NotFoundException{
+    private TaskEntity findTaskById(UUID id) throws NotFoundException{
         return taskRepo.findById(id).orElseThrow(()->new NotFoundException("Task not found!"));
     }
 
     @Override
-    public TaskDTO getTaskById(Long id) throws NotFoundException {
+    public TaskDTO getTaskById(UUID id) throws NotFoundException {
 //        return taskMapper.toTaskDTO(taskRepo.findById(id).orElseThrow(()-> new NotFoundException("Task not Found")));
         return taskMapper.toTaskDTO(findTaskById(id));
     }
@@ -143,7 +143,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO updateTask(Long task_id, TaskDTO task) throws InvalidTaskException, NotFoundException {
+    public TaskDTO updateTask(UUID task_id, TaskDTO task) throws InvalidTaskException, NotFoundException {
 
             TaskEntity old_task = findTaskById(task_id);//getTaskById(task_id);
             if(old_task != null && old_task.getTask_id().equals(task.getTask_id())){
@@ -154,7 +154,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public APIResponse deleteTask(Long task_id) throws NotFoundException {
+    public APIResponse deleteTask(UUID task_id) throws NotFoundException {
         APIResponse apiRes = new APIResponse();
         TaskDTO task = getTaskById(task_id);
         if (task != null){
@@ -172,7 +172,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO addDependency(Long task_id, Long dependency_id) throws NotFoundException, InvalidTaskException {
+    public TaskDTO addDependency(UUID task_id, UUID dependency_id) throws NotFoundException, InvalidTaskException {
         TwoTask tasks = new TwoTask().addTasks(task_id, dependency_id, taskRepo);
         if(!tasks.sameProjectChecker()){
             throw new InvalidTaskException("Tasks must belong to the same project");
@@ -189,7 +189,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO removeDependency(Long task_id, Long dependency_id) throws NotFoundException, InvalidTaskException {
+    public TaskDTO removeDependency(UUID task_id, UUID dependency_id) throws NotFoundException, InvalidTaskException {
         TwoTask tasks = new TwoTask().addTasks(task_id, dependency_id, taskRepo);
         if(!tasks.sameProjectChecker())  {
             throw new InvalidTaskException("Tasks must belong to the same project");
@@ -215,7 +215,7 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public TaskDTO assignUser(Long task_id, Long user_id) throws NotFoundException, InvalidUserException, InvalidTaskException {
+    public TaskDTO assignUser(UUID task_id, Long user_id) throws NotFoundException, InvalidUserException, InvalidTaskException {
         TaskEntity task = findTaskById(task_id);
         UserEntity user = userRepo.findById(user_id).orElseThrow(()->new NotFoundException("User not found"));
         if(!sameProjectChecker(task, user)){
@@ -231,7 +231,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO unassignUser(Long task_id, Long user_id) throws NotFoundException, InvalidUserException, InvalidTaskException {
+    public TaskDTO unassignUser(UUID task_id, Long user_id) throws NotFoundException, InvalidUserException, InvalidTaskException {
         TaskEntity task = findTaskById(task_id);
         UserEntity user = userRepo.findById(user_id).orElseThrow(()->new NotFoundException("User not found"));
         if(!sameProjectChecker(task, user)){
@@ -248,7 +248,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO autoAssignTask(String token, Long task_id) throws NotFoundException, InvalidTaskException, InvalidUserException {
+    public TaskDTO autoAssignTask(String token, UUID task_id) throws NotFoundException, InvalidTaskException, InvalidUserException {
         String username = jwtUtils.extractUsername(token);
         List<UserEntity> user = userRepo.findByUsername(username);
         if(user.get(0)== null){
@@ -259,7 +259,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO addTagToTask(Long task_id, String tag) throws NotFoundException {
+    public TaskDTO addTagToTask(UUID task_id, String tag) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         APIResponse res = task.addTag(tag);
         return taskMapper.toTaskDTO(taskRepo.save(task));
@@ -267,7 +267,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO removeTagFromTask(Long task_id, String tag) throws NotFoundException {
+    public TaskDTO removeTagFromTask(UUID task_id, String tag) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         APIResponse res  = task.removeTag(tag);
         return taskMapper.toTaskDTO(taskRepo.save(task));
@@ -275,7 +275,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskUpdate> addTaskUpdate(Long task_id, TaskUpdate update) throws NotFoundException {
+    public List<TaskUpdate> addTaskUpdate(UUID task_id, TaskUpdate update) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         //update.setUpdate_id(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE);
         RandomIdGenerator randIdGen = new RandomIdGenerator();
@@ -285,14 +285,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskUpdate> removeUpdateFromTask(Long task_id, Long update_id) throws NotFoundException {
+    public List<TaskUpdate> removeUpdateFromTask(UUID task_id, Long update_id) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         task.removeUpdate(update_id);
         return taskRepo.save(task).getUpdates();
     }
 
     @Override
-    public List<TaskUpdate> updateTaskUpdate(Long task_id, TaskUpdate taskUpdate) throws NotFoundException {
+    public List<TaskUpdate> updateTaskUpdate(UUID task_id, TaskUpdate taskUpdate) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         task.updateUpdate(taskUpdate.getUpdate_id(), taskUpdate.getCreator_user_id(), taskUpdate.getCreator_username(), taskUpdate.getDescription());
         return taskRepo.save(task).getUpdates();
@@ -306,7 +306,7 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public TaskDTO updateTaskProgress(Long task_id, String progress) throws NotFoundException {
+    public TaskDTO updateTaskProgress(UUID task_id, String progress) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         ProgressEnum progEnum = ProgressEnum.valueOf(progress);
         task.setProgress(progEnum);
@@ -314,7 +314,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO updateTaskPriority(Long task_id, String priority) throws NotFoundException {
+    public TaskDTO updateTaskPriority(UUID task_id, String priority) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         PriorityEnum priorEnum = PriorityEnum.valueOf(priority);
         task.setPriority(priorEnum);
@@ -322,7 +322,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO updateTaskStatus(Long task_id, String status) throws NotFoundException {
+    public TaskDTO updateTaskStatus(UUID task_id, String status) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         Status statusEnum = Status.valueOf(status);
         task.setStatus(statusEnum);
@@ -330,7 +330,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO updateTaskEffort(Long task_id, String effort) throws NotFoundException {
+    public TaskDTO updateTaskEffort(UUID task_id, String effort) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         EffortEnum effortEnum = EffortEnum.valueOf(effort);
         task.setEffort(effortEnum);
@@ -338,7 +338,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO updateTaskType(Long task_id, String type) throws NotFoundException {
+    public TaskDTO updateTaskType(UUID task_id, String type) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         TaskType typeEnum = TaskType.valueOf(type);
         task.setTask_type(typeEnum);
@@ -346,28 +346,28 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO updateTaskTitle(Long task_id, String title) throws NotFoundException {
+    public TaskDTO updateTaskTitle(UUID task_id, String title) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         task.setTitle(title);
         return taskMapper.toTaskDTO(taskRepo.save(task));
     }
 
     @Override
-    public TaskDTO updateTaskSubtitle(Long task_id, String subtitle) throws NotFoundException {
+    public TaskDTO updateTaskSubtitle(UUID task_id, String subtitle) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         task.setSubtitle(subtitle);
         return taskMapper.toTaskDTO(taskRepo.save(task));
     }
 
     @Override
-    public TaskDTO updateDescription(Long task_id, String description) throws NotFoundException {
+    public TaskDTO updateDescription(UUID task_id, String description) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         task.setDescription(description);
         return taskMapper.toTaskDTO(taskRepo.save(task));
     }
 
     @Override
-    public TaskDTO updateTaskIssue(Long task_id, ProgressItem issue) throws NotFoundException {
+    public TaskDTO updateTaskIssue(UUID task_id, ProgressItem issue) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         List<ProgressItem> issues = task.getProgressItems();
 
@@ -389,7 +389,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO createTaskIssue(Long task_id, ProgressItem issue) throws NotFoundException {
+    public TaskDTO createTaskIssue(UUID task_id, ProgressItem issue) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         issue.setIssue_id(UUID.randomUUID().getLeastSignificantBits()  & 0x1FFFFFFFFFFFFFL);
         List<ProgressItem> issues = task.getProgressItems();
@@ -399,7 +399,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO deleteTaskIssue(Long task_id, Long issue_id) throws NotFoundException {
+    public TaskDTO deleteTaskIssue(UUID task_id, Long issue_id) throws NotFoundException {
         TaskEntity task = findTaskById(task_id);
         List<ProgressItem> issues = task.getProgressItems();
         issues = issues.stream().filter(i-> !i.getIssue_id().equals(issue_id)).collect(Collectors.toList());

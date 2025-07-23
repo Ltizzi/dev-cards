@@ -8,19 +8,19 @@ import com.ltizzi.dev_cards.model.utils.APIResponse;
 import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
 
 import jakarta.persistence.*;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.*;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -35,8 +35,10 @@ import java.util.stream.Collectors;
 public class TaskEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long task_id;
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+    private UUID task_id;
 
 
     @NotEmpty(message = "title can't be empty")
@@ -82,14 +84,14 @@ public class TaskEntity {
             foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT)
 //            ,uniqueConstraints = {}
     )
-    @Column(name = "dependencies_task_id")
+    @Column(name = "dependencies_task_id", columnDefinition = "uuid")
     private List<TaskEntity> dependencies = new ArrayList<>();
 
 
     @ElementCollection
     @CollectionTable(name = "tasks_child_tasks", joinColumns = @JoinColumn(name = "task_entity_task_id"),
     foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
-    @Column(name="child_tasks_task_id")
+    @Column(name="child_tasks_task_id", columnDefinition = "uuid")
     private List<TaskEntity> child_tasks = new ArrayList<>();
 
     @ElementCollection
