@@ -12,6 +12,7 @@ import {
   TaskLite,
   TaskType,
   TaskUpdate,
+  TaskWithReference,
   UITag,
   Workspace,
 } from "../utils/types";
@@ -439,7 +440,7 @@ export const useTaskStore = defineStore("tasks", {
     async importTasks(tasks: Task[], ws_id: number) {
       const res = (await apiCall.post(EndpointType.TASK_IMPORT, tasks, {
         params: { ws_id: ws_id },
-      })) as Task[];
+      })) as TaskWithReference[];
       return res;
     },
     async deleteTask(id: number) {
