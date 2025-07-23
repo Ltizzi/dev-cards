@@ -107,11 +107,13 @@
   import { useProjectStore } from "../../store/project.store";
   import { isDarkerCardsActive } from "../../utils/client.utils";
   import { useUIStore } from "../../store/ui.store";
+  import { useTaskStore } from "../../store/task.store";
 
   const router = useRouter();
   const route = useRoute();
   const projectStore = useProjectStore();
   const UIStore = useUIStore();
+  const taskStore = useTaskStore();
 
   const props = defineProps<{
     task: Task;
@@ -192,12 +194,18 @@
   //   disabled: !props.isDraggable,
   // });
 
-  function goToTask() {
+  async function goToTask() {
     const ws = projectStore.getCurrent() as Workspace;
     if (!ws || ws.workspace_id != props.task.workspace.workspace_id) {
       const project_id = props.task.workspace.workspace_id;
       projectStore.fetchProjectById(project_id);
     }
+
+    const res = (await taskStore.fetchTaskById(
+      props.task.task_id as string
+    )) as Task;
+    if (res.task_id == props.task.task_id) taskStore.setCurrentTask(res);
+
     router.push(`/project/task?id=${props.task.task_id}`);
   }
 

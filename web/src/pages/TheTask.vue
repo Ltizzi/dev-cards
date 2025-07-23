@@ -30,7 +30,8 @@
               class="2xl:text-2xl text-xs text-start lg:text-center lg:ml-2 border-r-2 border-secondary lg:px-2 py-7 my-auto lg:min-w-44 lg:w-1/6 w-12 max-w-xl"
               v-if="!isMobile"
             >
-              {{ card.workspace.project_name + " " + card.task_id }}
+              {{ card.workspace.project_name }}
+              <!-- " " + card.task_id  -->
             </h2>
 
             <div
@@ -594,10 +595,13 @@
     }
     UIStore.setLoading(true);
     const task_id = route.query.id as string;
+    if (task_id) taskId.value = task_id;
+    console.log("TASK ID: ", task_id);
     const ws = projectStore.getCurrent() as Workspace;
     ws_id.value = ws.workspace_id;
     if (taskStore.currentTask.task_id == taskId.value) {
       card.value = taskStore.getCurrent();
+      console.log(card.value);
     }
     // else if (localStorage.getItem("currentTask")) {
     //   const task = JSON.parse(
