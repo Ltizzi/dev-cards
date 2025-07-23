@@ -372,7 +372,7 @@ export const useProjectStore = defineStore("projects", {
         { params: { ws_id: ws_id, user_id: id } }
       );
     },
-    async updateProjectDescription(id: number, description: string) {
+    async updateProjectDescription(id: string, description: string) {
       const newDes = { description: description };
       if (this.offlineMode) {
         this.current.description = description;

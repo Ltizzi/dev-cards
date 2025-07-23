@@ -74,7 +74,7 @@
 
   const props = defineProps<{
     description: string;
-    id: number;
+    id: string;
     isDark: boolean;
     type: string;
     canModify: boolean;
