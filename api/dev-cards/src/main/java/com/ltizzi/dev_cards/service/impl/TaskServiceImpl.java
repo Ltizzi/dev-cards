@@ -93,8 +93,12 @@ public class TaskServiceImpl implements TaskService {
                 updatedTask = true;
             }
             if(!task.getDependencies().isEmpty()){
-                for(TaskLiteDTO t: task.getDependencies()){
-                    addDependency(new_task.getTask_id(), t.getTask_id());
+                List<TaskLiteDTO> dependencies = task.getDependencies();
+                for(TaskLiteDTO dep: dependencies){
+//                    if(dep.getTask_id() != null){
+                        addDependency(new_task.getTask_id(), dep.getTask_id());
+//                    }
+
                 }
                 updatedTask = true;
             }
