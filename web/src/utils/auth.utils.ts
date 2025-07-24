@@ -65,7 +65,7 @@ function getRoles(): UserWorkspaceRoles[] {
         const localUWR: UserWorkspaceRoles = {
           workspace_id: id as number,
           role: Role.ROLE_OWNER,
-          assigned_tasks_ids: [] as number[],
+          assigned_tasks_ids: [] as string[],
         };
         return localUWR;
       });
@@ -121,7 +121,7 @@ function checkIsCollaborator(workspace_id: number): boolean {
   );
 }
 
-function checkIsDesignated(workspace_id: number, task_id: number) {
+function checkIsDesignated(workspace_id: number, task_id: string) {
   return (
     getRoles().filter(
       (uwr: UserWorkspaceRoles) =>
@@ -131,7 +131,7 @@ function checkIsDesignated(workspace_id: number, task_id: number) {
   );
 }
 
-function checkIfUserisTaskOwner(task_id: number, user: User) {
+function checkIfUserisTaskOwner(task_id: string, user: User) {
   return (
     user.created_tasks.filter((t: TaskLite) => t.task_id == task_id).length > 0
   );

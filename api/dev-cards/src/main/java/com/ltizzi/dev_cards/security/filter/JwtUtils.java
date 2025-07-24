@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -125,13 +126,13 @@ public class JwtUtils {
         else throw  new NotFoundException("Username is not valid");
     }
 
-    public boolean checkUserCanAccessTask(String token, Long task_id) throws NotFoundException {
+    public boolean checkUserCanAccessTask(String token, UUID task_id) throws NotFoundException {
         UserEntity user = getUserByToken(token);
         TaskEntity task = taskRepo.findById(task_id).orElseThrow(()->new NotFoundException("Task not found"));
         return user.getWorkspaces().stream().filter(ws->ws.getWorkspace_id().equals(task.getWorkspace().getWorkspace_id())).toList().size()>0;
     }
 
-    public boolean checkUserCanModifyTask(String token, Long task_id) throws NotFoundException {
+    public boolean checkUserCanModifyTask(String token, UUID task_id) throws NotFoundException {
         //UserEntity user = getUserByToken(token);
         boolean canAccess = false;
         List<UserWorkspacesRoles> uwrs = getRoles(token);
@@ -143,7 +144,7 @@ public class JwtUtils {
         }
 
         for(UserWorkspacesRoles uwr: uwrs){
-            for(Long id: uwr.getAssigned_tasks_ids()){
+            for(UUID id: uwr.getAssigned_tasks_ids()){
                 if(id.equals(task_id)){
                     canAccess = true;
                     break;
@@ -159,7 +160,7 @@ public class JwtUtils {
         return canAccess;
   }
 
-  public boolean checkUserIsTaskOwner(String token, Long task_id) throws NotFoundException {
+  public boolean checkUserIsTaskOwner(String token, UUID task_id) throws NotFoundException {
         String username = extractUsername(token);
         TaskEntity task = taskRepo.findById(task_id).orElseThrow(()->new NotFoundException("Task not found"));
         List<UserEntity> users = userRepo.findByUsername(username);
@@ -243,7 +244,7 @@ public class JwtUtils {
             else{
                 user_roles.setRole(Role.ROLE_USER);
             }
-            List<Long> tasks_ids = user.getDesignated_tasks().stream()
+            List<UUID> tasks_ids = user.getDesignated_tasks().stream()
                     .map(t->t.getWorkspace().getWorkspace_id().equals(ws.getWorkspace_id()) ? t.getTask_id() : null)
                     .filter(out-> out!=null)
                     .collect(Collectors.toList());

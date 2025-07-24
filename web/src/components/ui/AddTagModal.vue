@@ -165,7 +165,7 @@
 
   function getTags() {
     const preTags = taskStore.currentTask.task_tags as Array<string>;
-    tags.value = taskUtils.getNormalTags(preTags);
+    tags.value = taskUtils.getNormalTags(preTags) as string[];
   }
 
   watch(

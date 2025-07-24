@@ -46,7 +46,7 @@ export const useTaskStore = defineStore("tasks", {
       this.tasks = response as Array<Task>;
       return response;
     },
-    getLocalTask(id: number) {
+    getLocalTask(id: string) {
       const projectStore = useProjectStore();
       const ws = projectStore.getCurrent() as Workspace;
       const jws = projectStore.getLocalStorageWorkspaceById(
@@ -60,7 +60,7 @@ export const useTaskStore = defineStore("tasks", {
       }
     },
 
-    async fetchTaskById(id: number) {
+    async fetchTaskById(id: string) {
       this.checkOfflineMode();
       if (this.offlineMode) {
         return this.getLocalTask(id);
@@ -107,7 +107,7 @@ export const useTaskStore = defineStore("tasks", {
       jws.tasks = tasks;
       projectStore.saveJSONWStoLocalStorage(jws);
     },
-    checkTaskSavedLocal(id: number) {
+    checkTaskSavedLocal(id: string) {
       const projectStore = useProjectStore();
       const ws = projectStore.getCurrent() as Workspace;
       const jws = projectStore.getLocalStorageWorkspaceById(
@@ -127,7 +127,7 @@ export const useTaskStore = defineStore("tasks", {
     removeCurrent() {
       this.currentTask = {} as Task;
     },
-    async updateTitle(title: string, id: number) {
+    async updateTitle(title: string, id: string) {
       if (this.offlineMode) {
         this.currentTask.title = title;
         this.saveLocalTask(this.currentTask);
@@ -139,7 +139,7 @@ export const useTaskStore = defineStore("tasks", {
           { params: { task_id: id, title: title } }
         );
     },
-    async updateSubtitle(subtitle: string, id: number) {
+    async updateSubtitle(subtitle: string, id: string) {
       if (this.offlineMode) {
         this.currentTask.subtitle = subtitle;
         this.saveLocalTask(this.currentTask);
@@ -212,18 +212,17 @@ export const useTaskStore = defineStore("tasks", {
         )) as Task;
     },
 
-    async addDependency(id: number, parent_id: number) {
+    async addDependency(id: string, parent_id: string) {
+      console.log(id + " " + parent_id);
       if (this.offlineMode) {
         let parent = await this.fetchTaskById(parent_id);
-        if (parent && parent.child_tasks) {
-          parent.child_tasks.push(
-            taskUtils.mapTaskToTaskLite(this.currentTask)
-          );
+        let child = (await this.fetchTaskById(id)) as Task;
+        if (parent && parent.child_tasks && child) {
+          parent.child_tasks.push(taskUtils.mapTaskToTaskLite(child));
           this.saveLocalTask(parent);
-          this.currentTask.dependencies?.push(
-            taskUtils.mapTaskToTaskLite(parent)
-          );
-          this.saveLocalTask(this.currentTask);
+          child.dependencies?.push(taskUtils.mapTaskToTaskLite(parent));
+          this.saveLocalTask(child);
+          this.setCurrentTask(child);
           return this.currentTask;
         }
       } else
@@ -231,12 +230,12 @@ export const useTaskStore = defineStore("tasks", {
           params: { task_id: id, parent_id: parent_id },
         })) as Task;
     },
-    async addIssue(id: number, issue: ProgressItem) {
+    async addIssue(id: string, issue: ProgressItem) {
       console.log("double pre");
       console.log(issue);
       if (this.offlineMode) {
         const task = this.getLocalTask(
-          this.currentTask.task_id as number
+          this.currentTask.task_id as string
         ) as Task;
 
         task?.progressItems.push(issue);
@@ -253,7 +252,7 @@ export const useTaskStore = defineStore("tasks", {
         });
       return this.currentTask;
     },
-    async updateIssue(issue: ProgressItem, id: number) {
+    async updateIssue(issue: ProgressItem, id: string) {
       if (this.offlineMode) {
         let issues = this.currentTask.progressItems;
         if (
@@ -272,7 +271,7 @@ export const useTaskStore = defineStore("tasks", {
           params: { task_id: id },
         });
     },
-    async deleteIssue(id: number, task_id: number) {
+    async deleteIssue(id: number, task_id: string) {
       if (this.offlineMode) {
         let issues = this.currentTask.progressItems;
         issues = issues.filter((i: ProgressItem) => i.issue_id !== id);
@@ -368,7 +367,7 @@ export const useTaskStore = defineStore("tasks", {
           params: { task_id: this.currentTask.task_id },
         });
     },
-    async updateDescription(newDes: string, id: number) {
+    async updateDescription(newDes: string, id: string) {
       if (this.offlineMode) {
         this.currentTask.description = newDes;
         this.saveLocalTask(this.currentTask);
@@ -382,19 +381,19 @@ export const useTaskStore = defineStore("tasks", {
           }
         );
     },
-    async assignUserToTask(user_id: number, task_id?: number) {
+    async assignUserToTask(user_id: number, task_id?: string) {
       const id = task_id ? task_id : this.currentTask.task_id;
       return await apiCall.post(EndpointType.TASK_ASSIGN_USER, null, {
         params: { task_id: id, user_id: user_id },
       });
     },
-    async unassignUserFromTask(user_id: number, task_id?: number) {
+    async unassignUserFromTask(user_id: number, task_id?: string) {
       const id = task_id ? task_id : this.currentTask.task_id;
       return await apiCall.post(EndpointType.TASK_UNASSIGN_USER, null, {
         params: { task_id: id, user_id: user_id },
       });
     },
-    async autoAssignTask(task_id: number, ws_id: number) {
+    async autoAssignTask(task_id: string, ws_id: number) {
       if (this.offlineMode) {
         const userStore = useUserStore();
         const user = mapLocalUserToUserLite(userStore.local);
@@ -415,7 +414,7 @@ export const useTaskStore = defineStore("tasks", {
     async createTask(task: Task) {
       this.offlineMode = this.checkOfflineMode();
       if (this.offlineMode) {
-        task.task_id = utils.generateRandomId();
+        task.task_id = utils.generateUUID(); //NOTE: GENERATE UUID
         task.child_tasks = [];
         task.dependencies = [];
         task.designated_to = [];
@@ -440,10 +439,10 @@ export const useTaskStore = defineStore("tasks", {
     async importTasks(tasks: Task[], ws_id: number) {
       const res = (await apiCall.post(EndpointType.TASK_IMPORT, tasks, {
         params: { ws_id: ws_id },
-      })) as TaskWithReference[];
+      })) as Task[];
       return res;
     },
-    async deleteTask(id: number) {
+    async deleteTask(id: string) {
       if (this.offlineMode) {
         const projectStore = useProjectStore();
         const ws = projectStore.getCurrent() as Workspace;

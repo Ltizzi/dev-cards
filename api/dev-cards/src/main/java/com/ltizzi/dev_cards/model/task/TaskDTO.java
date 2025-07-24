@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Leonardo Terlizzi
@@ -19,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 public class TaskDTO {
 
-    private Long task_id;
+    private UUID task_id;
     private String title;
     private String subtitle;
     private String description;

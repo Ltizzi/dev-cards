@@ -27,7 +27,7 @@
     workspace: {} as Workspace,
     ws_id: 0,
     config_saved: false,
-    saved_parent_tasks: new Map() as Map<number, Task>,
+    saved_parent_tasks: new Map() as Map<string, Task>,
     saved_tasks: [] as Task[],
   });
 
@@ -127,13 +127,13 @@
   }
 
   async function importTasks(tasks: Task[]) {
-    let parent_tasks = new Map() as Map<number, Task>;
+    let parent_tasks = new Map() as Map<string, Task>;
 
     changeMsg("Resolving dependencies...");
-    tasks.sort((a, b) => (a.task_id as number) - (b.task_id as number));
+    tasks.sort(); //(a, b) => (a.task_id as string) - (b.task_id as string)
     tasks.forEach((t: Task) => {
       if (t.child_tasks && t.child_tasks.length > 0) {
-        parent_tasks.set(t.task_id as number, t);
+        parent_tasks.set(t.task_id as string, t);
       }
     });
     parent_tasks.forEach(async (t, key, map) => {
@@ -143,8 +143,8 @@
 
   async function importTask(
     t: Task,
-    key: number,
-    map: Map<number, Task>,
+    key: string,
+    map: Map<string, Task>,
     tasks: Task[]
   ) {
     if (!t.dependencies) {
@@ -155,12 +155,12 @@
         state.saved_tasks.push(res);
       }
     } else {
-      let dependencies_ids = [] as number[];
+      let dependencies_ids = [] as string[];
       t.dependencies.forEach((tl: TaskLite) =>
         dependencies_ids.push(tl.task_id)
       );
       let child_tasks = tasks.filter((t: Task) =>
-        dependencies_ids.includes(t.task_id as number)
+        dependencies_ids.includes(t.task_id as string)
       );
       //if(map.get)
     }

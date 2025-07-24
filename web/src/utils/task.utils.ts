@@ -341,17 +341,21 @@ async function parseAndGetSpecialTags(tags: string[]) {
 }
 
 function getSpecialTagsByFilter(tags: string[]) {
-  const values = tags.filter((t: string) => {
-    //if (t[0] === "{" && t[t.length - 1] === "}") return t;
-    if (parseSpecialTag(t)) return t;
-  });
-  return values;
+  if (tags) {
+    const values = tags.filter((t: string) => {
+      //if (t[0] === "{" && t[t.length - 1] === "}") return t;
+      if (parseSpecialTag(t)) return t;
+    });
+    return values;
+  }
 }
 function getNormalTags(tags: string[]) {
-  return tags.filter((t: string) => {
-    //if (t[0] !== "{" && t[t.length - 1] !== "}") return t;
-    if (!parseSpecialTag(t)) return t;
-  });
+  if (tags) {
+    return tags.filter((t: string) => {
+      //if (t[0] !== "{" && t[t.length - 1] !== "}") return t;
+      if (!parseSpecialTag(t)) return t;
+    });
+  }
 }
 
 async function getUITags(tags: string[]) {

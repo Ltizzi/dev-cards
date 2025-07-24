@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Leonardo Terlizzi
@@ -25,6 +26,8 @@ public class TaskMapper {
 
     @Autowired
     private WorkspaceMapper wsMapper;
+
+
 
     public TaskDTO toTaskDTO(TaskEntity task) {
         TaskDTO dto = new TaskDTO();
@@ -66,13 +69,17 @@ public class TaskMapper {
     }
 
     public TaskEntity toTaskEntity(TaskDTO dto) {
-        TaskEntity task = new TaskEntity();
+        TaskEntity task;
 
         if(dto.getTask_id() != null) {
-            task = taskRepo.findById(dto.getTask_id()).orElse(null);
-            if (task != null){
-                task.setTask_id(dto.getTask_id());
-            }
+            task = taskRepo.findById(dto.getTask_id()).orElse(new TaskEntity());
+        } else {
+            // Si no tiene ID, crear nueva
+            task = new TaskEntity();
+        }
+
+        if (task.getTask_id() == null && dto.getTask_id() != null) {
+            task.setTask_id(dto.getTask_id());
         }
         task.setTitle(dto.getTitle());
         task.setSubtitle(dto.getSubtitle());
@@ -106,6 +113,10 @@ public class TaskMapper {
     public TaskEntity toTaskEntityFresh(TaskDTO dto) {
         TaskEntity task = new TaskEntity();
 
+        if (dto.getTask_id() != null) {
+            task.setTask_id(dto.getTask_id());
+        }
+
         task.setTitle(dto.getTitle());
         task.setSubtitle(dto.getSubtitle());
         task.setDescription(dto.getDescription());
@@ -115,21 +126,8 @@ public class TaskMapper {
         task.setStatus(dto.getStatus());
         task.setProgress(dto.getProgress());
         task.setTask_type(dto.getTask_type());
-
-       // task.setWorkspace(wsMapper.toWorkSpaceEntity(dto.getWorkspace()));
-
-      //  task.setProgressItems(dto.getProgressItems());
-      //  task.setDependencies(toArrayTaskEntityFromLiteDTO(dto.getDependencies()));
-      //  task.setChild_tasks(toArrayTaskEntityFromLiteDTO(dto.getChild_tasks()));
-      //  task.setTask_tags(dto.getTask_tags());
-      //task.setUpdates(dto.getUpdates());
-//        if(dto.getBlocked_by()!= null) {
-//            task.setBlocked_by(userMapper.toUserEntity(dto.getBlocked_by()));
-//        }
         task.setOwner(userMapper.toUserEntity(dto.getOwner()));
-        //task.setDesignated_to(userMapper.toArrayUserEntityFromLite(dto.getDesignated_to()));
         task.setCreated_at(dto.getCreated_at());
-
         return task;
 
     }

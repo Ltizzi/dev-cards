@@ -194,15 +194,17 @@
   async function downloadJson() {
     const ws = projectStore.getCurrent() as Workspace;
     console.log("DEBUG");
-    console.log(userStore.self.user_id);
+
     const offlineMode = projectStore.checkOfflineMode();
+    const user = await userStore.getSelf();
+    console.log(user.user_id);
     let JSONws_blob;
     if (!offlineMode) {
       try {
         const response = (await apiCall.get(EndpointType.WORKSPACE_JSON, {
           params: {
             ws_id: ws.workspace_id,
-            user_id: userStore.self.user_id,
+            user_id: user.user_id,
           },
           responseType: "blob",
         })) as BlobPart;

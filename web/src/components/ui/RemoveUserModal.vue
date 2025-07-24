@@ -123,8 +123,8 @@
         addedSelf = checkUserIsSelf(user.user_id);
       }
       const response = (await taskStore.unassignUserFromTask(
-        taskStore.currentTask.task_id as number,
-        user.user_id
+        user.user_id,
+        taskStore.currentTask.task_id as string
       )) as Task;
       //  (await apiCall.post(
       //   EndpointType.TASK_UNASSIGN_USER,

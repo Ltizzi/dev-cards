@@ -55,7 +55,7 @@
 
   const props = defineProps<{
     title: string;
-    task_id: number;
+    task_id: string;
     isDark: boolean;
     darkerCard: boolean;
     canModify: boolean;
