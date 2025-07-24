@@ -14,6 +14,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.*;
 
@@ -32,13 +33,21 @@ import java.util.stream.Collectors;
 @Table(name= "tasks")
 @SQLDelete(sql = "UPDATE tasks SET soft_delete = true where task_id=?")
 @Where(clause = "soft_delete=false")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class TaskEntity {
 
     @Id
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@GeneratedValue(strategy = GenerationType.UUID)
     @Column(columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID task_id;
+    @PrePersist
+    public void generateId() {
+        if (this.task_id == null) {
+            this.task_id = UUID.randomUUID();
+        }
+    }
+
 
 
     @NotEmpty(message = "title can't be empty")

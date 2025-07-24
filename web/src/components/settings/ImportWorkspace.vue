@@ -63,6 +63,7 @@
     User,
     UserLite,
     Workspace,
+    WorkspaceLite,
     WorkspaceWithJwt,
   } from "../../utils/types";
   import { useUserStore } from "../../store/user.store";
@@ -74,6 +75,7 @@
   import { taskUtils } from "../../utils/task.utils";
   import { AnyCnameRecord } from "node:dns";
   import { TaskSlim } from "../../utils/types";
+  import { workspaceUtils } from "../../utils/workspace.utils";
 
   const userStore = useUserStore();
   const wsStore = useProjectStore();
@@ -81,6 +83,9 @@
   const configStore = useConfigStore();
 
   const tasksMap = ref<Map<string, Task>>(new Map());
+
+  const onlineExportSource = ref<boolean>(false);
+  const userLite = ref<UserLite>();
 
   const importState: ImportProcess = reactive({
     phase: "analyzing",
@@ -122,8 +127,9 @@
   async function importWorkspace() {
     importState.working = true;
     const jsonData = fileContent.value as JSONWorkspace;
+    onlineExportSource.value = jsonData.onlineExport as boolean;
     const user = userStore.getSelf();
-
+    userLite.value = mapUserToUserLite(user);
     importState.total = jsonData.tasks.length;
 
     try {
@@ -135,7 +141,7 @@
 
       const wsToImport = jsonData.workspace;
       const wsToCreate = {} as Workspace;
-      wsToCreate.owner = mapUserToUserLite(user);
+      wsToCreate.owner = userLite.value;
       wsToCreate.project_name = wsToImport.project_name;
       wsToCreate.description = wsToImport.description;
       wsToCreate.avatar = wsToImport.avatar;
@@ -168,12 +174,10 @@
 
       importState.phase = "level_processing";
 
+      const ws_lite = workspaceUtils.mapWsToWsLite(ws);
       for (let level = 0; level < importState.levelBatches.length; level++) {
         importState.currentLevel = level;
-        await processLevel(
-          importState.levelBatches[level],
-          ws.workspace_id as number
-        );
+        await processLevel(importState.levelBatches[level], ws_lite);
       }
       //importState.phase = "customConfig";
 
@@ -218,31 +222,53 @@
   }
 
   function analyzeDependencies(tasks: Task[]): Task[][] {
+    debugTaskDependencies(tasks);
     const taskMap = new Map(tasks.map((t) => [t.task_id, t]));
     const levels: Task[][] = [];
     const processed = new Set<string>();
 
-    while (processed.size < tasks.length) {
+    console.log(
+      "Iniciando análisis de dependencias para ",
+      tasks.length,
+      " tasks"
+    );
+
+    let levelIndex = 0;
+
+    while (processed.size < tasks.length && levelIndex < 100) {
       const currentLevel: Task[] = [];
+
+      console.log(`\n--- Procesando nivel ${levelIndex} ---`);
+      console.log("Tasks ya procesadas: ", processed.size);
 
       for (const task of tasks) {
         if (processed.has(task.task_id as string)) continue;
 
-        const dependencyIds =
-          task.dependencies?.map((dep) => dep.task_id) || [];
-        const childTaskIds =
-          task.child_tasks?.map((child) => child.task_id) || [];
-        const allDependencies = [...dependencyIds, ...childTaskIds];
+        const dependencyIds = (task.dependencies || []).map(
+          (dep: TaskLite) => dep.task_id
+        );
+        console.log(`Task ${task.task_id} tiene dependencias: `, dependencyIds);
 
-        const validDependencies = allDependencies.filter((depId) =>
+        const validDependencies = dependencyIds.filter((depId) =>
           taskMap.has(depId)
         );
 
         const canProcess =
           validDependencies.length === 0 ||
-          validDependencies.every((depId) => processed.has(depId));
+          validDependencies.every((depId) => {
+            const isProcessed = processed.has(depId);
+            console.log(` Dependencia ${depId} procesada: ${isProcessed}`);
+            return isProcessed;
+          });
 
-        if (canProcess) currentLevel.push(task);
+        if (canProcess) {
+          console.log(
+            ` ✓ Task ${task.task_id} puede ser procesada en nivel ${levelIndex}`
+          );
+          currentLevel.push(task);
+        } else {
+          console.log(`✗ Task ${task.task_id} no puede ser procesada aún`);
+        }
       }
 
       if (currentLevel.length === 0) {
@@ -251,37 +277,59 @@
         );
 
         if (remaining.length > 0) {
-          console.warn(
-            "Dependencias circulares o no resuletas detectadas. Procesando:",
-            remaining[0]
+          console.error("⚠️ Posible dependencia circular detectada");
+          console.error(
+            "Tasks restantes: ",
+            remaining.map((t) => ({
+              id: t.task_id,
+              dependencies: t.dependencies?.map((dep) =>
+                typeof dep === "string" ? dep : dep.task_id
+              ),
+            }))
           );
+          console.warn("Forzando procesamiento de: ", remaining[0].task_id);
           currentLevel.push(remaining[0]);
         } else {
           break;
         }
       }
 
-      currentLevel.forEach((task) => processed.add(task.task_id as string));
+      currentLevel.forEach((task) => {
+        processed.add(task.task_id as string);
+        console.log(`Marcando como procesada: ${task.task_id}`);
+      });
+
       levels.push([...currentLevel]);
+      console.log(
+        `Nivel ${levelIndex} completado con ${currentLevel.length} tasks`
+      );
+      levelIndex++;
+    }
+
+    if (levelIndex >= 100) {
+      console.error(
+        "⚠️ Se alcanzó el límite de niveles. Posible bucle infinito."
+      );
     }
 
     console.log(
-      "Niveles de dependencias:",
-      levels.map((lvl, i) => ({
-        level: i,
-        tasks: lvl.length,
-        ids: lvl.map((t) => t.task_id),
-      }))
+      "\n====Resumen de niveles====",
+      levels.forEach((lvl, i) => {
+        console.log(
+          `Nivel ${i}: ${lvl.length} tasjs`,
+          lvl.map((t) => t.task_id)
+        );
+      })
     );
 
     return levels;
   }
 
-  async function processLevel(levelBatch: LevelBatch, ws_id: number) {
+  async function processLevel(levelBatch: LevelBatch, ws: WorkspaceLite) {
     levelBatch.status = "processing";
 
     for (const batch of levelBatch.batches) {
-      await processBatch(batch, ws_id);
+      await processBatch(batch, ws);
     }
 
     levelBatch.status = "completed";
@@ -289,51 +337,112 @@
     return levelBatch;
   }
 
-  async function processBatch(batch: TaskBatch, ws_id: number) {
+  async function processBatch(batch: TaskBatch, ws: WorkspaceLite) {
     batch.status = "processing";
     try {
       const resolvedTasks = batch.tasks.map((t) => resolveTaskReferences(t));
-      console.log("RESOLVED TASKS");
-      console.log(resolvedTasks);
-      const jsonData = fileContent.value as JSONWorkspace;
-      const tasks = jsonData.tasks;
+      console.log("🔄 Procesando batch con", resolvedTasks.length, " tasks");
+      console.log(
+        "Tasks en batch:",
+        resolvedTasks.map((t) => t.task_id)
+      );
 
-      const tasksForAPI = resolvedTasks.map((task) => ({
-        ...task,
-        // workspace_id: ws_id,
-        workspace: { ...task.workspace, workspace_id: ws_id },
-        dependencies: task.dependencies
-          .map((t) => {
-            console.log("DEP:", t);
-            const mappedId = importState.globalMapping[t];
-            if (mappedId && tasksMap.value.has(t)) {
-              console.log("proccessing dependencies for" + t);
-              const task = tasksMap.value.get(t);
-              return taskUtils.mapTaskToTaskLite(task as Task);
+      // const tasksForAPI = resolvedTasks.map((task) => ({
+      //   ...task,
+      //   // workspace_id: ws_id,
+      //   task_id: utils.validateUUID(task.task_id as any)
+      //     ? task.task_id
+      //     : utils.generateUUID(),
+      //   workspace: { ...task.workspace, workspace_id: ws_id },
+      //   dependencies: task.dependencies
+      //     .map((t) => {
+      //       console.log("DEP:", t);
+      //       const mappedId = importState.globalMapping[t];
+      //       if (mappedId && tasksMap.value.has(t)) {
+      //         console.log("proccessing dependencies for" + t);
+      //         const task = tasksMap.value.get(t);
+      //         return taskUtils.mapTaskToTaskLite(task as Task);
+      //       }
+      //       if (tasksMap.value.has(t)) {
+      //         const task = tasksMap.value.get(t);
+      //         return taskUtils.mapTaskToTaskLite(task as Task);
+      //       }
+      //       return null;
+      //     })
+      //     .filter((t) => t != null),
+      //   child_tasks: [],
+      //   updated_at: new Date(
+      //     utils.fixDateFormat(task.updated_at as Date) as string
+      //   ),
+      //   created_at: new Date(
+      //     utils.fixDateFormat(task.created_at as Date) as string
+      //   ),
+      // })) as unknown as Task[];
+      const tasksForAPI = resolvedTasks.map((task) => {
+        // Resolver dependencias usando el mapa de tasks ya creadas
+        task.workspace = ws;
+        task.owner = userLite.value as UserLite;
+        const resolvedDependencies = (task.dependencies || [])
+          .map((dep: TaskLite) => {
+            const depId = dep.task_id;
+
+            // Buscar en tasks ya creadas
+            if (tasksMap.value.has(depId)) {
+              const dependentTask = tasksMap.value.get(depId);
+              console.log(
+                `✓ Resolviendo dependencia ${depId} para task ${task.task_id}`
+              );
+              console.log(dependentTask?.workspace.workspace_id);
+              return taskUtils.mapTaskToTaskLite(dependentTask as Task);
+            } else {
+              console.warn(
+                `⚠️ No se encontró dependencia ${depId} para task ${task.task_id}`
+              );
+
+              console.log(`  Usando TaskLite original:`, dep);
+              console.log(dep.workspace.workspace_id);
+              dep.workspace = ws;
+              console.log(dep.workspace.workspace_id);
+              return dep;
             }
-            if (tasksMap.value.has(t)) {
-              const task = tasksMap.value.get(t);
-              return taskUtils.mapTaskToTaskLite(task as Task);
-            }
-            return null;
           })
-          .filter((t) => t != null),
-        child_tasks: [],
-        updated_at: new Date(
-          utils.fixDateFormat(task.updated_at as Date) as string
-        ),
-        created_at: new Date(
-          utils.fixDateFormat(task.created_at as Date) as string
-        ),
-      })) as unknown as Task[];
+          .filter((dep): dep is TaskLite => dep !== null);
+
+        console.log(
+          `Task ${task.task_id} tendrá ${resolvedDependencies.length} dependencias resueltas`
+        );
+
+        return {
+          ...task,
+          owner: userLite.value as UserLite,
+          task_id: utils.validateUUID(task.task_id as any)
+            ? task.task_id
+            : utils.generateUUID(),
+          workspace: ws,
+          dependencies: resolvedDependencies.map((t) => ({
+            ...t,
+            workspace: ws,
+          })),
+          child_tasks: [],
+          updated_at: new Date(
+            utils.fixDateFormat(task.updated_at as Date) as string
+          ),
+          created_at: new Date(
+            utils.fixDateFormat(task.created_at as Date) as string
+          ),
+        };
+      }) as unknown as Task[];
+
+      console.log("📤 Enviando a API:", tasksForAPI.length, "tasks");
 
       //TODO: API y store methods to upload tasks batches
-      console.log("TASKS FOR API: ");
-      console.log(tasksForAPI);
-      console.log("**************");
-      const createdTasks = await taskStore.importTasks(tasksForAPI, ws_id); //[] as Task[];
+
+      const createdTasks = await taskStore.importTasks(
+        tasksForAPI,
+        ws.workspace_id
+      ); //[] as Task[];
       // const createdTasks = tasksForAPI.map((t) => {
-      //   return {
+      //   return {//console.log(tasksMap.value);
       //     task: t,
       //     reference: {
       //       task_id: t.task_id,
@@ -344,27 +453,40 @@
       //   };
       // }) as unknown as TaskWithReference[];
 
-      batch.tasks.forEach((localTask, index) => {
-        const remoteTask = createdTasks[index];
-        const i = localTask.task_id as string;
-        batch.idMapping[i] = remoteTask.task.task_id as string;
-        importState.globalMapping[i] = remoteTask.task.task_id as string;
+      createdTasks.forEach((task) => {
+        tasksMap.value.set(task.task_id as string, task);
+        console.log(`✓ Task creada y mapeada: ${task.task_id}`);
       });
+
+      // batch.tasks.forEach((localTask, index) => {
+      //   const remoteTask = createdTasks[index];
+      //   const i = localTask.task_id as string;
+      //   batch.idMapping[i] = remoteTask.task_id as string;
+      //   importState.globalMapping[i] = remoteTask.task_id as string;
+      // });
 
       addTasksWithReferencesToMap(createdTasks);
 
       batch.status = "completed";
       importState.processed += batch.tasks.length;
-    } catch (err) {
+
+      console.log("✅ Batch completado exitosamente");
+    } catch (error: any) {
+      console.error("❌ Error procesando batch:", error);
       batch.status = "error";
       batch.retryCount++;
+      importState.errors.push({
+        type: "batch_error",
+        message: `Error en batch: ${error.message}`,
+      });
+      throw error;
 
-      if (batch.retryCount < 3) {
-        await processBatch(batch, ws_id);
-      } else {
-        console.error(err);
-        throw err;
-      }
+      // if (batch.retryCount < 3) {
+      //   await processBatch(batch, ws_id);
+      // } else {
+      //   console.error(error);
+      //   throw error;
+      // }
     }
   }
 
@@ -386,20 +508,25 @@
   function resolveTaskReferences(task: Task) {
     return {
       ...task,
-      dependencies:
-        task.dependencies?.map(
-          (depTask) =>
-            importState.globalMapping[depTask.task_id] || depTask.task_id
-        ) || [],
-      child_tasks:
-        task.child_tasks?.map(
-          (childTask) =>
-            importState.globalMapping[childTask.task_id] || childTask.task_id
-        ) || [],
-      task_tags: task.task_tags || [],
-      updates: task.updates || [],
-      progressItems: task.progressItems || [],
+      dependencies: task.dependencies || [],
+      child_tasks: task.child_tasks || [],
     };
+    // return {
+    //   ...task,
+    //   dependencies:
+    //     task.dependencies?.map(
+    //       (depTask) =>
+    //         importState.globalMapping[depTask.task_id] || depTask.task_id
+    //     ) || [],
+    //   child_tasks:
+    //     task.child_tasks?.map(
+    //       (childTask) =>
+    //         importState.globalMapping[childTask.task_id] || childTask.task_id
+    //     ) || [],
+    //   task_tags: task.task_tags || [],
+    //   updates: task.updates || [],
+    //   progressItems: task.progressItems || [],
+    // };
   }
 
   function getTaskLiteById(id: any) {
@@ -407,13 +534,28 @@
     return taskUtils.mapTaskToTaskLite(tasks.find((t) => t == id) as Task);
   }
 
-  function addTasksWithReferencesToMap(tasks: TaskWithReference[]) {
-    tasks.forEach((t: TaskWithReference) => {
+  function addTasksWithReferencesToMap(tasks: Task[]) {
+    tasks.forEach((t: Task) => {
       // if (!tasksMap.value?.has(t.task.task_id as number)) {
       console.log("Añadiendo...");
-      tasksMap.value?.set(t.task.task_id as string, t.task);
+      tasksMap.value?.set(t.task_id as string, t);
       // }
     });
-    //console.log(tasksMap.value);
+  }
+
+  function debugTaskDependencies(tasks: Task[]) {
+    console.log("\n=== DEBUG: Estructura de dependencias ===");
+    tasks.forEach((task) => {
+      const deps = (task.dependencies || []).map(
+        (dep: TaskLite) => dep.task_id
+      );
+      const childTasks = (task.child_tasks || []).map((child: any) =>
+        typeof child === "string" ? child : child.task_id
+      );
+      console.log(`${task.task_id}:`);
+      console.log(`  └─ depende de: [${deps.join(", ") || "ninguna"}]`);
+      console.log(`  └─ hijos: [${childTasks.join(", ") || "ninguno"}]`);
+    });
+    console.log("==========================================\n");
   }
 </script>

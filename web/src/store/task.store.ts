@@ -213,17 +213,16 @@ export const useTaskStore = defineStore("tasks", {
     },
 
     async addDependency(id: string, parent_id: string) {
+      console.log(id + " " + parent_id);
       if (this.offlineMode) {
         let parent = await this.fetchTaskById(parent_id);
-        if (parent && parent.child_tasks) {
-          parent.child_tasks.push(
-            taskUtils.mapTaskToTaskLite(this.currentTask)
-          );
+        let child = (await this.fetchTaskById(id)) as Task;
+        if (parent && parent.child_tasks && child) {
+          parent.child_tasks.push(taskUtils.mapTaskToTaskLite(child));
           this.saveLocalTask(parent);
-          this.currentTask.dependencies?.push(
-            taskUtils.mapTaskToTaskLite(parent)
-          );
-          this.saveLocalTask(this.currentTask);
+          child.dependencies?.push(taskUtils.mapTaskToTaskLite(parent));
+          this.saveLocalTask(child);
+          this.setCurrentTask(child);
           return this.currentTask;
         }
       } else
@@ -440,7 +439,7 @@ export const useTaskStore = defineStore("tasks", {
     async importTasks(tasks: Task[], ws_id: number) {
       const res = (await apiCall.post(EndpointType.TASK_IMPORT, tasks, {
         params: { ws_id: ws_id },
-      })) as TaskWithReference[];
+      })) as Task[];
       return res;
     },
     async deleteTask(id: string) {

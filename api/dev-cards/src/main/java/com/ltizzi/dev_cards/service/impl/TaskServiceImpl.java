@@ -15,6 +15,8 @@ import com.ltizzi.dev_cards.repository.UserRepository;
 import com.ltizzi.dev_cards.repository.WorkspaceRepository;
 import com.ltizzi.dev_cards.security.filter.JwtUtils;
 import com.ltizzi.dev_cards.service.TaskService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,6 +47,9 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Override
     public List<TaskDTO> getTasks(int page, int limit) {
         PageRequest pageReq =PageRequest.of(page, limit);
@@ -66,70 +71,90 @@ public class TaskServiceImpl implements TaskService {
     public TaskDTO saveTask(TaskDTO task) throws InvalidTaskException, NotFoundException {
         WorkspaceEntity ws = wsRepo.findById(task.getWorkspace().getWorkspace_id()).orElseThrow(
                 ()->new NotFoundException("Workspace not found!"));
+
+
         TaskEntity new_task = taskMapper.toTaskEntity(task);
+
         new_task.addWorkspace(ws);
         new_task.setProgressItems(addIdToIssues(new_task.getProgressItems()));
+        System.out.println("Before save - ID: " + new_task.getTask_id());
+        System.out.println("Before save - ID is null: " + (new_task.getTask_id() == null));
         new_task = taskRepo.save(new_task);
+        System.out.println("After save - ID: " + new_task.getTask_id());
         wsRepo.save(ws);
         return taskMapper.toTaskDTO(new_task);
     }
 
     @Override
-    public List<TaskDTOWithReference> saveTasks(List<TaskDTO> tasks, Long ws_id) throws InvalidTaskException, NotFoundException, InvalidUserException {
+    public List<TaskDTO> saveTasks(List<TaskDTO> tasks, Long ws_id) throws InvalidTaskException, NotFoundException, InvalidUserException {
         WorkspaceEntity ws = wsRepo.findById(ws_id).orElseThrow(
                 ()->new NotFoundException("Workspace not found!"));
-        List<TaskDTOWithReference> new_tasks = new ArrayList<>();
+        List<TaskEntity> new_tasks = new ArrayList<>();
+        List<TwoTask> twoTasks = new ArrayList<>();
+
         for(TaskDTO task: tasks){
             TaskEntity new_task = taskMapper.toTaskEntityFresh(task);
             new_task.addWorkspace(ws);
             new_task.setProgressItems(addIdToIssues(task.getProgressItems()));
-            new_task = taskRepo.save(new_task);
-            boolean updatedTask = false;
-            wsRepo.save(ws);
+            //new_task = taskRepo.saveAndFlush(new_task);
+
             if(!task.getTask_tags().isEmpty()){
                 for(String tag: new_task.getTask_tags()){
                     addTagToTask(new_task.getTask_id(), tag);
                 }
-                updatedTask = true;
-            }
-            if(!task.getDependencies().isEmpty()){
-                List<TaskLiteDTO> dependencies = task.getDependencies();
-                for(TaskLiteDTO dep: dependencies){
-//                    if(dep.getTask_id() != null){
-                        addDependency(new_task.getTask_id(), dep.getTask_id());
-//                    }
-
-                }
-                updatedTask = true;
             }
             if(!task.getUpdates().isEmpty()){
                 for(TaskUpdate update: task.getUpdates()){
                     addTaskUpdate(new_task.getTask_id(), update);
                 }
-                updatedTask = true;
+
             }
             if(task.getBlocked_by() != null){
                 UserEntity user = userRepo.findById(task.getBlocked_by().getUser_id()).orElseThrow(
                         ()->new NotFoundException("blocked by user not found!")
                 );
                 new_task.setBlocked_by(user);
-                updatedTask = true;
+
             }
             if(!task.getDesignated_to().isEmpty()){
                 for(UserLiteDTO user: task.getDesignated_to()){
                     assignUser(new_task.getTask_id(), user.getUser_id());
                 }
-                updatedTask = true;
+
             }
-            if(updatedTask) new_task = taskRepo.save(new_task);
-            TaskDTOWithReference taskWithReference = new TaskDTOWithReference();
-            taskWithReference.setTask(taskMapper.toTaskDTO(new_task));
-            MiniTaskDTO taskMini = new MiniTaskDTO();
-            taskMini = taskMapper.toTaskMini(task);
-            taskWithReference.setReference(taskMini);
-            new_tasks.add(taskWithReference);
+            if(!task.getDependencies().isEmpty()){
+
+
+                List<TaskLiteDTO> dependencies = task.getDependencies();
+                for(TaskLiteDTO dep: dependencies){
+                    TaskEntity parent = taskRepo.findById(dep.getTask_id()).orElse(null);
+                    if(parent != null){
+                        new_task.addDependency(parent);
+                        TwoTask dependentTasks = new TwoTask();
+                        dependentTasks.addTasks(new_task,parent);
+                        twoTasks.add(dependentTasks);
+                    }
+                }
+            }
+
+            //if(updatedTask) new_task = taskRepo.save(new_task);
+            new_tasks.add(new_task);
         }
-        return new_tasks;
+        wsRepo.save(ws);
+        List<TaskEntity> createdTasks =taskRepo.saveAllAndFlush(new_tasks);
+
+        List<TaskEntity> parents = new ArrayList<>();
+        for(TwoTask tts: twoTasks){
+            TaskEntity parent = tts.getParent();
+            TaskEntity child = taskRepo.findById(tts.getChild().getTask_id()).orElse(null);
+            if(child != null){
+                parent.addChildDependency(child);
+                parents.add(parent);
+            }
+        }
+        taskRepo.saveAllAndFlush(parents);
+
+        return taskMapper.toArrayTaskDTO(createdTasks);
     }
 
     public List<ProgressItem> addIdToIssues(List<ProgressItem> issues){
@@ -175,7 +200,7 @@ public class TaskServiceImpl implements TaskService {
     public TaskDTO addDependency(UUID task_id, UUID dependency_id) throws NotFoundException, InvalidTaskException {
         TwoTask tasks = new TwoTask().addTasks(task_id, dependency_id, taskRepo);
         if(!tasks.sameProjectChecker()){
-            throw new InvalidTaskException("Tasks must belong to the same project");
+            throw new InvalidTaskException("Tasks must belong to the same project, parent_ws: "+ tasks.getParent().getWorkspace().getWorkspace_id().toString() + " , child_ws:"+ tasks.getChild().getWorkspace().getWorkspace_id().toString());
         }
         if(tasks.dependencyChecker()){
             throw new InvalidTaskException("parent is already a dependency");

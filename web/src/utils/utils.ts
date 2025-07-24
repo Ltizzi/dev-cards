@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4, validate } from "uuid";
 
 function generateRandomId() {
   const lastId = localStorage.getItem("lastId");
@@ -18,6 +18,10 @@ function generateUUID() {
   return uuidv4();
 }
 
+function validateUUID(id: string) {
+  return validate(id);
+}
+
 function generateRealRandomId() {
   return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER) + 1; //removed Number Number.MIN_SAFE_INTEGER
 }
@@ -27,6 +31,7 @@ function textReduce(text: string, lenght: number) {
 }
 
 function fixDateFormat(date: Date) {
+  if (!date) return null;
   let dateString = date.toString();
   if (!dateString) return null;
 
@@ -51,4 +56,5 @@ export const utils = {
   textReduce,
   fixDateFormat,
   generateUUID,
+  validateUUID,
 };
