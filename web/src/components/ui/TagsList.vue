@@ -123,7 +123,9 @@
         special_tags.value = props.tags as string[];
       } else {
         const preNormalTags = taskUtils.getNormalTags(props.tags);
-        normal_tags.value = await taskUtils.getUITags(preNormalTags);
+        normal_tags.value = await taskUtils.getUITags(
+          preNormalTags as string[]
+        );
       }
       isLoaded.value = true;
     }
