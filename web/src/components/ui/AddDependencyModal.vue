@@ -135,7 +135,7 @@
   async function addDependency() {
     awaitingResponse.value = true;
     if (selectedTask.value?.task_id) {
-      const id = taskStore.currentTask.task_id as number;
+      const id = taskStore.currentTask.task_id as string;
       const parent_id = selectedTask.value.task_id;
       const response = (await taskStore.addDependency(id, parent_id)) as Task;
       // const response = (await apiCall.post(

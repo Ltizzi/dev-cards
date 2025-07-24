@@ -92,7 +92,7 @@
 
   const props = defineProps<{
     issue: ProgressItem;
-    task_id: number;
+    task_id: string;
     canModify: boolean;
     darkerCard: boolean;
   }>();

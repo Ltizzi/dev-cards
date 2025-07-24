@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Leonardo Terlizzi
@@ -16,7 +17,7 @@ public class UserWorkspacesRoles {
 
     private Long workspace_id;
     private Role role;
-    private List<Long> assigned_tasks_ids;
+    private List<UUID> assigned_tasks_ids;
 
 
 

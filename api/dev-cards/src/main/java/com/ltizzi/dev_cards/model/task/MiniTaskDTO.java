@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Leonardo Terlizzi
@@ -17,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MiniTaskDTO {
 
-    private Long task_id;
+    private UUID task_id;
     private String title;
     private Color color;
     private Long workspace_id;

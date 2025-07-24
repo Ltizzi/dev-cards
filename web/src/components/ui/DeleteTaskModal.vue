@@ -74,7 +74,7 @@
   const router = useRouter();
   const route = useRoute();
 
-  const task_id = ref<number | null>();
+  const task_id = ref<string | null>();
   const task_title = ref<string>();
   const task_input = ref<string>();
 
@@ -103,7 +103,7 @@
     // if (task_title.value?.toLowerCase() == task_input.value?.toLowerCase()) {
     awaitingResponse.value = true;
     const response = (await taskStore.deleteTask(
-      task_id.value as number
+      task_id.value as string
     )) as any;
     //  (await apiCall.del(EndpointType.TASK_DELETE, {
     //   params: { id: task_id.value },
