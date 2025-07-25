@@ -1,57 +1,66 @@
 <template lang="">
-  <div class="flex flex-col justify-start gap-5 py-5">
-    <h1 class="font-semibold card-title text-xl">
-      Upload Workspace (only accept valid .json files)
-    </h1>
-    <div class="flex flex-row justify-start gap-5 align-middle">
-      <input
-        type="file"
-        class="file-input file-input-bordered file-input-primary w-full max-w-xs file-input-xs lg:file-input-sm xl:file-lg"
-        accept=".json"
-        @change="handleInputChange"
-      />
-      <button
-        class="btn btn-outline btn-primary btn-sm"
-        @click="importWorkspace"
-      >
-        Submit
-      </button>
-    </div>
-    <div
-      :class="[
-        'bg-base-content flex flex-col justify-center gap-3 text-center py-5 items-center text-base-300 duration-500 transition-all ',
-        importState.working
-          ? 'opacity-100 translate-y-0 '
-          : 'opacity-0 -translate-y-40',
-      ]"
-      v-if="importState.working"
-    >
-      <h1 class="font-semibold text-lg">
-        {{
-          importState.phase[0].toUpperCase() +
-          importState.phase.slice(1) +
-          "..."
-        }}
+  <div class="flex flex-col justify-start gap-20 py-5">
+    <h1 class="text-3xl text-center font-bold">Import Workspaces</h1>
+    <div class="flex flex-col justify-start gap-5" v-if="!isOfflineEnv">
+      <h1 class="font-semibold card-title text-xl">
+        Save Local Workspace's JSON to the cloud (only accept valid .json files)
       </h1>
-      <p class="text-base italic">
-        Tasks: {{ importState.processed + " / " + importState.total }}
-      </p>
-      <p class="text-base italic">Errors: {{ importState.errors.length }}</p>
-      <p class="text-base italic">
-        Hierarchy level:
-        {{ importState.currentLevel + " / " + importState.totalLevels }}
-      </p>
-      <div
-        class="flex flex-col justify-start gap-2 text-sm"
-        v-if="importState.errors.length > 0"
-      >
-        <p v-for="err in importState.errors">{{ err }}</p>
+      <div class="flex flex-row justify-start gap-5 align-middle">
+        <input
+          type="file"
+          class="file-input file-input-bordered file-input-primary w-full max-w-xs file-input-xs lg:file-input-sm xl:file-lg"
+          accept=".json"
+          @change="handleInputChange"
+        />
+        <button
+          class="btn btn-outline btn-primary btn-sm"
+          @click="importWorkspace"
+        >
+          Submit
+        </button>
       </div>
+      <div
+        :class="[
+          'bg-base-content flex flex-col justify-center gap-3 text-center py-5 items-center text-base-300 duration-500 transition-all ',
+          importState.working
+            ? 'opacity-100 translate-y-0 '
+            : 'opacity-0 -translate-y-40',
+        ]"
+        v-if="importState.working"
+      >
+        <h1 class="font-semibold text-lg">
+          {{
+            importState.phase[0].toUpperCase() +
+            importState.phase.slice(1) +
+            "..."
+          }}
+        </h1>
+        <p class="text-base italic">
+          Tasks: {{ importState.processed + " / " + importState.total }}
+        </p>
+        <p class="text-base italic">Errors: {{ importState.errors.length }}</p>
+        <p class="text-base italic">
+          Hierarchy level:
+          {{ importState.currentLevel + " / " + importState.totalLevels }}
+        </p>
+        <div
+          class="flex flex-col justify-start gap-2 text-sm"
+          v-if="importState.errors.length > 0"
+        >
+          <p v-for="err in importState.errors">{{ err }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col justify-start gap-5" v-else>
+      <h1 class="text-xl font-semibold">
+        Import Workspace's JSON to the local storage
+      </h1>
+      <LoadWorkspaceButton />
     </div>
   </div>
 </template>
 <script setup lang="ts">
-  import { reactive, ref } from "vue";
+  import { onBeforeMount, reactive, ref } from "vue";
   import {
     ImportProcess,
     JSONWorkspace,
@@ -76,6 +85,7 @@
   import { AnyCnameRecord } from "node:dns";
   import { TaskSlim } from "../../utils/types";
   import { workspaceUtils } from "../../utils/workspace.utils";
+  import LoadWorkspaceButton from "../ui/LoadWorkspaceButton.vue";
 
   const userStore = useUserStore();
   const wsStore = useProjectStore();
@@ -85,6 +95,7 @@
   const tasksMap = ref<Map<string, Task>>(new Map());
 
   const onlineExportSource = ref<boolean>(false);
+  const isOfflineEnv = ref<boolean>(false);
   const userLite = ref<UserLite>();
 
   const importState: ImportProcess = reactive({
@@ -347,37 +358,6 @@
         resolvedTasks.map((t) => t.task_id)
       );
 
-      // const tasksForAPI = resolvedTasks.map((task) => ({
-      //   ...task,
-      //   // workspace_id: ws_id,
-      //   task_id: utils.validateUUID(task.task_id as any)
-      //     ? task.task_id
-      //     : utils.generateUUID(),
-      //   workspace: { ...task.workspace, workspace_id: ws_id },
-      //   dependencies: task.dependencies
-      //     .map((t) => {
-      //       console.log("DEP:", t);
-      //       const mappedId = importState.globalMapping[t];
-      //       if (mappedId && tasksMap.value.has(t)) {
-      //         console.log("proccessing dependencies for" + t);
-      //         const task = tasksMap.value.get(t);
-      //         return taskUtils.mapTaskToTaskLite(task as Task);
-      //       }
-      //       if (tasksMap.value.has(t)) {
-      //         const task = tasksMap.value.get(t);
-      //         return taskUtils.mapTaskToTaskLite(task as Task);
-      //       }
-      //       return null;
-      //     })
-      //     .filter((t) => t != null),
-      //   child_tasks: [],
-      //   updated_at: new Date(
-      //     utils.fixDateFormat(task.updated_at as Date) as string
-      //   ),
-      //   created_at: new Date(
-      //     utils.fixDateFormat(task.created_at as Date) as string
-      //   ),
-      // })) as unknown as Task[];
       const tasksForAPI = resolvedTasks.map((task) => {
         // Resolver dependencias usando el mapa de tasks ya creadas
         task.workspace = ws;
@@ -440,30 +420,12 @@
       const createdTasks = await taskStore.importTasks(
         tasksForAPI,
         ws.workspace_id
-      ); //[] as Task[];
-      // const createdTasks = tasksForAPI.map((t) => {
-      //   return {//console.log(tasksMap.value);
-      //     task: t,
-      //     reference: {
-      //       task_id: t.task_id,
-      //       color: t.color,
-      //       title: t.title,
-      //       workspace_id: t.workspace.workspace_id,
-      //     } as TaskSlim,
-      //   };
-      // }) as unknown as TaskWithReference[];
+      );
 
       createdTasks.forEach((task) => {
         tasksMap.value.set(task.task_id as string, task);
         console.log(`✓ Task creada y mapeada: ${task.task_id}`);
       });
-
-      // batch.tasks.forEach((localTask, index) => {
-      //   const remoteTask = createdTasks[index];
-      //   const i = localTask.task_id as string;
-      //   batch.idMapping[i] = remoteTask.task_id as string;
-      //   importState.globalMapping[i] = remoteTask.task_id as string;
-      // });
 
       addTasksWithReferencesToMap(createdTasks);
 
@@ -480,13 +442,6 @@
         message: `Error en batch: ${error.message}`,
       });
       throw error;
-
-      // if (batch.retryCount < 3) {
-      //   await processBatch(batch, ws_id);
-      // } else {
-      //   console.error(error);
-      //   throw error;
-      // }
     }
   }
 
@@ -511,22 +466,6 @@
       dependencies: task.dependencies || [],
       child_tasks: task.child_tasks || [],
     };
-    // return {
-    //   ...task,
-    //   dependencies:
-    //     task.dependencies?.map(
-    //       (depTask) =>
-    //         importState.globalMapping[depTask.task_id] || depTask.task_id
-    //     ) || [],
-    //   child_tasks:
-    //     task.child_tasks?.map(
-    //       (childTask) =>
-    //         importState.globalMapping[childTask.task_id] || childTask.task_id
-    //     ) || [],
-    //   task_tags: task.task_tags || [],
-    //   updates: task.updates || [],
-    //   progressItems: task.progressItems || [],
-    // };
   }
 
   function getTaskLiteById(id: any) {
@@ -536,10 +475,8 @@
 
   function addTasksWithReferencesToMap(tasks: Task[]) {
     tasks.forEach((t: Task) => {
-      // if (!tasksMap.value?.has(t.task.task_id as number)) {
       console.log("Añadiendo...");
       tasksMap.value?.set(t.task_id as string, t);
-      // }
     });
   }
 
@@ -558,4 +495,8 @@
     });
     console.log("==========================================\n");
   }
+
+  onBeforeMount(() => {
+    isOfflineEnv.value = wsStore.offlineMode;
+  });
 </script>
