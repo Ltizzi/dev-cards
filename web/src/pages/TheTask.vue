@@ -162,7 +162,7 @@
             @update="updateTask"
             class="ml-0"
           />
-          <p>{{ card.task_id }}</p>
+          <!-- <p>{{ card.task_id }}</p> -->
           <div
             class="text-start"
             v-if="card.designated_to && card.designated_to.length > 0"
