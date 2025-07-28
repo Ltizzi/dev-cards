@@ -157,6 +157,7 @@ export const useProjectStore = defineStore("projects", {
           ws.workspace_id as number
         ),
         localExport: true,
+        onlineExport: false,
         created_at: new Date(Date.now()),
         update_at: new Date(Date.now()),
       };

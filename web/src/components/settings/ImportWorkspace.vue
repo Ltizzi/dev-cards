@@ -220,6 +220,7 @@
     //NOTE: VER Q PASA ACA
     updatedData.tasks = updatedData.tasks.map((task) => ({
       ...task,
+      task_id: onlineExportSource.value ? utils.generateUUID() : task.task_id,
       owner: updatedData.user as UserLite,
       blocked_by: task.blocked_by
         ? (updatedData.user as UserLite)
@@ -234,6 +235,10 @@
 
   function analyzeDependencies(tasks: Task[]): Task[][] {
     debugTaskDependencies(tasks);
+    const ts = tasks.map((t: Task) => ({
+      ...t,
+      task_id: onlineExportSource.value ? utils.generateUUID() : t.task_id,
+    }));
     const taskMap = new Map(tasks.map((t) => [t.task_id, t]));
     const levels: Task[][] = [];
     const processed = new Set<string>();
