@@ -390,3 +390,35 @@ export interface TaskWithReference {
   task: Task;
   reference: TaskSlim;
 }
+
+export interface Calendar {
+  calendar_id: string;
+  owner: UserLite | UserLocal;
+  items: Map<string, CalendarDay>;
+}
+
+export interface WorkspaceCalendar {
+  ws_calendar_id: string;
+  workspace: WorkspaceLite;
+  items: Map<string, CalendarDay>;
+}
+
+export interface HourRange {
+  start: string;
+  end: string;
+}
+
+export type CalendarDay = Map<HourRange, CalendarItem>;
+
+export interface CalendarItem {
+  id: string;
+  owner: UserLite | UserLocal;
+  title: string;
+  description: string;
+  location: string;
+  color: string;
+  hourRange: HourRange;
+  created_at: Date;
+  updated_at: Date;
+  date: Date;
+}
