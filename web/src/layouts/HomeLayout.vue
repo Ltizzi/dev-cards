@@ -50,6 +50,10 @@
         </button>
       </div>
     </div>
+    <div class="flex flex-col justify-center items-center">
+      <YearCalendar :year="2005" />
+    </div>
+
     <ProjectList v-if="isLoggedIn" class="lg:mt-0 mt-16" />
     <DesignatedView
       class="ml-10"
@@ -73,6 +77,8 @@
   import { taskUtils } from "../utils/task.utils";
   import { useProjectStore } from "../store/project.store";
   import { User, UserLocal, Workspace } from "../utils/types";
+
+  import YearCalendar from "../components/calendar/YearCalendar.vue";
 
   const router = useRouter();
 
