@@ -1,10 +1,10 @@
 <template>
-  <div class="bg-gray-900 max-h-screen h-4/6 p-4 overflow-y-scroll">
-    <div class="max-w-full mx-auto bg-gray-800 rounded-lg">
+  <div class="bg-base-300 max-h-screen h-4/6 p-4 overflow-y-scroll">
+    <div class="max-w-full mx-auto bg-base-200 rounded-lg">
       <!-- Header -->
-      <div class="bg-gray-700 p-4 text-white text-center">
+      <div class="bg-base-100 p-4 text-base-content text-center">
         <h2 class="text-lg font-semibold">Agenda del Día</h2>
-        <p class="text-sm text-gray-300">{{ formatDate(selectedDate) }}</p>
+        <p class="text-sm text-base-content">{{ formatDate(selectedDate) }}</p>
       </div>
 
       <!-- Time Grid -->
@@ -14,9 +14,11 @@
           <div
             v-for="hour in hours"
             :key="hour"
-            class="h-16 border-b border-gray-700 flex items-start justify-end pr-2 pt-1"
+            class="h-16 border-b border-neutral flex items-start justify-end pr-2 pt-1"
           >
-            <span class="text-xs text-gray-400">{{ formatHour(hour) }}</span>
+            <span class="text-xs text-base-content">{{
+              formatHour(hour)
+            }}</span>
           </div>
         </div>
 
@@ -26,19 +28,19 @@
           <div
             v-for="hour in hours"
             :key="`grid-${hour}`"
-            class="h-16 border-b border-gray-700"
+            class="h-16 border-b border-neutral"
           >
             <!-- 15-minute subdivisions -->
             <div
-              class="absolute w-full h-4 border-b border-gray-800 opacity-50"
+              class="absolute w-full h-4 border-b border-neutral opacity-50"
               style="top: 25%"
             ></div>
             <div
-              class="absolute w-full h-4 border-b border-gray-800 opacity-50"
+              class="absolute w-full h-4 border-b border-neutral opacity-50"
               style="top: 50%"
             ></div>
             <div
-              class="absolute w-full h-4 border-b border-gray-800 opacity-50"
+              class="absolute w-full h-4 border-b border-neutral opacity-50"
               style="top: 75%"
             ></div>
           </div>
@@ -52,11 +54,13 @@
             class="absolute rounded-lg p-3 cursor-pointer transition-all hover:opacity-90"
             @click="selectEvent(event)"
           >
-            <div class="text-sm font-medium text-white">{{ event.title }}</div>
-            <div class="text-xs text-white opacity-80">
+            <div class="text-sm font-medium text-base-content">
+              {{ event.title }}
+            </div>
+            <div class="text-xs text-base-content opacity-80">
               {{ event.description }}
             </div>
-            <div class="text-xs text-white opacity-60 mt-1">
+            <div class="text-xs text-base-content opacity-60 mt-1">
               {{ formatTime(event.startTime) }} -
               {{ formatTime(event.endTime) }}
             </div>
@@ -68,7 +72,7 @@
       <div class="p-4">
         <button
           @click="showAddEventModal = true"
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors"
+          class="w-full btn btn-primary btn-outline text-primary-content hover:bg-info-content py-2 px-4 rounded-lg transition-colors"
         >
           Agregar Evento
         </button>
@@ -81,8 +85,10 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
       @click="closeModal"
     >
-      <div class="bg-gray-800 rounded-lg p-6 w-full max-w-md" @click.stop>
-        <h3 class="text-lg font-semibold text-white mb-4">Nuevo Evento</h3>
+      <div class="bg-neutral rounded-lg p-6 w-full max-w-md" @click.stop>
+        <h3 class="text-lg font-semibold text-base-content mb-4">
+          Nuevo Evento
+        </h3>
 
         <form @submit.prevent="addEvent">
           <div class="mb-4">
@@ -93,7 +99,7 @@
               v-model="newEvent.title"
               type="text"
               required
-              class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full bg-gray-700 text-base-content rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Título del evento"
             />
           </div>
@@ -105,7 +111,7 @@
             <input
               v-model="newEvent.description"
               type="text"
-              class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full bg-gray-700 text-base-content rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Descripción del evento"
             />
           </div>
@@ -120,7 +126,7 @@
                 type="time"
                 step="900"
                 required
-                class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full bg-gray-700 text-base-content rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
@@ -132,7 +138,7 @@
                 type="time"
                 step="900"
                 required
-                class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full bg-gray-700 text-base-content rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -162,13 +168,13 @@
             <button
               type="button"
               @click="closeModal"
-              class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition-colors"
+              class="flex-1 bg-gray-600 hover:bg-gray-700 text-base-content py-2 px-4 rounded-lg transition-colors"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors"
+              class="flex-1 bg-blue-600 hover:bg-blue-700 text-base-content py-2 px-4 rounded-lg transition-colors"
             >
               Crear Evento
             </button>

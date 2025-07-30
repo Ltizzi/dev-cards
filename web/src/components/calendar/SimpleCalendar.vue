@@ -1,7 +1,8 @@
 <template>
   <div
     :class="[
-      'flex flex-col justify-center items-center w-auto max-w-56 bg-base-200 rounded-lg transition-all duration-200',
+      'flex flex-col justify-center items-center w-auto max-w-56 bg-base-200 rounded-lg transition-all ease-in-out duration-200',
+
       selected
         ? 'shadow-lg  shadow-secondary'
         : !fromModular
@@ -39,7 +40,7 @@
             : '',
           selectedDay.length > 0 && selectedDay == n && selected
             ? 'bg-primary text-primary-content'
-            : fromModular && selectedDay == n
+            : fromModular && selectedDay == n && selectedDay.length > 0
             ? 'bg-primary text-primary-content'
             : '',
           actualDay === n && selectedDay != n
@@ -87,6 +88,7 @@
   watch(
     () => props.month,
     (newValue) => {
+      selectedDay.value = "";
       prepareMonthData();
     }
   );
