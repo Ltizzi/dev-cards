@@ -28,6 +28,8 @@ import {
   faMagnifyingGlass,
   faBars,
   faEyeSlash,
+  faChevronLeft,
+  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -51,7 +53,9 @@ library.add(
   faGear,
   faMagnifyingGlass,
   faBars,
-  faEyeSlash
+  faEyeSlash,
+  faChevronLeft,
+  faChevronRight
 );
 
 const app = createApp(App);

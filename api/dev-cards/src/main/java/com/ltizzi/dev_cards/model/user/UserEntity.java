@@ -15,6 +15,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
 
+import java.sql.SQLOutput;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,6 +112,7 @@ public class UserEntity {
     }
 
     public void assignTask(TaskEntity task) throws InvalidTaskException {
+        
         if(!designated_tasks.contains(task)){
             designated_tasks.add(task);
         }
