@@ -9,6 +9,7 @@
         :year="year"
         :month="index"
         :selected="selectedMonth == index"
+        :fromModular="false"
         @setDay="setDay"
         @setMonth="setMonth"
       />

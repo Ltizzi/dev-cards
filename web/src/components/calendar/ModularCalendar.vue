@@ -26,6 +26,7 @@
       :year="selectedYear"
       :month="selectedMonth"
       @setDay="setDay"
+      @setMonth="setMonth"
     />
   </div>
 </template>
@@ -60,6 +61,8 @@
   }
 
   function setDay(obj: Object) {}
+
+  function setMonth(month: number) {}
 
   //   onBeforeMount(() => {
   //     selectedYear.value = new Date().getFullYear();
