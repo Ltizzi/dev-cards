@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      'flex flex-col justify-center items-center w-auto max-w-56 bg-base-100 rounded-lg transition-all duration-200',
+      'flex flex-col justify-center items-center w-auto max-w-56 bg-base-200 rounded-lg transition-all duration-200',
       selected
         ? 'shadow-lg  shadow-secondary'
         : !fromModular
