@@ -51,7 +51,7 @@
       </div>
     </div>
     <div class="flex flex-col justify-center items-center">
-      <YearCalendar :year="2005" />
+      <ModularCalendar />
     </div>
 
     <ProjectList v-if="isLoggedIn" class="lg:mt-0 mt-16" />
@@ -78,7 +78,7 @@
   import { useProjectStore } from "../store/project.store";
   import { User, UserLocal, Workspace } from "../utils/types";
 
-  import YearCalendar from "../components/calendar/YearCalendar.vue";
+  import ModularCalendar from "../components/calendar/ModularCalendar.vue";
 
   const router = useRouter();
 

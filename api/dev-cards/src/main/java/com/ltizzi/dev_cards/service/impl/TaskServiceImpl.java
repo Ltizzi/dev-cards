@@ -77,10 +77,7 @@ public class TaskServiceImpl implements TaskService {
 
         new_task.addWorkspace(ws);
         new_task.setProgressItems(addIdToIssues(new_task.getProgressItems()));
-        System.out.println("Before save - ID: " + new_task.getTask_id());
-        System.out.println("Before save - ID is null: " + (new_task.getTask_id() == null));
         new_task = taskRepo.save(new_task);
-        System.out.println("After save - ID: " + new_task.getTask_id());
         wsRepo.save(ws);
         return taskMapper.toTaskDTO(new_task);
     }
@@ -243,6 +240,7 @@ public class TaskServiceImpl implements TaskService {
     public TaskDTO assignUser(UUID task_id, Long user_id) throws NotFoundException, InvalidUserException, InvalidTaskException {
         TaskEntity task = findTaskById(task_id);
         UserEntity user = userRepo.findById(user_id).orElseThrow(()->new NotFoundException("User not found"));
+        System.out.println("Tratando de asignar...");
         if(!sameProjectChecker(task, user)){
             throw new InvalidUserException("User must be a member of the task's project");
         }

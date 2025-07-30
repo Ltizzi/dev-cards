@@ -1,24 +1,30 @@
 <template>
   <div
     :class="[
-      'flex flex-col justify-center items-center w-auto max-w-56 bg-neutral rounded-lg transition-all duration-200',
-      selected ? 'shadow-lg  shadow-secondary' : 'hover:opacity-100 opacity-60',
-      actualMonth == month && !selected
-        ? 'shadow-md shadow-success opacity-80'
+      'flex flex-col justify-center items-center w-auto max-w-56 bg-base-100 rounded-lg transition-all duration-200',
+      selected
+        ? 'shadow-lg  shadow-secondary'
+        : !fromModular
+        ? 'hover:opacity-100 opacity-60 blur-sm hover:blur-none'
         : '',
+      actualMonth == month && !selected && !fromModular
+        ? 'shadow-md shadow-success opacity-80 blur-none'
+        : '',
+      !selected && fromModular ? 'opacity-100 blur-none' : '',
     ]"
+    @click="setMonth(month)"
   >
     <h1
       :class="[
-        'text-center font-extrabold border-2 border-secondary w-full border-b-0 hover:cursor-pointer',
+        'text-center font-extrabold  text-base-content w-full  hover:cursor-pointer',
         selected ? 'bg-accent text-accent-content' : '',
       ]"
-      @click="setMonth(month)"
+      v-if="!fromModular"
     >
       {{ getStringMonth(month) }}
     </h1>
     <div
-      class="grid grid-cols-7 gap-x-1 text-center text-base border-2 border-secondary bg-neutral text-base-content px-5 py-3 w-full min-h-56"
+      class="grid grid-cols-7 gap-x-1 text-center text-base-content px-5 py-3 w-full min-h-56"
     >
       <div v-for="day in daysOfWeek" :key="day" class="font-bold">
         {{ day }}
@@ -31,7 +37,9 @@
           n.length > 0
             ? 'border rounded hover:bg-primary cursor-pointer font-semibold border-secondary text-sm size-6'
             : '',
-          selectedDay.length > 0 && selectedDay == n
+          selectedDay.length > 0 && selectedDay == n && selected
+            ? 'bg-primary text-primary-content'
+            : fromModular && selectedDay == n
             ? 'bg-primary text-primary-content'
             : '',
           actualDay === n && selectedDay != n
@@ -46,7 +54,7 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { onBeforeMount, ref } from "vue";
+  import { onBeforeMount, ref, watch } from "vue";
   import { dateUtils } from "../../utils/date.utils";
 
   const daysOfWeek = dateUtils.daysOfWeek;
@@ -57,6 +65,7 @@
     year: number;
     month: number;
     selected: boolean;
+    fromModular: boolean;
   }>();
 
   const emit = defineEmits(["setDay", "setMonth"]);
@@ -68,6 +77,20 @@
   const actualDay = ref<string>();
   const actualMonth = ref<number>();
 
+  watch(
+    () => props.year,
+    (newValue) => {
+      prepareMonthData();
+    }
+  );
+
+  watch(
+    () => props.month,
+    (newValue) => {
+      prepareMonthData();
+    }
+  );
+
   function getStringMonth(month: number) {
     return months[month].toUpperCase();
   }
@@ -78,12 +101,11 @@
   }
 
   function setMonth(month: number) {
-    emit("setMonth", month);
+    if (!props.fromModular) emit("setMonth", month);
   }
 
-  onBeforeMount(() => {
-    const newDate = new Date(props.year, props.month, 1);
-    const dayOfWeek = newDate.getDay(); //
+  function prepareMonthData() {
+    const dayOfWeek = new Date(props.year, props.month, 1).getDay(); //
     const emptyDays = dayOfWeek > 0 ? dayOfWeek - 1 : 6;
     const monthTotalDays = new Date(props.year, props.month + 1, 0).getDate();
     const totalDays = [];
@@ -98,5 +120,12 @@
     actualMonth.value = new Date().getMonth();
     if (actualMonth.value == props.month)
       actualDay.value = new Date().getDate().toString();
+    else {
+      actualDay.value = undefined;
+    }
+  }
+
+  onBeforeMount(() => {
+    prepareMonthData();
   });
 </script>
