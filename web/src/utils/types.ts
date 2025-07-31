@@ -391,16 +391,16 @@ export interface TaskWithReference {
   reference: TaskSlim;
 }
 
-export interface Calendar {
+export interface UserCalendar {
   calendar_id: string;
   owner: UserLite | UserLocal;
-  items: Map<string, CalendarDay>;
+  items: Map<HourRange, CalendarDay>;
 }
 
 export interface WorkspaceCalendar {
-  ws_calendar_id: string;
+  calendar_id: string;
   workspace: WorkspaceLite;
-  items: Map<string, CalendarDay>;
+  items: Map<HourRange, CalendarDay>;
 }
 
 export interface HourRange {
