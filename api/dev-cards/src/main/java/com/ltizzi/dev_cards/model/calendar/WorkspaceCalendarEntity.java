@@ -16,4 +16,12 @@ public class WorkspaceCalendarEntity extends CalendarEntity {
     @OneToOne
     @JoinColumn(name = "ws_id", unique = true)
     private WorkspaceEntity workspace;
+
+    public void setWorkspace(WorkspaceEntity ws){
+        this.workspace = ws;
+    }
+
+    public WorkspaceEntity  getWorkspace(){
+        return this.workspace;
+    }
 }

@@ -1,6 +1,6 @@
 package com.ltizzi.dev_cards.model.calendar;
 
-import com.ltizzi.dev_cards.model.calendar.utils.CalendarItem;
+import com.ltizzi.dev_cards.model.calendar.utils.CalendarItemEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,5 +31,5 @@ public abstract class CalendarEntity {
 
 
     @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CalendarItem> items = new ArrayList<>();
+    private List<CalendarItemEntity> items = new ArrayList<>();
 }
