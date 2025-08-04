@@ -1,14 +1,15 @@
 package com.ltizzi.dev_cards.service.impl;
 
+import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.calendar.*;
 import com.ltizzi.dev_cards.model.calendar.utils.CalendarItemDTO;
 import com.ltizzi.dev_cards.model.calendar.utils.CalendarItemEntity;
 import com.ltizzi.dev_cards.model.calendar.utils.CalendarItemMapper;
+import com.ltizzi.dev_cards.model.user.UserEntity;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
-import com.ltizzi.dev_cards.repository.CalendarItemRepository;
-import com.ltizzi.dev_cards.repository.UserCalendarRepository;
-import com.ltizzi.dev_cards.repository.WorkspaceCalendarRepository;
+import com.ltizzi.dev_cards.model.workspace.WorkspaceEntity;
+import com.ltizzi.dev_cards.repository.*;
 import com.ltizzi.dev_cards.service.CalendarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,12 @@ public class CalendarServiceImpl implements CalendarService {
     private CalendarItemRepository itemRepo;
 
     @Autowired
+    private UserRepository userRepo;
+
+    @Autowired
+    private WorkspaceRepository wsRepo;
+
+    @Autowired
     private UserCalendarMapper userCalMapper;
 
     @Autowired
@@ -53,8 +60,18 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public UserCalendarDTO getUserCalendarByUserId(Long id) throws NotFoundException {
         UserCalendarEntity userCalendar = userCalRepo.findCalendarByUserId(id).getFirst();
+
         if(userCalendar == null){
-            throw  new NotFoundException("Calendar not found!");
+            //throw  new NotFoundException("Calendar not found!");
+            UserCalendarEntity newCal = new UserCalendarEntity();
+            UserEntity user = userRepo.findById(id).orElse(null);
+            if(user == null){
+                throw  new NotFoundException("User not found!");
+            } else {
+                newCal.setCalendar_id(UUID.randomUUID());
+                newCal.setOwner(user);
+                return userCalMapper.toUserCalendarDTO(userCalRepo.save(newCal));
+            }
         }
         return userCalMapper.toUserCalendarDTO(userCalendar);
     }
@@ -63,7 +80,16 @@ public class CalendarServiceImpl implements CalendarService {
     public WorkspaceCalendarDTO getWorkspaceCalendarByWsId(Long id) throws NotFoundException {
         WorkspaceCalendarEntity wsCalendar = wsCalRepo.findCalendarByWorkspaceId(id).getFirst();
         if(wsCalendar == null){
-            throw  new NotFoundException("Calendar not found!");
+            //throw  new NotFoundException("Calendar not found!");
+            WorkspaceCalendarEntity wsCal = new WorkspaceCalendarEntity();
+            WorkspaceEntity ws = wsRepo.findById(id).orElse(null);
+            if(ws == null){
+                throw  new NotFoundException("Workspace not found");
+            } else{
+                wsCal.setCalendar_id(UUID.randomUUID());
+                wsCal.setWorkspace(ws);
+                return wsCalMapper.toWorkspaceCalendarDTO(wsCalRepo.save(wsCal));
+            }
         }
         return wsCalMapper.toWorkspaceCalendarDTO(wsCalendar);
     }
