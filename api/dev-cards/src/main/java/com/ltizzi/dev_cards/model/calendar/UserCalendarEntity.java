@@ -11,6 +11,7 @@ import java.util.UUID;
 /**
  * @author Leonardo Terlizzi
  */
+
 @Entity
 @Table(name="user_calendars")
 public class UserCalendarEntity extends CalendarEntity{
@@ -21,4 +22,11 @@ public class UserCalendarEntity extends CalendarEntity{
     private UserEntity owner;
 
 
+    public void setOwner(UserEntity owner){
+        this.owner = owner;
+    }
+
+    public UserEntity getOwner(){
+        return this.owner;
+    }
 }

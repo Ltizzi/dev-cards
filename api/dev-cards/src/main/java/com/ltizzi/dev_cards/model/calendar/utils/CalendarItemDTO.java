@@ -23,7 +23,8 @@ public class CalendarItemDTO {
     private String location;
     private Color color;
     private HourRange hourRange;
-    private LocalDate date;
+    private String date;
     private Timestamp created_at;
     private Timestamp updated_at;
+
 }

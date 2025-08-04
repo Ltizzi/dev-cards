@@ -9,7 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -19,7 +19,8 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class CalendarItem {
+@Table(name = "calendar_items")
+public class CalendarItemEntity {
 
     @Id
     @Column(columnDefinition = "uuid", updatable = false, nullable = false)
@@ -49,7 +50,7 @@ public class CalendarItem {
     @CollectionTable(name = "calendar_item_hour_range", joinColumns = @JoinColumn(name = "calendar_id"))
     private HourRange hourRange;
 
-    private LocalDate date;
+    private String date;
 
 
     @CreationTimestamp
@@ -60,6 +61,17 @@ public class CalendarItem {
     private Timestamp updated_at;
 
 
+    public CalendarItemEntity update(CalendarItemEntity updatedItem){
+        this.owner = updatedItem.getOwner();
+        this.title = updatedItem.getTitle();
+        this.description = updatedItem.getDescription();
+        this.location = updatedItem.getLocation();
+        this.color = updatedItem.getColor();
+        this.hourRange = updatedItem.getHourRange();
+        this.date = updatedItem.getDate();
+        this.updated_at = new Timestamp(System.currentTimeMillis());
+        return this;
+    }
 
 
 
