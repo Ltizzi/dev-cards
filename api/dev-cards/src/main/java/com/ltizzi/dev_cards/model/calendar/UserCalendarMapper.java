@@ -77,7 +77,7 @@ public class UserCalendarMapper {
                                     throw new RuntimeException(e);
                                 }
                             });
-                });
+                }).toList();
         uc.setItems(items);
         return uc;
     }

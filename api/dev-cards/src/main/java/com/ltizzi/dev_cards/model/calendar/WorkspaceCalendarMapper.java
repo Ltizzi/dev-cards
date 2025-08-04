@@ -74,7 +74,7 @@ public class WorkspaceCalendarMapper {
                                     throw new RuntimeException(e);
                                 }
                             });
-                });
+                }).toList();
     wc.setItems(items);
     return wc;
     }

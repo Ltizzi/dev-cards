@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -60,6 +61,17 @@ public class CalendarItemEntity {
     private Timestamp updated_at;
 
 
+    public CalendarItemEntity update(CalendarItemEntity updatedItem){
+        this.owner = updatedItem.getOwner();
+        this.title = updatedItem.getTitle();
+        this.description = updatedItem.getDescription();
+        this.location = updatedItem.getLocation();
+        this.color = updatedItem.getColor();
+        this.hourRange = updatedItem.getHourRange();
+        this.date = updatedItem.getDate();
+        this.updated_at = new Timestamp(System.currentTimeMillis());
+        return this;
+    }
 
 
 
