@@ -139,9 +139,12 @@
           >
             <font-awesome-icon
               :icon="['fas', 'sitemap']"
-              class="text-primary text-2xl"
+              class="text-primary text-xl"
             />
-            <div v-for="task in card.dependencies" class="flex flex-row">
+            <div
+              v-for="(task, index) in card.dependencies"
+              class="flex flex-row"
+            >
               <router-link :to="`/project/task?id=${task.task_id}`">
                 <p
                   class="text-secondary font-bold lg:text-lg text-base italic underline"
@@ -149,7 +152,34 @@
                   {{ task.title }}
                 </p>
               </router-link>
-              <p class="text-info font-bold text-lg ml-1">,</p>
+              <p class="text-info font-bold text-lg ml-1">
+                {{ index == card.dependencies.length - 1 ? "" : ", " }}
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="flex flex-row gap-2 py-1 align-middle"
+            v-if="card.child_tasks && card.child_tasks.length > 0"
+          >
+            <font-awesome-icon
+              :icon="['fas', 'sitemap']"
+              class="text-info text-xl"
+            />
+            <div
+              v-for="(task, index) in card.child_tasks"
+              class="flex flex-row"
+            >
+              <router-link :to="`/project/task?id=${task.task_id}`">
+                <p
+                  class="text-secondary font-semibold lg:text-base text-sm italic underline"
+                >
+                  {{ task.title }}
+                </p>
+              </router-link>
+              <p class="text-info font-bold text-lg ml-1">
+                {{ index == card.child_tasks.length - 1 ? "" : ", " }}
+              </p>
             </div>
           </div>
 
