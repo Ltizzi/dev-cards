@@ -21,6 +21,7 @@ import org.hibernate.annotations.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -231,6 +232,19 @@ public class TaskEntity {
 
     public void removeUpdate(Long update_id) {
         updates = updates.stream().filter(update->!update.getUpdate_id().equals(update_id)).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(this==o)return true;
+        if(o == null || getClass() != o.getClass()) return false;
+        TaskEntity task = (TaskEntity) o;
+        return Objects.equals(task_id, task.task_id);
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(task_id);
     }
 
 }

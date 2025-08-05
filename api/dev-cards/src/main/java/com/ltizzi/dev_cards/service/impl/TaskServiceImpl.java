@@ -232,7 +232,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private boolean assignChecker(TaskEntity task, UserEntity user){
-        return task.getDesignated_to().contains(user);
+//        return task.getDesignated_to().contains(user);
+        return task.getDesignated_to().stream()
+                .anyMatch(u->u.getUser_id().equals(user.getUser_id()));
     }
 
 

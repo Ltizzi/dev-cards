@@ -103,7 +103,7 @@ public class CalendarController {
         if(!jwtUtils.checkUserIsSelf(user_id, token)){
             throw  new NotAllowedException("User is not calendar's owner");
         }else{
-            return new ResponseEntity<>(calServ.updateCalendarItem(calendar_id, item), HttpStatus.OK)
+            return new ResponseEntity<>(calServ.updateCalendarItem(calendar_id, item), HttpStatus.OK);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.ltizzi.dev_cards.model.calendar.utils;
 
+
 import com.ltizzi.dev_cards.model.task.utils.Color;
 import com.ltizzi.dev_cards.model.user.UserEntity;
 import jakarta.persistence.*;
@@ -9,7 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-import java.util.Date;
+
 import java.util.UUID;
 
 /**
@@ -46,8 +47,8 @@ public class CalendarItemEntity {
     @Enumerated(EnumType.STRING)
     private Color color;
 
-    @ElementCollection
-    @CollectionTable(name = "calendar_item_hour_range", joinColumns = @JoinColumn(name = "calendar_id"))
+    @Embedded
+    //@CollectionTable(name = "calendar_item_hour_range", joinColumns = @JoinColumn(name = "calendar_id"))
     private HourRange hourRange;
 
     private String date;
