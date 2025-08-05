@@ -14,19 +14,19 @@ import java.util.Objects;
 @NoArgsConstructor
 public class HourRange {
 
-    private String start;
-    private String end;
+    private String start_at;
+    private String end_at;
 
     @Override
     public boolean equals(Object o){
         if(this == o) return true;
         if(!(o instanceof  HourRange)) return false;
         HourRange that = (HourRange) o;
-        return Objects.equals(start, that.start) && Objects.equals(end, that.end);
+        return Objects.equals(start_at, that.start_at) && Objects.equals(end_at, that.end_at);
     }
 
     @Override
     public int hashCode(){
-        return Objects.hash(start, end);
+        return Objects.hash(start_at, end_at);
     }
 }

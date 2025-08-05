@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  */
 
 @MappedSuperclass
-@Inheritance(strategy = InheritanceType.JOINED)
+//@Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @NoArgsConstructor
 public abstract class CalendarEntity {
@@ -32,7 +32,8 @@ public abstract class CalendarEntity {
     }
 
 
-    @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name="calendar_id")
     private List<CalendarItemEntity> items = new ArrayList<>();
 
 
