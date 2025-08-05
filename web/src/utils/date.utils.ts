@@ -21,7 +21,27 @@ function getActualDate() {
   return `${day}-${month}-${year}`;
 }
 
+const daysOfWeek = ["L", "M", "M", "J", "V", "S", "D"];
+const daysOfWeekEN = ["M", "T", "W", "T", "F", "S", "S"];
+const months = [
+  "Enero",
+  "Febrero",
+  "Marzo",
+  "Abril",
+  "Mayo",
+  "Junio",
+  "Julio",
+  "Agosto",
+  "Septiembre",
+  "Octubre",
+  "Noviembre",
+  "Diciembre",
+];
+
 export const dateUtils = {
   generateDateTemplate,
   getActualDate,
+  daysOfWeek,
+  daysOfWeekEN,
+  months,
 };

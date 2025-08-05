@@ -122,7 +122,9 @@
     if (tags.value.length > 0) avaibleSpecialTags.value = true;
     const task_tags = (await taskStore.getCurrent().task_tags) as string[];
     if (task_tags && task_tags.length > 0)
-      added_tags.value = await taskUtils.parseAndGetSpecialTags(task_tags);
+      added_tags.value = (await taskUtils.parseAndGetSpecialTags(
+        task_tags
+      )) as string[];
   }
 
   onBeforeMount(async () => {

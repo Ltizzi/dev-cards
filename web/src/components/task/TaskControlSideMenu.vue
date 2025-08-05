@@ -118,7 +118,7 @@
 
   const props = defineProps<{
     projectId: number;
-    taskId: number;
+    taskId: string;
     isMobile: boolean;
   }>();
 
@@ -226,13 +226,13 @@
   );
 
   function getTaskId() {
-    let id = 0;
+    let id = "";
     if (route.query.id) {
       id = props.taskId
         ? props.taskId
         : taskStore.currentTask.task_id
         ? taskStore.currentTask.task_id
-        : +route.query.id;
+        : (route.query.id as string);
     }
     return id;
   }
@@ -244,10 +244,10 @@
     isModOrOwner.value = checkIsModOrOwner(projectId as number);
     isDesignatedUser.value = checkIsDesignated(
       projectId as number,
-      taskId as number
+      taskId as string
     );
     canModify.value = checkIfUserisTaskOwner(
-      taskId as number,
+      taskId as string,
       userStore.getSelf()
     );
   }

@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vue-tsc && vite build",
     "preview": "vite preview"
   },
@@ -20,6 +20,7 @@
     "path": "^0.12.7",
     "pinia": "^2.1.7",
     "tailwindcss-motion": "^0.3.0-beta",
+    "uuid": "^11.1.0",
     "vue": "^3.4.21",
     "vue-router": "^4.4.0"
   },

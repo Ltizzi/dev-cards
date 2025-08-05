@@ -50,19 +50,47 @@
         </button>
       </div>
     </div>
-    <ProjectList v-if="isLoggedIn" class="lg:mt-0 mt-16" />
-    <DesignatedView
-      class="ml-10"
-      :isDark="isDark"
-      :darkerCards="darkerCards"
-      :isLoggedIn="isLoggedIn"
-      v-if="isLoaded"
-    />
+    <div class="flex flex-col justify-center items-center w-full">
+      <div role="tablist" class="tabs tabs-boxed w-6/12">
+        <a
+          role="tab"
+          :class="['tab', state.selectedTab === 0 ? 'tab-active' : '']"
+          @click="selectTab(0)"
+          >Projects</a
+        >
+        <a
+          role="tab"
+          :class="['tab', state.selectedTab === 1 ? 'tab-active' : '']"
+          @click="selectTab(1)"
+          >Tasks</a
+        >
+        <a
+          role="tab"
+          :class="['tab', state.selectedTab === 2 ? 'tab-active' : '']"
+          @click="selectTab(2)"
+          >Calendar</a
+        >
+      </div>
+      <div class="flex flex-col justify-center items-center w-full mt-10">
+        <ProjectList
+          v-if="isLoggedIn && state.selectedTab === 0"
+          class="lg:mt-0 mt-16"
+        />
+        <DesignatedView
+          class="ml-10"
+          :isDark="isDark"
+          :darkerCards="darkerCards"
+          :isLoggedIn="isLoggedIn"
+          v-if="isLoaded && state.selectedTab === 1"
+        />
+        <ScheduleLayout v-if="state.selectedTab === 2" />
+      </div>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
   import { useRouter } from "vue-router";
-  import { onBeforeMount, onMounted, ref, watch } from "vue";
+  import { onBeforeMount, reactive, ref, watch } from "vue";
   import { useUserStore } from "../store/user.store";
   import DesignatedView from "./DesignatedView.vue";
   import { isDarkerCardsActive } from "../utils/client.utils";
@@ -73,6 +101,8 @@
   import { taskUtils } from "../utils/task.utils";
   import { useProjectStore } from "../store/project.store";
   import { User, UserLocal, Workspace } from "../utils/types";
+
+  import ScheduleLayout from "./ScheduleLayout.vue";
 
   const router = useRouter();
 
@@ -91,6 +121,10 @@
   const darkerCards = ref<boolean>(false);
   const darkerMiniCards = ref<boolean>(false);
 
+  const state = reactive({
+    selectedTab: 0,
+  });
+
   watch(
     () => UIStore.justUpdated,
     (newValue, oldValue) => {
@@ -101,6 +135,10 @@
       }
     }
   );
+
+  function selectTab(tab: number) {
+    state.selectedTab = tab;
+  }
 
   function handleDarker(value: boolean, type?: string) {
     if (type && type == "card") {

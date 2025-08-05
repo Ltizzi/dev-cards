@@ -56,7 +56,7 @@
 
   const props = defineProps<{
     description: string;
-    task_id: number;
+    task_id: string;
     isDark: boolean;
   }>();
 

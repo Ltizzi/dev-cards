@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Leonardo Terlizzi
@@ -25,6 +26,8 @@ public class TaskMapper {
 
     @Autowired
     private WorkspaceMapper wsMapper;
+
+
 
     public TaskDTO toTaskDTO(TaskEntity task) {
         TaskDTO dto = new TaskDTO();
@@ -66,13 +69,17 @@ public class TaskMapper {
     }
 
     public TaskEntity toTaskEntity(TaskDTO dto) {
-        TaskEntity task = new TaskEntity();
+        TaskEntity task;
 
         if(dto.getTask_id() != null) {
-            task = taskRepo.findById(dto.getTask_id()).orElse(null);
-            if (task != null){
-                task.setTask_id(dto.getTask_id());
-            }
+            task = taskRepo.findById(dto.getTask_id()).orElse(new TaskEntity());
+        } else {
+            // Si no tiene ID, crear nueva
+            task = new TaskEntity();
+        }
+
+        if (task.getTask_id() == null && dto.getTask_id() != null) {
+            task.setTask_id(dto.getTask_id());
         }
         task.setTitle(dto.getTitle());
         task.setSubtitle(dto.getSubtitle());
@@ -99,6 +106,28 @@ public class TaskMapper {
         task.setCreated_at(dto.getCreated_at());
         task.setUpdated_at(dto.getUpdated_at());
 
+        return task;
+
+    }
+
+    public TaskEntity toTaskEntityFresh(TaskDTO dto) {
+        TaskEntity task = new TaskEntity();
+
+        if (dto.getTask_id() != null) {
+            task.setTask_id(dto.getTask_id());
+        }
+
+        task.setTitle(dto.getTitle());
+        task.setSubtitle(dto.getSubtitle());
+        task.setDescription(dto.getDescription());
+        task.setColor(dto.getColor());
+        task.setPriority(dto.getPriority());
+        task.setEffort(dto.getEffort());
+        task.setStatus(dto.getStatus());
+        task.setProgress(dto.getProgress());
+        task.setTask_type(dto.getTask_type());
+        task.setOwner(userMapper.toUserEntity(dto.getOwner()));
+        task.setCreated_at(dto.getCreated_at());
         return task;
 
     }
@@ -168,5 +197,14 @@ public class TaskMapper {
             dtos.add(toTaskLiteDTO(task));
         }
         return dtos;
+    }
+
+    public MiniTaskDTO toTaskMini(TaskDTO task){
+        MiniTaskDTO miniTask = new MiniTaskDTO();
+        miniTask.setTask_id(task.getTask_id());
+        miniTask.setColor(task.getColor());
+        miniTask.setTitle(task.getTitle());
+        miniTask.setWorkspace_id(task.getWorkspace().getWorkspace_id());
+        return miniTask;
     }
 }

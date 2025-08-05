@@ -26,6 +26,7 @@ export enum EndpointType {
   TASK_CREATE_ISSUE = "/task/addIssue",
   TASK_REMOVE_ISSUE = "/task/deleteIssue",
   TASK_AUTOASSIGN = "/task/autoAssign",
+  TASK_IMPORT = "/task/import",
 
   USER_GET_ALL = "/user/all",
   USER_GET_BY_ID = "/user/byId",

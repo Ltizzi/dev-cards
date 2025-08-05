@@ -135,7 +135,7 @@ export const TaskTypeEnumArray = [
 ];
 
 export interface Task {
-  task_id?: number;
+  task_id?: string;
   title: string;
   subtitle: string;
   description: string;
@@ -177,7 +177,7 @@ export interface TaskUpdate {
 }
 
 export interface TaskLite {
-  task_id: number;
+  task_id: string;
   title: string;
   //subtitle: string;
   task_type: TaskType;
@@ -228,7 +228,7 @@ export enum Role {
 export interface UserWorkspaceRoles {
   workspace_id: number;
   role: Role;
-  assigned_tasks_ids?: number[];
+  assigned_tasks_ids?: string[];
 }
 
 export interface User {
@@ -319,7 +319,7 @@ export interface SpecialTag {
 }
 
 export interface TaskSlim {
-  task_id: number;
+  task_id: string;
   title: string;
   color: Color;
   workspace_id: number;
@@ -345,4 +345,80 @@ export interface JSONWorkspace {
   created_at: Date;
   download_at?: Date;
   update_at: Date;
+}
+
+export interface ImportProcess {
+  phase:
+    | "analyzing"
+    | "workspace"
+    | "level_processing"
+    | "customConfig"
+    | "completed"
+    | "error";
+  total: number;
+  processed: number;
+  errors: ImportError[];
+  currentLevel: number;
+  totalLevels: number;
+  globalMapping: Record<string, string>;
+  levelBatches: LevelBatch[];
+  workspace?: Workspace;
+  customConfig?: CustomConfiguration;
+  working: boolean;
+}
+
+export interface ImportError {
+  type: string;
+  message: string;
+}
+
+export interface LevelBatch {
+  level: number;
+  batches: TaskBatch[];
+  status: "pending" | "processing" | "completed" | "error";
+}
+
+export interface TaskBatch {
+  id: string;
+  tasks: Task[];
+  status: "pending" | "processing" | "completed" | "error";
+  retryCount: number;
+  idMapping: Record<string, string>;
+}
+
+export interface TaskWithReference {
+  task: Task;
+  reference: TaskSlim;
+}
+
+export interface UserCalendar {
+  calendar_id: string;
+  owner: UserLite | UserLocal;
+  items: Map<HourRange, CalendarDay>;
+}
+
+export interface WorkspaceCalendar {
+  calendar_id: string;
+  workspace: WorkspaceLite;
+  items: Map<HourRange, CalendarDay>;
+}
+
+export interface HourRange {
+  start: string;
+  end: string;
+}
+
+export type CalendarDay = Map<HourRange, CalendarItem>;
+
+export interface CalendarItem {
+  id: string;
+  owner: UserLite | UserLocal;
+  title: string;
+  description: string;
+  location: string;
+  color: string;
+  hourRange: HourRange;
+  created_at: Date;
+  updated_at: Date;
+  date: Date;
 }

@@ -7,13 +7,10 @@
   >
     <LateralMenu
       :class="[
-        'duration-150 transition-all  ease-in-out opacity-90 z-0 h-screen fixed  bg-gradient-to-br from-0%  from-secondary  to-100% to-transparent -mx-16   hover:translate-x-16 hover:z-20',
+        'duration-150 transition-all  ease-in-out opacity-90 z-0 h-screen fixed  bg-gradient-to-br from-0%  from-secondary  to-100% to-transparent -mx-14   hover:translate-x-14 hover:z-20',
         firstLoaded ? `translate-x-16 z-50` : ` `,
       ]"
     />
-    <!--      `blur-${blur_class}`bg-opacity-${float} -->
-
-    <!-- </div> -->
 
     <div class="w-auto">
       <router-view></router-view>

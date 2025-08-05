@@ -5,21 +5,19 @@ import com.ltizzi.dev_cards.exception.InvalidUserException;
 import com.ltizzi.dev_cards.exception.NotAllowedException;
 import com.ltizzi.dev_cards.exception.NotFoundException;
 import com.ltizzi.dev_cards.model.task.TaskDTO;
-import com.ltizzi.dev_cards.model.task.TaskEntity;
 import com.ltizzi.dev_cards.model.task.utils.ProgressItem;
 import com.ltizzi.dev_cards.model.task.utils.TaskUpdate;
 import com.ltizzi.dev_cards.model.task.utils.UpdateDescriptionRequest;
 import com.ltizzi.dev_cards.model.utils.APIResponse;
-import com.ltizzi.dev_cards.model.utils.UserWorkspacesRoles;
 import com.ltizzi.dev_cards.security.filter.JwtUtils;
 import com.ltizzi.dev_cards.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Leonardo Terlizzi
@@ -43,7 +41,7 @@ public class TaskController {
 
     @GetMapping("/byId")
     @ResponseBody
-    public ResponseEntity<TaskDTO> getTaskById(@RequestParam Long id, @RequestHeader("Authorization") String token) throws NotFoundException, NotAllowedException {
+    public ResponseEntity<TaskDTO> getTaskById(@RequestParam UUID id, @RequestHeader("Authorization") String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanAccessTask(token, id)){
             throw  new NotAllowedException("Can't access task");
         }
@@ -63,9 +61,19 @@ public class TaskController {
 
     }
 
+    @PostMapping("/import")
+    @ResponseBody
+    public ResponseEntity<List<TaskDTO>> saveTasks(@RequestBody List<TaskDTO> tasks, @RequestParam Long ws_id, @RequestHeader("Authorization")String token) throws NotAllowedException, InvalidTaskException, NotFoundException, InvalidUserException {
+        if(!jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
+            throw new NotAllowedException("User has to be owner/moderator to import tasks");
+        }else{
+            return new ResponseEntity<>(taskServ.saveTasks(tasks,ws_id),HttpStatus.OK);
+        }
+    }
+
     @PatchMapping("/update")
     @ResponseBody
-    public ResponseEntity<TaskDTO> updateTask(@RequestParam Long id,
+    public ResponseEntity<TaskDTO> updateTask(@RequestParam UUID id,
                                               @RequestBody TaskDTO task,
                                               @RequestHeader("Authorization")String token) throws InvalidTaskException, NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, id)){
@@ -79,7 +87,7 @@ public class TaskController {
 
     @DeleteMapping("/delete")
     @ResponseBody
-    public ResponseEntity<APIResponse> deleteTask(@RequestParam Long id,
+    public ResponseEntity<APIResponse> deleteTask(@RequestParam UUID id,
                                                   @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         TaskDTO task = taskServ.getTaskById(id);
         if(!jwtUtils.checkUserCanModifyTask(token, id)){
@@ -93,8 +101,8 @@ public class TaskController {
 
     @PostMapping("/add_dependency")
     @ResponseBody
-    public ResponseEntity<TaskDTO> addDependencyToTask(@RequestParam Long task_id,
-                                                       @RequestParam Long parent_id,
+    public ResponseEntity<TaskDTO> addDependencyToTask(@RequestParam UUID task_id,
+                                                       @RequestParam UUID parent_id,
                                                        @RequestHeader("Authorization")String token) throws InvalidTaskException, NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
             throw  new NotAllowedException("Can't access task, user is not moderator or is not assigned to task");
@@ -106,8 +114,8 @@ public class TaskController {
 
     @PostMapping("/remove_dependency")
     @ResponseBody
-    public ResponseEntity<TaskDTO> removeDependencyFromTask(@RequestParam Long task_id,
-                                                            @RequestParam Long parent_id,
+    public ResponseEntity<TaskDTO> removeDependencyFromTask(@RequestParam UUID task_id,
+                                                            @RequestParam UUID parent_id,
                                                             @RequestHeader("Authorization")String token) throws InvalidTaskException, NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
             throw  new NotAllowedException("Can't access task, user is not moderator or is not assigned to task");
@@ -119,7 +127,7 @@ public class TaskController {
 
     @PostMapping("/assign")
     @ResponseBody
-    public ResponseEntity<TaskDTO> assignUserToTask(@RequestParam Long task_id,
+    public ResponseEntity<TaskDTO> assignUserToTask(@RequestParam UUID task_id,
                                                     @RequestParam Long user_id,
                                                     @RequestHeader("Authorization")String token) throws InvalidTaskException, NotFoundException, InvalidUserException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
@@ -131,7 +139,7 @@ public class TaskController {
 
     @PostMapping("/autoAssign")
     @ResponseBody
-    public ResponseEntity<TaskDTO> autoAssignTask(@RequestParam Long task_id,
+    public ResponseEntity<TaskDTO> autoAssignTask(@RequestParam UUID task_id,
                                                   @RequestParam Long ws_id,
                                                   @RequestHeader("Authorization")String token) throws NotAllowedException, InvalidTaskException, NotFoundException, InvalidUserException {
         if(!jwtUtils.checkIsCollaborator(ws_id, token) && !jwtUtils.checkIsOwnerOrModerator(ws_id, token)){
@@ -142,7 +150,7 @@ public class TaskController {
 
     @PostMapping("/unassign")
     @ResponseBody
-    public ResponseEntity<TaskDTO> unassignUserFromTask(@RequestParam Long task_id,
+    public ResponseEntity<TaskDTO> unassignUserFromTask(@RequestParam UUID task_id,
                                                         @RequestParam Long user_id,
                                                         @RequestHeader("Authorization")String token) throws NotFoundException, InvalidUserException, InvalidTaskException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
@@ -155,7 +163,7 @@ public class TaskController {
 
     @PatchMapping("/add_tag")
     @ResponseBody
-    public ResponseEntity<TaskDTO> addTagToTask(@RequestParam Long task_id,
+    public ResponseEntity<TaskDTO> addTagToTask(@RequestParam UUID task_id,
                                                 @RequestParam String tag,
                                                 @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
@@ -168,7 +176,7 @@ public class TaskController {
 
     @PatchMapping("/remove_tag")
     @ResponseBody
-    public ResponseEntity<TaskDTO> removeTagFromTask(@RequestParam Long task_id,
+    public ResponseEntity<TaskDTO> removeTagFromTask(@RequestParam UUID task_id,
                                                      @RequestParam String tag,
                                                      @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
@@ -181,7 +189,7 @@ public class TaskController {
 
     @PostMapping("/add_update")
     @ResponseBody
-    public ResponseEntity<List<TaskUpdate>> addTaskUpdate(@RequestParam Long task_id,
+    public ResponseEntity<List<TaskUpdate>> addTaskUpdate(@RequestParam UUID task_id,
                                                           @RequestBody TaskUpdate update
                                                           ) throws NotFoundException, NotAllowedException {
         //@RequestHeader("Authorization")String token
@@ -195,7 +203,7 @@ public class TaskController {
 
     @PatchMapping("/remove_update")
     @ResponseBody
-    public ResponseEntity<List<TaskUpdate>> removeUpdateFromTask(@RequestParam Long task_id,
+    public ResponseEntity<List<TaskUpdate>> removeUpdateFromTask(@RequestParam UUID task_id,
                                                                  @RequestParam  Long update_id,
                                                                  @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
@@ -208,7 +216,7 @@ public class TaskController {
 
     @PatchMapping("/update_tu")
     @ResponseBody
-    public ResponseEntity<List<TaskUpdate>> updateTaskUpdate(@RequestParam Long task_id,
+    public ResponseEntity<List<TaskUpdate>> updateTaskUpdate(@RequestParam UUID task_id,
                                                              @RequestBody TaskUpdate task_update,
                                                              @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
@@ -233,7 +241,7 @@ public class TaskController {
 
     @PatchMapping("/updateProgress")
     @ResponseBody
-    public ResponseEntity<TaskDTO> updateTaskProgress(@RequestParam Long task_id,
+    public ResponseEntity<TaskDTO> updateTaskProgress(@RequestParam UUID task_id,
                                                       @RequestParam String progress,
                                                       @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
@@ -246,7 +254,7 @@ public class TaskController {
 
     @PatchMapping("/updatePriority")
     @ResponseBody
-    public ResponseEntity<TaskDTO> updateTaskPriority(@RequestParam Long task_id,
+    public ResponseEntity<TaskDTO> updateTaskPriority(@RequestParam UUID task_id,
                                                       @RequestParam String priority,
                                                       @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
@@ -259,7 +267,7 @@ public class TaskController {
 
     @PatchMapping("/updateStatus")
     @ResponseBody
-    public ResponseEntity<TaskDTO> updateTaskStatus(@RequestParam Long task_id,
+    public ResponseEntity<TaskDTO> updateTaskStatus(@RequestParam UUID task_id,
                                                     @RequestParam String status,
                                                     @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
@@ -272,7 +280,7 @@ public class TaskController {
 
     @PatchMapping("/updateEffort")
     @ResponseBody
-    public ResponseEntity<TaskDTO> updateTaskEffort(@RequestParam Long task_id,
+    public ResponseEntity<TaskDTO> updateTaskEffort(@RequestParam UUID task_id,
                                                     @RequestParam String effort,
                                                     @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
@@ -285,7 +293,7 @@ public class TaskController {
 
     @PatchMapping("/updateType")
     @ResponseBody
-    public ResponseEntity<TaskDTO> updateTaskType(@RequestParam Long task_id,
+    public ResponseEntity<TaskDTO> updateTaskType(@RequestParam UUID task_id,
                                                   @RequestParam String type,
                                                   @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
@@ -298,7 +306,7 @@ public class TaskController {
 
     @PatchMapping("/updateTitle")
     @ResponseBody
-    public ResponseEntity<TaskDTO> updateTaskTitle(@RequestParam Long task_id,
+    public ResponseEntity<TaskDTO> updateTaskTitle(@RequestParam UUID task_id,
                                                    @RequestParam String title,
                                                    @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
@@ -311,7 +319,7 @@ public class TaskController {
 
     @PatchMapping("/updateSubtitle")
     @ResponseBody
-    public ResponseEntity<TaskDTO> updateTaskSubtitle(@RequestParam Long task_id,
+    public ResponseEntity<TaskDTO> updateTaskSubtitle(@RequestParam UUID task_id,
                                                       @RequestParam String subtitle,
                                                       @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
@@ -324,7 +332,7 @@ public class TaskController {
 
     @PatchMapping("/updateDescription")
     @ResponseBody
-    public ResponseEntity<TaskDTO> updateDescription(@RequestParam Long task_id,
+    public ResponseEntity<TaskDTO> updateDescription(@RequestParam UUID task_id,
                                                      @RequestBody UpdateDescriptionRequest data,
                                                      @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
@@ -337,7 +345,7 @@ public class TaskController {
 
     @PatchMapping("/updateIssue")
     @ResponseBody
-    public ResponseEntity<TaskDTO> updateTaskIssue(@RequestParam Long task_id,
+    public ResponseEntity<TaskDTO> updateTaskIssue(@RequestParam UUID task_id,
                                                    @RequestBody ProgressItem issue,
                                                    @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
@@ -350,7 +358,7 @@ public class TaskController {
 
     @PostMapping("/addIssue")
     @ResponseBody
-    public ResponseEntity<TaskDTO> addIssueToTask(@RequestParam Long task_id,
+    public ResponseEntity<TaskDTO> addIssueToTask(@RequestParam UUID task_id,
                                                   @RequestBody ProgressItem issue,
                                                   @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){
@@ -363,7 +371,7 @@ public class TaskController {
 
     @DeleteMapping("/deleteIssue")
     @ResponseBody
-    public ResponseEntity<TaskDTO> deleteTaskIssueById(@RequestParam Long task_id,
+    public ResponseEntity<TaskDTO> deleteTaskIssueById(@RequestParam UUID task_id,
                                                        @RequestParam Long issue_id,
                                                        @RequestHeader("Authorization")String token) throws NotFoundException, NotAllowedException {
         if(!jwtUtils.checkUserCanModifyTask(token, task_id)){

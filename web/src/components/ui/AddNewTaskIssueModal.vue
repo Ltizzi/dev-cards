@@ -38,7 +38,7 @@
   import { defineProps, ref, watch } from "vue";
   import { utils } from "../../utils/utils";
 
-  const props = defineProps<{ showModal: boolean; task_id: number }>();
+  const props = defineProps<{ showModal: boolean; task_id: string }>();
 
   const sentence = ref<string>();
 

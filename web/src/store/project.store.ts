@@ -157,6 +157,7 @@ export const useProjectStore = defineStore("projects", {
           ws.workspace_id as number
         ),
         localExport: true,
+        onlineExport: false,
         created_at: new Date(Date.now()),
         update_at: new Date(Date.now()),
       };
@@ -372,7 +373,7 @@ export const useProjectStore = defineStore("projects", {
         { params: { ws_id: ws_id, user_id: id } }
       );
     },
-    async updateProjectDescription(id: number, description: string) {
+    async updateProjectDescription(id: string, description: string) {
       const newDes = { description: description };
       if (this.offlineMode) {
         this.current.description = description;

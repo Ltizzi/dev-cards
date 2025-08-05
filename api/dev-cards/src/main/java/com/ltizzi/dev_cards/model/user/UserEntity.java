@@ -15,9 +15,11 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
 
+import java.sql.SQLOutput;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Leonardo Terlizzi
@@ -111,6 +113,7 @@ public class UserEntity {
     }
 
     public void assignTask(TaskEntity task) throws InvalidTaskException {
+        
         if(!designated_tasks.contains(task)){
             designated_tasks.add(task);
         }
@@ -122,5 +125,18 @@ public class UserEntity {
             designated_tasks.remove(task);
         }
         else throw  new InvalidTaskException("can't deassign task because user  is not assigned to it");
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(this==o)return true;
+        if(o == null || getClass() != o.getClass()) return false;
+        UserEntity user = (UserEntity) o;
+        return Objects.equals(user_id, user.user_id);
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(user_id);
     }
 }

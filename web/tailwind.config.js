@@ -25,6 +25,19 @@ export default {
       pattern:
         /bg-(slate|red|orange|emerald|teal|sky|indigo|violet|pink|rose)-(500)/,
     },
+
+    {
+      pattern:
+        /from-(red|blue|green|orange|yellow|purple|brown|gray|black|pink|cyan|violet|indigo|fuchsia|rose|sky|teal|emerald|lime|amber|slate)-(400|600|950)/,
+    },
+    {
+      pattern:
+        /via-(red|blue|green|orange|yellow|purple|brown|gray|black|pink|cyan|violet|indigo|fuchsia|rose|sky|teal|emerald|lime|amber|slate)-(400|600|950)/,
+    },
+    {
+      pattern:
+        /to-(red|blue|green|orange|yellow|purple|brown|gray|black|pink|cyan|violet|indigo|fuchsia|rose|sky|teal|emerald|lime|amber|slate)-(400|600|950)/,
+    },
   ],
   plugins: [require("daisyui"), require("tailwindcss-motion")],
   daisyui: {
