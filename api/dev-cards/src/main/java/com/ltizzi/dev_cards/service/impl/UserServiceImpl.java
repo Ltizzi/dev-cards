@@ -201,7 +201,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public LoginResponse updateToken(String token) throws NotFoundException {
         UserEntity user = jwtUtils.getUserByToken(token);
-        log.info("Updating JWT for user {}...", user);
+        log.info("Updating JWT for user {}...", user.getEmail());
         String newToken = jwtUtils.regenerateToken(token);
         return LoginResponse.builder()
                 .user(userMapper.toUserDTO(user))
