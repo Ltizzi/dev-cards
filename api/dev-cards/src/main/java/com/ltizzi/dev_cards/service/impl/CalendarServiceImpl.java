@@ -51,19 +51,19 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public UserCalendarDTO getUserCalendarById(UUID id) throws NotFoundException {
-        log.info("Getting user's calendar with id: {}", id);
+        log.info("\nGetting user's calendar with id: {}", id);
         return userCalMapper.toUserCalendarDTO(userCalRepo.findById(id).orElseThrow(()-> new NotFoundException("Calendar not found!")));
     }
 
     @Override
     public WorkspaceCalendarDTO getWorkspaceCalendarById(UUID id) throws NotFoundException {
-        log.info("Getting Workspace's calendar with id: {}", id);
+        log.info("\nGetting Workspace's calendar with id: {}", id);
         return wsCalMapper.toWorkspaceCalendarDTO(wsCalRepo.findById(id).orElseThrow(()-> new NotFoundException("Calendar not found!")));
     }
 
     @Override
     public UserCalendarDTO getUserCalendarByUserId(Long id) throws NotFoundException {
-        log.info("Getting User's Calendar by User id: {}", id);
+        log.info("\nGetting User's Calendar by User id: {}", id);
         UserCalendarEntity userCalendar = userCalRepo.findCalendarByUserId(id).getFirst();
 
         if(userCalendar == null){
@@ -71,10 +71,10 @@ public class CalendarServiceImpl implements CalendarService {
             UserCalendarEntity newCal = new UserCalendarEntity();
             UserEntity user = userRepo.findById(id).orElse(null);
             if(user == null){
-                log.error("User with id {} not found!", id);
+                log.error("\nUser with id {} not found!", id);
                 throw  new NotFoundException("User not found!");
             } else {
-                log.info("User's has not a calendar, adding new one...");
+                log.info("\nUser's has not a calendar, adding new one...");
                 newCal.setCalendar_id(UUID.randomUUID());
                 newCal.setOwner(user);
                 return userCalMapper.toUserCalendarDTO(userCalRepo.save(newCal));
@@ -86,16 +86,16 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public WorkspaceCalendarDTO getWorkspaceCalendarByWsId(Long id) throws NotFoundException {
         WorkspaceCalendarEntity wsCalendar = wsCalRepo.findCalendarByWorkspaceId(id).getFirst();
-        log.info("Getting the calendar of the Workspace with id: {}", id);
+        log.info("\nGetting the calendar of the Workspace with id: {}", id);
         if(wsCalendar == null){
             //throw  new NotFoundException("Calendar not found!");
             WorkspaceCalendarEntity wsCal = new WorkspaceCalendarEntity();
             WorkspaceEntity ws = wsRepo.findById(id).orElse(null);
             if(ws == null){
-                log.error("Workspaces with id {} not found!", id);
+                log.error("\nWorkspaces with id {} not found!", id);
                 throw  new NotFoundException("Workspace not found");
             } else{
-                log.info("Workspace's doesnt have a calendar, adding one...");
+                log.info("\nWorkspace's doesnt have a calendar, adding one...");
                 wsCal.setCalendar_id(UUID.randomUUID());
                 wsCal.setWorkspace(ws);
                 return wsCalMapper.toWorkspaceCalendarDTO(wsCalRepo.save(wsCal));
@@ -106,21 +106,21 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public UserCalendarDTO addItemToUserCalendar(UUID calendar_id, CalendarItemDTO item) throws NotFoundException {
-        log.info("Adding new calendar item to calendar with id {}", calendar_id);
+        log.info("\nAdding new calendar item to calendar with id {}", calendar_id);
         UserCalendarEntity uc = userCalRepo.findById(calendar_id).orElseThrow(()-> new NotFoundException("Calendar not found!"));
         return userCalMapper.toUserCalendarDTO((uc.addItemToCalendar(itemMapper.toCalendarItemEntity(item))));
     }
 
     @Override
     public WorkspaceCalendarDTO addItemToWorkspaceCalendar(UUID ws_calendar_id, CalendarItemDTO item) throws NotFoundException {
-        log.info("Adding new calendar item to calendar with id {}", ws_calendar_id);
+        log.info("\nAdding new calendar item to calendar with id {}", ws_calendar_id);
         WorkspaceCalendarEntity ws_cal = wsCalRepo.findById(ws_calendar_id).orElseThrow(()-> new NotFoundException("Calendar not found!!"));
         return wsCalMapper.toWorkspaceCalendarDTO(ws_cal.addItemToCalendar(itemMapper.toCalendarItemEntity(item)));
     }
 
     @Override
     public CalendarItemDTO updateCalendarItem(UUID id, CalendarItemDTO item) throws NotFoundException {
-        log.info("Updating calendar item with id {} to calendar id {}", item.getId(), id);
+        log.info("\nUpdating calendar item with id {} to calendar id {}", item.getId(), id);
         CalendarItemEntity ci = itemRepo.findById(id).orElseThrow(()-> new NotFoundException("Calendar item not found!"));
         ci = itemMapper.toCalendarItemEntity(item);
         return itemMapper.toCalendarItemDTO(itemRepo.save(ci));
@@ -128,18 +128,18 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public APIResponse removeCalendarItem(UUID id) {
-        log.info("Deleting calendar item with id {}", id);
+        log.info("\nDeleting calendar item with id {}", id);
         APIResponse res = new APIResponse();
         res.setHttp_method("DELETE");
         CalendarItemEntity ci = itemRepo.findById(id).orElse(null);
         if(ci== null){
-            log.error("Calendar item with id {} not found!", id);
+            log.error("\nCalendar item with id {} not found!", id);
             res.setMessage("FAIL-Calendar Item not Found!");
             return res;
         }
         else{
             itemRepo.deleteById(id);
-            log.info("Removed!");
+            log.info("\nRemoved!");
             res.setMessage("OK-Calendar Item "+ id.toString()+" deleted!");
             return res;
         }

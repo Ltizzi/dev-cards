@@ -19,7 +19,11 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
         String method = request.getMethod();
         String endpoint = request.getRequestURI();
         String queryString = request.getQueryString();
-        log.info("Incoming request: {} {} from IP: {} | Query: {}", method, endpoint, clientIP, queryString);
+        log.info("\n############\nIncoming request:\n" +
+                "Method: {}\n" +
+                "Endpoint: {}\n" +
+                "from IP: {}\n" +
+                "Query: {}\n"+"##################", method, endpoint, clientIP, queryString);
         //return HandlerInterceptor.super.preHandle(request, response, handler);
         return true;
     }
@@ -27,7 +31,10 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
        // HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
-        log.info("Request completed: {} {} | Status: {}", request.getMethod(), request.getRequestURI(), response.getStatus());
+        log.info("\nRequest completed:\n" +
+                "Method: {}\n" +
+                "Endpoitn: {} \n" +
+                "Status: {}", request.getMethod(), request.getRequestURI(), response.getStatus());
     }
 
 
