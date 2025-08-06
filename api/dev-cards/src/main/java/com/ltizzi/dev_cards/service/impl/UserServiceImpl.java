@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> getUsers(int page, int limit) {
-        log.info("Getting all users...");
+        log.info("\nGetting all users...");
         PageRequest pageReq = PageRequest.of(page, limit);
         Page<UserEntity> userPage = userRepo.findAll(pageReq);
         return userMapper.toArrayUserDTO(userPage.getContent());
@@ -77,19 +77,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUserById(Long id) throws NotFoundException {
-        log.info("Getting user by id {}", id);
+        log.info("\nGetting user by id {}", id);
         return userMapper.toUserDTO(userRepo.findById(id).orElseThrow(()-> new NotFoundException("User not found!")));
     }
 
     @Override
     public UserDTO saveUser(UserDTO user) throws InvalidUserException {
-        log.info("Saving new user {}", user.getEmail());
+        log.info("\nSaving new user {}", user.getEmail());
         return userMapper.toUserDTO(userRepo.save(userMapper.toUserEntity(user)));
     }
 
     @Override
     public LoginResponse registerUser(UserRegistration credentials) throws InvalidUserException, NotFoundException {
-        log.info("Registering new user {}", credentials.getEmail());
+        log.info("\nRegistering new user {}", credentials.getEmail());
         if(!userRepo.findByEmail(credentials.getEmail()).isEmpty()){
             log.error("Email already in use");
             throw new InvalidUserException("Email already in use");
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
             log.error("Username already in use");
             throw  new InvalidUserException("Username already in use");
         }
-        log.info("Saving new user...");
+        log.info("\nSaving new user...");
         UserEntity newUser = new UserEntity();
         String password = credentials.getPassword();
         password = passwordEncoder.encode(password);
@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
         newUser.setUsername(credentials.getUsername());
         newUser.setEmail(credentials.getEmail());
         List<Role> roles = new ArrayList<>();
-        log.info("Assigning roles...");
+        log.info("\nAssigning roles...");
         roles.add(Role.ROLE_USER);
         newUser.setRoles(roles);
         UserDTO registerUser =userMapper.toUserDTO(userRepo.save(newUser));
@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LoginResponse loginUser(UserLoginCredentials credentials) throws InvalidUserException {
-            log.info("User {} is trying to log in...", credentials.getUsername());
+            log.info("\nUser {} is trying to log in...", credentials.getUsername());
             UserEntity user = userRepo.findByUsername(credentials.getUsername()).get(0);
             if(user == null){
                 throw new InvalidUserException("Invalid username");
@@ -146,7 +146,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateUser(Long user_id, UserDTO user) throws InvalidUserException, NotFoundException {
-        log.info("Updating user {} ...", user_id);
+        log.info("\nUpdating user {} ...", user_id);
         UserDTO old_user = getUserById(user_id);
         if(old_user != null && old_user.getUser_id().equals(user.getUser_id())){
             return userMapper.toUserDTO(userRepo.save(userMapper.toUserEntity(user)));
@@ -156,7 +156,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public APIResponse deleteUser(Long user_id) throws NotFoundException {
-        log.info("Deleting user {} ...", user_id);
+        log.info("\nDeleting user {} ...", user_id);
         APIResponse apiRes = new APIResponse();
         apiRes.setHttp_method("DELETE");
         UserDTO user = getUserById(user_id);
@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<WorkspaceDTO> getWorkspacesByUserId(Long user_id) throws NotFoundException {
-        log.info("Fetching workspacer where user {} is member...", user_id);
+        log.info("\nFetching workspacer where user {} is member...", user_id);
         //List<WorkspaceEntity> workspaces = userRepo.findWorkspacesByUserId(user_id).orElseThrow(()->new NotFoundException("User not found!"));
         UserEntity user = userRepo.findById(user_id).orElseThrow(()->new NotFoundException("User not found!"));
         List<WorkspaceEntity> workspaces = user.getWorkspaces();
@@ -182,7 +182,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<TaskDTO> getCreatedTasksByUserId(Long user_id) throws NotFoundException {
-        log.info("Fetching all user's id {} created tasks..", user_id);
+        log.info("\nFetching all user's id {} created tasks..", user_id);
         //List<TaskEntity> tasks = userRepo.findCreatedTasksByUserId(user_id).orElseThrow(()->new NotFoundException("User not found!"));
         UserEntity user = userRepo.findById(user_id).orElseThrow(()->new NotFoundException("User not found!"));
         List<TaskEntity> tasks = user.getCreated_tasks();
@@ -191,7 +191,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<TaskDTO> getDesignatedTasksByUserId(Long user_id) throws NotFoundException {
-        log.info("Fetching user's id nº {} designated tasks", user_id);
+        log.info("\nFetching user's id nº {} designated tasks", user_id);
         //List<TaskEntity> tasks = userRepo.findDesignatedTasks(user_id).orElseThrow(()->new NotFoundException("User not found!"));
         UserEntity user = userRepo.findById(user_id).orElseThrow(()->new NotFoundException("User not found!"));
         List<TaskEntity> tasks = user.getDesignated_tasks();
@@ -201,7 +201,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public LoginResponse updateToken(String token) throws NotFoundException {
         UserEntity user = jwtUtils.getUserByToken(token);
-        log.info("Updating JWT for user {}...", user.getEmail());
+        log.info("\nUpdating JWT for user {}...", user.getEmail());
         String newToken = jwtUtils.regenerateToken(token);
         return LoginResponse.builder()
                 .user(userMapper.toUserDTO(user))
@@ -211,7 +211,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkUserByEmail(String email) {
-        log.info("Checking if mail {} is registered in our db...", email);
+        log.info("\nChecking if mail {} is registered in our db...", email);
         List<UserEntity> user = userRepo.findByEmail(email);
         return user.size() >0;
     }
