@@ -1,5 +1,8 @@
 <template lang="">
-  <div class="flex flex-col justify-center w-full" v-if="isLoaded">
+  <div
+    class="flex flex-col justify-center w-full bg-gradient-to-b from-base-100 to-base-300 bg-opacity-60"
+    v-if="isLoaded"
+  >
     <div
       class="flex flex-row lg:flex-nowrap flex-wrap justify-between max-w-full lg:ml-24 ml-5 pt-10 max-h-40 lg:pb-12 2xl:pb-0 pb-20"
     >
@@ -50,8 +53,8 @@
         </button>
       </div>
     </div>
-    <div class="flex flex-col justify-center items-center w-full">
-      <div role="tablist" class="tabs tabs-boxed w-6/12">
+    <div class="flex flex-col justify-center items-start w-full mt-10">
+      <div role="tablist" class="tabs tabs-boxed tabs-sm w-4/12 lg:ml-14">
         <a
           role="tab"
           :class="['tab', state.selectedTab === 0 ? 'tab-active' : '']"
@@ -71,7 +74,7 @@
           >Calendar</a
         >
       </div>
-      <div class="flex flex-col justify-center items-center w-full mt-10">
+      <div class="flex flex-col justify-center items-center w-full mt-0 pt-5">
         <ProjectList
           v-if="isLoggedIn && state.selectedTab === 0"
           class="lg:mt-0 mt-16"

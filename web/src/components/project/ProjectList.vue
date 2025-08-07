@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="flex flex-col justify-start mx-10 mt-10 min-h-screen">
+  <div class="flex flex-col justify-start mx-10 mt-0 min-h-screen">
     <h1 class="text-2xl font-semibold">Projects:</h1>
     <div
       class="flex flex-row lg:justify-start justify-center flex-wrap gap-2.5 pt-10 pb-5 mx-5"
