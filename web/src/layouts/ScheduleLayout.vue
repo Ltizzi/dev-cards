@@ -1,9 +1,9 @@
 <template>
   <div
-    class="flex flex-col justify-center items-center lg:max-h-screen w-full lg:w-7/12 bg-base-100 rounded-lg gap-5 py-14"
+    class="flex flex-col justify-center items-center lg:max-h-screen w-full bg-base-100 rounded-lg gap-5 pt-10 pb-14"
   >
-    <div class="flex justify-start w-full ml-28">
-      <h1 class="card-title text-start w-full text-3xl font-bold">
+    <div class="flex justify-start w-full ml-20">
+      <h1 class="card-title text-start w-full text-2xl font-semibold">
         Calendario
       </h1>
     </div>
@@ -17,7 +17,7 @@
         <ModularCalendar class="" />
       </div>
 
-      <DaySchedule class="w-full lg:w-9/12" />
+      <DaySchedule class="w-full lg:w-6/12" />
     </div>
   </div>
 </template>

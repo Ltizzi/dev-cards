@@ -1,6 +1,6 @@
 <template lang="">
   <div
-    :class="['mt-10', checkInsideProject() ? 'min-h-screen' : '']"
+    :class="['mt-0', checkInsideProject() ? 'min-h-screen' : '']"
     v-if="isLoaded"
   >
     <div
