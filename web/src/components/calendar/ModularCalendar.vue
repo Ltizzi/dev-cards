@@ -47,6 +47,9 @@
       } else {
         if (selectedMonth.value < 11) {
           selectedMonth.value += 1;
+        } else {
+          selectedYear.value += 1;
+          selectedMonth.value = 0;
         }
       }
     } else {
@@ -55,6 +58,9 @@
       } else {
         if (selectedMonth.value > 0) {
           selectedMonth.value -= 1;
+        } else {
+          selectedYear.value -= 1;
+          selectedMonth.value = 11;
         }
       }
     }
