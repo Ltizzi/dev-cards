@@ -29,25 +29,11 @@
             v-for="hour in hours"
             :key="`grid-${hour}`"
             class="h-16 border-b border-neutral"
-          >
-            <!-- 15-minute subdivisions -->
-            <div
-              class="absolute w-full h-4 border-b border-neutral opacity-50"
-              style="top: 25%"
-            ></div>
-            <div
-              class="absolute w-full h-4 border-b border-neutral opacity-50"
-              style="top: 50%"
-            ></div>
-            <div
-              class="absolute w-full h-4 border-b border-neutral opacity-50"
-              style="top: 75%"
-            ></div>
-          </div>
+          ></div>
 
           <!-- Events -->
           <div
-            v-for="event in events"
+            v-for="event in sortedEvents"
             :key="event.id"
             :style="getEventStyle(event)"
             :class="getEventClass(event)"
@@ -60,9 +46,14 @@
             <div class="text-xs text-base-content opacity-80">
               {{ event.description }}
             </div>
+            <div
+              v-if="event.location"
+              class="text-xs text-base-content opacity-60"
+            >
+              📍 {{ event.location }}
+            </div>
             <div class="text-xs text-base-content opacity-60 mt-1">
-              {{ formatTime(event.startTime) }} -
-              {{ formatTime(event.endTime) }}
+              {{ event.hourRange.start }} - {{ event.hourRange.end }}
             </div>
           </div>
         </div>
@@ -116,13 +107,25 @@
             />
           </div>
 
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-300 mb-2"
+              >Ubicación</label
+            >
+            <input
+              v-model="newEvent.location"
+              type="text"
+              class="w-full bg-gray-700 text-base-content rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Ubicación del evento"
+            />
+          </div>
+
           <div class="grid grid-cols-2 gap-4 mb-4">
             <div>
               <label class="block text-sm font-medium text-gray-300 mb-2"
                 >Hora Inicio</label
               >
               <input
-                v-model="newEvent.startTime"
+                v-model="newEvent.hourRange.start"
                 type="time"
                 step="900"
                 required
@@ -134,7 +137,7 @@
                 >Hora Fin</label
               >
               <input
-                v-model="newEvent.endTime"
+                v-model="newEvent.hourRange.end"
                 type="time"
                 step="900"
                 required
@@ -186,90 +189,80 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, onMounted } from "vue";
-
-  interface Event {
-    id: string;
-    title: string;
-    description: string;
-    startTime: string;
-    endTime: string;
-    color: string;
-  }
+  import { ref, computed, onMounted, watch } from "vue";
+  import {
+    CalendarDay,
+    CalendarItem,
+    UserCalendar,
+    UserLocal,
+  } from "../../utils/types";
 
   interface EventColor {
     name: string;
     bg: string;
   }
 
-  // Reactive data
-  const selectedDate = ref(new Date());
-  const showAddEventModal = ref(false);
-  const events = ref<Event[]>([
-    {
-      id: "1",
-      title: "Moto Track Day",
-      description: "All Motorcycles",
-      startTime: "09:00",
-      endTime: "10:30",
-      color: "purple",
-    },
-    {
-      id: "2",
-      title: "Drift Series Second Round",
-      description: "JDM",
-      startTime: "08:45",
-      endTime: "09:30",
-      color: "purple",
-    },
-    {
-      id: "3",
-      title: "Moto Track Day",
-      description: "All Motorcycles",
-      startTime: "10:00",
-      endTime: "11:15",
-      color: "blue",
-    },
-    {
-      id: "4",
-      title: "Moto Track Day",
-      description: "All Motorcycles",
-      startTime: "10:45",
-      endTime: "11:30",
-      color: "gray",
-    },
-    {
-      id: "5",
-      title: "Moto Track Day",
-      description: "All Motorcycles",
-      startTime: "01:00",
-      endTime: "02:15",
-      color: "green",
-    },
-    {
-      id: "6",
-      title: "Private Event",
-      description: "All Motorcycles",
-      startTime: "02:00",
-      endTime: "03:15",
-      color: "orange",
-    },
-    {
-      id: "7",
-      title: "Drift Series Second Round",
-      description: "All Motorcycles",
-      startTime: "10:45",
-      endTime: "11:30",
-      color: "gray",
-    },
-  ]);
+  // Props
+  interface Props {
+    userCalendar?: UserCalendar;
+    selectedDate?: Date;
+    hourRangeDisplay?: { start: number; end: number };
+  }
 
-  const newEvent = ref<Omit<Event, "id">>({
+  const props = withDefaults(defineProps<Props>(), {
+    selectedDate: () => new Date(),
+    hourRangeDisplay: () => ({ start: 8, end: 20 }),
+  });
+
+  // Reactive data
+  const selectedDate = ref(props.selectedDate);
+  const showAddEventModal = ref(false);
+
+  // Mock user for development
+  const mockUser: UserLocal = {
+    user_id: 1,
+    username: "Usuario Local",
+    local: true,
+    avatar: "",
+  };
+
+  // Local calendar day state
+  const localCalendarDay = ref<CalendarDay>(new Map());
+
+  // Get calendar day for selected date
+  const currentCalendarDay = computed((): CalendarDay => {
+    if (props.userCalendar) {
+      const dateKey = selectedDate.value.toISOString().split("T")[0];
+      const dayFromProps = props.userCalendar.items.get(dateKey);
+      if (dayFromProps) {
+        return dayFromProps;
+      }
+    }
+    return localCalendarDay.value;
+  });
+
+  // Convert CalendarDay Map to array and sort by start time
+  const sortedEvents = computed((): CalendarItem[] => {
+    const eventsArray = Array.from(currentCalendarDay.value.values());
+
+    return eventsArray.sort((a, b) => {
+      const timeA = timeToMinutes(a.hourRange.start);
+      const timeB = timeToMinutes(b.hourRange.start);
+      return timeA - timeB;
+    });
+  });
+
+  const newEvent = ref<
+    Omit<CalendarItem, "id" | "owner" | "created_at" | "updated_at" | "date">
+  >({
     title: "",
     description: "",
-    startTime: "",
-    endTime: "",
+    location: "",
     color: "blue",
+    hourRange: {
+      start: "",
+      end: "",
+    },
   });
 
   // Color options
@@ -282,10 +275,18 @@
     { name: "gray", bg: "bg-gray-600" },
   ];
 
-  // Hours array (24 hour format)
+  // Hours array based on hourRangeDisplay
   const hours = computed(() => {
-    return Array.from({ length: 12 }, (_, i) => i + 8);
+    const start = props.hourRangeDisplay.start;
+    const end = props.hourRangeDisplay.end;
+    return Array.from({ length: end - start + 1 }, (_, i) => i + start);
   });
+
+  // Emit events
+  const emit = defineEmits<{
+    eventAdded: [event: CalendarItem];
+    eventSelected: [event: CalendarItem];
+  }>();
 
   // Helper functions
   const formatDate = (date: Date): string => {
@@ -301,33 +302,33 @@
     return `${hour.toString().padStart(2, "0")}:00`;
   };
 
-  const formatTime = (time: string): string => {
-    return time;
-  };
-
   const timeToMinutes = (time: string): number => {
     const [hours, minutes] = time.split(":").map(Number);
     return hours * 60 + minutes;
   };
 
-  const getEventStyle = (event: Event) => {
-    const startMinutes = timeToMinutes(event.startTime);
-    const endMinutes = timeToMinutes(event.endTime);
+  const getEventStyle = (event: CalendarItem) => {
+    const startMinutes = timeToMinutes(event.hourRange.start);
+    const endMinutes = timeToMinutes(event.hourRange.end);
     const duration = endMinutes - startMinutes;
 
+    // Calculate position relative to display start hour
+    const displayStartMinutes = props.hourRangeDisplay.start * 60;
+    const adjustedStartMinutes = startMinutes - displayStartMinutes;
+
     // Convert to pixels (64px per hour = 1.067px per minute)
-    const topPixels = (startMinutes / 60) * 64;
+    const topPixels = (adjustedStartMinutes / 60) * 64;
     const heightPixels = (duration / 60) * 64;
 
     return {
-      top: `${topPixels}px`,
+      top: `${Math.max(0, topPixels)}px`,
       height: `${heightPixels}px`,
       left: "8px",
       right: "8px",
     };
   };
 
-  const getEventClass = (event: Event): string => {
+  const getEventClass = (event: CalendarItem): string => {
     const colorMap: Record<string, string> = {
       blue: "bg-blue-600",
       purple: "bg-purple-600",
@@ -339,22 +340,53 @@
     return colorMap[event.color] || "bg-blue-600";
   };
 
-  const selectEvent = (event: Event): void => {
-    console.log("Event selected:", event);
+  const selectEvent = (event: CalendarItem): void => {
+    emit("eventSelected", event);
   };
 
   const addEvent = (): void => {
     if (
       newEvent.value.title &&
-      newEvent.value.startTime &&
-      newEvent.value.endTime
+      newEvent.value.hourRange.start &&
+      newEvent.value.hourRange.end &&
+      isValidTimeRange(
+        newEvent.value.hourRange.start,
+        newEvent.value.hourRange.end
+      )
     ) {
-      const event: Event = {
+      const now = new Date();
+      const calendarItem: CalendarItem = {
         ...newEvent.value,
-        id: Date.now().toString(),
+        id: `event-${Date.now()}`,
+        owner: mockUser,
+        created_at: now,
+        updated_at: now,
+        date: selectedDate.value,
       };
-      events.value.push(event);
+
+      // Add to local calendar day
+      localCalendarDay.value.set(calendarItem.hourRange, calendarItem);
+
+      // If we have a userCalendar prop, also update it
+      if (props.userCalendar) {
+        const dateKey = selectedDate.value.toISOString().split("T")[0];
+        let dayMap = props.userCalendar.items.get(dateKey);
+        if (!dayMap) {
+          dayMap = new Map();
+          props.userCalendar.items.set(dateKey, dayMap);
+        }
+        dayMap.set(calendarItem.hourRange, calendarItem);
+      }
+
+      emit("eventAdded", calendarItem);
       closeModal();
+    } else if (
+      !isValidTimeRange(
+        newEvent.value.hourRange.start,
+        newEvent.value.hourRange.end
+      )
+    ) {
+      alert("La hora de fin debe ser posterior a la hora de inicio");
     }
   };
 
@@ -363,13 +395,70 @@
     newEvent.value = {
       title: "",
       description: "",
-      startTime: "",
-      endTime: "",
+      location: "",
       color: "blue",
+      hourRange: {
+        start: "",
+        end: "",
+      },
     };
   };
 
+  // Validation helper
+  const isValidTimeRange = (start: string, end: string): boolean => {
+    return timeToMinutes(end) > timeToMinutes(start);
+  };
+
+  // Watch for changes in selectedDate to load events for that day
+  watch(
+    selectedDate,
+    (newDate) => {
+      if (props.userCalendar) {
+        const dateKey = newDate.toISOString().split("T")[0];
+        const dayFromProps = props.userCalendar.items.get(dateKey);
+        if (dayFromProps) {
+          localCalendarDay.value = new Map(dayFromProps);
+        } else {
+          localCalendarDay.value = new Map();
+        }
+      }
+    },
+    { immediate: true }
+  );
+
   onMounted(() => {
-    // Component mounted
+    // Initialize with some sample events for demonstration
+    if (!props.userCalendar) {
+      const sampleEvents: CalendarItem[] = [
+        {
+          id: "1",
+          owner: mockUser,
+          title: "Moto Track Day",
+          description: "All Motorcycles",
+          location: "Autódromo",
+          hourRange: { start: "09:00", end: "10:30" },
+          color: "purple",
+          created_at: new Date(),
+          updated_at: new Date(),
+          date: selectedDate.value,
+        },
+        {
+          id: "2",
+          owner: mockUser,
+          title: "Drift Series Second Round",
+          description: "JDM",
+          location: "Pista Principal",
+          hourRange: { start: "10:45", end: "12:30" },
+          color: "blue",
+          created_at: new Date(),
+          updated_at: new Date(),
+          date: selectedDate.value,
+        },
+      ];
+
+      sampleEvents.forEach((event) => {
+        localCalendarDay.value.set(event.hourRange, event);
+      });
+    }
   });
 </script>
