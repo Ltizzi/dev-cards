@@ -422,3 +422,9 @@ export interface CalendarItem {
   updated_at: Date;
   date: Date;
 }
+
+export interface DateHelper {
+  day: number;
+  month: number;
+  year: number;
+}
