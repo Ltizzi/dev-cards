@@ -353,9 +353,7 @@
   }
 
   function helperDateToDate(obj: DateHelper) {
-    return obj
-      ? new Date(`${obj.day}/${obj.month}/${obj.year}`)
-      : new Date().toLocaleDateString();
+    return obj ? new Date(`${obj.day}/${obj.month}/${obj.year}`) : new Date();
   }
 
   function addEvent(): void {
