@@ -394,13 +394,13 @@ export interface TaskWithReference {
 export interface UserCalendar {
   calendar_id: string;
   owner: UserLite | UserLocal;
-  items: Map<HourRange, CalendarDay>;
+  items: Map<string, CalendarDay>;
 }
 
 export interface WorkspaceCalendar {
   calendar_id: string;
   workspace: WorkspaceLite;
-  items: Map<HourRange, CalendarDay>;
+  items: Map<string, CalendarDay>;
 }
 
 export interface HourRange {
@@ -421,4 +421,10 @@ export interface CalendarItem {
   created_at: Date;
   updated_at: Date;
   date: Date;
+}
+
+export interface DateHelper {
+  day: number;
+  month: number;
+  year: number;
 }

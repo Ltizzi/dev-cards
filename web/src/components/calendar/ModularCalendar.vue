@@ -32,10 +32,13 @@
 </template>
 <script setup lang="ts">
   import { dateUtils } from "../../utils/date.utils";
+  import { DateHelper } from "../../utils/types";
   import SimpleCalendar from "./SimpleCalendar.vue";
   import { onBeforeMount, ref } from "vue";
 
   const months = dateUtils.months;
+
+  const emit = defineEmits(["setDay"]);
 
   const selectedYear = ref<number>(new Date().getFullYear());
   const selectedMonth = ref<number>(new Date().getMonth());
@@ -66,7 +69,9 @@
     }
   }
 
-  function setDay(obj: Object) {}
+  function setDay(obj: DateHelper) {
+    emit("setDay", obj);
+  }
 
   function setMonth(month: number) {}
 

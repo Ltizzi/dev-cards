@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col justify-center items-center lg:max-h-screen w-full bg-base-100 rounded-lg gap-5 pt-10 pb-14"
+    class="flex flex-col justify-center items-center lg:max-h-screen w-full bg-base-100 rounded-lg gap-5 pt-20 pb-14"
   >
     <div class="flex justify-start w-full ml-20">
       <h1 class="card-title text-start w-full text-2xl font-semibold">
@@ -13,11 +13,11 @@
       <div
         class="flex flex-col justify-between align-top gap-20 py-10 h-full w-full lg:w-3/12"
       >
-        <ModularCalendar class="" />
+        <ModularCalendar class="" @setDay="setDay" />
         <ModularCalendar class="" />
       </div>
 
-      <DaySchedule class="w-full lg:w-6/12" />
+      <DaySchedule class="w-full lg:w-6/12" :selectedDay="selectedDay" />
     </div>
   </div>
 </template>
@@ -25,4 +25,12 @@
 <script setup lang="ts">
   import ModularCalendar from "../components/calendar/ModularCalendar.vue";
   import DaySchedule from "../components/calendar/DaySchedule.vue";
+  import { ref } from "vue";
+  import { DateHelper } from "../utils/types";
+
+  const selectedDay = ref<DateHelper>();
+
+  function setDay(obj: DateHelper) {
+    if (obj) selectedDay.value = obj;
+  }
 </script>
