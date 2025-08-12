@@ -4,7 +4,15 @@
       <!-- Header -->
       <div class="bg-base-100 p-4 text-base-content text-center">
         <h2 class="text-lg font-semibold">Agenda del Día</h2>
-        <p class="text-sm text-base-content">{{ formatDate(selectedDate) }}</p>
+        <p class="text-sm text-base-content" v-if="selectedDay">
+          {{
+            selectedDay?.day +
+            " / " +
+            selectedDay?.month +
+            " / " +
+            selectedDay?.year
+          }}
+        </p>
       </div>
 
       <!-- Time Grid -->
@@ -193,6 +201,7 @@
   import {
     CalendarDay,
     CalendarItem,
+    DateHelper,
     UserCalendar,
     UserLocal,
   } from "../../utils/types";
@@ -205,17 +214,16 @@
   // Props
   interface Props {
     userCalendar?: UserCalendar;
-    selectedDate?: Date;
+    selectedDay?: DateHelper;
     hourRangeDisplay?: { start: number; end: number };
   }
 
   const props = withDefaults(defineProps<Props>(), {
-    selectedDate: () => new Date(),
     hourRangeDisplay: () => ({ start: 8, end: 20 }),
   });
 
   // Reactive data
-  const selectedDate = ref(props.selectedDate);
+  const selectedDate = ref(props.selectedDay);
   const showAddEventModal = ref(false);
 
   // Mock user for development
@@ -232,7 +240,7 @@
   // Get calendar day for selected date
   const currentCalendarDay = computed((): CalendarDay => {
     if (props.userCalendar) {
-      const dateKey = selectedDate.value.toISOString().split("T")[0];
+      const dateKey = ""; //TODO: selectedDate.value.toISOString().split("T")[0];
       const dayFromProps = props.userCalendar.items.get(dateKey);
       if (dayFromProps) {
         return dayFromProps;
@@ -289,25 +297,25 @@
   }>();
 
   // Helper functions
-  const formatDate = (date: Date): string => {
+  function formatDate(date: Date): string {
     return date.toLocaleDateString("es-ES", {
       weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric",
     });
-  };
+  }
 
-  const formatHour = (hour: number): string => {
+  function formatHour(hour: number): string {
     return `${hour.toString().padStart(2, "0")}:00`;
-  };
+  }
 
-  const timeToMinutes = (time: string): number => {
+  function timeToMinutes(time: string): number {
     const [hours, minutes] = time.split(":").map(Number);
     return hours * 60 + minutes;
-  };
+  }
 
-  const getEventStyle = (event: CalendarItem) => {
+  function getEventStyle(event: CalendarItem) {
     const startMinutes = timeToMinutes(event.hourRange.start);
     const endMinutes = timeToMinutes(event.hourRange.end);
     const duration = endMinutes - startMinutes;
@@ -326,9 +334,9 @@
       left: "8px",
       right: "8px",
     };
-  };
+  }
 
-  const getEventClass = (event: CalendarItem): string => {
+  function getEventClass(event: CalendarItem): string {
     const colorMap: Record<string, string> = {
       blue: "bg-blue-600",
       purple: "bg-purple-600",
@@ -338,13 +346,17 @@
       gray: "bg-gray-600",
     };
     return colorMap[event.color] || "bg-blue-600";
-  };
+  }
 
-  const selectEvent = (event: CalendarItem): void => {
+  function selectEvent(event: CalendarItem): void {
     emit("eventSelected", event);
-  };
+  }
 
-  const addEvent = (): void => {
+  function helperDateToDate(obj: DateHelper) {
+    return obj ? new Date(`${obj.day}/${obj.month}/${obj.year}`) : new Date();
+  }
+
+  function addEvent(): void {
     if (
       newEvent.value.title &&
       newEvent.value.hourRange.start &&
@@ -361,7 +373,7 @@
         owner: mockUser,
         created_at: now,
         updated_at: now,
-        date: selectedDate.value,
+        date: helperDateToDate(selectedDate.value as DateHelper),
       };
 
       // Add to local calendar day
@@ -369,7 +381,9 @@
 
       // If we have a userCalendar prop, also update it
       if (props.userCalendar) {
-        const dateKey = selectedDate.value.toISOString().split("T")[0];
+        const dateKey = helperDateToDate(selectedDate.value as DateHelper)
+          .toISOString()
+          .split("T")[0];
         let dayMap = props.userCalendar.items.get(dateKey);
         if (!dayMap) {
           dayMap = new Map();
@@ -388,9 +402,9 @@
     ) {
       alert("La hora de fin debe ser posterior a la hora de inicio");
     }
-  };
+  }
 
-  const closeModal = (): void => {
+  function closeModal(): void {
     showAddEventModal.value = false;
     newEvent.value = {
       title: "",
@@ -402,19 +416,21 @@
         end: "",
       },
     };
-  };
+  }
 
   // Validation helper
-  const isValidTimeRange = (start: string, end: string): boolean => {
+  function isValidTimeRange(start: string, end: string): boolean {
     return timeToMinutes(end) > timeToMinutes(start);
-  };
+  }
 
   // Watch for changes in selectedDate to load events for that day
   watch(
     selectedDate,
     (newDate) => {
       if (props.userCalendar) {
-        const dateKey = newDate.toISOString().split("T")[0];
+        const dateKey = helperDateToDate(newDate as DateHelper)
+          .toISOString()
+          .split("T")[0];
         const dayFromProps = props.userCalendar.items.get(dateKey);
         if (dayFromProps) {
           localCalendarDay.value = new Map(dayFromProps);
@@ -440,7 +456,7 @@
           color: "purple",
           created_at: new Date(),
           updated_at: new Date(),
-          date: selectedDate.value,
+          date: helperDateToDate(selectedDate.value as DateHelper),
         },
         {
           id: "2",
@@ -452,7 +468,7 @@
           color: "blue",
           created_at: new Date(),
           updated_at: new Date(),
-          date: selectedDate.value,
+          date: helperDateToDate(selectedDate.value as DateHelper),
         },
       ];
 
