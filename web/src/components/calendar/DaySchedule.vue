@@ -4,13 +4,13 @@
       <!-- Header -->
       <div class="bg-base-100 p-4 text-base-content text-center">
         <h2 class="text-lg font-semibold">Agenda del Día</h2>
-        <p class="text-sm text-base-content" v-if="selectedDay">
+        <p class="text-sm text-base-content">
           {{
-            selectedDay?.day +
+            selectedDate?.day +
             " / " +
-            selectedDay?.month +
+            selectedDate?.month +
             " / " +
-            selectedDay?.year
+            selectedDate?.year
           }}
         </p>
       </div>
@@ -442,6 +442,15 @@
     { immediate: true }
   );
 
+  watch(
+    () => props.selectedDay,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        selectedDate.value = newValue;
+      }
+    }
+  );
+
   onMounted(() => {
     // Initialize with some sample events for demonstration
     if (!props.userCalendar) {
@@ -471,6 +480,16 @@
           date: helperDateToDate(selectedDate.value as DateHelper),
         },
       ];
+
+      if (!props.selectedDay) {
+        const date = new Date();
+        const actualDate: DateHelper = {
+          day: date.getDate(),
+          month: date.getMonth(),
+          year: date.getFullYear(),
+        };
+        selectedDate.value = actualDate;
+      }
 
       sampleEvents.forEach((event) => {
         localCalendarDay.value.set(event.hourRange, event);
