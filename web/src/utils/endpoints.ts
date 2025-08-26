@@ -72,4 +72,15 @@ export enum EndpointType {
   CONFIG_REMOVE_TAG = "/config/deleteTag",
   CONFIG_UPDATE_TAG = "/config/updateTag",
   CONFIG_UPDATE_THEME = "/config/theme",
+
+  CALENDAR_USER_BY_ID = "/calendar/userById",
+  CALENDAR_WS_BY_ID = "/calendar/wsById",
+  CALENDAR_USER_BY_USER_ID = "/calendar/byUserId",
+  CALENDAR_WS_BY_WS_ID = "/calendar/byWsId",
+  CALENDAR_USER_ADD_ITEM = "/calendar/userAddItem",
+  CALENDAR_USER_UPDATE_ITEM = "/calendar/userUpdateItem",
+  CALENDAR_USER_REMOVE_ITEM = "/calendar/userRemoveItem",
+  CALENDAR_WS_ADD_ITEM = "/calendar/wsAddItem",
+  CALENDAR_WS_UPDATE_ITEM = "/calendar/wsUpdateItem",
+  CALENDAR_WS_REMOVE_ITEM = "/calendar/wsRemoveItem",
 }
