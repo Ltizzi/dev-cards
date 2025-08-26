@@ -32,11 +32,19 @@
 </template>
 <script setup lang="ts">
   import { dateUtils } from "../../utils/date.utils";
-  import { DateHelper } from "../../utils/types";
+  import {
+    DateHelper,
+    UserCalendar,
+    WorkspaceCalendar,
+  } from "../../utils/types";
   import SimpleCalendar from "./SimpleCalendar.vue";
   import { onBeforeMount, ref } from "vue";
 
   const months = dateUtils.months;
+
+  const props = defineProps<{
+    calendar: UserCalendar | WorkspaceCalendar | undefined;
+  }>();
 
   const emit = defineEmits(["setDay"]);
 

@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -64,7 +65,12 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public UserCalendarDTO getUserCalendarByUserId(Long id) throws NotFoundException {
         log.info("\nGetting User's Calendar by User id: {}", id);
-        UserCalendarEntity userCalendar = userCalRepo.findCalendarByUserId(id).getFirst();
+       // UserCalendarEntity userCalendar = userCalRepo.findCalendarByUserId(id).getFirst();
+        List<UserCalendarEntity> calendars = userCalRepo.findCalendarByUserId(id);
+        UserCalendarEntity userCalendar = null;
+        if(!calendars.isEmpty()){
+            userCalendar = calendars.getFirst();
+        }
 
         if(userCalendar == null){
             //throw  new NotFoundException("Calendar not found!");
@@ -85,7 +91,12 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public WorkspaceCalendarDTO getWorkspaceCalendarByWsId(Long id) throws NotFoundException {
-        WorkspaceCalendarEntity wsCalendar = wsCalRepo.findCalendarByWorkspaceId(id).getFirst();
+        //WorkspaceCalendarEntity wsCalendar = wsCalRepo.findCalendarByWorkspaceId(id).getFirst();
+        List<WorkspaceCalendarEntity> calendars = wsCalRepo.findCalendarByWorkspaceId(id);
+        WorkspaceCalendarEntity wsCalendar = null;
+        if(!calendars.isEmpty()){
+            wsCalendar = calendars.getFirst();
+        }
         log.info("\nGetting the calendar of the Workspace with id: {}", id);
         if(wsCalendar == null){
             //throw  new NotFoundException("Calendar not found!");

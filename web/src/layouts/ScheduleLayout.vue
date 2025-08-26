@@ -13,8 +13,8 @@
       <div
         class="flex flex-col justify-between align-top gap-20 py-10 h-full w-full lg:w-3/12"
       >
-        <ModularCalendar class="" @setDay="setDay" />
-        <ModularCalendar class="" />
+        <ModularCalendar class="" @setDay="setDay" :calendar="calendar" />
+        <ModularCalendar class="" :calendar="calendar" />
       </div>
 
       <DaySchedule class="w-full lg:w-6/12" :selectedDay="selectedDay" />
@@ -25,12 +25,21 @@
 <script setup lang="ts">
   import ModularCalendar from "../components/calendar/ModularCalendar.vue";
   import DaySchedule from "../components/calendar/DaySchedule.vue";
-  import { ref } from "vue";
-  import { DateHelper } from "../utils/types";
+  import { ref, onBeforeMount } from "vue";
+  import { DateHelper, UserCalendar, WorkspaceCalendar } from "../utils/types";
+  import { useCalendarStore } from "../store/calendar.store";
+
+  const calendarStore = useCalendarStore();
+
+  const calendar = ref<UserCalendar | WorkspaceCalendar>();
 
   const selectedDay = ref<DateHelper>();
 
   function setDay(obj: DateHelper) {
     if (obj) selectedDay.value = obj;
   }
+
+  onBeforeMount(async () => {
+    calendar.value = await calendarStore.getUserCalendar();
+  });
 </script>

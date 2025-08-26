@@ -16,6 +16,6 @@ import java.util.UUID;
 @Repository
 public interface UserCalendarRepository extends JpaRepository<UserCalendarEntity, UUID> {
 
-    @Query("SELECT uc FROM UserCalendarEntity uc WHERE uc.owner = :user_id")
+    @Query("SELECT uc FROM UserCalendarEntity uc WHERE uc.owner.user_id = :user_id")
     public abstract List<UserCalendarEntity> findCalendarByUserId(@Param("user_id")Long user_id);
 }

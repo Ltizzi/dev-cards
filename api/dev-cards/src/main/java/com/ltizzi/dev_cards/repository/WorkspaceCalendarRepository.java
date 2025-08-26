@@ -15,6 +15,6 @@ import java.util.UUID;
 
 public interface WorkspaceCalendarRepository extends JpaRepository<WorkspaceCalendarEntity, UUID> {
 
-    @Query("SELECT wc FROM WorkspaceCalendarEntity wc WHERE wc.workspace = :workspace_id")
+    @Query("SELECT wc FROM WorkspaceCalendarEntity wc WHERE wc.workspace.workspace_id = :workspace_id")
     List<WorkspaceCalendarEntity> findCalendarByWorkspaceId(@Param("workspace_id")Long workspace_id);
 }
