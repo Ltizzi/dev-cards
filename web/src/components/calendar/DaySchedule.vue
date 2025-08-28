@@ -454,32 +454,32 @@
   onMounted(() => {
     // Initialize with some sample events for demonstration
     if (!props.userCalendar) {
-      const sampleEvents: CalendarItem[] = [
-        {
-          id: "1",
-          owner: mockUser,
-          title: "Moto Track Day",
-          description: "All Motorcycles",
-          location: "Autódromo",
-          hourRange: { start: "09:00", end: "10:30" },
-          color: "purple",
-          created_at: new Date(),
-          updated_at: new Date(),
-          date: helperDateToDate(selectedDate.value as DateHelper),
-        },
-        {
-          id: "2",
-          owner: mockUser,
-          title: "Drift Series Second Round",
-          description: "JDM",
-          location: "Pista Principal",
-          hourRange: { start: "10:45", end: "12:30" },
-          color: "blue",
-          created_at: new Date(),
-          updated_at: new Date(),
-          date: helperDateToDate(selectedDate.value as DateHelper),
-        },
-      ];
+      // const sampleEvents: CalendarItem[] = [
+      //   {
+      //     id: "1",
+      //     owner: mockUser,
+      //     title: "Moto Track Day",
+      //     description: "All Motorcycles",
+      //     location: "Autódromo",
+      //     hourRange: { start: "09:00", end: "10:30" },
+      //     color: "purple",
+      //     created_at: new Date(),
+      //     updated_at: new Date(),
+      //     date: helperDateToDate(selectedDate.value as DateHelper),
+      //   },
+      //   {
+      //     id: "2",
+      //     owner: mockUser,
+      //     title: "Drift Series Second Round",
+      //     description: "JDM",
+      //     location: "Pista Principal",
+      //     hourRange: { start: "10:45", end: "12:30" },
+      //     color: "blue",
+      //     created_at: new Date(),
+      //     updated_at: new Date(),
+      //     date: helperDateToDate(selectedDate.value as DateHelper),
+      //   },
+      // ];
 
       if (!props.selectedDay) {
         const date = new Date();
@@ -491,9 +491,9 @@
         selectedDate.value = actualDate;
       }
 
-      sampleEvents.forEach((event) => {
-        localCalendarDay.value.set(event.hourRange, event);
-      });
+      // sampleEvents.forEach((event) => {
+      //   localCalendarDay.value.set(event.hourRange, event);
+      // });
     }
   });
 </script>
