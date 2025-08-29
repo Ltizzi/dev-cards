@@ -1,9 +1,15 @@
 import { defineStore } from "pinia";
 import { useApiCall } from "../composables/useAPICall";
-import { UserCalendar, WorkspaceCalendar } from "../utils/types";
+import {
+  APIResponse,
+  CalendarItem,
+  UserCalendar,
+  WorkspaceCalendar,
+} from "../utils/types";
 import { useUIStore } from "./ui.store";
 import { useUserStore } from "./user.store";
 import { EndpointType } from "../utils/endpoints";
+import { utils } from "../utils/utils";
 
 const apiCall = useApiCall();
 
@@ -84,6 +90,83 @@ export const useCalendarStore = defineStore("calendars", {
       return JSON.parse(
         localStorage.getItem("local_users_calendars") as string
       ) as UserCalendar[];
+    },
+    async addItemToUserCalendar(calendar_id: string, item: CalendarItem) {
+      this.checkOfflineMode();
+      const userStore = useUserStore();
+      const user = userStore.getCurrent();
+      if (this.offlineMode) {
+        const calendar =
+          this.getLocalStorageUserCalendarByCalendarId(calendar_id);
+        item.id = utils.generateUUID();
+        item.created_at = new Date();
+        item.updated_at = new Date();
+        //TODO: local save flow
+      } else {
+        const response = (await apiCall.post(
+          EndpointType.CALENDAR_USER_ADD_ITEM,
+          item,
+          {
+            params: {
+              calendar_id: calendar_id,
+              user_id: user.user_id,
+            },
+          }
+        )) as UserCalendar;
+        if (response.calendar_id === this.userCalendar.calendar_id) {
+          this.setUserCalendar(response);
+          return this.userCalendar;
+        }
+      }
+    },
+    async updateUserCalendarItem(calendar_id: string, item: CalendarItem) {
+      this.checkOfflineMode();
+      const userStore = useUserStore();
+      const user = userStore.getCurrent();
+      if (this.offlineMode) {
+        //TODO: local update user calendar item workflow
+      } else {
+        const response = (await apiCall.patch(
+          EndpointType.CALENDAR_USER_UPDATE_ITEM,
+          item,
+          {
+            params: {
+              calendar_id: calendar_id,
+              user_id: user.user_id,
+            },
+          }
+        )) as CalendarItem;
+        if (response.id === item.id) {
+          this.userCalendar = (await this.getUserCalendarById(
+            calendar_id
+          )) as UserCalendar;
+          return response;
+        }
+      }
+    },
+    async removeItemFromUserCalendar(
+      calendar_id: string,
+      calendarItemId: string
+    ) {
+      this.checkOfflineMode();
+      const userStore = useUserStore();
+      const user = userStore.getCurrent();
+      if (this.offlineMode) {
+        //TODO: local remove item from user calendar workflow
+      } else {
+        const response = (await apiCall.del(
+          EndpointType.CALENDAR_USER_REMOVE_ITEM,
+          { params: { calendar_id: calendarItemId, user_id: user.user_id } }
+        )) as APIResponse;
+        let res = response.message.split("-")[0];
+        if (res.toLowerCase() === "ok") {
+          const updatedCalendar = (await this.getUserCalendarById(
+            calendar_id
+          )) as UserCalendar;
+          this.setUserCalendar(updatedCalendar);
+          return this.userCalendar;
+        }
+      }
     },
   },
 });
