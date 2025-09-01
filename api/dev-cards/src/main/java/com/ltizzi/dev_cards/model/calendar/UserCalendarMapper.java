@@ -40,14 +40,14 @@ public class UserCalendarMapper {
         dto.setCalendar_id(uc.getCalendar_id());
         dto.setOwner(userMapper.toUserLiteDTO(uc.getOwner()));
 
-        Map<String, Map<HourRange, CalendarItemDTO>> items = new HashMap<>();
+        Map<String, Map<String, CalendarItemDTO>> items = new HashMap<>();
 
         items = uc.getItems()
                 .stream()
                 .collect(Collectors.groupingBy(
                         CalendarItemEntity::getDate,
                         Collectors.toMap(
-                                CalendarItemEntity::getHourRange,
+                                CalendarItemEntity::getHourRangeString,
                                 item->itemMapper.toCalendarItemDTO(item)
                         )
                 ));
@@ -66,11 +66,10 @@ public class UserCalendarMapper {
                 .stream()
                 .flatMap(entry->{
                     String date = entry.getKey();
-                    Map<HourRange, CalendarItemDTO> innermap = entry.getValue();
-                    return innermap.entrySet()
+                    Map<String, CalendarItemDTO> innermap = entry.getValue();
+                    return innermap.values()
                             .stream()
-                            .map(innerEntry->{
-                                CalendarItemDTO ciDto = innerEntry.getValue();
+                            .map(ciDto -> {
                                 try {
                                     return itemMapper.toCalendarItemEntity(ciDto);
                                 } catch (NotFoundException e) {

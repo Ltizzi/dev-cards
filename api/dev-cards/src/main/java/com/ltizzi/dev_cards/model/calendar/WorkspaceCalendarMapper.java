@@ -39,12 +39,12 @@ public class WorkspaceCalendarMapper {
         dto.setCalendar_id(wsCalendar.getCalendar_id());
         dto.setWorkspace(wsMapper.toWorkspaceLiteDTO(wsCalendar.getWorkspace()));
 
-        Map<String, Map<HourRange, CalendarItemDTO>> items =  wsCalendar.getItems()
+        Map<String, Map<String, CalendarItemDTO>> items =  wsCalendar.getItems()
                 .stream()
                 .collect(Collectors.groupingBy(
                         CalendarItemEntity::getDate,
                         Collectors.toMap(
-                                CalendarItemEntity::getHourRange,
+                                CalendarItemEntity::getHourRangeString,
                                 item->itemMapper.toCalendarItemDTO(item)
                         )
                 ));
@@ -63,12 +63,11 @@ public class WorkspaceCalendarMapper {
                 .stream()
                 .flatMap(entry->{
                     String date = entry.getKey();
-                    Map<HourRange, CalendarItemDTO> innermap = entry.getValue();
-                    return innermap.entrySet()
+                    Map<String, CalendarItemDTO> innermap = entry.getValue();
+                    return innermap.values()
                             .stream()
-                            .map(innerEntry->{
-                                CalendarItemDTO ciDTO = innerEntry.getValue();
-                                try{
+                            .map(ciDTO -> {
+                                try {
                                     return itemMapper.toCalendarItemEntity(ciDTO);
                                 } catch (NotFoundException e) {
                                     throw new RuntimeException(e);
