@@ -377,7 +377,9 @@
       };
 
       // Add to local calendar day
-      localCalendarDay.value.set(calendarItem.hourRange, calendarItem);
+      const hourRange =
+        calendarItem.hourRange.start + "|" + calendarItem.hourRange.end;
+      localCalendarDay.value.set(hourRange, calendarItem);
 
       // If we have a userCalendar prop, also update it
       if (props.userCalendar) {
@@ -389,7 +391,7 @@
           dayMap = new Map();
           props.userCalendar.items.set(dateKey, dayMap);
         }
-        dayMap.set(calendarItem.hourRange, calendarItem);
+        dayMap.set(hourRange, calendarItem);
       }
 
       emit("eventAdded", calendarItem);
