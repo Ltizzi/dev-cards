@@ -4,13 +4,13 @@
       <!-- Header -->
       <div class="bg-base-100 p-4 text-base-content text-center">
         <h2 class="text-lg font-semibold">Agenda del Día</h2>
-        <p class="text-sm text-base-content" v-if="selectedDay">
+        <p class="text-sm text-base-content">
           {{
-            selectedDay?.day +
+            selectedDate?.day +
             " / " +
-            selectedDay?.month +
+            selectedDate?.month +
             " / " +
-            selectedDay?.year
+            selectedDate?.year
           }}
         </p>
       </div>
@@ -215,6 +215,7 @@
   interface Props {
     userCalendar?: UserCalendar;
     selectedDay?: DateHelper;
+    calendarDay?: CalendarDay;
     hourRangeDisplay?: { start: number; end: number };
   }
 
@@ -377,7 +378,9 @@
       };
 
       // Add to local calendar day
-      localCalendarDay.value.set(calendarItem.hourRange, calendarItem);
+      const hourRange =
+        calendarItem.hourRange.start + "|" + calendarItem.hourRange.end;
+      localCalendarDay.value.set(hourRange, calendarItem);
 
       // If we have a userCalendar prop, also update it
       if (props.userCalendar) {
@@ -389,7 +392,7 @@
           dayMap = new Map();
           props.userCalendar.items.set(dateKey, dayMap);
         }
-        dayMap.set(calendarItem.hourRange, calendarItem);
+        dayMap.set(hourRange, calendarItem);
       }
 
       emit("eventAdded", calendarItem);
@@ -442,39 +445,59 @@
     { immediate: true }
   );
 
+  watch(
+    () => props.selectedDay,
+    (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        selectedDate.value = newValue;
+      }
+    }
+  );
+
   onMounted(() => {
     // Initialize with some sample events for demonstration
     if (!props.userCalendar) {
-      const sampleEvents: CalendarItem[] = [
-        {
-          id: "1",
-          owner: mockUser,
-          title: "Moto Track Day",
-          description: "All Motorcycles",
-          location: "Autódromo",
-          hourRange: { start: "09:00", end: "10:30" },
-          color: "purple",
-          created_at: new Date(),
-          updated_at: new Date(),
-          date: helperDateToDate(selectedDate.value as DateHelper),
-        },
-        {
-          id: "2",
-          owner: mockUser,
-          title: "Drift Series Second Round",
-          description: "JDM",
-          location: "Pista Principal",
-          hourRange: { start: "10:45", end: "12:30" },
-          color: "blue",
-          created_at: new Date(),
-          updated_at: new Date(),
-          date: helperDateToDate(selectedDate.value as DateHelper),
-        },
-      ];
+      // const sampleEvents: CalendarItem[] = [
+      //   {
+      //     id: "1",
+      //     owner: mockUser,
+      //     title: "Moto Track Day",
+      //     description: "All Motorcycles",
+      //     location: "Autódromo",
+      //     hourRange: { start: "09:00", end: "10:30" },
+      //     color: "purple",
+      //     created_at: new Date(),
+      //     updated_at: new Date(),
+      //     date: helperDateToDate(selectedDate.value as DateHelper),
+      //   },
+      //   {
+      //     id: "2",
+      //     owner: mockUser,
+      //     title: "Drift Series Second Round",
+      //     description: "JDM",
+      //     location: "Pista Principal",
+      //     hourRange: { start: "10:45", end: "12:30" },
+      //     color: "blue",
+      //     created_at: new Date(),
+      //     updated_at: new Date(),
+      //     date: helperDateToDate(selectedDate.value as DateHelper),
+      //   },
+      // ];
 
-      sampleEvents.forEach((event) => {
-        localCalendarDay.value.set(event.hourRange, event);
-      });
+      if (!props.selectedDay) {
+        const date = new Date();
+        const actualDate: DateHelper = {
+          day: date.getDate(),
+          month: date.getMonth(),
+          year: date.getFullYear(),
+        };
+        selectedDate.value = actualDate;
+      }
+
+      // sampleEvents.forEach((event) => {
+      //   localCalendarDay.value.set(event.hourRange, event);
+      // });
     }
+    if (props.calendarDay) localCalendarDay.value = props.calendarDay;
   });
 </script>

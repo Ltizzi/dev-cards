@@ -74,6 +74,9 @@ public class CalendarItemEntity {
         return this;
     }
 
+    public String getHourRangeString(){
+        return this.hourRange.getStart_at()+ "|"+ this.hourRange.getEnd_at();
+    }
 
 
 }

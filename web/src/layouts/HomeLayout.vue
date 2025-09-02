@@ -86,7 +86,7 @@
           :isLoggedIn="isLoggedIn"
           v-if="isLoaded && state.selectedTab === 1"
         />
-        <ScheduleLayout v-if="state.selectedTab === 2" />
+        <ScheduleLayout v-if="state.selectedTab === 2" :isUserCalendar="true" />
       </div>
     </div>
   </div>

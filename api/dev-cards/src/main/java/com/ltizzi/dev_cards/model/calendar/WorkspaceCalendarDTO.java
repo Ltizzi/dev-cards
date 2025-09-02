@@ -18,5 +18,5 @@ public class WorkspaceCalendarDTO {
 
     private UUID calendar_id;
     private WorkspaceLiteDTO workspace;
-    private Map<String, Map<HourRange, CalendarItemDTO>> items;
+    private Map<String, Map<String, CalendarItemDTO>> items;
 }

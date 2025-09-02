@@ -408,7 +408,7 @@ export interface HourRange {
   end: string;
 }
 
-export type CalendarDay = Map<HourRange, CalendarItem>;
+export type CalendarDay = Map<string, CalendarItem>;
 
 export interface CalendarItem {
   id: string;
