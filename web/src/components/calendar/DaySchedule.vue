@@ -215,6 +215,7 @@
   interface Props {
     userCalendar?: UserCalendar;
     selectedDay?: DateHelper;
+    calendarDay?: CalendarDay;
     hourRangeDisplay?: { start: number; end: number };
   }
 
@@ -497,5 +498,6 @@
       //   localCalendarDay.value.set(event.hourRange, event);
       // });
     }
+    if (props.calendarDay) localCalendarDay.value = props.calendarDay;
   });
 </script>

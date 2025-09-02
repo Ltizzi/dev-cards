@@ -17,7 +17,11 @@
         <ModularCalendar class="" :calendar="calendar" />
       </div>
 
-      <DaySchedule class="w-full lg:w-6/12" :selectedDay="selectedDay" />
+      <DaySchedule
+        class="w-full lg:w-6/12"
+        :selectedDay="selectedDay"
+        :calendarDay="calendarDay"
+      />
     </div>
   </div>
 </template>
@@ -26,8 +30,15 @@
   import ModularCalendar from "../components/calendar/ModularCalendar.vue";
   import DaySchedule from "../components/calendar/DaySchedule.vue";
   import { ref, onBeforeMount } from "vue";
-  import { DateHelper, UserCalendar, WorkspaceCalendar } from "../utils/types";
+  import {
+    CalendarDay,
+    DateHelper,
+    UserCalendar,
+    WorkspaceCalendar,
+  } from "../utils/types";
   import { useCalendarStore } from "../store/calendar.store";
+
+  const props = defineProps<{ isUserCalendar: boolean }>();
 
   const calendarStore = useCalendarStore();
 
@@ -35,11 +46,18 @@
 
   const selectedDay = ref<DateHelper>();
 
+  const calendarDay = ref<CalendarDay>();
+
   function setDay(obj: DateHelper) {
-    if (obj) selectedDay.value = obj;
+    if (obj) {
+      const selectedDayString = obj.year + "/" + obj.month + "/" + obj.day;
+      calendarDay.value = calendar.value?.items.get(selectedDayString);
+      selectedDay.value = obj;
+    }
   }
 
   onBeforeMount(async () => {
-    calendar.value = await calendarStore.getUserCalendar();
+    if (props.isUserCalendar)
+      calendar.value = await calendarStore.getUserCalendar();
   });
 </script>
