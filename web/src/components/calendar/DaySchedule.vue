@@ -371,7 +371,19 @@
   //     const calendarItem: CalendarItem = {
   //       ...newEvent.value,
   //       id: `event-${Date.now()}`,
-  //       owner: mockUser,
+  //       owner: mockUser,  if (props.userCalendar) {
+  //     const dateKey = helperDateToDate(props.selectedDate as DateHelper)
+  //       .toISOString()
+  //       .split("T")[0];
+  //     let dayMap = props.userCalendar.items.get(dateKey);
+  //     if (!dayMap) {
+  //       dayMap = new Map();
+  //       props.userCalendar.items.set(dateKey, dayMap);
+  //     }
+  //     dayMap.set(hourRange, calendarItem);
+  //   }
+
+  //   emit("eventAdded", calendarItem);
   //       created_at: now,
   //       updated_at: now,
   //       date: helperDateToDate(selectedDate.value as DateHelper),
@@ -409,16 +421,16 @@
 
   function closeModal(): void {
     showAddEventModal.value = false;
-    newEvent.value = {
-      title: "",
-      description: "",
-      location: "",
-      color: "blue",
-      hourRange: {
-        start: "",
-        end: "",
-      },
-    };
+    // newEvent.value = {
+    //   title: "",
+    //   description: "",
+    //   location: "",
+    //   color: "blue",
+    //   hourRange: {
+    //     start: "",
+    //     end: "",
+    //   },
+    // };
   }
 
   // // Validation helper
