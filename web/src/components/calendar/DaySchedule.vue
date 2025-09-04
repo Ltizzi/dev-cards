@@ -79,7 +79,7 @@
     </div>
 
     <!-- Add Event Modal -->
-    <div
+    <!-- <div
       v-if="showAddEventModal"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
       @click="closeModal"
@@ -192,7 +192,7 @@
           </div>
         </form>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -206,10 +206,10 @@
     UserLocal,
   } from "../../utils/types";
 
-  interface EventColor {
-    name: string;
-    bg: string;
-  }
+  // interface EventColor {
+  //   name: string;
+  //   bg: string;
+  // }
 
   // Props
   interface Props {
@@ -261,28 +261,28 @@
     });
   });
 
-  const newEvent = ref<
-    Omit<CalendarItem, "id" | "owner" | "created_at" | "updated_at" | "date">
-  >({
-    title: "",
-    description: "",
-    location: "",
-    color: "blue",
-    hourRange: {
-      start: "",
-      end: "",
-    },
-  });
+  // const newEvent = ref<
+  //   Omit<CalendarItem, "id" | "owner" | "created_at" | "updated_at" | "date">
+  // >({
+  //   title: "",
+  //   description: "",
+  //   location: "",
+  //   color: "blue",
+  //   hourRange: {
+  //     start: "",
+  //     end: "",
+  //   },
+  // });
 
   // Color options
-  const eventColors: EventColor[] = [
-    { name: "blue", bg: "bg-blue-600" },
-    { name: "purple", bg: "bg-purple-600" },
-    { name: "green", bg: "bg-green-600" },
-    { name: "orange", bg: "bg-orange-600" },
-    { name: "red", bg: "bg-red-600" },
-    { name: "gray", bg: "bg-gray-600" },
-  ];
+  // const eventColors: EventColor[] = [
+  //   { name: "blue", bg: "bg-blue-600" },
+  //   { name: "purple", bg: "bg-purple-600" },
+  //   { name: "green", bg: "bg-green-600" },
+  //   { name: "orange", bg: "bg-orange-600" },
+  //   { name: "red", bg: "bg-red-600" },
+  //   { name: "gray", bg: "bg-gray-600" },
+  // ];
 
   // Hours array based on hourRangeDisplay
   const hours = computed(() => {
@@ -357,55 +357,55 @@
     return obj ? new Date(`${obj.day}/${obj.month}/${obj.year}`) : new Date();
   }
 
-  function addEvent(): void {
-    if (
-      newEvent.value.title &&
-      newEvent.value.hourRange.start &&
-      newEvent.value.hourRange.end &&
-      isValidTimeRange(
-        newEvent.value.hourRange.start,
-        newEvent.value.hourRange.end
-      )
-    ) {
-      const now = new Date();
-      const calendarItem: CalendarItem = {
-        ...newEvent.value,
-        id: `event-${Date.now()}`,
-        owner: mockUser,
-        created_at: now,
-        updated_at: now,
-        date: helperDateToDate(selectedDate.value as DateHelper),
-      };
+  // function addEvent(): void {
+  //   if (
+  //     newEvent.value.title &&
+  //     newEvent.value.hourRange.start &&
+  //     newEvent.value.hourRange.end &&
+  //     isValidTimeRange(
+  //       newEvent.value.hourRange.start,
+  //       newEvent.value.hourRange.end
+  //     )
+  //   ) {
+  //     const now = new Date();
+  //     const calendarItem: CalendarItem = {
+  //       ...newEvent.value,
+  //       id: `event-${Date.now()}`,
+  //       owner: mockUser,
+  //       created_at: now,
+  //       updated_at: now,
+  //       date: helperDateToDate(selectedDate.value as DateHelper),
+  //     };
 
-      // Add to local calendar day
-      const hourRange =
-        calendarItem.hourRange.start + "|" + calendarItem.hourRange.end;
-      localCalendarDay.value.set(hourRange, calendarItem);
+  //     // Add to local calendar day
+  //     const hourRange =
+  //       calendarItem.hourRange.start + "|" + calendarItem.hourRange.end;
+  //     localCalendarDay.value.set(hourRange, calendarItem);
 
-      // If we have a userCalendar prop, also update it
-      if (props.userCalendar) {
-        const dateKey = helperDateToDate(selectedDate.value as DateHelper)
-          .toISOString()
-          .split("T")[0];
-        let dayMap = props.userCalendar.items.get(dateKey);
-        if (!dayMap) {
-          dayMap = new Map();
-          props.userCalendar.items.set(dateKey, dayMap);
-        }
-        dayMap.set(hourRange, calendarItem);
-      }
+  //     // If we have a userCalendar prop, also update it
+  //     if (props.userCalendar) {
+  //       const dateKey = helperDateToDate(selectedDate.value as DateHelper)
+  //         .toISOString()
+  //         .split("T")[0];
+  //       let dayMap = props.userCalendar.items.get(dateKey);
+  //       if (!dayMap) {
+  //         dayMap = new Map();
+  //         props.userCalendar.items.set(dateKey, dayMap);
+  //       }
+  //       dayMap.set(hourRange, calendarItem);
+  //     }
 
-      emit("eventAdded", calendarItem);
-      closeModal();
-    } else if (
-      !isValidTimeRange(
-        newEvent.value.hourRange.start,
-        newEvent.value.hourRange.end
-      )
-    ) {
-      alert("La hora de fin debe ser posterior a la hora de inicio");
-    }
-  }
+  //     emit("eventAdded", calendarItem);
+  //     closeModal();
+  //   } else if (
+  //     !isValidTimeRange(
+  //       newEvent.value.hourRange.start,
+  //       newEvent.value.hourRange.end
+  //     )
+  //   ) {
+  //     alert("La hora de fin debe ser posterior a la hora de inicio");
+  //   }
+  // }
 
   function closeModal(): void {
     showAddEventModal.value = false;
@@ -421,10 +421,10 @@
     };
   }
 
-  // Validation helper
-  function isValidTimeRange(start: string, end: string): boolean {
-    return timeToMinutes(end) > timeToMinutes(start);
-  }
+  // // Validation helper
+  // function isValidTimeRange(start: string, end: string): boolean {
+  //   return timeToMinutes(end) > timeToMinutes(start);
+  // }
 
   // Watch for changes in selectedDate to load events for that day
   watch(
