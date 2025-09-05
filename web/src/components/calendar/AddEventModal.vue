@@ -1,10 +1,14 @@
 <template>
   <div
-    v-if="showAddEventModal"
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
     @click="closeModal"
   >
-    <div class="bg-neutral rounded-lg p-6 w-full max-w-md" @click.stop>
+    <div
+      class="bg-neutral rounded-lg p-6 w-full max-w-md"
+      @click.stop
+      @keydown.escape="closeModal"
+      tabindex="0"
+    >
       <h3 class="text-lg font-semibold text-base-content mb-4">Nuevo Evento</h3>
 
       <form @submit.prevent="addEvent">
@@ -121,7 +125,7 @@
 
   const props = defineProps<{
     showAddEventModal: boolean;
-    selectedDate: DateHelper;
+    selectedDate: DateHelper | undefined;
     dateString: string;
   }>();
 
@@ -167,6 +171,7 @@
         end: "",
       },
     };
+    emit("closeModal");
   }
 
   // Validation helper
