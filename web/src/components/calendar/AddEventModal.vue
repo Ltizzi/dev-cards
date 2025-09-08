@@ -83,16 +83,16 @@
           <div class="grid grid-cols-6 gap-2">
             <button
               v-for="color in eventColors"
-              :key="color.name"
+              :key="color"
               type="button"
               :class="[
-                color.bg,
+                taskUtils.getColor(color),
                 'w-8 h-8 rounded-full border-2',
-                newEvent.color === color.name
+                newEvent.color === color
                   ? 'border-white'
                   : 'border-transparent',
               ]"
-              @click="newEvent.color = color.name"
+              @click="newEvent.color = color"
             ></button>
           </div>
         </div>
@@ -118,8 +118,14 @@
 </template>
 <script setup lang="ts">
   import { ref } from "vue";
-  import { CalendarDay, CalendarItem, DateHelper } from "../../utils/types";
+  import {
+    CalendarDay,
+    CalendarItem,
+    ColorEnumArray,
+    DateHelper,
+  } from "../../utils/types";
   import { useUserStore } from "../../store/user.store";
+  import { taskUtils } from "../../utils/task.utils";
 
   const userStore = useUserStore();
 
@@ -131,19 +137,21 @@
 
   const emit = defineEmits(["closeModal", "update"]);
 
-  interface EventColor {
-    name: string;
-    bg: string;
-  }
+  // interface EventColor {
+  //   name: string;
+  //   bg: string;
+  // }
 
-  const eventColors: EventColor[] = [
-    { name: "blue", bg: "bg-blue-600" },
-    { name: "purple", bg: "bg-purple-600" },
-    { name: "green", bg: "bg-green-600" },
-    { name: "orange", bg: "bg-orange-600" },
-    { name: "red", bg: "bg-red-600" },
-    { name: "gray", bg: "bg-gray-600" },
-  ];
+  // const eventColors: EventColor[] = [
+  //   { name: "blue", bg: "bg-blue-600" },
+  //   { name: "purple", bg: "bg-purple-600" },
+  //   { name: "green", bg: "bg-green-600" },
+  //   { name: "orange", bg: "bg-orange-600" },
+  //   { name: "red", bg: "bg-red-600" },
+  //   { name: "gray", bg: "bg-gray-600" },
+  // ];
+
+  const eventColors = ColorEnumArray;
 
   const newEvent = ref<
     Omit<CalendarItem, "id" | "owner" | "created_at" | "updated_at" | "date">
