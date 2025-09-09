@@ -84,6 +84,7 @@
       :selected-date="selectedDate"
       :date-string="generateDateString(selectedDate as DateHelper)"
       @close-modal="closeModal"
+      @update="updateCalendar"
       v-if="showAddEventModal"
     />
   </div>
@@ -225,20 +226,33 @@
     showAddEventModal.value = false;
   }
 
+  function updateCalendar(calendar: UserCalendar) {
+    const dateKey = helperDateToDate(props.selectedDay as DateHelper)
+      .toISOString()
+      .split("T")[0];
+    const dayFromProps = calendar.items.get(dateKey);
+    if (dayFromProps) {
+      localCalendarDay.value = new Map(dayFromProps);
+    } else {
+      localCalendarDay.value = new Map();
+    }
+  }
+
   // Watch for changes in selectedDate to load events for that day
   watch(
     selectedDate,
     (newDate) => {
       if (props.userCalendar) {
-        const dateKey = helperDateToDate(newDate as DateHelper)
-          .toISOString()
-          .split("T")[0];
-        const dayFromProps = props.userCalendar.items.get(dateKey);
-        if (dayFromProps) {
-          localCalendarDay.value = new Map(dayFromProps);
-        } else {
-          localCalendarDay.value = new Map();
-        }
+        updateCalendar(props.userCalendar);
+        // const dateKey = helperDateToDate(newDate as DateHelper)
+        //   .toISOString()
+        //   .split("T")[0];
+        // const dayFromProps = props.userCalendar.items.get(dateKey);
+        // if (dayFromProps) {
+        //   localCalendarDay.value = new Map(dayFromProps);
+        // } else {
+        //   localCalendarDay.value = new Map();
+        // }
       }
     },
     { immediate: true }
