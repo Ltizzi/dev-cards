@@ -48,7 +48,12 @@ export const useCalendarStore = defineStore("calendars", {
       } else return await this.getUserCalendarByUserId(user.user_id);
     },
     async getUserCalendarByUserId(id: number) {
-      if (this.userCalendar.owner.user_id === id) return this.userCalendar;
+      if (
+        this.userCalendar &&
+        this.userCalendar.owner &&
+        this.userCalendar.owner.user_id === id
+      )
+        return this.userCalendar;
       else {
         const response = (await apiCall.get(
           EndpointType.CALENDAR_USER_BY_USER_ID,

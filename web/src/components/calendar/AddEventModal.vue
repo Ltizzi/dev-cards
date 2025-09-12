@@ -212,7 +212,7 @@
       const now = new Date();
       const calendarItem: CalendarItem = {
         ...newEvent.value,
-        id: utils.generateUUID(), //`event-${Date.now()}`
+        id: userStore.offlineMode ? utils.generateUUID() : undefined, //`event-${Date.now()}`
         owner: userStore.getSelfAsUserLite(),
         created_at: now,
         updated_at: now,
