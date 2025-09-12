@@ -411,7 +411,7 @@ export interface HourRange {
 export type CalendarDay = Map<string, CalendarItem>;
 
 export interface CalendarItem {
-  id: string;
+  id?: string;
   owner: UserLite | UserLocal;
   title: string;
   description: string;
