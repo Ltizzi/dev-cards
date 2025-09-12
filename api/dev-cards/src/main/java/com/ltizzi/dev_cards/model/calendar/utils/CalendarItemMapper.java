@@ -44,8 +44,9 @@ public class CalendarItemMapper {
     public CalendarItemEntity toCalendarItemEntity(CalendarItemDTO dto) throws NotFoundException {
         CalendarItemEntity ci = new CalendarItemEntity();
         if(dto.getId() != null){
-            ci = ciRepo.findById(dto.getId()).orElseThrow(()-> new NotFoundException("Calendar Item not found!"));
-            if(ci!=null){
+            ci = ciRepo.findById(dto.getId()).orElse(null);
+            if(ci==null){
+                ci = new CalendarItemEntity();
                 ci.setId(dto.getId());
             }
         }

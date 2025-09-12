@@ -126,8 +126,11 @@
   } from "../../utils/types";
   import { useUserStore } from "../../store/user.store";
   import { taskUtils } from "../../utils/task.utils";
+  import { useCalendarStore } from "../../store/calendar.store";
+  import { utils } from "../../utils/utils";
 
   const userStore = useUserStore();
+  const calendarStore = useCalendarStore();
 
   const props = defineProps<{
     showAddEventModal: boolean;
@@ -196,7 +199,7 @@
     return obj ? new Date(`${obj.day}/${obj.month}/${obj.year}`) : new Date();
   }
 
-  function addEvent() {
+  async function addEvent() {
     if (
       newEvent.value.title &&
       newEvent.value.hourRange.start &&
@@ -209,7 +212,7 @@
       const now = new Date();
       const calendarItem: CalendarItem = {
         ...newEvent.value,
-        id: `event-${Date.now()}`,
+        id: userStore.offlineMode ? utils.generateUUID() : undefined, //`event-${Date.now()}`
         owner: userStore.getSelfAsUserLite(),
         created_at: now,
         updated_at: now,
@@ -222,6 +225,19 @@
       localCalendarDay.value.set(hourRange, calendarItem);
 
       //TODO: BUSINESS LOGIC
+
+      const calendar = await calendarStore.getUserCalendar();
+      const response = await calendarStore.addItemToUserCalendar(
+        calendar?.calendar_id as string,
+        calendarItem
+      );
+      console.log(response);
+      if (response?.calendar_id == calendar?.calendar_id) {
+        emit("update", response);
+        setTimeout(() => {
+          closeModal();
+        }, 350);
+      }
       // If we have a userCalendar prop, also update it
       //   if (props.userCalendar) {
       //     const dateKey = helperDateToDate(props.selectedDate as DateHelper)
@@ -236,7 +252,6 @@
       //   }
 
       //   emit("eventAdded", calendarItem);
-      closeModal();
     } else if (
       !isValidTimeRange(
         newEvent.value.hourRange.start,

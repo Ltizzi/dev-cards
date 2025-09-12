@@ -37,7 +37,7 @@ export const useCalendarStore = defineStore("calendars", {
       const user = userStore.getCurrent();
       if (this.offlineMode) {
         if (!this.userCalendar.calendar_id) {
-          const calendar = this.getLocalStorageUserCalendarByUserId(
+          const calendar = await this.getLocalStorageUserCalendarByUserId(
             user.user_id
           );
           if (calendar && calendar.owner.user_id === user.user_id) {
@@ -48,17 +48,25 @@ export const useCalendarStore = defineStore("calendars", {
       } else return await this.getUserCalendarByUserId(user.user_id);
     },
     async getUserCalendarByUserId(id: number) {
-      const response = (await apiCall.get(
-        EndpointType.CALENDAR_USER_BY_USER_ID,
-        {
-          params: {
-            user_id: id,
-          },
-        }
-      )) as UserCalendar;
-      if (response && response.owner.user_id === id) {
-        this.setUserCalendar(response);
+      if (
+        this.userCalendar &&
+        this.userCalendar.owner &&
+        this.userCalendar.owner.user_id === id
+      )
         return this.userCalendar;
+      else {
+        const response = (await apiCall.get(
+          EndpointType.CALENDAR_USER_BY_USER_ID,
+          {
+            params: {
+              user_id: id,
+            },
+          }
+        )) as UserCalendar;
+        if (response && response.owner.user_id === id) {
+          this.setUserCalendar(response);
+          return this.userCalendar;
+        }
       }
     },
     async getUserCalendarById(id: string) {
@@ -70,23 +78,23 @@ export const useCalendarStore = defineStore("calendars", {
         return this.userCalendar;
       }
     },
-    getLocalStorageUserCalendarByUserId(id: number) {
-      const user_calendars = this.getLocalStorageUsersCalendars();
+    async getLocalStorageUserCalendarByUserId(id: number) {
+      const user_calendars = await this.getLocalStorageUsersCalendars();
       if (user_calendars && user_calendars.length > 0) {
         return user_calendars.filter(
           (uc: UserCalendar) => uc.owner.user_id === id
         )[0];
       } else return null;
     },
-    getLocalStorageUserCalendarByCalendarId(id: string) {
-      const user_calendars = this.getLocalStorageUsersCalendars();
+    async getLocalStorageUserCalendarByCalendarId(id: string) {
+      const user_calendars = await this.getLocalStorageUsersCalendars();
       if (user_calendars && user_calendars.length > 0) {
         return user_calendars.filter(
           (uc: UserCalendar) => uc.calendar_id === id
         )[0];
       } else null;
     },
-    getLocalStorageUsersCalendars() {
+    async getLocalStorageUsersCalendars() {
       return JSON.parse(
         localStorage.getItem("local_users_calendars") as string
       ) as UserCalendar[];
