@@ -67,12 +67,12 @@
           @click="selectTab(1)"
           >Tasks</a
         >
-        <a
+        <!-- <a
           role="tab"
           :class="['tab', state.selectedTab === 2 ? 'tab-active' : '']"
           @click="selectTab(2)"
           >Calendar</a
-        >
+        > -->
       </div>
       <div class="flex flex-col justify-center items-center w-full mt-0 pt-5">
         <ProjectList
@@ -86,7 +86,7 @@
           :isLoggedIn="isLoggedIn"
           v-if="isLoaded && state.selectedTab === 1"
         />
-        <ScheduleLayout v-if="state.selectedTab === 2" :isUserCalendar="true" />
+        <!-- <ScheduleLayout v-if="state.selectedTab === 2" :isUserCalendar="true" /> -->
       </div>
     </div>
   </div>
@@ -105,7 +105,7 @@
   import { useProjectStore } from "../store/project.store";
   import { User, UserLocal, Workspace } from "../utils/types";
 
-  import ScheduleLayout from "./ScheduleLayout.vue";
+  // import ScheduleLayout from "./ScheduleLayout.vue";
 
   const router = useRouter();
 
