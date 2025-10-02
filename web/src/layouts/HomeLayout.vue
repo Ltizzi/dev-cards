@@ -170,7 +170,7 @@
   }
 
   onBeforeMount(async () => {
-    const user = userStore.getSelf() as User | UserLocal; //JSON.parse(localStorage.getItem("user") as string);
+    const user = userStore.getSelf() as User | UserLocal;
     if (!user) {
       router.push("/login");
     } else {
@@ -180,6 +180,5 @@
     isDark.value = UIStore.darkTheme;
     darkerCards.value = UIStore.darkerCard;
     darkerMiniCards.value = UIStore.darkerMiniCard;
-    //taskUtils.saveTagPool(); //usado para crear tagpools para testear
   });
 </script>
