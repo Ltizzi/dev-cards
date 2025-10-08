@@ -143,23 +143,9 @@
         newValue = newValue as string;
         const tags = newValue.split(" ");
         console.log(tags);
-        //if (tags.length == 1)
-        // filteredTasks.value = fetchTasks(
-        //   newValue as string,
-        //   props.tasks as TaskLite[]
-        // );
-        //filterByOptions(tags, "tag");
-        // else {
-        //   tags.forEach((tag: string) => {
-        //     filteredTasks.value = filteredTasks.value?.concat(
-        //       fetchTasks(tag, props.tasks as TaskLite[])
-        //     );
-        //   });
-        // }
+
         filterByOptions(tags, "tag");
         if (filteredTasks.value) emit("filterTasks", filteredTasks.value);
-        // filteredByTags.value = filteredTasks.value;
-        // console.log(filteredByTags.value);
       } else state.tagSearch = false;
     }
   );

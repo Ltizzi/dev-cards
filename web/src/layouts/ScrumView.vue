@@ -192,16 +192,6 @@
     }
   );
 
-  // watch(
-  //   () => projectStore.local.tasks,
-  //   (newValue, oldValue) => {
-  //     if (newValue.length != oldValue.length) {
-  //       tasks.value = getTasks();
-  //       prepareTemplate(getTasks());
-  //     }
-  //   }
-  // );
-
   watch(
     () => search.value,
     (newValue, oldValue) => {
@@ -285,119 +275,6 @@
     await projectStore.updateCurrent();
     prepareTemplate(getTasks());
   }
-
-  // function dropped(col_name: string, pos: any, task: TaskLite) {
-  //   console.log("col name:");
-  //   console.log(col_name);
-  //   console.log(col_name, " ", pos, " ", task.title);
-  //   console.log("DROPPEADO GATO");
-  //   console.log(document.elementsFromPoint(pos.x, pos.y));
-  //   const element_id = document
-  //     .elementsFromPoint(pos.x, pos.y)
-  //     .filter((el: any) => el.id && el.id != "app")[0].id;
-  //   handleDropped(col_name, element_id, task);
-  // }
-
-  // async function handleDropped(from: string, to: string, task: TaskLite) {
-  //   if (from == "pool") {
-  //     pool.value = pool.value.filter(
-  //       (t: TaskLite) => t.task_id != task.task_id
-  //     );
-  //     if (to == "priority") {
-  //       top_priority.value.push(task);
-  //       let taskEntity = await fetchTaskById(task.task_id);
-  //       if (taskEntity) {
-  //         taskEntity.priority = Priority.VERY_HIGH;
-  //       }
-  //     }
-  //     if (to == "progress") {
-  //       in_progress.value.push(task);
-  //     }
-  //     if (to == "testing") {
-  //       testing.value.push(task);
-  //     }
-  //     if (to == "completed") {
-  //       completed.value.push(task);
-  //     }
-  //   }
-  //   if (from == "priority") {
-  //     top_priority.value = top_priority.value.filter(
-  //       (t: TaskLite) => t.task_id != task.task_id
-  //     );
-  //     if (to == "pool") {
-  //       pool.value.push(task);
-  //     }
-  //     if (to == "progress") {
-  //       in_progress.value.push(task);
-  //     }
-  //     if (to == "testing") {
-  //       testing.value.push(task);
-  //     }
-  //     if (to == "completed") {
-  //       completed.value.push(task);
-  //     }
-  //   }
-  //   if (from == "progress") {
-  //     in_progress.value = in_progress.value.filter(
-  //       (t: TaskLite) => t.task_id != task.task_id
-  //     );
-  //     if (to == "pool") {
-  //       pool.value.push(task);
-  //     }
-  //     if (to == "priority") {
-  //       top_priority.value.push(task);
-  //     }
-  //     if (to == "testing") {
-  //       testing.value.push(task);
-  //     }
-  //     if (to == "completed") {
-  //       completed.value.push(task);
-  //     }
-  //   }
-  //   if (from == "testing") {
-  //     testing.value = testing.value.filter(
-  //       (t: TaskLite) => t.task_id != task.task_id
-  //     );
-  //     if (to == "pool") {
-  //       pool.value.push(task);
-  //     }
-  //     if (to == "priority") {
-  //       top_priority.value.push(task);
-  //     }
-  //     if (to == "progress") {
-  //       in_progress.value.push(task);
-  //     }
-  //     if (to == "completed") {
-  //       completed.value.push(task);
-  //     }
-  //   }
-  //   if (from == "completed") {
-  //     completed.value = completed.value.filter(
-  //       (t: TaskLite) => t.task_id != task.task_id
-  //     );
-  //     if (to == "pool") {
-  //       pool.value.push(task);
-  //     }
-  //     if (to == "priority") {
-  //       top_priority.value.push(task);
-  //     }
-  //     if (to == "progress") {
-  //       in_progress.value.push(task);
-  //     }
-  //     if (to == "testing") {
-  //       testing.value.push(task);
-  //     }
-  //   }
-  // }
-
-  // async function fetchTaskById(id: number) {
-  //   const response = (await apiCall.get(EndpointType.TASK_GET_BY_ID, {
-  //     params: { id: id },
-  //   })) as Task;
-  //   if (response.task_id == id) {
-  //     return response;
-  //   }
-  // }
 
   onBeforeMount(() => {
     isDark.value = UIStore.checkIsDarkTheme();
