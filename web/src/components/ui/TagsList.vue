@@ -104,15 +104,6 @@
     }
   }
 
-  // function removeSpecialTag(id: number) {
-  //   if (special_tags.value && special_tags.value.length > 0) {
-  //     special_tags.value = special_tags.value.filter(
-  //       (sp: SpecialTag) => sp.id != id
-  //     );
-  //     emit("removeSpecialTag", id);
-  //   }
-  // }
-
   function goToTag(name: string) {
     emit("navigate", name);
   }
