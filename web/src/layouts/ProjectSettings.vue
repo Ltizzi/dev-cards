@@ -150,7 +150,6 @@
 
   function changeMenu(option: MenuOptionUI) {
     state.selected = option.path;
-    //console.log("SELECTED: ", state.selected);
   }
 
   function showDeleteWsModal() {
@@ -162,27 +161,18 @@
   }
 
   async function updateProject(ws?: Workspace) {
-    //console.log("UPDATING");
     if (ws) {
       projectStore.setCurrent(ws);
       project.value = projectStore.getCurrent();
     } else project.value = await projectStore.updateCurrent();
-
-    // projectStore.current;
   }
 
   async function deleteWs() {
-    //console.log("DELETED");
     const ws = projectStore.getCurrent() as Workspace;
 
     const response = (await projectStore.deleteWorkspace(
       ws.workspace_id as number
     )) as APIResponse;
-    //  (await apiCall.del(EndpointType.WORKSPACE_DELETE, {
-    //   params: {
-    //     id: projectStore.current.workspace_id,
-    //   },
-    // })) as APIResponse;
     if (response.message == "Workspace deleted!") {
       setTimeout(() => {
         showDelWsModal.value = false;
@@ -209,17 +199,6 @@
           responseType: "blob",
         })) as BlobPart;
         JSONws_blob = new Blob([response], { type: "application/json" });
-        // const fileURL = window.URL.createObjectURL(new Blob([response]));
-        // const fileLink = document.createElement("a");
-        // fileLink.href = fileURL;
-        // fileLink.setAttribute(
-        //   "download",
-        //   `${ws.project_name + "_" + ws.updated_at}.json`
-        // );
-        // document.body.appendChild(fileLink);
-        // fileLink.click();
-        // document.body.removeChild(fileLink);
-        // window.URL.revokeObjectURL(fileURL);
       } catch (error) {
         console.error(error);
       }
@@ -231,13 +210,6 @@
         workspace_data.onlineExport = true;
         const json_string = JSON.stringify(workspace_data);
         JSONws_blob = new Blob([json_string], { type: "application/json" });
-        // const url = URL.createObjectURL(blob);
-        // const a = document.createElement("a");
-        // a.href = url;
-        // a.download = `${workspace_data.workspace.project_name}_${workspace_data.workspace.updated_at}.json`;
-        // document.body.appendChild(a);
-        // a.click();
-        // document.body.removeChild(a);
       } else {
         console.error(
           "Something went wrong, workspace not found in localStorage. ID=",

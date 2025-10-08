@@ -204,12 +204,6 @@
     router.push("/appConfig");
   }
 
-  // async function fetchProjects(userId: number) {
-  //   return (await apiCall.get(EndpointType.USER_MEMBER, {
-  //     params: { user_id: userId },
-  //   })) as Array<Workspace>;
-  // }
-
   function sortProjects(projs: Workspace[]) {
     return projs.sort((ws_a, ws_b) => {
       const dateA = new Date(ws_a.updated_at).getTime();
@@ -223,9 +217,8 @@
       router.push("/login");
     } else {
       if (!userStore.logged) {
-        const savedUser = userStore.getSelf(); // JSON.parse(localStorage.getItem("user") as string);
+        const savedUser = userStore.getSelf();
         if (savedUser) {
-          //userStore.setSelf(savedUser);
           user.value = savedUser;
         } else {
           router.push("/login");
@@ -240,7 +233,6 @@
         )) as Workspace[];
         if (projs && projs.length > 0) projects.value = sortProjects(projs);
         else projects.value = [];
-        // projectStore.setMemberOf(projs);
       } else router.push("/login");
 
       isLogged.value = true;

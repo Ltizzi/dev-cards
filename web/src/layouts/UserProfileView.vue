@@ -99,7 +99,6 @@
   const route = useRoute();
   const id = ref<number>();
 
-  //const apiCall = useApiCall();
   const projectStore = useProjectStore();
   const userStore = useUserStore();
   const UIStore = useUIStore();
@@ -131,12 +130,7 @@
       id.value as number,
       ws_id as number
     )) as unknown as User;
-    // (await apiCall.get(EndpointType.USER_GET_BY_ID, {
-    //   params: {
-    //     user_id: id.value,
-    //     ws_id: projectStore.current.workspace_id,
-    //   },
-    // })) as User;
+
     console.log(response);
     if (response.user_id) {
       user.value = response;
