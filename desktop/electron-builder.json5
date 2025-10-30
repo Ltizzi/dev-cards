@@ -4,7 +4,7 @@
   directories: {
     output: "release",
   },
-  files: ["dist/**/*", "dist-electron/**/*"],
+  files: ["dist/**/*", "dist-electron/**/*", "public/card.png"],
   mac: {
     target: ["dmg"],
   },
@@ -12,6 +12,7 @@
     target: ["nsis"],
   },
   linux: {
+    icon: "public/card.png",
     target: ["AppImage"],
   },
 }

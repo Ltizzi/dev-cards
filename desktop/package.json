@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build && electron-builder",
     "preview": "vite preview",
-    "electron:dev": "vite"
+    "electron:dev": "vite",
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
@@ -17,7 +18,6 @@
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@vueuse/core": "^10.11.0",
     "axios": "^1.7.2",
-    "better-sqlite3": "^12.4.1",
     "drizzle-kit": "^0.18.1",
     "drizzle-orm": "^0.44.7",
     "jwt-decode": "^4.0.0",
