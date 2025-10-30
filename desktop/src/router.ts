@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import TheHome from "./pages/TheHome.vue";
 import Login from "./components/auth/Login.vue";
 import SignUp from "./layouts/SignUp.vue";
@@ -22,7 +22,7 @@ import UserProfileView from "./layouts/UserProfileView.vue";
 import OfflineSignup from "./components/auth/OfflineSignup.vue";
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: [
     {
       path: "/",
