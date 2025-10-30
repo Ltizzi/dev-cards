@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.red {
+  background-color: #dc2626;
+  color: white;
+}
+
+.blue {
+  background-color: #2563eb;
+  color: white;
+}
+
+.green {
+  background-color: #22c55e;
+  color: white;
+}
+
+.orange {
+  background-color: #f97316;
+  color: white;
+}
+
+.yellow {
+  background-color: #facc15;
+  color: white;
+}
+
+.purple {
+  background-color: #a855f7;
+  color: white;
+}
+
+.brown {
+  background-color: #78350f;
+  color: white;
+}
+
+.gray {
+  background-color: #6b7280;
+  color: white;
+}
+
+.black {
+  background-color: #030712;
+  color: white;
+}
+
+.pink {
+  background-color: #ec4899;
+  color: white;
+}
+
+.cyan {
+  background-color: #22d3ee;
+  color: white;
+}
+
+.violet {
+  background-color: #8b5cf6;
+  color: white;
+}
+
+.indigo {
+  background-color: #6366f1;
+  color: white;
+}
+
+.fuchsia {
+  background-color: #d946ef;
+  color: white;
+}
+
+.rose {
+  background-color: #f43f5e;
+  color: white;
+}
+
+.sky {
+  background-color: #0ea5e9;
+  color: white;
+}
+
+.teal {
+  background-color: #14b8a6;
+  color: white;
+}
+
+.emerald {
+  background-color: #10b981;
+  color: white;
+}
+
+.lime {
+  background-color: #84cc16;
+  color: white;
+}
+
+.amber {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.slate {
+  background-color: #475569;
+  color: white;
+}
+
+.font_emerald {
+  color: #10b981;
+}
+
+.font_green {
+  color: #22c55e;
+}
+
+.font_lime {
+  color: #84cc16;
+}
+
+.font_amber {
+  color: #f59e0b;
+}
+
+.font_red {
+  color: #dc2626;
+}
+
+.bg-default {
+  background-color: #282a36;
+}
