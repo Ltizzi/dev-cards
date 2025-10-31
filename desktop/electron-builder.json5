@@ -1,10 +1,18 @@
 {
   appId: "com.devcards.desktop",
   productName: "DevCards Desktop",
+  asarUnpack: ["backend/**"],
   directories: {
     output: "release",
   },
   files: ["dist/**/*", "dist-electron/**/*", "public/card.png"],
+  extraResources: [
+    {
+      from: "backend",
+      to: "backend",
+      filter: ["**/*"],
+    },
+  ],
   mac: {
     target: ["dmg"],
   },
