@@ -58,7 +58,6 @@ const router = createRouter({
                 } else {
                   next("/");
                 }
-                //return checkIsModOrOwner(workspace_id) ? true : "/";
               },
             },
             {
@@ -72,10 +71,6 @@ const router = createRouter({
                 } else {
                   next("/");
                 }
-
-                // return checkIsModOrOwner(workspace_id)
-                //   ? checkIsModOrOwner(workspace_id)
-                //   : "/";
               },
             },
           ],

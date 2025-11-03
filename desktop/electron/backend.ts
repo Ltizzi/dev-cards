@@ -31,8 +31,6 @@ export class JavaBackend {
     console.log("🚀 Starting Java backend...");
 
     this.process = spawn("java", ["-jar", jarPath], {
-      //path.basename(jarPath)
-      //   cwd: backendDir,
       env: {
         ...process.env,
         SPRING_PROFILES_ACTIVE: isDev ? "development" : "production",
