@@ -11,6 +11,7 @@ export default defineConfig({
       {
         // Main process
         entry: "electron/main.ts",
+
         onstart(options) {
           options.startup();
         },

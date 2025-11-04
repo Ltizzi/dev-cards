@@ -19,7 +19,7 @@
 </template>
 <script setup lang="ts">
   import LateralMenu from "../layouts/LateralMenu.vue";
-  import { useRouter } from "vue-router";
+  import { useRoute, useRouter } from "vue-router";
   import { ref, onMounted, watch, onBeforeMount, nextTick } from "vue";
   import {
     changeTheme,
@@ -29,8 +29,10 @@
   import { useUIStore } from "../store/ui.store";
   import { useUserStore } from "../store/user.store";
   import { User, UserLocal } from "../utils/types";
+  import { useProjectStore } from "@/store/project.store";
 
   const router = useRouter();
+  const route = useRoute();
 
   const firstLoaded = ref(true);
   //const hasUser = ref(false);
@@ -39,6 +41,7 @@
 
   const UIStore = useUIStore();
   const userStore = useUserStore();
+  const projectStore = useProjectStore();
 
   watch(
     () => UIStore.justUpdated,
@@ -48,15 +51,6 @@
       }
     }
   );
-
-  // watch(
-  //   () => userStore.getSelf(),
-  //   (newValue, oldValue) => {
-  //     if (newValue != oldValue && !newValue) {
-  //       router.push("/login");
-  //     }
-  //   }
-  // );
 
   function handleResize() {
     const isMobile = window.innerWidth < 1024;

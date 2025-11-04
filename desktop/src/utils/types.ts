@@ -1,3 +1,5 @@
+//OLD WEBAPP TYPE FILE
+
 export enum HttpMethod {
   GET,
   POST,
