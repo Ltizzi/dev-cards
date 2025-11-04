@@ -25,6 +25,7 @@
   import { taskUtils } from "../utils/task.utils";
   import { useUIStore } from "../store/ui.store";
   import { useConfigStore } from "../store/config.store";
+  import { ipcRenderer } from "electron";
 
   const route = useRoute();
 

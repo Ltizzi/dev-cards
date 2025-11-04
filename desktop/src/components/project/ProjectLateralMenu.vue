@@ -211,11 +211,11 @@
         class="flex flex-row flex-wrap justify-evenly gap-2 mb-3 lg:mt-1 xl:mt-0"
         v-if="isModOrOwner"
       >
-        <font-awesome-icon
+        <!-- <font-awesome-icon
           class="size-6 xl:size-6 lg:size-5 text-success py-2 xl:py-3 lg:py-1 px-3 rounded-xl hover:cursor-pointer hover:bg-neutral"
           :icon="['fas', 'user-plus']"
           @click="showFindUserByMailModal"
-        />
+        /> -->
 
         <font-awesome-icon
           class="size-6 xl:size-6 lg:size-5 py-2 px-3 xl:py-3 lg:py-1 text-primary rounded-xl hover:cursor-pointer hover:bg-neutral"
@@ -225,12 +225,12 @@
       </div>
     </div>
 
-    <AddUserByEmailModal
+    <!-- <AddUserByEmailModal
       :showModal="state.addUserModal"
       :ws_id="project.workspace_id"
       @cancel="closeModal"
       @update="updateProject"
-    />
+    /> -->
   </div>
   <button
     class="btn btn-square btn-outline absolute top-2 left-16 bg-base-300 z-50"
@@ -257,7 +257,7 @@
   import { taskUtils } from "../../utils/task.utils";
   import { useUserStore } from "../../store/user.store";
   import { checkIsModOrOwner } from "../../utils/auth.utils";
-  import AddUserByEmailModal from "../ui/AddUserByEmailModal.vue";
+  //import AddUserByEmailModal from "../ui/AddUserByEmailModal.vue";
   import NewTaskBtn from "../task/NewTaskBtn.vue";
   import { useUIStore } from "../../store/ui.store";
 
@@ -288,7 +288,7 @@
     selected: -10,
     selectedUser: 0 as number,
     selectedTask: 0 as number,
-    addUserModal: false,
+    // addUserModal: false,
     isDark: false,
     isMobile: false,
     offlineMode: false,
@@ -432,13 +432,13 @@
     state.showMenuBtn = true;
   }
 
-  function showFindUserByMailModal() {
-    state.addUserModal = true;
-  }
+  // function showFindUserByMailModal() {
+  //   state.addUserModal = true;
+  // }
 
-  function closeModal() {
-    state.addUserModal = false;
-  }
+  // function closeModal() {
+  //   state.addUserModal = false;
+  // }
 
   function shortName(name: string) {
     if (name.length > 15) {
