@@ -141,7 +141,7 @@
         <ul class="before:ring-offset-purple-400"></ul>
       </details> -->
       </li>
-      <li class="whitespace-nowrap flex-shrink-0" v-if="!state.offlineMode">
+      <!-- <li class="whitespace-nowrap flex-shrink-0" v-if="!state.offlineMode">
         <details close>
           <summary
             :class="[
@@ -193,7 +193,7 @@
             </li>
           </ul>
         </details>
-      </li>
+      </li> -->
     </ul>
     <div
       class="flex flex-col justify-center gap-0.5 lg:gap-0 xl:gap-0.5 w-56 lg:w-40 xl:w-56 bg-gradient-to-br from-base-100 to-base-300 bottom-0 z-10 h-1/6"
