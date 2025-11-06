@@ -26,7 +26,7 @@
           :project="project"
           v-show="state.selected == 'basic'"
         />
-        <ModControl
+        <!-- <ModControl
           :workspace_id="project.workspace_id"
           :users_list="project.users"
           :mod_list="project.moderators"
@@ -40,7 +40,7 @@
           :owner_id="state.ownerId"
           @update="updateProject"
           v-show="state.selected == 'users_control'"
-        />
+        /> -->
 
         <GlosaryControl
           :ws_id="project.workspace_id"
@@ -90,9 +90,9 @@
   import { useRouter } from "vue-router";
   import { useUserStore } from "../store/user.store";
   import SettingsLateralMenu from "../components/settings/SettingsLateralMenu.vue";
-  import ModControl from "../components/settings/ModControl.vue";
+  // import ModControl from "../components/settings/ModControl.vue";
   import ProjectBasicControl from "../components/settings/ProjectBasicControl.vue";
-  import UsersControl from "../components/settings/UsersControl.vue";
+  // import UsersControl from "../components/settings/UsersControl.vue";
   import GlosaryControl from "../components/settings/GlosaryControl.vue";
   import SpecialTagsControl from "../components/settings/SpecialTagsControl.vue";
   import { SpecialTag } from "../utils/types";
@@ -121,18 +121,18 @@
         needOwner: false,
         needOnline: false,
       },
-      {
-        title: "Moderators",
-        path: "mods",
-        needOwner: true,
-        needOnline: true,
-      },
-      {
-        title: "Users Control",
-        path: "users_control",
-        needOwner: false,
-        needOnline: true,
-      },
+      // {
+      //   title: "Moderators",
+      //   path: "mods",
+      //   needOwner: true,
+      //   needOnline: true,
+      // },
+      // {
+      //   title: "Users Control",
+      //   path: "users_control",
+      //   needOwner: false,
+      //   needOnline: true,
+      // },
       {
         title: "Custom Glosaries",
         path: "glosary_setup",
