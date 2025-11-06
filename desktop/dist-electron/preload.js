@@ -1,28 +1,28 @@
-import { contextBridge as r, ipcRenderer as t } from "electron";
+import { contextBridge, ipcRenderer } from "electron";
 console.log("PRELOAD LOADED ✅✅✅");
-r.exposeInMainWorld("ipcRenderer", {
-  on(...e) {
-    const [n, o] = e;
-    return t.on(
-      n,
-      (c, ...i) => o(c, ...i)
+contextBridge.exposeInMainWorld("ipcRenderer", {
+  on(...args) {
+    const [channel, listener] = args;
+    return ipcRenderer.on(
+      channel,
+      (event, ...args2) => listener(event, ...args2)
     );
   },
-  off(...e) {
-    const [n, ...o] = e;
-    return t.off(n, ...o);
+  off(...args) {
+    const [channel, ...omit] = args;
+    return ipcRenderer.off(channel, ...omit);
   },
-  send(...e) {
-    const [n, ...o] = e;
-    return t.send(n, ...o);
+  send(...args) {
+    const [channel, ...omit] = args;
+    return ipcRenderer.send(channel, ...omit);
   },
-  invoke(...e) {
-    const [n, ...o] = e;
-    return t.invoke(n, ...o);
+  invoke(...args) {
+    const [channel, ...omit] = args;
+    return ipcRenderer.invoke(channel, ...omit);
   }
   // You can expose other APTs you need here.
   // ...
 });
-r.exposeInMainWorld("appControl", {
-  setProjectTitle: (e) => t.send("set-project-title", e)
+contextBridge.exposeInMainWorld("appControl", {
+  setProjectTitle: (title) => ipcRenderer.send("set-project-title", title)
 });

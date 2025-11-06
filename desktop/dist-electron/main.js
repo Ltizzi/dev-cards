@@ -1,75 +1,121 @@
-var f = Object.defineProperty;
-var v = (s, e, o) => e in s ? f(s, e, { enumerable: !0, configurable: !0, writable: !0, value: o }) : s[e] = o;
-var m = (s, e, o) => v(s, typeof e != "symbol" ? e + "" : e, o);
-import { app as c, ipcMain as g, BrowserWindow as R } from "electron";
-import n from "node:path";
-import { fileURLToPath as _ } from "node:url";
-import { spawn as u } from "child_process";
-import a from "path";
-import E from "fs";
-import { fileURLToPath as j } from "url";
-const w = j(import.meta.url), S = a.dirname(w);
-class k {
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+import { app, ipcMain, BrowserWindow } from "electron";
+import path$1 from "node:path";
+import { fileURLToPath as fileURLToPath$1 } from "node:url";
+import { spawn } from "child_process";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
+const __filename$1 = fileURLToPath(import.meta.url);
+const __dirname$1 = path.dirname(__filename$1);
+class JavaBackend {
   constructor() {
-    m(this, "process", null);
+    __publicField(this, "process", null);
   }
   start() {
-    var d, p;
-    const e = process.env.NODE_ENV === "development";
-    let o, i;
-    e ? (o = a.join(S, "../backend"), i = a.join(o, "dev-cards-0.0.1-SNAPSHOT.jar")) : (o = a.join(process.resourcesPath, "backend"), i = a.join(o, "dev-cards-0.0.1-SNAPSHOT.jar")), console.log("🔍 Checking backend structure..."), console.log("   Backend dir:", o), console.log("   JAR path:", i), console.log("   JAR exists:", E.existsSync(i)), console.log("🚀 Starting Java backend..."), this.process = u("java", ["-jar", i], {
+    var _a, _b;
+    const isDev = process.env.NODE_ENV === "development";
+    let backendDir;
+    let jarPath;
+    if (isDev) {
+      backendDir = path.join(__dirname$1, "../backend");
+      jarPath = path.join(backendDir, "dev-cards-0.0.1-SNAPSHOT.jar");
+    } else {
+      backendDir = path.join(process.resourcesPath, "backend");
+      jarPath = path.join(backendDir, "dev-cards-0.0.1-SNAPSHOT.jar");
+    }
+    console.log("🔍 Checking backend structure...");
+    console.log("   Backend dir:", backendDir);
+    console.log("   JAR path:", jarPath);
+    console.log("   JAR exists:", fs.existsSync(jarPath));
+    console.log("🚀 Starting Java backend...");
+    this.process = spawn("java", ["-jar", jarPath], {
       env: {
         ...process.env,
-        SPRING_PROFILES_ACTIVE: e ? "development" : "production"
+        SPRING_PROFILES_ACTIVE: isDev ? "development" : "production"
       }
-    }), (d = this.process.stdout) == null || d.on("data", (t) => {
-      console.log(`[Java]: ${t.toString().trim()}`);
-    }), (p = this.process.stderr) == null || p.on("data", (t) => {
-      console.error(`[Java Error]: ${t.toString().trim()}`);
-    }), this.process.on("error", (t) => {
-      console.error("❌ Failed to start Java process:", t);
-    }), this.process.on("close", (t) => {
-      console.log(`Java backend exited with code ${t}`), this.process = null;
+    });
+    (_a = this.process.stdout) == null ? void 0 : _a.on("data", (data) => {
+      console.log(`[Java]: ${data.toString().trim()}`);
+    });
+    (_b = this.process.stderr) == null ? void 0 : _b.on("data", (data) => {
+      console.error(`[Java Error]: ${data.toString().trim()}`);
+    });
+    this.process.on("error", (error) => {
+      console.error("❌ Failed to start Java process:", error);
+    });
+    this.process.on("close", (code) => {
+      console.log(`Java backend exited with code ${code}`);
+      this.process = null;
     });
   }
   stop() {
-    this.process && (console.log("🛑 Stopping Java backend..."), this.process.kill("SIGTERM"), setTimeout(() => {
-      this.process && (console.log("⚠️ Force killing Java backend..."), this.process.kill("SIGKILL"));
-    }, 5e3)), this.process = null;
+    if (this.process) {
+      console.log("🛑 Stopping Java backend...");
+      this.process.kill("SIGTERM");
+      setTimeout(() => {
+        if (this.process) {
+          console.log("⚠️ Force killing Java backend...");
+          this.process.kill("SIGKILL");
+        }
+      }, 5e3);
+    }
+    this.process = null;
   }
 }
-const T = _(import.meta.url), h = n.dirname(T), P = n.join(h, "../dist"), l = new k();
-let r;
-function b() {
-  r = new R({
+const __filename = fileURLToPath$1(import.meta.url);
+const __dirname = path$1.dirname(__filename);
+const RENDERER_DIST = path$1.join(__dirname, "../dist");
+const backend = new JavaBackend();
+let win;
+function createWindow() {
+  win = new BrowserWindow({
     width: 1280,
     height: 720,
-    icon: n.join(h, "../public/card.png"),
+    icon: path$1.join(__dirname, "../public/card.png"),
     webPreferences: {
       // preload: path.join(__dirname, "preload.js"),
       // preload: process.env.VITE_DEV_SERVER_URL
       //   ? path.join(process.cwd(), "dist-electron/preload.js") // DEV
       //   : path.join(__dirname, "preload.js"), // BUILD
-      preload: n.join(process.cwd(), "dist-electron/preload.js"),
-      contextIsolation: !0,
-      nodeIntegration: !1
+      preload: path$1.join(process.cwd(), "dist-electron/preload.js"),
+      contextIsolation: true,
+      nodeIntegration: false
     }
-  }), process.env.VITE_DEV_SERVER_URL ? r.loadURL(process.env.VITE_DEV_SERVER_URL) : r.loadFile(n.join(P, "index.html")), r.setTitle("Dev Cards");
+  });
+  if (process.env.VITE_DEV_SERVER_URL) {
+    win.loadURL(process.env.VITE_DEV_SERVER_URL);
+  } else {
+    win.loadFile(path$1.join(RENDERER_DIST, "index.html"));
+  }
+  win.setTitle("Dev Cards");
 }
-c.whenReady().then(async () => {
+app.whenReady().then(async () => {
   console.log(
     ">>> PRELOAD PATH:",
-    n.join(process.cwd(), "dist-electron/preload.js")
-  ), l.start(), await new Promise((s) => setTimeout(s, 3e3)), setTimeout(() => {
-    b();
+    path$1.join(process.cwd(), "dist-electron/preload.js")
+  );
+  backend.start();
+  await new Promise((resolve) => setTimeout(resolve, 3e3));
+  setTimeout(() => {
+    createWindow();
   }, 6e3);
 });
-g.on("set-project-title", (s, e) => {
-  r && (e && e.length > 0 ? r.setTitle(`Dev Cards -  ${e}`) : r.setTitle("Dev Cards"));
+ipcMain.on("set-project-title", (_event, newTitle) => {
+  if (win) {
+    if (newTitle && newTitle.length > 0)
+      win.setTitle(`Dev Cards -  ${newTitle}`);
+    else win.setTitle("Dev Cards");
+  }
 });
-c.on("before-quit", () => {
-  l.stop();
+app.on("before-quit", () => {
+  backend.stop();
 });
-c.on("window-all-closed", () => {
-  l.stop(), process.platform !== "darwin" && c.quit();
+app.on("window-all-closed", () => {
+  backend.stop();
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
 });
